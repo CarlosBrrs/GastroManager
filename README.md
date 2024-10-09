@@ -44,3 +44,7 @@ The Restaurant Management System is a web-based application designed to manage r
 # High level architecture
 
 ![High level architecture](./GastroManager.drawio.png)
+
+# User stories
+
+The user stories (opened and closed) for this project can be found here: [GitHub User Stories](https://github.com/CarlosBrrs/GastroManager/issues?q=)
