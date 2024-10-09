@@ -3,7 +3,7 @@ package com.kaiho.gastromanager.domain.ingredient.usecase;
 import com.kaiho.gastromanager.domain.ingredient.api.IngredientServicePort;
 import com.kaiho.gastromanager.domain.ingredient.exception.IngredientDoesNotExistException;
 import com.kaiho.gastromanager.domain.ingredient.model.Ingredient;
-import com.kaiho.gastromanager.domain.spi.IngredientPersistencePort;
+import com.kaiho.gastromanager.domain.ingredient.spi.IngredientPersistencePort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +24,11 @@ public class IngredientUseCase implements IngredientServicePort {
     public Ingredient getIngredientById(UUID uuid) {
         return ingredientPersistencePort.getIngredientById(uuid)
                 .orElseThrow(() -> new IngredientDoesNotExistException(uuid.toString()));
+    }
+
+    @Override
+    public UUID addIngredient(Ingredient ingredient) {
+        return ingredientPersistencePort.createIngredient(ingredient);
     }
 
 }

@@ -9,4 +9,6 @@ public interface IngredientServicePort {
     List<Ingredient> getAllIngredients();
 
     Ingredient getIngredientById(UUID uuid);
+
+    UUID addIngredient(Ingredient ingredient);
 }

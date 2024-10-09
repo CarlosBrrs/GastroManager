@@ -2,7 +2,7 @@ package com.kaiho.gastromanager.domain.ingredient.usecase;
 
 import com.kaiho.gastromanager.domain.ingredient.exception.IngredientDoesNotExistException;
 import com.kaiho.gastromanager.domain.ingredient.model.Ingredient;
-import com.kaiho.gastromanager.domain.spi.IngredientPersistencePort;
+import com.kaiho.gastromanager.domain.ingredient.spi.IngredientPersistencePort;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -87,5 +87,19 @@ class IngredientUseCaseTest {
         assertThat(thrown).isInstanceOf(IngredientDoesNotExistException.class)
                 .hasMessage("Ingredient with UUID: " + uuid + " does not exist");
         verify(ingredientPersistencePort, times(1)).getIngredientById(uuid);
+    }
+
+    @Test
+    void testCreateIngredientSuccess() {
+        //given
+        UUID uuid = UUID.randomUUID();
+        Ingredient ingredient = Ingredient.builder().name("eggs").build();
+        given(ingredientPersistencePort.createIngredient(any(Ingredient.class))).willReturn(uuid);
+
+        //when
+        UUID savedUuid = underTest.addIngredient(ingredient);
+        //then
+        assertThat(savedUuid).isEqualTo(uuid);
+        verify(ingredientPersistencePort, times(1)).createIngredient(ingredient);
     }
 }

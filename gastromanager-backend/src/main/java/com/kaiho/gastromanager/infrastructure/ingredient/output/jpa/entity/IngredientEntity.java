@@ -28,7 +28,7 @@ import java.util.UUID;
 @Getter
 @Setter
 //@EntityListeners(AuditingEntityListener.class)
-//@Builder
+@Builder
 public class IngredientEntity implements Serializable {
 
     @Id

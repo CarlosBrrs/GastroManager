@@ -24,4 +24,18 @@ public class IngredientEntityMapper {
                 .lastUpdated(ingredientEntity.getLastUpdated())
                 .build();
     }
+
+    public IngredientEntity toEntity(Ingredient ingredient) {
+        if (ingredient == null) {
+            return null;
+        }
+        return IngredientEntity.builder()
+                .name(ingredient.name())
+                .stockLevel(ingredient.stockLevel())
+                .unit(ingredient.unit())
+                .pricePerUnit(ingredient.pricePerUnit())
+                .minimumStockLevel(ingredient.minimumStockLevel())
+                .updateReason(ingredient.updateReason())
+                .build();
+    }
 }

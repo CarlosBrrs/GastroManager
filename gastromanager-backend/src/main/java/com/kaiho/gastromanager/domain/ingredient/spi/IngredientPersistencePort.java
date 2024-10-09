@@ -1,4 +1,4 @@
-package com.kaiho.gastromanager.domain.spi;
+package com.kaiho.gastromanager.domain.ingredient.spi;
 
 import com.kaiho.gastromanager.domain.ingredient.model.Ingredient;
 
@@ -11,4 +11,6 @@ public interface IngredientPersistencePort {
     List<Ingredient> getAllIngredients();
 
     Optional<Ingredient> getIngredientById(UUID uuid);
+
+    UUID createIngredient(Ingredient ingredient);
 }

@@ -1,5 +1,6 @@
 package com.kaiho.gastromanager.application.ingredient.handler;
 
+import com.kaiho.gastromanager.application.ingredient.dto.request.IngredientRequestDto;
 import com.kaiho.gastromanager.application.ingredient.dto.response.IngredientResponseDto;
 import com.kaiho.gastromanager.application.ingredient.mapper.IngredientMapper;
 import com.kaiho.gastromanager.domain.ingredient.api.IngredientServicePort;
@@ -36,5 +37,12 @@ public class IngredientHandlerImpl implements IngredientHandler {
         Ingredient ingredientById = ingredientServicePort.getIngredientById(uuid);
         IngredientResponseDto response = ingredientMapper.toResponse(ingredientById);
         return buildSuccessResponse("Ingredient retrieved successfully", response);
+    }
+
+    @Override
+    public ApiGenericResponse<UUID> addIngredient(IngredientRequestDto ingredientRequestDto) {
+        Ingredient ingredient = ingredientMapper.toDomain(ingredientRequestDto);
+        UUID ingredientUuid = ingredientServicePort.addIngredient(ingredient);
+        return buildSuccessResponse("Ingredient added successfully", ingredientUuid);
     }
 }

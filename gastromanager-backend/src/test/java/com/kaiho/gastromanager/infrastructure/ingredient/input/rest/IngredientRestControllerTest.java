@@ -1,5 +1,7 @@
 package com.kaiho.gastromanager.infrastructure.ingredient.input.rest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kaiho.gastromanager.application.ingredient.dto.request.IngredientRequestDto;
 import com.kaiho.gastromanager.application.ingredient.dto.response.IngredientResponseDto;
 import com.kaiho.gastromanager.application.ingredient.handler.IngredientHandler;
 import com.kaiho.gastromanager.domain.ingredient.exception.IngredientDoesNotExistException;
@@ -7,20 +9,25 @@ import com.kaiho.gastromanager.domain.ingredient.model.Unit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import static com.kaiho.gastromanager.infrastructure.common.model.ApiGenericResponse.buildSuccessResponse;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringBootTest
@@ -34,6 +41,12 @@ class IngredientRestControllerTest {
     IngredientHandler ingredientHandler;
 
     List<IngredientResponseDto> ingredientsResponseList;
+
+    @Autowired
+    ObjectMapper objectMapper;
+
+    @Value("${api.endpoint.base-url}")
+    private String baseUrl;
 
     @BeforeEach
     void setUp() {
@@ -66,7 +79,7 @@ class IngredientRestControllerTest {
                 buildSuccessResponse("List of ingredients retrieved successfully", this.ingredientsResponseList)
         );
 
-        this.mockMvc.perform(get("/api/v1/ingredients").accept(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(get(this.baseUrl + "/ingredients").accept(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.flag").value(true))
                 .andExpect(jsonPath("$.message").value("List of ingredients retrieved successfully"))
                 .andExpect(jsonPath("$.data").isArray())
@@ -79,7 +92,7 @@ class IngredientRestControllerTest {
                 buildSuccessResponse("List of ingredients retrieved successfully", new ArrayList<>())
         );
 
-        this.mockMvc.perform(get("/api/v1/ingredients").accept(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(get(this.baseUrl + "/ingredients").accept(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.flag").value(true))
                 .andExpect(jsonPath("$.message").value("List of ingredients retrieved successfully"))
                 .andExpect(jsonPath("$.data").isArray())
@@ -93,7 +106,7 @@ class IngredientRestControllerTest {
                 buildSuccessResponse("Ingredient retrieved successfully", ingredientResponseDto)
         );
 
-        this.mockMvc.perform(get("/api/v1/ingredients/" + ingredientResponseDto.uuid())
+        this.mockMvc.perform(get(this.baseUrl + "/ingredients/" + ingredientResponseDto.uuid())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.flag").value(true))
                 .andExpect(jsonPath("$.message").value("Ingredient retrieved successfully"))
@@ -112,10 +125,36 @@ class IngredientRestControllerTest {
                 new IngredientDoesNotExistException(uuid.toString())
         );
 
-        this.mockMvc.perform(get("/api/v1/ingredients/" + uuid)
+        this.mockMvc.perform(get(this.baseUrl + "/ingredients/" + uuid)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.flag").value(false))
                 .andExpect(jsonPath("$.message").value("Ingredient with UUID: " + uuid + " does not exist"))
                 .andExpect(jsonPath("$.data").isEmpty());
+    }
+
+    @Test
+    void testAddIngredientSuccess() throws Exception {
+        IngredientRequestDto requestDto = IngredientRequestDto.builder()
+                .name("Oil")
+                .stockLevel(3000)
+                .minimumStockLevel(500)
+                .updateReason("New ingredient")
+                .unit("MILLILITRES")
+                .pricePerUnit(0.006)
+                .build();
+        UUID uuid = UUID.randomUUID();
+        given(ingredientHandler.addIngredient(any(IngredientRequestDto.class))).willReturn(
+                buildSuccessResponse("Ingredient added successfully", uuid)
+        );
+
+        this.mockMvc.perform(post(this.baseUrl + "/ingredients")
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(this.objectMapper.writeValueAsString(requestDto))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(jsonPath("$.flag").value(true))
+                .andExpect(jsonPath("$.message").value("Ingredient added successfully"))
+                .andExpect(jsonPath("$.data").value(uuid.toString()));
     }
 }

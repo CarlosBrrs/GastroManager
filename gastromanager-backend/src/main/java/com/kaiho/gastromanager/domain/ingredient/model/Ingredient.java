@@ -11,7 +11,9 @@ public record Ingredient(
         String name,
         int stockLevel,
         Unit unit,
-        Double pricePerUnit,
+        double pricePerUnit,
+        int minimumStockLevel,
+        String updateReason,
         String createdBy,
         Instant createdDateTime,
         String updatedBy, Instant lastUpdated) {

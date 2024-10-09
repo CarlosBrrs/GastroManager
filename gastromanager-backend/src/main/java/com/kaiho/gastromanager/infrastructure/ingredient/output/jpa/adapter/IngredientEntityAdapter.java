@@ -1,19 +1,19 @@
 package com.kaiho.gastromanager.infrastructure.ingredient.output.jpa.adapter;
 
 import com.kaiho.gastromanager.domain.ingredient.model.Ingredient;
-import com.kaiho.gastromanager.domain.spi.IngredientPersistencePort;
+import com.kaiho.gastromanager.domain.ingredient.spi.IngredientPersistencePort;
 import com.kaiho.gastromanager.infrastructure.ingredient.output.jpa.entity.IngredientEntity;
 import com.kaiho.gastromanager.infrastructure.ingredient.output.jpa.mapper.IngredientEntityMapper;
 import com.kaiho.gastromanager.infrastructure.ingredient.output.jpa.repository.IngredientEntityRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
-@Service
+@Repository
 public class IngredientEntityAdapter implements IngredientPersistencePort {
 
     private final IngredientEntityRepository ingredientEntityRepository;
@@ -30,4 +30,13 @@ public class IngredientEntityAdapter implements IngredientPersistencePort {
     public Optional<Ingredient> getIngredientById(UUID uuid) {
         return ingredientEntityRepository.findById(uuid).map(ingredientEntityMapper::toDomain);
     }
+
+    @Override
+    public UUID createIngredient(Ingredient ingredient) {
+        IngredientEntity entity = ingredientEntityMapper.toEntity(ingredient);
+        IngredientEntity saved = ingredientEntityRepository.save(entity);
+        return saved.getUuid();
+    }
+
+
 }
