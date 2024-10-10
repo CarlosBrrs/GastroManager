@@ -12,5 +12,7 @@ public interface IngredientPersistencePort {
 
     Optional<Ingredient> getIngredientById(UUID uuid);
 
-    UUID createIngredient(Ingredient ingredient);
+    UUID addIngredient(Ingredient ingredient);
+
+    Ingredient updateIngredient(Ingredient ingredient);
 }

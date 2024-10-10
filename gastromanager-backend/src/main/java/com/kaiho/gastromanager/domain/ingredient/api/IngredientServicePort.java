@@ -11,4 +11,6 @@ public interface IngredientServicePort {
     Ingredient getIngredientById(UUID uuid);
 
     UUID addIngredient(Ingredient ingredient);
+
+    Ingredient updateIngredient(UUID uuid, Ingredient ingredient);
 }

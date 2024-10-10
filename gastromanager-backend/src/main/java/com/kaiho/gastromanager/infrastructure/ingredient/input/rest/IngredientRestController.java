@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,18 +27,25 @@ public class IngredientRestController {
 
     @GetMapping
     public ResponseEntity<ApiGenericResponse<List<IngredientResponseDto>>> getAllIngredients() {
-        ApiGenericResponse<List<IngredientResponseDto>> allIngredients = ingredientHandler.getAllIngredients();
-        return new ResponseEntity<>(allIngredients, HttpStatus.OK);
+        ApiGenericResponse<List<IngredientResponseDto>> handlerResponse = ingredientHandler.getAllIngredients();
+        return new ResponseEntity<>(handlerResponse, HttpStatus.OK);
     }
 
     @GetMapping("/{ingredientId}")
     public ResponseEntity<ApiGenericResponse<IngredientResponseDto>> getIngredientById(@PathVariable UUID ingredientId) {
-        ApiGenericResponse<IngredientResponseDto> ingredientById = ingredientHandler.getIngredientById(ingredientId);
-        return new ResponseEntity<>(ingredientById, HttpStatus.OK);
+        ApiGenericResponse<IngredientResponseDto> handlerResponse = ingredientHandler.getIngredientById(ingredientId);
+        return new ResponseEntity<>(handlerResponse, HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<ApiGenericResponse<UUID>> addIngredient(@RequestBody IngredientRequestDto ingredientRequestDto) {
         return new ResponseEntity<>(ingredientHandler.addIngredient(ingredientRequestDto), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{ingredientId}")
+    public ResponseEntity<ApiGenericResponse<IngredientResponseDto>> updateIngredient(
+            @PathVariable UUID ingredientId, @RequestBody IngredientRequestDto ingredientRequestDto) {
+        ApiGenericResponse<IngredientResponseDto> handlerResponse = ingredientHandler.updateIngredient(ingredientId, ingredientRequestDto);
+        return new ResponseEntity<>(handlerResponse, HttpStatus.OK);
     }
 }

@@ -45,4 +45,12 @@ public class IngredientHandlerImpl implements IngredientHandler {
         UUID ingredientUuid = ingredientServicePort.addIngredient(ingredient);
         return buildSuccessResponse("Ingredient added successfully", ingredientUuid);
     }
+
+    @Override
+    public ApiGenericResponse<IngredientResponseDto> updateIngredient(UUID uuid, IngredientRequestDto ingredientRequestDto) {
+        Ingredient ingredient = ingredientMapper.toDomain(ingredientRequestDto);
+        Ingredient updateIngredient = ingredientServicePort.updateIngredient(uuid, ingredient);
+        IngredientResponseDto response = ingredientMapper.toResponse(updateIngredient);
+        return buildSuccessResponse("Ingredient updated successfully", response);
+    }
 }

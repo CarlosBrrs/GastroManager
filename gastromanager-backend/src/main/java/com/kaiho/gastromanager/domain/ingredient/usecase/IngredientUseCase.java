@@ -15,6 +15,7 @@ import java.util.UUID;
 public class IngredientUseCase implements IngredientServicePort {
 
     private final IngredientPersistencePort ingredientPersistencePort;
+
     @Override
     public List<Ingredient> getAllIngredients() {
         return ingredientPersistencePort.getAllIngredients();
@@ -28,7 +29,24 @@ public class IngredientUseCase implements IngredientServicePort {
 
     @Override
     public UUID addIngredient(Ingredient ingredient) {
-        return ingredientPersistencePort.createIngredient(ingredient);
+        return ingredientPersistencePort.addIngredient(ingredient);
+    }
+
+    @Override
+    public Ingredient updateIngredient(UUID uuid, Ingredient ingredient) {
+        Ingredient ingredientById = this.getIngredientById(uuid);
+
+        Ingredient ingredientToUpdate = Ingredient.builder()
+                .uuid(ingredientById.uuid())
+                .name(ingredient.name())
+                .unit(ingredient.unit())
+                .stockLevel(ingredient.stockLevel())
+                .minimumStockLevel(ingredient.minimumStockLevel())
+                .pricePerUnit(ingredient.pricePerUnit())
+                .updateReason(ingredient.updateReason())
+                .build();
+
+        return ingredientPersistencePort.updateIngredient(ingredientToUpdate);
     }
 
 }

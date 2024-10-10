@@ -4,13 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
 @Builder
 public class IngredientRequestDto {
 
@@ -20,4 +17,5 @@ public class IngredientRequestDto {
     private double pricePerUnit;
     private int minimumStockLevel;
     private String updateReason;
+
 }

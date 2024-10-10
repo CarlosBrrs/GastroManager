@@ -32,10 +32,17 @@ public class IngredientEntityAdapter implements IngredientPersistencePort {
     }
 
     @Override
-    public UUID createIngredient(Ingredient ingredient) {
+    public UUID addIngredient(Ingredient ingredient) {
         IngredientEntity entity = ingredientEntityMapper.toEntity(ingredient);
         IngredientEntity saved = ingredientEntityRepository.save(entity);
         return saved.getUuid();
+    }
+
+    @Override
+    public Ingredient updateIngredient(Ingredient ingredient) {
+        IngredientEntity entity = ingredientEntityMapper.toEntity(ingredient);
+        IngredientEntity saved = ingredientEntityRepository.save(entity);
+        return ingredientEntityMapper.toDomain(saved);
     }
 
 

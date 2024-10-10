@@ -25,7 +25,7 @@ public class IngredientMapper {
     }
 
     public Ingredient toDomain(IngredientRequestDto ingredientRequestDto) {
-        if (ingredientRequestDto==null) {
+        if (ingredientRequestDto == null) {
             return null;
         }
         return Ingredient.builder()

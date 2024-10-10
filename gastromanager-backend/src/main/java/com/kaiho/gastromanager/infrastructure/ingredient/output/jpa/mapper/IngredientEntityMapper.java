@@ -1,7 +1,6 @@
 package com.kaiho.gastromanager.infrastructure.ingredient.output.jpa.mapper;
 
 import com.kaiho.gastromanager.domain.ingredient.model.Ingredient;
-import com.kaiho.gastromanager.domain.ingredient.model.Unit;
 import com.kaiho.gastromanager.infrastructure.ingredient.output.jpa.entity.IngredientEntity;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +29,7 @@ public class IngredientEntityMapper {
             return null;
         }
         return IngredientEntity.builder()
+                .uuid(ingredient.uuid())
                 .name(ingredient.name())
                 .stockLevel(ingredient.stockLevel())
                 .unit(ingredient.unit())
