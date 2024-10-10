@@ -188,3 +188,9 @@ The response of the API is in the same schema whether it is a successfull respon
 }
 
 ```
+
+# BACKEND INFO
+
+## datasource url config and initial data:
+- https://dzone.com/articles/bounty-spring-boot-and-postgresql-database#:~:text=spring.datasource.initialize%3Dtrue%20will%20mark%20the%20initialization%20to%20be%20true.,the%20schema%20path%20that%20needs%20to%20be%20initialized.
+- https://www.baeldung.com/spring-boot-data-sql-and-schema-sql#:~:text=In%20this%20quick%20article,%20we%20saw%20how%20we%20can#:~:text=In%20this%20quick%20article,%20we%20saw%20how%20we%20can
