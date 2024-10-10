@@ -78,7 +78,7 @@ The response of the API is in the same schema whether it is a successfull respon
   "message": "Inventory retrieved successfully",
   "data": [
     {
-      "id": "123e4567-e89b-12d3-a456-426614174000",
+      "uuid": "123e4567-e89b-12d3-a456-426614174000",
       "name": "Tomato",
       "stockLevel": 1000,
       "unit": "g",
@@ -86,7 +86,7 @@ The response of the API is in the same schema whether it is a successfull respon
       "lastUpdated": "2024-10-08T10:00:00Z"
     },
     {
-      "id": "123e4567-e89b-12d3-a456-426614174001",
+      "uuid": "123e4567-e89b-12d3-a456-426614174001",
       "name": "Olive Oil",
       "stockLevel": 500,
       "unit": "mL",
@@ -110,7 +110,7 @@ The response of the API is in the same schema whether it is a successfull respon
   "flag": true,
   "message": "Ingredient retrieved successfully",
   "data": {
-    "id": "123e4567-e89b-12d3-a456-426614174000",
+    "uuid": "123e4567-e89b-12d3-a456-426614174000",
     "name": "Tomato",
     "stockLevel": 1000,
     "unit": "g",
@@ -143,7 +143,7 @@ The response of the API is in the same schema whether it is a successfull respon
   "flag": true,
   "message": "Ingredient added successfully",
   "data": {
-    "id": "123e4567-e89b-12d3-a456-426614174000",
+    "uuid": "123e4567-e89b-12d3-a456-426614174000",
     "name": "Tomato",
     "stockLevel": 1000,
     "unit": "g",
@@ -156,7 +156,7 @@ The response of the API is in the same schema whether it is a successfull respon
 
 #### PUT /api/v1/ingredients/{ingredientId} (Update Stock Level)
 - **Description**:  Update details of an existing ingredient, including stock level, name, unit, price per unit, and update reason.
-- **Endpoint**: /api/v1/ingredients/{ingredientId}
+- **Endpoint**: /api/v1/ingredients/{ingredientUuid}
 - **Method**: PUT
 - **Request Body**:
 ```json
@@ -176,7 +176,7 @@ The response of the API is in the same schema whether it is a successfull respon
   "flag": true,
   "message": "Ingredient updated successfully",
   "data": {
-    "id": "123e4567-e89b-12d3-a456-426614174000",
+    "uuid": "123e4567-e89b-12d3-a456-426614174000",
     "name": "Tomato",
     "stockLevel": 1000,
     "unit": "g",
