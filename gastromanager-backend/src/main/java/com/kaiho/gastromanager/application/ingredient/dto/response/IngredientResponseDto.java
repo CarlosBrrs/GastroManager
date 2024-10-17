@@ -9,8 +9,8 @@ import java.util.UUID;
 public record IngredientResponseDto(
         UUID uuid,
         String name,
-        int stockLevel,
+        int availableStock,
         String unit,
         Double pricePerUnit,
-        Instant lastUpdated) {
+        Instant updatedDate) {
 }

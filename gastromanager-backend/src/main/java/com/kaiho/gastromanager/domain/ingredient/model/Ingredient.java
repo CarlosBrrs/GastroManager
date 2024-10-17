@@ -9,12 +9,13 @@ import java.util.UUID;
 public record Ingredient(
         UUID uuid,
         String name,
-        int stockLevel,
+        int availableStock,
         Unit unit,
         double pricePerUnit,
-        int minimumStockLevel,
-        String updateReason,
+        String supplier,
+        int minimumStockQuantity,
         String createdBy,
-        Instant createdDateTime,
-        String updatedBy, Instant lastUpdated) {
+        Instant createdDate,
+        String updatedBy,
+        Instant updatedDate) {
 }

@@ -114,20 +114,20 @@ class IngredientUseCaseTest {
                 .uuid(uuid)
                 .name("eggs")
                 .unit(UNITS)
-                .stockLevel(300)
+                .availableStock(300)
                 .pricePerUnit(0.2)
-                .minimumStockLevel(20)
-                .updateReason("New ingredient")
+                .minimumStockQuantity(20)
+                .supplier("Eggs supplier")
                 .build();
 
         Ingredient updatedIngredient = Ingredient.builder()
                 .uuid(uuid)
                 .name("eggs")
                 .unit(UNITS)
-                .stockLevel(9500)
+                .availableStock(9500)
                 .pricePerUnit(0.18)
-                .minimumStockLevel(30)
-                .updateReason("Cheaper product")
+                .minimumStockQuantity(30)
+                .supplier("Eggs supplier")
                 .build();
 
         given(ingredientPersistencePort.getIngredientById(uuid)).willReturn(Optional.of(oldIngredient));
@@ -139,9 +139,9 @@ class IngredientUseCaseTest {
         assertThat(result.uuid()).isEqualTo(updatedIngredient.uuid());
         assertThat(result.name()).isEqualTo(updatedIngredient.name());
         assertThat(result.unit()).isEqualTo(updatedIngredient.unit());
-        assertThat(result.stockLevel()).isEqualTo(updatedIngredient.stockLevel());
+        assertThat(result.availableStock()).isEqualTo(updatedIngredient.availableStock());
         assertThat(result.pricePerUnit()).isEqualTo(updatedIngredient.pricePerUnit());
-        assertThat(result.minimumStockLevel()).isEqualTo(updatedIngredient.minimumStockLevel());
+        assertThat(result.minimumStockQuantity()).isEqualTo(updatedIngredient.minimumStockQuantity());
         verify(ingredientPersistencePort, times(1)).getIngredientById(uuid);
         verify(ingredientPersistencePort, times(1)).updateIngredient(updatedIngredient);
     }
@@ -154,10 +154,10 @@ class IngredientUseCaseTest {
                 .uuid(uuid)
                 .name("eggs")
                 .unit(UNITS)
-                .stockLevel(9500)
+                .availableStock(9500)
                 .pricePerUnit(0.18)
-                .minimumStockLevel(30)
-                .updateReason("Cheaper product")
+                .minimumStockQuantity(30)
+                .supplier("Eggs supplier")
                 .build();
 
         given(ingredientPersistencePort.getIngredientById(uuid)).willReturn(Optional.empty());

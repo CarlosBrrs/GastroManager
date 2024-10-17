@@ -41,7 +41,7 @@ public class IngredientEntityAdapter implements IngredientPersistencePort {
     @Override
     public Ingredient updateIngredient(Ingredient ingredient) {
         IngredientEntity entity = ingredientEntityMapper.toEntity(ingredient);
-        IngredientEntity saved = ingredientEntityRepository.save(entity);
+        IngredientEntity saved = ingredientEntityRepository.saveAndFlush(entity);
         return ingredientEntityMapper.toDomain(saved);
     }
 

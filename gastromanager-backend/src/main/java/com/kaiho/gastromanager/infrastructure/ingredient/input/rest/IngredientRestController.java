@@ -31,9 +31,9 @@ public class IngredientRestController {
         return new ResponseEntity<>(handlerResponse, HttpStatus.OK);
     }
 
-    @GetMapping("/{ingredientId}")
-    public ResponseEntity<ApiGenericResponse<IngredientResponseDto>> getIngredientById(@PathVariable UUID ingredientId) {
-        ApiGenericResponse<IngredientResponseDto> handlerResponse = ingredientHandler.getIngredientById(ingredientId);
+    @GetMapping("/{ingredientUuid}")
+    public ResponseEntity<ApiGenericResponse<IngredientResponseDto>> getIngredientById(@PathVariable UUID ingredientUuid) {
+        ApiGenericResponse<IngredientResponseDto> handlerResponse = ingredientHandler.getIngredientById(ingredientUuid);
         return new ResponseEntity<>(handlerResponse, HttpStatus.OK);
     }
 
@@ -42,10 +42,10 @@ public class IngredientRestController {
         return new ResponseEntity<>(ingredientHandler.addIngredient(ingredientRequestDto), HttpStatus.CREATED);
     }
 
-    @PutMapping("/{ingredientId}")
+    @PutMapping("/{ingredientUuid}")
     public ResponseEntity<ApiGenericResponse<IngredientResponseDto>> updateIngredient(
-            @PathVariable UUID ingredientId, @RequestBody IngredientRequestDto ingredientRequestDto) {
-        ApiGenericResponse<IngredientResponseDto> handlerResponse = ingredientHandler.updateIngredient(ingredientId, ingredientRequestDto);
+            @PathVariable UUID ingredientUuid, @RequestBody IngredientRequestDto ingredientRequestDto) {
+        ApiGenericResponse<IngredientResponseDto> handlerResponse = ingredientHandler.updateIngredient(ingredientUuid, ingredientRequestDto);
         return new ResponseEntity<>(handlerResponse, HttpStatus.OK);
     }
 }

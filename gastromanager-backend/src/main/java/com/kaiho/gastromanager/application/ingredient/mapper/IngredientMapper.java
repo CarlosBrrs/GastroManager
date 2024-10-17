@@ -4,9 +4,9 @@ import com.kaiho.gastromanager.application.ingredient.dto.request.IngredientRequ
 import com.kaiho.gastromanager.application.ingredient.dto.response.IngredientResponseDto;
 import com.kaiho.gastromanager.domain.ingredient.model.Ingredient;
 import com.kaiho.gastromanager.domain.ingredient.model.Unit;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 public class IngredientMapper {
 
     public IngredientResponseDto toResponse(Ingredient ingredient) {
@@ -19,8 +19,8 @@ public class IngredientMapper {
                 .name(ingredient.name())
                 .unit(ingredient.unit().getSymbol())
                 .pricePerUnit(ingredient.pricePerUnit())
-                .stockLevel(ingredient.stockLevel())
-                .lastUpdated(ingredient.lastUpdated())
+                .availableStock(ingredient.availableStock())
+                .updatedDate(ingredient.updatedDate())
                 .build();
     }
 
@@ -29,11 +29,12 @@ public class IngredientMapper {
             return null;
         }
         return Ingredient.builder()
-                .name(ingredientRequestDto.getName())
-                .stockLevel(ingredientRequestDto.getStockLevel())
-                .unit(Unit.valueOf(ingredientRequestDto.getUnit()))
-                .pricePerUnit(ingredientRequestDto.getPricePerUnit())
-                .minimumStockLevel(ingredientRequestDto.getMinimumStockLevel())
-                .updateReason(ingredientRequestDto.getUpdateReason()).build();
+                .name(ingredientRequestDto.name())
+                .availableStock(ingredientRequestDto.availableStock())
+                .unit(Unit.valueOf(ingredientRequestDto.unit()))
+                .pricePerUnit(ingredientRequestDto.pricePerUnit())
+                .minimumStockQuantity(ingredientRequestDto.minimumStockQuantity())
+                .supplier(ingredientRequestDto.supplier())
+                .build();
     }
 }

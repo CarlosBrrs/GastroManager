@@ -7,8 +7,7 @@ import com.kaiho.gastromanager.domain.ingredient.api.IngredientServicePort;
 import com.kaiho.gastromanager.domain.ingredient.model.Ingredient;
 import com.kaiho.gastromanager.infrastructure.common.model.ApiGenericResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,8 +15,7 @@ import java.util.UUID;
 import static com.kaiho.gastromanager.infrastructure.common.model.ApiGenericResponse.buildSuccessResponse;
 
 @RequiredArgsConstructor
-@Service
-@Transactional
+@Component
 public class IngredientHandlerImpl implements IngredientHandler {
 
     private final IngredientServicePort ingredientServicePort;

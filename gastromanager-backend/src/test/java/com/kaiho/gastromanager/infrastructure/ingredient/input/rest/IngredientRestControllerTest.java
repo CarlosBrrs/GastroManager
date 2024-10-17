@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 class IngredientRestControllerTest {
 
     @Autowired
@@ -55,20 +55,20 @@ class IngredientRestControllerTest {
         IngredientResponseDto eggs = IngredientResponseDto.builder()
                 .uuid(UUID.randomUUID())
                 .name("eggs")
-                .stockLevel(30)
+                .availableStock(30)
                 .unit(Unit.UNITS.getSymbol())
                 .pricePerUnit(0.2)
-                .lastUpdated(Instant.now())
+                .updatedDate(Instant.now())
                 .build();
         this.ingredientsResponseList.add(eggs);
 
         IngredientResponseDto salt = IngredientResponseDto.builder()
                 .uuid(UUID.randomUUID())
                 .name("Salt")
-                .stockLevel(1000)
+                .availableStock(1000)
                 .unit(Unit.GRAMS.getSymbol())
                 .pricePerUnit(0.0015)
-                .lastUpdated(Instant.now())
+                .updatedDate(Instant.now())
                 .build();
         this.ingredientsResponseList.add(salt);
     }
@@ -112,10 +112,10 @@ class IngredientRestControllerTest {
                 .andExpect(jsonPath("$.message").value("Ingredient retrieved successfully"))
                 .andExpect(jsonPath("$.data.uuid").value(ingredientResponseDto.uuid().toString()))
                 .andExpect(jsonPath("$.data.name").value(ingredientResponseDto.name()))
-                .andExpect(jsonPath("$.data.stockLevel").value(ingredientResponseDto.stockLevel()))
+                .andExpect(jsonPath("$.data.availableStock").value(ingredientResponseDto.availableStock()))
                 .andExpect(jsonPath("$.data.unit").value(ingredientResponseDto.unit()))
                 .andExpect(jsonPath("$.data.pricePerUnit").value(ingredientResponseDto.pricePerUnit()))
-                .andExpect(jsonPath("$.data.lastUpdated").value(ingredientResponseDto.lastUpdated().toString()));
+                .andExpect(jsonPath("$.data.updatedDate").value(ingredientResponseDto.updatedDate().toString()));
     }
 
     @Test
@@ -136,9 +136,9 @@ class IngredientRestControllerTest {
     void testAddIngredientSuccess() throws Exception {
         IngredientRequestDto requestDto = IngredientRequestDto.builder()
                 .name("Oil")
-                .stockLevel(3000)
-                .minimumStockLevel(500)
-                .updateReason("New ingredient")
+                .availableStock(3000)
+                .minimumStockQuantity(500)
+                .supplier("Supplier")
                 .unit("MILLILITRES")
                 .pricePerUnit(0.006)
                 .build();
@@ -162,9 +162,9 @@ class IngredientRestControllerTest {
         UUID uuid = UUID.randomUUID();
         IngredientRequestDto requestDto = IngredientRequestDto.builder()
                 .name("Oil")
-                .stockLevel(3000)
-                .minimumStockLevel(500)
-                .updateReason("New ingredient")
+                .availableStock(3000)
+                .minimumStockQuantity(500)
+                .supplier("Oil supplier")
                 .unit("MILLILITRES")
                 .pricePerUnit(0.006)
                 .build();
@@ -172,10 +172,10 @@ class IngredientRestControllerTest {
         IngredientResponseDto updated = IngredientResponseDto.builder()
                 .uuid(uuid)
                 .name("Oil")
-                .stockLevel(3000)
+                .availableStock(3000)
                 .unit("MILLILITRES")
                 .pricePerUnit(0.006)
-                .lastUpdated(Instant.now())
+                .updatedDate(Instant.now())
                 .build();
 
         given(ingredientHandler.updateIngredient(any(UUID.class),any(IngredientRequestDto.class))).willReturn(
@@ -191,10 +191,10 @@ class IngredientRestControllerTest {
                 .andExpect(jsonPath("$.message").value("Ingredient updated successfully"))
                 .andExpect(jsonPath("$.data.uuid").value(uuid.toString()))
                 .andExpect(jsonPath("$.data.name").value(updated.name()))
-                .andExpect(jsonPath("$.data.stockLevel").value(updated.stockLevel()))
+                .andExpect(jsonPath("$.data.availableStock").value(updated.availableStock()))
                 .andExpect(jsonPath("$.data.unit").value(updated.unit()))
                 .andExpect(jsonPath("$.data.pricePerUnit").value(updated.pricePerUnit()))
-                .andExpect(jsonPath("$.data.lastUpdated").value(updated.lastUpdated().toString()));
+                .andExpect(jsonPath("$.data.updatedDate").value(updated.updatedDate().toString()));
     }
 
     @Test
@@ -202,9 +202,9 @@ class IngredientRestControllerTest {
         UUID uuid = UUID.randomUUID();
         IngredientRequestDto requestDto = IngredientRequestDto.builder()
                 .name("Oil")
-                .stockLevel(3000)
-                .minimumStockLevel(500)
-                .updateReason("New ingredient")
+                .availableStock(3000)
+                .minimumStockQuantity(500)
+                .supplier("Oil supplier")
                 .unit("MILLILITRES")
                 .pricePerUnit(0.006)
                 .build();
