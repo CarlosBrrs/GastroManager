@@ -223,7 +223,7 @@ DELETE	/api/v1/ingredients/{ingredientUuid}	Delete an ingredient by UUID (option
   "message": "Inventory retrieved successfully",
   "data": [
     {
-      "id": "123e4567-e89b-12d3-a456-426614174000",
+      "uuid": "123e4567-e89b-12d3-a456-426614174000",
       "name": "Tomato",
       "stockLevel": 1000,
       "unit": "g",
@@ -231,7 +231,7 @@ DELETE	/api/v1/ingredients/{ingredientUuid}	Delete an ingredient by UUID (option
       "lastUpdated": "2024-10-08T10:00:00Z"
     },
     {
-      "id": "123e4567-e89b-12d3-a456-426614174001",
+      "uuid": "123e4567-e89b-12d3-a456-426614174001",
       "name": "Olive Oil",
       "stockLevel": 500,
       "unit": "mL",
@@ -255,7 +255,7 @@ DELETE	/api/v1/ingredients/{ingredientUuid}	Delete an ingredient by UUID (option
   "flag": true,
   "message": "Ingredient retrieved successfully",
   "data": {
-    "id": "123e4567-e89b-12d3-a456-426614174000",
+    "uuid": "123e4567-e89b-12d3-a456-426614174000",
     "name": "Tomato",
     "stockLevel": 1000,
     "unit": "g",
@@ -288,7 +288,7 @@ DELETE	/api/v1/ingredients/{ingredientUuid}	Delete an ingredient by UUID (option
   "flag": true,
   "message": "Ingredient added successfully",
   "data": {
-    "id": "123e4567-e89b-12d3-a456-426614174000",
+    "uuid": "123e4567-e89b-12d3-a456-426614174000",
     "name": "Tomato",
     "stockLevel": 1000,
     "unit": "g",
@@ -301,7 +301,7 @@ DELETE	/api/v1/ingredients/{ingredientUuid}	Delete an ingredient by UUID (option
 
 #### PUT /api/v1/ingredients/{ingredientId} (Update Stock Level)
 - **Description**:  Update details of an existing ingredient, including stock level, name, unit, price per unit, and update reason.
-- **Endpoint**: /api/v1/ingredients/{ingredientId}
+- **Endpoint**: /api/v1/ingredients/{ingredientUuid}
 - **Method**: PUT
 - **Request Body**:
 ```json
@@ -321,7 +321,7 @@ DELETE	/api/v1/ingredients/{ingredientUuid}	Delete an ingredient by UUID (option
   "flag": true,
   "message": "Ingredient updated successfully",
   "data": {
-    "id": "123e4567-e89b-12d3-a456-426614174000",
+    "uuid": "123e4567-e89b-12d3-a456-426614174000",
     "name": "Tomato",
     "stockLevel": 1000,
     "unit": "g",
