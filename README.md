@@ -32,7 +32,6 @@ The Restaurant Management System is a web-based application designed to manage r
   - Create order for the clients including the menu items and its quantities for each order, and automatically substract the quantities for each ingredient from the inventory.
 
 - **Sales and Reporting:**
-
   - Generate sales reports based on daily, weekly, or monthly data.
   - Provide insights into popular dishes and track ingredient costs for better decision-making (not in first MVP).
 
@@ -46,11 +45,119 @@ The user stories (opened and closed) for this project can be found here: [GitHub
 
 # Design & API Contract
 
+## Entities
+Entities with Auditing properties should have:
+- uuid UUID String PK
+- createdBy String not null not updatable
+- createdDate Instant (UTC) not null not updatable
+- updatedBy String
+- updatedDate Instant (UTC)
+
+### User Auditable
+- name String
+- lastname String
+- email String unique
+- phone String unique
+- username String unique
+- encodedPassword String
+- roles Set<Role>
+- isEnabled boolean not null default true
+
+### Role
+- uuid UUID unique not null
+- name String
+
+### Order Auditable
+- user User not null (who place the order)
+- totalPrice double not null
+- items Set<OrderItem> not null (The items that the order contains)
+- status Status not null (PENDING default, PREPARING, COMPLETED, CANCELLED)
+
+### OrderItem weak from Order
+- productItem ProductItem not null
+- quantity int not null
+- price double not null (price of the item at the moment of the order, useful for discounts or auditing purposes)
+
+
+### Ingredient Auditable
+- name String not null
+- availableStock int not null
+- unit Unit not null
+- pricePerUnit double not null
+- minimumStockQuantity int not null
+
+### ProductItem Auditable
+- name String not null
+- description String
+- price double not null (price of the dish or product in the menu)
+- category Category not null (BREAKFAST, LUNCH, DINNER, DRINK, SIDE_DISH, FRIED_FOOD, FAST_FOOD)
+- ingredients Set<ProductItemIngredient>
+
+### ProductItemIngredient Auditable (to map how much of an ingredient a productItem uses) weak
+- productItem ProductItem
+- ingredient Ingredient
+- quantity double  
+- unit Unit
+
+### InventoryMovement weak
+- uuid UUID String PK
+- ingredient Ingredient not null 
+- changeQuantity double not null (+ or -. The quantity that has to be added or substracted from availableStock)
+- reason String not null
+- timestamp Instant (UTC) not null
+- createdBy String not null
+
+### PriceHistory weak
+- uuid UUID PK
+- productItem ProductItem not null
+- price double not null
+- effectiveDate Instant (UTC) not null
+- endDate Instant (UTC)
+
+## Relationships
+- User
+  - A user can have multiple roles 1:N
+  - A user can place multiple orders 1:N
+
+- Role
+  - A rol can be assigned to multiple users 1:N
+
+- Order
+  - An order can be placed by one user 1:1
+  - An order can contain one or multiple orderitems 1:N
+
+- OrderItem
+  - An order item is part of one order 1:1
+  - An order item refers to one product item 1:1
+
+- ProductItem
+  - A product item can be part of multiple order items 1:N
+  - A product item can have multiple product item ingredients 1:N
+  - A product item can have multiple price histories 1:N
+
+- ProductItemIngredient
+  - A product item ingredient is part of one product item 1:1
+  - A product item ingredient is associated with one ingredient 1:1
+
+- Ingredient
+  - An ingredient can be associated with multiple product item ingredients 1:N
+  - An ingredient can have multiple inventory movements 1:N
+
+- InventoryMovement
+  - An inventory movement can be associated to one ingredient 1:1
+
+- PriceHistory
+  - A price hisory is associated with one product item 1:1
+
 ## High level architecture
 
 ![High level architecture](./GastroManager.drawio.png)
 
-## API Contracts
+## Database schema
+
+![Database schema](./database-schema.png)
+
+## API Contracts and roles
 
 The requests to the API are going to be a json object, and the schema will depend on each request, which is defined below.
 
@@ -63,7 +170,45 @@ The response of the API is in the same schema whether it is a successfull respon
   "data": Object
 }
 ```
+The roles in the system are going to be:
+- ROLE_SUPERUSER
+- ROLE_OWNER
+- ROLE_MANAGER
+- ROLE_WAITER
+- ROLE_CHEF
+- ROLE_KITCHEN_STAFF
+- ROLE_CASHIER
+
+Role 'ROLE_SUPERUSER' will have access to all the resources in the system and it is reserved for the owner of the application
+
+### Users management
+METHOD | ENDPOINT | DESCRIPTION | ALLOWED ROLES
+--- | --- | --- | --- 
+POST | /api/v1/users | Create a new user | ROLE_OWNER  ROLE_MANAGER
+GET | /api/v1/users | Retrieve all users | ROLE_OWNER  ROLE_MANAGER
+GET | /api/v1/users/{uuid} | Retrieve a user by UUID | ROLE_OWNER  ROLE_MANAGER
+PUT | /api/v1/users/{uuid} | Update an existing user by UUID | ROLE_OWNER  ROLE_MANAGER
+PATCH | /api/v1/users/{uuid}/deactivate | Deactivate an active user by UUID | ROLE_OWNER
+PATCH | /api/v1/users/{uuid}/activate | Activate a deactivated user by UUID | ROLE_OWNER
+PUT | /api/v1/users/{userUuid}/roles | Assign roles to a user by its UUID | ROLE_OWNER
+DELETE | /api/v1/users/{userUuid}/roles/{roleUuid} | Delete a role by UUID from a user by UUID | ROLE_OWNER
+
+### Roles management
+METHOD | ENDPOINT | DESCRIPTION
+--- | --- | --- 
+GET | /api/v1/roles | Retrieve all roles | ROLE_OWNER  ROLE_MANAGER
+GET | /api/v1/roles/{uuid} | Retrieve a role by UUID | ROLE_OWNER  ROLE_MANAGER
+
 ### Ingredients management
+METHOD | ENDPOINT | DESCRIPTION
+--- | --- | ---
+POST | /api/v1/ingredients | Create a new ingredient | ROLE_OWNER  ROLE_MANAGER  ROLE_CHEF
+GET | /api/v1/ingredients | Retrieve all ingredients | ALL ROLES
+GET | /api/v1/ingredients/{ingredientUuid} | Retrieve an ingredient by UUID | ALL ROLES
+PUT | /api/v1/ingredients/{ingredientUuid} | Update an existing ingredient by UUID | ROLE_OWNER  ROLE_MANAGER  ROLE_CHEF
+PATCH | /api/v1/ingredients/{ingredientUuid}/deactivate | Deactivate an ingredient by UUID (not in first MVP) | ROLE_OWNER  ROLE_MANAGER  ROLE_CHEF
+PATCH | /api/v1/ingredients/{ingredientUuid}/activate | Activate a deactivated ingredient by UUID (not in first MVP) | ROLE_OWNER  ROLE_MANAGER  ROLE_CHEF
+DELETE	/api/v1/ingredients/{ingredientUuid}	Delete an ingredient by UUID (optional - not in first MVP) | ROLE_OWNER  ROLE_MANAGER
 
 #### GET /api/v1/ingredients (View Inventory)
 - **Description**: Retrieve a list of ingredients in the inventory
@@ -189,8 +334,22 @@ The response of the API is in the same schema whether it is a successfull respon
 
 ```
 
+# DATABASE INFO
+
+## database schema
+- https://www.visual-paradigm.com/guide/data-modeling/what-is-entity-relationship-diagram/#erd-data-models-conceptual
+- https://www.databasestar.com/entity-relationship-diagram/
+
 # BACKEND INFO
 
 ## datasource url config and initial data:
 - https://dzone.com/articles/bounty-spring-boot-and-postgresql-database#:~:text=spring.datasource.initialize%3Dtrue%20will%20mark%20the%20initialization%20to%20be%20true.,the%20schema%20path%20that%20needs%20to%20be%20initialized.
 - https://www.baeldung.com/spring-boot-data-sql-and-schema-sql#:~:text=In%20this%20quick%20article,%20we%20saw%20how%20we%20can#:~:text=In%20this%20quick%20article,%20we%20saw%20how%20we%20can
+
+## Security implementation:
+- https://medium.com/@berktorun.dev/the-grand-tour-spring-security-and-jwt-authentication-dfd20040fbd6
+- https://www.codejava.net/frameworks/spring-boot/spring-boot-security-role-based-authorization-tutorial
+
+## JPA Auditing config:
+- https://stackoverflow.com/questions/66498894/spring-boot-auditing-map-current-user-to-createdby-lastmodifiedby
+- https://www.youtube.com/watch?v=sac-R4d3_gk&t=452s
