@@ -194,21 +194,21 @@ PUT | /api/v1/users/{userUuid}/roles | Assign roles to a user by its UUID | ROLE
 DELETE | /api/v1/users/{userUuid}/roles/{roleUuid} | Delete a role by UUID from a user by UUID | ROLE_OWNER
 
 ### Roles management
-METHOD | ENDPOINT | DESCRIPTION
---- | --- | --- 
+METHOD | ENDPOINT | DESCRIPTION | ALLOWED ROLES
+--- | --- | --- | --- 
 GET | /api/v1/roles | Retrieve all roles | ROLE_OWNER  ROLE_MANAGER
 GET | /api/v1/roles/{uuid} | Retrieve a role by UUID | ROLE_OWNER  ROLE_MANAGER
 
 ### Ingredients management
-METHOD | ENDPOINT | DESCRIPTION
---- | --- | ---
+METHOD | ENDPOINT | DESCRIPTION | ALLOWED ROLES
+--- | --- | --- | --- 
 POST | /api/v1/ingredients | Create a new ingredient | ROLE_OWNER  ROLE_MANAGER  ROLE_CHEF
 GET | /api/v1/ingredients | Retrieve all ingredients | ALL ROLES
 GET | /api/v1/ingredients/{ingredientUuid} | Retrieve an ingredient by UUID | ALL ROLES
 PUT | /api/v1/ingredients/{ingredientUuid} | Update an existing ingredient by UUID | ROLE_OWNER  ROLE_MANAGER  ROLE_CHEF
 PATCH | /api/v1/ingredients/{ingredientUuid}/deactivate | Deactivate an ingredient by UUID (not in first MVP) | ROLE_OWNER  ROLE_MANAGER  ROLE_CHEF
 PATCH | /api/v1/ingredients/{ingredientUuid}/activate | Activate a deactivated ingredient by UUID (not in first MVP) | ROLE_OWNER  ROLE_MANAGER  ROLE_CHEF
-DELETE	/api/v1/ingredients/{ingredientUuid}	Delete an ingredient by UUID (optional - not in first MVP) | ROLE_OWNER  ROLE_MANAGER
+DELETE | /api/v1/ingredients/{ingredientUuid} |	Delete an ingredient by UUID (optional - not in first MVP) | ROLE_OWNER  ROLE_MANAGER
 
 #### GET /api/v1/ingredients (View Inventory)
 - **Description**: Retrieve a list of ingredients in the inventory
