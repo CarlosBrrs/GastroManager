@@ -2,9 +2,9 @@ package com.kaiho.gastromanager.infrastructure.ingredient.output.jpa.mapper;
 
 import com.kaiho.gastromanager.domain.ingredient.model.Ingredient;
 import com.kaiho.gastromanager.infrastructure.ingredient.output.jpa.entity.IngredientEntity;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 public class IngredientEntityMapper {
 
     public Ingredient toDomain(IngredientEntity ingredientEntity) {
@@ -14,13 +14,13 @@ public class IngredientEntityMapper {
         return Ingredient.builder()
                 .uuid(ingredientEntity.getUuid())
                 .name(ingredientEntity.getName())
-                .stockLevel(ingredientEntity.getStockLevel())
+                .availableStock(ingredientEntity.getAvailableStock())
                 .unit(ingredientEntity.getUnit())
                 .pricePerUnit(ingredientEntity.getPricePerUnit())
                 .createdBy(ingredientEntity.getCreatedBy())
-                .createdDateTime(ingredientEntity.getCreatedDateTime())
+                .createdDate(ingredientEntity.getCreatedDate())
                 .updatedBy(ingredientEntity.getUpdatedBy())
-                .lastUpdated(ingredientEntity.getLastUpdated())
+                .updatedDate(ingredientEntity.getUpdatedDate())
                 .build();
     }
 
@@ -31,11 +31,13 @@ public class IngredientEntityMapper {
         return IngredientEntity.builder()
                 .uuid(ingredient.uuid())
                 .name(ingredient.name())
-                .stockLevel(ingredient.stockLevel())
+                .availableStock(ingredient.availableStock())
                 .unit(ingredient.unit())
                 .pricePerUnit(ingredient.pricePerUnit())
-                .minimumStockLevel(ingredient.minimumStockLevel())
-                .updateReason(ingredient.updateReason())
+                .minimumStockQuantity(ingredient.minimumStockQuantity())
+                .supplier(ingredient.supplier())
+                .createdDate(ingredient.createdDate())
+                .createdBy(ingredient.createdBy())
                 .build();
     }
 }
