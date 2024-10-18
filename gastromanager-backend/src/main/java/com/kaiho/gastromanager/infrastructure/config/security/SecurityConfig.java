@@ -17,9 +17,11 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.BASE_URL;
+import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.CASHIER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.CHEF;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.INGREDIENTS_CONTROLLER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.INGREDIENT_UUID_PARAMETER;
+import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.KITCHEN_STAFF;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.MANAGER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.OWNER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.ROLES_CONTROLLER;
@@ -27,6 +29,7 @@ import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.R
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.SUPERUSER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.USERS_CONTROLLER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.USER_UUID_PARAMETER;
+import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.WAITER;
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.PATCH;
@@ -54,8 +57,8 @@ public class SecurityConfig {
 
                         // ingredients controller
                         .requestMatchers(POST, BASE_URL + INGREDIENTS_CONTROLLER).hasAnyRole(OWNER, MANAGER, CHEF)
-                        .requestMatchers(GET, BASE_URL + INGREDIENTS_CONTROLLER).permitAll() // ALL ROLES can access
-                        .requestMatchers(GET, BASE_URL + INGREDIENTS_CONTROLLER + INGREDIENT_UUID_PARAMETER).permitAll() // ALL ROLES can access
+                        .requestMatchers(GET, BASE_URL + INGREDIENTS_CONTROLLER).hasAnyRole(OWNER, MANAGER, CHEF, KITCHEN_STAFF, CASHIER, WAITER) // ALL ROLES can access
+                        .requestMatchers(GET, BASE_URL + INGREDIENTS_CONTROLLER + INGREDIENT_UUID_PARAMETER).hasAnyRole(OWNER, MANAGER, CHEF, KITCHEN_STAFF, CASHIER, WAITER) // ALL ROLES can access
                         .requestMatchers(PUT, BASE_URL + INGREDIENTS_CONTROLLER + INGREDIENT_UUID_PARAMETER).hasAnyRole(OWNER, MANAGER, CHEF)
                         .requestMatchers(PATCH, BASE_URL + INGREDIENTS_CONTROLLER + INGREDIENT_UUID_PARAMETER + "/deactivate").hasAnyRole(OWNER, MANAGER, CHEF)
                         .requestMatchers(PATCH, BASE_URL + INGREDIENTS_CONTROLLER + INGREDIENT_UUID_PARAMETER + "/activate").hasAnyRole(OWNER, MANAGER, CHEF)
