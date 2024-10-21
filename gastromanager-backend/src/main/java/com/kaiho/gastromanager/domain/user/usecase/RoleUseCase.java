@@ -1,7 +1,7 @@
 package com.kaiho.gastromanager.domain.user.usecase;
 
 import com.kaiho.gastromanager.domain.user.api.RoleServicePort;
-import com.kaiho.gastromanager.domain.user.exception.RoleDoesNotExistException;
+import com.kaiho.gastromanager.domain.user.exception.RoleDoesNotExistExceptionException;
 import com.kaiho.gastromanager.domain.user.model.Role;
 import com.kaiho.gastromanager.domain.user.spi.RolePersistencePort;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +35,7 @@ public class RoleUseCase implements RoleServicePort {
         if (!foundUuids.containsAll(roleUuids)) {
             Set<UUID> missingUuids = new HashSet<>(roleUuids);
             missingUuids.removeAll(foundUuids);
-            throw new RoleDoesNotExistException(missingUuids.toString());
+            throw new RoleDoesNotExistExceptionException(missingUuids.toString());
         }
         return allRolesByUuid;
     }

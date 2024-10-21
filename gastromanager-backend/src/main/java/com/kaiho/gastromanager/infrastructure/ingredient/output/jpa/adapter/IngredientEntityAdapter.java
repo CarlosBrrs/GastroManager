@@ -27,7 +27,7 @@ public class IngredientEntityAdapter implements IngredientPersistencePort {
     }
 
     @Override
-    public Optional<Ingredient> getIngredientById(UUID uuid) {
+    public Optional<Ingredient> getIngredientByUuid(UUID uuid) {
         return ingredientEntityRepository.findById(uuid).map(ingredientEntityMapper::toDomain);
     }
 

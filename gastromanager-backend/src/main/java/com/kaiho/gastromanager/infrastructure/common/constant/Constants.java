@@ -14,9 +14,11 @@ public abstract class Constants {
     public static final String INGREDIENTS_CONTROLLER = "/ingredients";
     public static final String USERS_CONTROLLER = "/users";
     public static final String ROLES_CONTROLLER = "/roles";
+    public static final String PRODUCT_ITEMS_CONTROLLER = "/product-items";
     public static final String INGREDIENT_UUID_PARAMETER = "/{ingredientUuid}";
     public static final String USER_UUID_PARAMETER = "/{userUuid}";
     public static final String ROLE_UUID_PARAMETER = "/{roleUuid}";
+    public static final String PRODUCT_ITEM_UUID_PARAMETER = "/{productItemUuid}";
     public static final String OWNER = ROLE_OWNER.getValue();
     public static final String WAITER = ROLE_WAITER.getValue();
     public static final String KITCHEN_STAFF = ROLE_KITCHEN_STAFF.getValue();

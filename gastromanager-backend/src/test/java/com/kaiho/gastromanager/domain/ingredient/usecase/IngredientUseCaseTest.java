@@ -1,6 +1,6 @@
 package com.kaiho.gastromanager.domain.ingredient.usecase;
 
-import com.kaiho.gastromanager.domain.ingredient.exception.IngredientDoesNotExistException;
+import com.kaiho.gastromanager.domain.ingredient.exception.IngredientDoesNotExistExceptionException;
 import com.kaiho.gastromanager.domain.ingredient.model.Ingredient;
 import com.kaiho.gastromanager.domain.ingredient.spi.IngredientPersistencePort;
 import org.junit.jupiter.api.Test;
@@ -9,7 +9,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.management.InstanceNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -65,21 +64,21 @@ class IngredientUseCaseTest {
         //given
         UUID uuid = UUID.randomUUID();
         Ingredient ingredient = Ingredient.builder().uuid(uuid).name("1").build();
-        given(ingredientPersistencePort.getIngredientById(uuid)).willReturn(Optional.of(ingredient));
+        given(ingredientPersistencePort.getIngredientByUuid(uuid)).willReturn(Optional.of(ingredient));
 
         //when
         Ingredient ingredientById = underTest.getIngredientById(uuid);
 
         //then
         assertThat(ingredientById).isEqualTo(ingredient);
-        verify(ingredientPersistencePort, times(1)).getIngredientById(uuid);
+        verify(ingredientPersistencePort, times(1)).getIngredientByUuid(uuid);
     }
 
     @Test
     void testFindIngredientByIdThrowIngredientDoesNotExistException() {
         //given
         UUID uuid = UUID.randomUUID();
-        given(ingredientPersistencePort.getIngredientById(any(UUID.class))).willReturn(Optional.empty());
+        given(ingredientPersistencePort.getIngredientByUuid(any(UUID.class))).willReturn(Optional.empty());
 
         //when
         Throwable thrown = catchThrowable(
@@ -87,9 +86,9 @@ class IngredientUseCaseTest {
         );
 
         //then
-        assertThat(thrown).isInstanceOf(IngredientDoesNotExistException.class)
+        assertThat(thrown).isInstanceOf(IngredientDoesNotExistExceptionException.class)
                 .hasMessage("Ingredient with UUID: " + uuid + " does not exist");
-        verify(ingredientPersistencePort, times(1)).getIngredientById(uuid);
+        verify(ingredientPersistencePort, times(1)).getIngredientByUuid(uuid);
     }
 
     @Test
@@ -130,7 +129,7 @@ class IngredientUseCaseTest {
                 .supplier("Eggs supplier")
                 .build();
 
-        given(ingredientPersistencePort.getIngredientById(uuid)).willReturn(Optional.of(oldIngredient));
+        given(ingredientPersistencePort.getIngredientByUuid(uuid)).willReturn(Optional.of(oldIngredient));
         given(ingredientPersistencePort.updateIngredient(any(Ingredient.class))).willReturn(updatedIngredient);
 
         //when
@@ -142,7 +141,7 @@ class IngredientUseCaseTest {
         assertThat(result.availableStock()).isEqualTo(updatedIngredient.availableStock());
         assertThat(result.pricePerUnit()).isEqualTo(updatedIngredient.pricePerUnit());
         assertThat(result.minimumStockQuantity()).isEqualTo(updatedIngredient.minimumStockQuantity());
-        verify(ingredientPersistencePort, times(1)).getIngredientById(uuid);
+        verify(ingredientPersistencePort, times(1)).getIngredientByUuid(uuid);
         verify(ingredientPersistencePort, times(1)).updateIngredient(updatedIngredient);
     }
 
@@ -160,14 +159,14 @@ class IngredientUseCaseTest {
                 .supplier("Eggs supplier")
                 .build();
 
-        given(ingredientPersistencePort.getIngredientById(uuid)).willReturn(Optional.empty());
+        given(ingredientPersistencePort.getIngredientByUuid(uuid)).willReturn(Optional.empty());
 
         //when
-        assertThrows(IngredientDoesNotExistException.class, () -> underTest.updateIngredient(uuid, updatedIngredient));
+        assertThrows(IngredientDoesNotExistExceptionException.class, () -> underTest.updateIngredient(uuid, updatedIngredient));
 
         //then
 
-        verify(ingredientPersistencePort, times(1)).getIngredientById(uuid);
+        verify(ingredientPersistencePort, times(1)).getIngredientByUuid(uuid);
         verify(ingredientPersistencePort, times(0)).updateIngredient(updatedIngredient);
     }
 }

@@ -17,19 +17,18 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.BASE_URL;
-import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.CASHIER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.CHEF;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.INGREDIENTS_CONTROLLER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.INGREDIENT_UUID_PARAMETER;
-import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.KITCHEN_STAFF;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.MANAGER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.OWNER;
+import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.PRODUCT_ITEMS_CONTROLLER;
+import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.PRODUCT_ITEM_UUID_PARAMETER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.ROLES_CONTROLLER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.ROLE_UUID_PARAMETER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.SUPERUSER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.USERS_CONTROLLER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.USER_UUID_PARAMETER;
-import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.WAITER;
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.PATCH;
@@ -56,29 +55,36 @@ public class SecurityConfig {
                         .requestMatchers(WHITE_LIST_URL).permitAll() // Whitelisting some paths from authentication
 
                         // ingredients controller
-                        .requestMatchers(POST, BASE_URL + INGREDIENTS_CONTROLLER).hasAnyRole(OWNER, MANAGER, CHEF)
-                        .requestMatchers(GET, BASE_URL + INGREDIENTS_CONTROLLER).hasAnyRole(OWNER, MANAGER, CHEF, KITCHEN_STAFF, CASHIER, WAITER) // ALL ROLES can access
-                        .requestMatchers(GET, BASE_URL + INGREDIENTS_CONTROLLER + INGREDIENT_UUID_PARAMETER).hasAnyRole(OWNER, MANAGER, CHEF, KITCHEN_STAFF, CASHIER, WAITER) // ALL ROLES can access
-                        .requestMatchers(PUT, BASE_URL + INGREDIENTS_CONTROLLER + INGREDIENT_UUID_PARAMETER).hasAnyRole(OWNER, MANAGER, CHEF)
-                        .requestMatchers(PATCH, BASE_URL + INGREDIENTS_CONTROLLER + INGREDIENT_UUID_PARAMETER + "/deactivate").hasAnyRole(OWNER, MANAGER, CHEF)
-                        .requestMatchers(PATCH, BASE_URL + INGREDIENTS_CONTROLLER + INGREDIENT_UUID_PARAMETER + "/activate").hasAnyRole(OWNER, MANAGER, CHEF)
-                        .requestMatchers(DELETE, BASE_URL + INGREDIENTS_CONTROLLER + INGREDIENT_UUID_PARAMETER).hasAnyRole(OWNER, MANAGER)
+                        .requestMatchers(POST, BASE_URL + INGREDIENTS_CONTROLLER).hasAnyRole(SUPERUSER, OWNER, MANAGER, CHEF)
+                        .requestMatchers(GET, BASE_URL + INGREDIENTS_CONTROLLER).authenticated() // ALL ROLES can access
+                        .requestMatchers(GET, BASE_URL + INGREDIENTS_CONTROLLER + INGREDIENT_UUID_PARAMETER).authenticated() // ALL ROLES can access
+                        .requestMatchers(PUT, BASE_URL + INGREDIENTS_CONTROLLER + INGREDIENT_UUID_PARAMETER).hasAnyRole(SUPERUSER, OWNER, MANAGER, CHEF)
+                        .requestMatchers(PATCH, BASE_URL + INGREDIENTS_CONTROLLER + INGREDIENT_UUID_PARAMETER + "/deactivate").hasAnyRole(SUPERUSER, OWNER, MANAGER, CHEF)
+                        .requestMatchers(PATCH, BASE_URL + INGREDIENTS_CONTROLLER + INGREDIENT_UUID_PARAMETER + "/activate").hasAnyRole(SUPERUSER, OWNER, MANAGER, CHEF)
+                        .requestMatchers(DELETE, BASE_URL + INGREDIENTS_CONTROLLER + INGREDIENT_UUID_PARAMETER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
 
                         // users controller
-                        .requestMatchers(POST, BASE_URL + USERS_CONTROLLER).hasAnyRole(OWNER, MANAGER)
-                        .requestMatchers(GET, BASE_URL + USERS_CONTROLLER).hasAnyRole(OWNER, MANAGER)
-                        .requestMatchers(GET, BASE_URL + USERS_CONTROLLER + USER_UUID_PARAMETER).hasAnyRole(OWNER, MANAGER)
-                        .requestMatchers(PUT, BASE_URL + USERS_CONTROLLER + USER_UUID_PARAMETER).hasAnyRole(OWNER, MANAGER)
-                        .requestMatchers(PATCH, BASE_URL + USERS_CONTROLLER + USER_UUID_PARAMETER + "/deactivate").hasRole(OWNER)
-                        .requestMatchers(PATCH, BASE_URL + USERS_CONTROLLER + USER_UUID_PARAMETER + "/activate").hasRole(OWNER)
-                        .requestMatchers(PUT, BASE_URL + USERS_CONTROLLER + USER_UUID_PARAMETER + ROLES_CONTROLLER).hasRole(OWNER)
-                        .requestMatchers(DELETE, BASE_URL + USERS_CONTROLLER + USER_UUID_PARAMETER + ROLES_CONTROLLER + ROLE_UUID_PARAMETER).hasRole(OWNER)
+                        .requestMatchers(POST, BASE_URL + USERS_CONTROLLER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
+                        .requestMatchers(GET, BASE_URL + USERS_CONTROLLER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
+                        .requestMatchers(GET, BASE_URL + USERS_CONTROLLER + USER_UUID_PARAMETER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
+                        .requestMatchers(PUT, BASE_URL + USERS_CONTROLLER + USER_UUID_PARAMETER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
+                        .requestMatchers(PATCH, BASE_URL + USERS_CONTROLLER + USER_UUID_PARAMETER + "/deactivate").hasAnyRole(SUPERUSER, OWNER)
+                        .requestMatchers(PATCH, BASE_URL + USERS_CONTROLLER + USER_UUID_PARAMETER + "/activate").hasAnyRole(SUPERUSER, OWNER)
+                        .requestMatchers(PUT, BASE_URL + USERS_CONTROLLER + USER_UUID_PARAMETER + ROLES_CONTROLLER).hasAnyRole(SUPERUSER, OWNER)
+                        .requestMatchers(DELETE, BASE_URL + USERS_CONTROLLER + USER_UUID_PARAMETER + ROLES_CONTROLLER + ROLE_UUID_PARAMETER).hasAnyRole(SUPERUSER, OWNER)
 
                         // roles controller
-                        .requestMatchers(GET, BASE_URL + ROLES_CONTROLLER).hasAnyRole(OWNER, MANAGER)
-                        .requestMatchers(GET, BASE_URL + ROLES_CONTROLLER + ROLE_UUID_PARAMETER).hasAnyRole(OWNER, MANAGER)
+                        .requestMatchers(GET, BASE_URL + ROLES_CONTROLLER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
+                        .requestMatchers(GET, BASE_URL + ROLES_CONTROLLER + ROLE_UUID_PARAMETER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
 
-                        .requestMatchers("/**").hasRole(SUPERUSER) // superuser has full authorities
+                        // product items controller
+                        .requestMatchers(GET, BASE_URL + PRODUCT_ITEMS_CONTROLLER).authenticated()
+                        .requestMatchers(GET, BASE_URL + PRODUCT_ITEMS_CONTROLLER + PRODUCT_ITEM_UUID_PARAMETER).authenticated()
+                        .requestMatchers(POST, BASE_URL + PRODUCT_ITEMS_CONTROLLER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
+                        .requestMatchers(PUT, BASE_URL + PRODUCT_ITEMS_CONTROLLER + PRODUCT_ITEM_UUID_PARAMETER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
+
+                        // superuser matcher has to be below all the rest controller matchers and before deny all
+//                        .requestMatchers("/**").hasRole(SUPERUSER) // superuser has full authorities- Not working yet
                         .anyRequest().denyAll()) // All other requests must be denied
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless session management

@@ -210,6 +210,17 @@ PATCH | /api/v1/ingredients/{ingredientUuid}/deactivate | Deactivate an ingredie
 PATCH | /api/v1/ingredients/{ingredientUuid}/activate | Activate a deactivated ingredient by UUID (not in first MVP) | ROLE_OWNER  ROLE_MANAGER  ROLE_CHEF
 DELETE | /api/v1/ingredients/{ingredientUuid} |	Delete an ingredient by UUID (optional - not in first MVP) | ROLE_OWNER  ROLE_MANAGER
 
+### Product item management
+METHOD | ENDPOINT	| DESCRIPTION	| ALLOWED ROLES
+--- | --- | --- | --- 
+POST | /api/v1/product-items | Create a new product item | ROLE_OWNER  ROLE_MANAGER
+GET | /api/v1/product-items | Retrieve all product items | ALL ROLES
+GET | /api/v1/product-items/{productItemUuid} | Retrieve a product item by UUID | ALL ROLES
+PUT | /api/v1/product-items/{productItemUuid} | Update an existing product item by UUID | ROLE_OWNER  ROLE_MANAGER
+PATCH | /api/v1/product-items/{productItemUuid}/deactivate | Deactivate a product item by UUID | ROLE_OWNER  ROLE_MANAGER
+PATCH | /api/v1/product-items/{productItemUuid}/activate | Activate a deactivated product item by UUID | ROLE_OWNER  ROLE_MANAGER
+DELETE | /api/v1/product-items/{productItemUuid} | Delete a product item by UUID (only if already deactivated) | ROLE_OWNER  ROLE_MANAGER
+
 #### GET /api/v1/ingredients (View Inventory)
 - **Description**: Retrieve a list of ingredients in the inventory
 - **Endpoint**: /api/v1/ingredients

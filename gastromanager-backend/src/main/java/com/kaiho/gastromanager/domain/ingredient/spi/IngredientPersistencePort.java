@@ -10,7 +10,7 @@ public interface IngredientPersistencePort {
 
     List<Ingredient> getAllIngredients();
 
-    Optional<Ingredient> getIngredientById(UUID uuid);
+    Optional<Ingredient> getIngredientByUuid(UUID uuid);
 
     UUID addIngredient(Ingredient ingredient);
 
