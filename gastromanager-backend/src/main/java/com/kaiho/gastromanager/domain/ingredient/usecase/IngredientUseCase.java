@@ -1,7 +1,7 @@
 package com.kaiho.gastromanager.domain.ingredient.usecase;
 
 import com.kaiho.gastromanager.domain.ingredient.api.IngredientServicePort;
-import com.kaiho.gastromanager.domain.ingredient.exception.IngredientDoesNotExistException;
+import com.kaiho.gastromanager.domain.ingredient.exception.IngredientDoesNotExistExceptionException;
 import com.kaiho.gastromanager.domain.ingredient.model.Ingredient;
 import com.kaiho.gastromanager.domain.ingredient.spi.IngredientPersistencePort;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +26,8 @@ public class IngredientUseCase implements IngredientServicePort {
     @Override
     @Transactional(readOnly = true)
     public Ingredient getIngredientById(UUID uuid) {
-        return ingredientPersistencePort.getIngredientById(uuid)
-                .orElseThrow(() -> new IngredientDoesNotExistException(uuid.toString()));
+        return ingredientPersistencePort.getIngredientByUuid(uuid)
+                .orElseThrow(() -> new IngredientDoesNotExistExceptionException(uuid.toString()));
     }
 
     @Override
@@ -40,9 +40,10 @@ public class IngredientUseCase implements IngredientServicePort {
     @Transactional
     public Ingredient updateIngredient(UUID uuid, Ingredient ingredient) {
 
-        // TODO: Solve the missed transactional call
-        Ingredient ingredientById = getIngredientById(uuid);
+        Ingredient ingredientById = ingredientPersistencePort.getIngredientByUuid(uuid)
+                .orElseThrow(() -> new IngredientDoesNotExistExceptionException(uuid.toString()));
 
+        // TODO: Move this to adapter, here we only validate business rules and in adapter we retrieve obj to update
         Ingredient ingredientToUpdate = Ingredient.builder()
                 .uuid(ingredientById.uuid())
                 .name(ingredient.name())

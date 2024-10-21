@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kaiho.gastromanager.application.ingredient.dto.request.IngredientRequestDto;
 import com.kaiho.gastromanager.application.ingredient.dto.response.IngredientResponseDto;
 import com.kaiho.gastromanager.application.ingredient.handler.IngredientHandler;
-import com.kaiho.gastromanager.domain.ingredient.exception.IngredientDoesNotExistException;
+import com.kaiho.gastromanager.domain.ingredient.exception.IngredientDoesNotExistExceptionException;
 import com.kaiho.gastromanager.domain.ingredient.model.Unit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -122,7 +122,7 @@ class IngredientRestControllerTest {
     void testGetIngredientByIdNotFound() throws Exception {
         UUID uuid = UUID.randomUUID();
         given(ingredientHandler.getIngredientById(uuid)).willThrow(
-                new IngredientDoesNotExistException(uuid.toString())
+                new IngredientDoesNotExistExceptionException(uuid.toString())
         );
 
         this.mockMvc.perform(get(this.baseUrl + "/ingredients/" + uuid)
@@ -210,7 +210,7 @@ class IngredientRestControllerTest {
                 .build();
 
         given(ingredientHandler.updateIngredient(any(UUID.class),any(IngredientRequestDto.class))).willThrow(
-                new IngredientDoesNotExistException(uuid.toString()));
+                new IngredientDoesNotExistExceptionException(uuid.toString()));
 
         this.mockMvc.perform(put(this.baseUrl + "/ingredients/" + uuid)
                         .characterEncoding(StandardCharsets.UTF_8)
