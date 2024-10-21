@@ -181,6 +181,33 @@ The roles in the system are going to be:
 
 Role 'ROLE_SUPERUSER' will have access to all the resources in the system and it is reserved for the owner of the application
 
+### Login
+METHOD | ENDPOINT | DESCRIPTION | ALLOWED ROLES
+--- | --- | --- | --- 
+POST | /api/v1/auth/login | Login into the platform | ALL USERS
+
+#### POST /api/v1/auth/login
+- **Description**: Login into the platform.
+- **Endpoint**: /api/v1/auth/login
+- **Method**: POST
+- **Request Body**:
+```json
+{
+  "username": "cbarrios",
+  "password": "password"
+}
+
+```
+- **Response Body (200 OK):**
+```json
+{
+    "timestamp": "2024-10-20T20:10:32.563095700Z",
+    "flag": true,
+    "message": "Login successful",
+    "data": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjYmFycmlvcyIsImlhdCI6MTcyOTQ1NTAzMiwiZXhwIjoxNzI5NTQxNDMyfQ.OPURDUZh9I4Sbe6-I7SwbQ0Lsr7In89_6qNPc0hbFqA"
+}
+```
+
 ### Users management
 METHOD | ENDPOINT | DESCRIPTION | ALLOWED ROLES
 --- | --- | --- | --- 
@@ -192,6 +219,51 @@ PATCH | /api/v1/users/{uuid}/deactivate | Deactivate an active user by UUID | RO
 PATCH | /api/v1/users/{uuid}/activate | Activate a deactivated user by UUID | ROLE_OWNER
 PUT | /api/v1/users/{userUuid}/roles | Assign roles to a user by its UUID | ROLE_OWNER
 DELETE | /api/v1/users/{userUuid}/roles/{roleUuid} | Delete a role by UUID from a user by UUID | ROLE_OWNER
+
+#### POST /api/v1/users
+- **Description**: Create a new user.
+- **Endpoint**: /api/v1/users
+- **Method**: POST
+- **Request Body**:
+```json
+{
+    "name": "John",
+    "lastname": "Doe",
+    "phone": "+12345678911",
+    "email": "john.doe11@example.com",
+    "username": "johndoe11",
+    "password": "securepassword",
+    "roles": [
+        "103c118e-3281-4012-bbc1-07235884e429",
+        "5b8b03d2-2017-4f0e-ad6a-423ecd6c8f02"
+    ]
+}
+```
+- **Response Body (201 CREATED):**
+```json
+{
+    "timestamp": "2024-10-21T04:50:14.480086Z",
+    "flag": true,
+    "message": "User creation successful",
+    "data": {
+        "uuid": "363fb6c6-6331-4ae6-ae28-ea267798e0ce",
+        "name": "John",
+        "lastname": "Doe",
+        "email": "john.doe11@example.com",
+        "username": "johndoe11",
+        "roles": [
+            {
+                "uuid": "103c118e-3281-4012-bbc1-07235884e429",
+                "name": "ROLE_OWNER"
+            },
+            {
+                "uuid": "5b8b03d2-2017-4f0e-ad6a-423ecd6c8f02",
+                "name": "ROLE_WAITER"
+            }
+        ]
+    }
+}
+```
 
 ### Roles management
 METHOD | ENDPOINT | DESCRIPTION | ALLOWED ROLES
@@ -210,18 +282,7 @@ PATCH | /api/v1/ingredients/{ingredientUuid}/deactivate | Deactivate an ingredie
 PATCH | /api/v1/ingredients/{ingredientUuid}/activate | Activate a deactivated ingredient by UUID (not in first MVP) | ROLE_OWNER  ROLE_MANAGER  ROLE_CHEF
 DELETE | /api/v1/ingredients/{ingredientUuid} |	Delete an ingredient by UUID (optional - not in first MVP) | ROLE_OWNER  ROLE_MANAGER
 
-### Product item management
-METHOD | ENDPOINT	| DESCRIPTION	| ALLOWED ROLES
---- | --- | --- | --- 
-POST | /api/v1/product-items | Create a new product item | ROLE_OWNER  ROLE_MANAGER
-GET | /api/v1/product-items | Retrieve all product items | ALL ROLES
-GET | /api/v1/product-items/{productItemUuid} | Retrieve a product item by UUID | ALL ROLES
-PUT | /api/v1/product-items/{productItemUuid} | Update an existing product item by UUID | ROLE_OWNER  ROLE_MANAGER
-PATCH | /api/v1/product-items/{productItemUuid}/deactivate | Deactivate a product item by UUID | ROLE_OWNER  ROLE_MANAGER
-PATCH | /api/v1/product-items/{productItemUuid}/activate | Activate a deactivated product item by UUID | ROLE_OWNER  ROLE_MANAGER
-DELETE | /api/v1/product-items/{productItemUuid} | Delete a product item by UUID (only if already deactivated) | ROLE_OWNER  ROLE_MANAGER
-
-#### GET /api/v1/ingredients (View Inventory)
+#### GET /api/v1/ingredients
 - **Description**: Retrieve a list of ingredients in the inventory
 - **Endpoint**: /api/v1/ingredients
 - **Method**: GET
@@ -254,7 +315,7 @@ DELETE | /api/v1/product-items/{productItemUuid} | Delete a product item by UUID
 
 ```
 
-#### GET /api/v1/ingredients/{ingredientId} (View Ingredient by ID)
+#### GET /api/v1/ingredients/{ingredientId}
 - **Description**: Retrieve a specific ingredient's details by ID.
 - **Endpoint**: /api/v1/ingredients/{ingredientId}
 - **Method**: GET
@@ -277,7 +338,7 @@ DELETE | /api/v1/product-items/{productItemUuid} | Delete a product item by UUID
 
 ```
 
-#### POST /api/v1/ingredients (Add New Ingredient)
+#### POST /api/v1/ingredients
 - **Description**: Add a new ingredient to the inventory.
 - **Endpoint**: /api/v1/ingredients
 - **Method**: POST
@@ -310,7 +371,7 @@ DELETE | /api/v1/product-items/{productItemUuid} | Delete a product item by UUID
 
 ```
 
-#### PUT /api/v1/ingredients/{ingredientId} (Update Stock Level)
+#### PUT /api/v1/ingredients/{ingredientId}
 - **Description**:  Update details of an existing ingredient, including stock level, name, unit, price per unit, and update reason.
 - **Endpoint**: /api/v1/ingredients/{ingredientUuid}
 - **Method**: PUT
@@ -341,6 +402,253 @@ DELETE | /api/v1/product-items/{productItemUuid} | Delete a product item by UUID
     "updatedBy": "manager@example.com",
     "updateReason": "Received new shipment"
   }
+}
+
+```
+
+
+### Product item management
+METHOD | ENDPOINT	| DESCRIPTION	| ALLOWED ROLES
+--- | --- | --- | --- 
+POST | /api/v1/product-items | Create a new product item | ROLE_OWNER  ROLE_MANAGER
+GET | /api/v1/product-items | Retrieve all product items | ALL ROLES
+GET | /api/v1/product-items/{productItemUuid} | Retrieve a product item by UUID | ALL ROLES
+PUT | /api/v1/product-items/{productItemUuid} | Update an existing product item by UUID | ROLE_OWNER  ROLE_MANAGER
+PATCH | /api/v1/product-items/{productItemUuid}/deactivate | Deactivate a product item by UUID | ROLE_OWNER  ROLE_MANAGER
+PATCH | /api/v1/product-items/{productItemUuid}/activate | Activate a deactivated product item by UUID | ROLE_OWNER  ROLE_MANAGER
+DELETE | /api/v1/product-items/{productItemUuid} | Delete a product item by UUID (only if already deactivated) | ROLE_OWNER  ROLE_MANAGER
+
+#### GET /api/v1/product-items
+- **Description**: Retrieve a list of product items in the system.
+- **Endpoint**: /api/v1/product-items
+- **Method**: GET
+- **Request Body**: None
+- **Response Body (200 OK):**
+```json
+{
+    "timestamp": "2024-10-21T04:51:51.139188600Z",
+    "flag": true,
+    "message": "List of product items retrieved successfully",
+    "data": [
+        {
+            "uuid": "8dddf213-cbdd-4467-9bd3-cbf5aa2d7c9d",
+            "name": "Pancakes",
+            "description": "Fluffy breakfast pancakes",
+            "category": "BREAKFAST",
+            "isEnabled": true,
+            "price": 5.99,
+            "ingredients": [
+                {
+                    "ingredientUuid": "7bfa7c9a-ef39-4b45-a5c8-24d7f52a51cc",
+                    "quantity": 200.0,
+                    "unit": "GRAMS"
+                },
+                {
+                    "ingredientUuid": "e6ffde8a-d294-4fe0-b4c9-1cbbf5e75e0b",
+                    "quantity": 2.0,
+                    "unit": "UNITS"
+                },
+                {
+                    "ingredientUuid": "83a1b9fc-d588-4aef-af71-9839f888c4de",
+                    "quantity": 250.0,
+                    "unit": "MILLILITRES"
+                }
+            ]
+        },
+        {
+            "uuid": "c51dbd31-5a23-4a36-a2dc-dc20a4501456",
+            "name": "French Fries",
+            "description": "Crispy fried potatoes",
+            "category": "SIDE_DISH",
+            "isEnabled": true,
+            "price": 2.99,
+            "ingredients": [
+                {
+                    "ingredientUuid": "683ff3ad-6c0d-42be-8778-a3d03e1ff49b",
+                    "quantity": 200.0,
+                    "unit": "GRAMS"
+                },
+                {
+                    "ingredientUuid": "10775839-c46e-4333-a964-535a401bc23f",
+                    "quantity": 30.0,
+                    "unit": "MILLILITRES"
+                },
+                {
+                    "ingredientUuid": "0e62299a-9819-4ebc-81df-8f746bcb0de4",
+                    "quantity": 5.0,
+                    "unit": "GRAMS"
+                }
+            ]
+        }
+    ]
+}
+
+```
+
+#### GET /api/v1/product-items/{productItemUuid}
+- **Description**: Retrieve a specific product item's details by ID.
+- **Endpoint**: /api/v1/product-items/{productItemUuid}
+- **Method**: GET
+- **Request Body**: None
+- **Response Body (200 OK):**
+```json
+{
+    "timestamp": "2024-10-21T04:14:21.319600400Z",
+    "flag": true,
+    "message": "Product item retrieved successfully",
+    "data": {
+        "uuid": "f97e9d41-3b2d-4361-abb2-970c2eef9e69",
+        "name": "Egg Breakfast",
+        "description": "A delicious breakfast with eggs, tomato, onion, and parmesan cheese.",
+        "category": "BREAKFAST",
+        "isEnabled": false,
+        "price": 5.0,
+        "ingredients": [
+            {
+                "ingredientUuid": "e6ffde8a-d294-4fe0-b4c9-1cbbf5e75e0b",
+                "quantity": 3.0,
+                "unit": "UNITS"
+            },
+            {
+                "ingredientUuid": "e4dafcf0-c4d7-484d-98dc-e5869f5494c2",
+                "quantity": 50.0,
+                "unit": "GRAMS"
+            },
+            {
+                "ingredientUuid": "3fde832d-d43c-47e8-8f0c-165e81004622",
+                "quantity": 30.0,
+                "unit": "GRAMS"
+            },
+            {
+                "ingredientUuid": "2451cadb-1e5d-4450-bbcf-2e87c010b203",
+                "quantity": 20.0,
+                "unit": "GRAMS"
+            }
+        ]
+    }
+}
+
+```
+
+#### POST /api/v1/product-items
+- **Description**: Add a new product item to the system.
+- **Endpoint**: /api/v1/product-items
+- **Method**: POST
+- **Request Body**:
+```json
+{
+  "name": "Egg Breakfast",
+  "description": "A delicious breakfast with eggs, tomato, onion, and parmesan cheese.",
+  "price": 5.00,
+  "category": "BREAKFAST",
+  "ingredients": [
+    {
+      "ingredientUuid": "e6ffde8a-d294-4fe0-b4c9-1cbbf5e75e0b",
+      "quantity": 3,
+      "unit": "UNITS"
+    },
+    {
+      "ingredientUuid": "e4dafcf0-c4d7-484d-98dc-e5869f5494c2",
+      "quantity": 50,
+      "unit": "GRAMS"
+    },
+    {
+      "ingredientUuid": "3fde832d-d43c-47e8-8f0c-165e81004622",
+      "quantity": 30,
+      "unit": "GRAMS"
+    },
+    {
+      "ingredientUuid": "2451cadb-1e5d-4450-bbcf-2e87c010b203",
+      "quantity": 20,
+      "unit": "GRAMS"
+    }
+  ]
+}
+
+```
+- **Response Body (201 CREATED):**
+```json
+{
+    "timestamp": "2024-10-21T04:14:10.098691200Z",
+    "flag": true,
+    "message": "Product item added successfully",
+    "data": "f97e9d41-3b2d-4361-abb2-970c2eef9e69"
+}
+
+```
+
+#### PUT /api/v1/product-items/{productItemUuid} (Update Stock Level)
+- **Description**:  Update details of an existing product item, including name, description, price or ingredients with its usage in the dish info.
+- **Endpoint**: /api/v1/product-items/{productItemUuid}
+- **Method**: PUT
+- **Request Body**:
+```json
+{
+  "name": "Super eggs breakfast",
+  "description": "A VERY delicious breakfast with eggs, tomato, onion, and parmesan cheese. It is super tasty",
+  "price": 7.00,
+  "category": "BREAKFAST",
+  "ingredients": [
+    {
+      "ingredientUuid": "e6ffde8a-d294-4fe0-b4c9-1cbbf5e75e0b",
+      "quantity": 5,
+      "unit": "UNITS"
+    },
+    {
+      "ingredientUuid": "e4dafcf0-c4d7-484d-98dc-e5869f5494c2",
+      "quantity": 50,
+      "unit": "GRAMS"
+    },
+    {
+      "ingredientUuid": "3fde832d-d43c-47e8-8f0c-165e81004622",
+      "quantity": 30,
+      "unit": "GRAMS"
+    },
+    {
+      "ingredientUuid": "2451cadb-1e5d-4450-bbcf-2e87c010b203",
+      "quantity": 20,
+      "unit": "GRAMS"
+    }
+  ]
+}
+
+```
+- **Response Body (200 OK):**
+```json
+{
+    "timestamp": "2024-10-21T04:23:49.721992900Z",
+    "flag": true,
+    "message": "Product item updated successfully",
+    "data": {
+        "uuid": "f97e9d41-3b2d-4361-abb2-970c2eef9e69",
+        "name": "Super eggs breakfast",
+        "description": "A VERY delicious breakfast with eggs, tomato, onion, and parmesan cheese. It is super tasty",
+        "category": "BREAKFAST",
+        "isEnabled": true,
+        "price": 7.0,
+        "ingredients": [
+            {
+                "ingredientUuid": "e6ffde8a-d294-4fe0-b4c9-1cbbf5e75e0b",
+                "quantity": 5.0,
+                "unit": "UNITS"
+            },
+            {
+                "ingredientUuid": "e4dafcf0-c4d7-484d-98dc-e5869f5494c2",
+                "quantity": 50.0,
+                "unit": "GRAMS"
+            },
+            {
+                "ingredientUuid": "3fde832d-d43c-47e8-8f0c-165e81004622",
+                "quantity": 30.0,
+                "unit": "GRAMS"
+            },
+            {
+                "ingredientUuid": "2451cadb-1e5d-4450-bbcf-2e87c010b203",
+                "quantity": 20.0,
+                "unit": "GRAMS"
+            }
+        ]
+    }
 }
 
 ```
