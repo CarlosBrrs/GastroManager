@@ -16,4 +16,6 @@ public interface ProductItemPersistencePort {
     ProductItem updateProductItem(UUID uuid, ProductItem updatedProductItem);
 
     boolean existsByName(String name);
+
+    List<ProductItem> findAllProductItemsByUuid(List<UUID> uuids);
 }

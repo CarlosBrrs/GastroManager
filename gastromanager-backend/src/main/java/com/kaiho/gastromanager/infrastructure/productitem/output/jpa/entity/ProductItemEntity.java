@@ -2,6 +2,7 @@ package com.kaiho.gastromanager.infrastructure.productitem.output.jpa.entity;
 
 import com.kaiho.gastromanager.domain.productitem.model.Category;
 import com.kaiho.gastromanager.infrastructure.common.model.Auditable;
+import com.kaiho.gastromanager.infrastructure.orderitem.output.jpa.entity.OrderItemEntity;
 import com.kaiho.gastromanager.infrastructure.productitemingredient.output.jpa.entity.ProductItemIngredientEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -37,9 +38,19 @@ public class ProductItemEntity extends Auditable implements Serializable {
     @OneToMany(mappedBy = "productItem", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductItemIngredientEntity> ingredients = new ArrayList<>();
 
+    @OneToMany(mappedBy = "productItem", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderItemEntity> orderItems = new ArrayList<>();
+
     public void addIngredient(ProductItemIngredientEntity productItemIngredientEntity) {
         ingredients.add(productItemIngredientEntity);
         productItemIngredientEntity.setProductItem(this);
     }
+
+    public void addOrderItem(OrderItemEntity orderItemEntity) {
+        orderItems.add(orderItemEntity);
+        orderItemEntity.setProductItem(this);
+    }
+
+
 
 }

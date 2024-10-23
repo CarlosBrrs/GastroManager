@@ -70,7 +70,7 @@ public class ControllerAdvice {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiGenericResponse<Object>> handleAllExceptions(Exception ex) {
-        ApiGenericResponse<Object> response = buildErrorResponse(Arrays.toString(ex.getStackTrace()) + ". Consider using a custom exception handler");
+        ApiGenericResponse<Object> response = buildErrorResponse(ex.getMessage() + ". Consider using a custom exception handler");
         return new ResponseEntity<>(response, INTERNAL_SERVER_ERROR);
     }
 }
