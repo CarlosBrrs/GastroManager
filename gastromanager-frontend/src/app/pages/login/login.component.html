@@ -1,0 +1,20 @@
+<div class="container">
+  <div class="right login-container">
+    <form (ngSubmit)="handleLoginSubmit()" [formGroup]="loginForm">
+      <div class="form-control username">
+        <label for="username">Username: </label>
+        <input id="username" type="text" formControlName="username">
+      </div>
+      <div class="form-control password">
+        <label for="username">Password: </label>
+        <input id="password" type="text" formControlName="password">
+      </div>
+      <div class="submit-button">
+        <button type="submit" [disabled]="this.loginForm.invalid">Login</button>
+      </div>
+    </form>
+  </div>
+  <div class="left">
+    image
+  </div>
+</div>
