@@ -13,4 +13,6 @@ public interface ProductItemServicePort {
     UUID addProductItem(ProductItem productItem);
 
     ProductItem updateProductItem(UUID uuid, ProductItem productItem);
+
+    List<ProductItem> getAllProductItemsByUuid(List<UUID> uuids);
 }

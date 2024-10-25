@@ -69,6 +69,11 @@ public class ProductItemUseCase implements ProductItemServicePort {
         return productItemPersistencePort.updateProductItem(uuid, productItem);
     }
 
+    @Override
+    public List<ProductItem> getAllProductItemsByUuid(List<UUID> uuids) {
+        return productItemPersistencePort.findAllProductItemsByUuid(uuids);
+    }
+
     private List<ProductItemIngredient> validateAndRetrieveIngredients(List<ProductItemIngredient> ingredients) {
 
         if (ingredients == null || ingredients.isEmpty()) {

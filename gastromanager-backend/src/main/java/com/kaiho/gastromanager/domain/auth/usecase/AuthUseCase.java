@@ -28,7 +28,7 @@ public class AuthUseCase implements AuthServicePort {
         if (!passwordEncoder.matches(login.password(), user.encodedPassword())) {
             throw new BadCredentialsException("Password incorrect.");
         }
-        return jwtTokenProvider.generateToken(user.username());
+        return jwtTokenProvider.generateToken(user);
     }
 
 }

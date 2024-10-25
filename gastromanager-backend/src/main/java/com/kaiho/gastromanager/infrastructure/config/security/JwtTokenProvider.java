@@ -1,11 +1,13 @@
 package com.kaiho.gastromanager.infrastructure.config.security;
 
+import com.kaiho.gastromanager.domain.user.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -56,9 +58,10 @@ public class JwtTokenProvider {
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
-    public String generateToken(String username) {
+    public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, username);
+        claims.put("userUuid", user.uuid());
+        return createToken(claims, user.username());
     }
 
     private String createToken(Map<String, Object> claims, String username) {
