@@ -653,6 +653,15 @@ DELETE | /api/v1/product-items/{productItemUuid} | Delete a product item by UUID
 
 ```
 
+METHOD | ENDPOINT | DESCRIPTION | ALLOWED ROLES
+POST | /api/v1/orders | Create a new order for a customer | ROLE_WAITER  ROLE_OWNER  ROLE_MANAGER
+GET | /api/v1/orders | Retrieve all orders | ALL ROLES
+GET | /api/v1/orders/{orderUuid} | Retrieve a specific order by UUID | ALL ROLES
+PUT | /api/v1/orders/{orderUuid} | Update an existing order by UUID (e.g., change product items, NO STATUS) | ROLE_WAITER  ROLE_OWNER  ROLE_MANAGER
+PATCH | /api/v1/orders/{orderUuid}/status | Update the status of an order (pending, preparing, etc.) excluding completed that has to be managed by payments endpoint | ROLE_OWNER  ROLE_MANAGER  ROLE_CHEF  ROLE_KITCHEN_STAFF  ROLE_WAITER
+DELETE | /api/v1/orders/{orderUuid} | Delete an order (only if it is cancelled) | ROLE_OWNER  ROLE_MANAGER
+
+
 # DATABASE INFO
 
 ## database schema

@@ -20,7 +20,10 @@ import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.B
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.CHEF;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.INGREDIENTS_CONTROLLER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.INGREDIENT_UUID_PARAMETER;
+import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.KITCHEN_STAFF;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.MANAGER;
+import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.ORDERS_CONTROLLER;
+import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.ORDER_UUID_PARAMETER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.OWNER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.PRODUCT_ITEMS_CONTROLLER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.PRODUCT_ITEM_UUID_PARAMETER;
@@ -29,6 +32,7 @@ import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.R
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.SUPERUSER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.USERS_CONTROLLER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.USER_UUID_PARAMETER;
+import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.WAITER;
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.PATCH;
@@ -82,6 +86,14 @@ public class SecurityConfig {
                         .requestMatchers(GET, BASE_URL + PRODUCT_ITEMS_CONTROLLER + PRODUCT_ITEM_UUID_PARAMETER).authenticated()
                         .requestMatchers(POST, BASE_URL + PRODUCT_ITEMS_CONTROLLER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
                         .requestMatchers(PUT, BASE_URL + PRODUCT_ITEMS_CONTROLLER + PRODUCT_ITEM_UUID_PARAMETER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
+
+                        // orders controller
+                        .requestMatchers(POST, BASE_URL + ORDERS_CONTROLLER).hasAnyRole(SUPERUSER, OWNER, MANAGER, WAITER)
+                        .requestMatchers(GET, BASE_URL + ORDERS_CONTROLLER).authenticated()
+                        .requestMatchers(GET, BASE_URL + ORDERS_CONTROLLER + ORDER_UUID_PARAMETER).authenticated()
+                        .requestMatchers(PUT, BASE_URL + ORDERS_CONTROLLER + ORDER_UUID_PARAMETER).hasAnyRole(SUPERUSER, OWNER, MANAGER, WAITER)
+                        .requestMatchers(PATCH, BASE_URL + ORDERS_CONTROLLER + ORDER_UUID_PARAMETER + "/status").hasAnyRole(SUPERUSER, OWNER, MANAGER, WAITER, CHEF, KITCHEN_STAFF)
+                        .requestMatchers(DELETE, BASE_URL + ORDERS_CONTROLLER + ORDER_UUID_PARAMETER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
 
                         // superuser matcher has to be below all the rest controller matchers and before deny all
 //                        .requestMatchers("/**").hasRole(SUPERUSER) // superuser has full authorities- Not working yet

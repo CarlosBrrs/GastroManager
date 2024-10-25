@@ -45,6 +45,8 @@ public class ProductItemEntityAdapter implements ProductItemPersistencePort {
 
     @Override
     public ProductItem saveProductItem(ProductItem productItem) {
+
+        //TODO: Revisar y reformular esta logica, aqui solo se debe mapear a entidades y operar base de datos
         List<IngredientEntity> dbIngredientEntityList = productItem.ingredients().stream()
                 .map(productItemIngredient -> ingredientEntityMapper.toEntity(ingredientServicePort.getIngredientById(productItemIngredient.ingredientUuid()))).toList();
 
@@ -109,6 +111,11 @@ public class ProductItemEntityAdapter implements ProductItemPersistencePort {
     @Override
     public boolean existsByName(String name) {
         return productItemRepository.existsByName(name);
+    }
+
+    @Override
+    public List<ProductItem> findAllProductItemsByUuid(List<UUID> uuids) {
+        return productItemRepository.findByUuidIn(uuids).stream().map(productItemEntityMapper::toDomain).toList();
     }
 
 }
