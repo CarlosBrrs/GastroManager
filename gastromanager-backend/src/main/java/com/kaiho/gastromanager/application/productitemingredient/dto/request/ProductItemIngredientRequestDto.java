@@ -5,5 +5,5 @@ import lombok.Builder;
 import java.util.UUID;
 
 @Builder
-public record ProductItemIngredientRequestDto(UUID ingredientUuid, double quantity, String unit) {
+public record ProductItemIngredientRequestDto(UUID ingredientUuid, double quantity) {
 }

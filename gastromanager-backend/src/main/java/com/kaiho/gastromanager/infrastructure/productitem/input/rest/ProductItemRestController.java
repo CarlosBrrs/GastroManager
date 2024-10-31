@@ -4,6 +4,7 @@ import com.kaiho.gastromanager.application.productitem.dto.request.ProductItemRe
 import com.kaiho.gastromanager.application.productitem.dto.response.ProductItemResponseDto;
 import com.kaiho.gastromanager.application.productitem.handler.ProductItemHandler;
 import com.kaiho.gastromanager.infrastructure.common.model.ApiGenericResponse;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,13 +39,13 @@ public class ProductItemRestController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiGenericResponse<UUID>> addProductItem(@RequestBody ProductItemRequestDto productItemRequestDto) {
+    public ResponseEntity<ApiGenericResponse<UUID>> addProductItem(@RequestBody @Valid ProductItemRequestDto productItemRequestDto) {
         return new ResponseEntity<>(productItemHandler.addProductItem(productItemRequestDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/{productItemUuid}")
     public ResponseEntity<ApiGenericResponse<ProductItemResponseDto>> updateProductItem(
-            @PathVariable UUID productItemUuid, @RequestBody ProductItemRequestDto productItemRequestDto) {
+            @PathVariable UUID productItemUuid, @RequestBody @Valid ProductItemRequestDto productItemRequestDto) {
         ApiGenericResponse<ProductItemResponseDto> handlerResponse = productItemHandler.updateProductItem(productItemUuid, productItemRequestDto);
         return new ResponseEntity<>(handlerResponse, HttpStatus.OK);
     }

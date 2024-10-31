@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
+import java.util.UUID;
 
 import static com.kaiho.gastromanager.infrastructure.common.model.ApiGenericResponse.buildSuccessResponse;
 
@@ -31,5 +32,12 @@ public class UserHandlerImpl implements UserHandler {
         User createdUser = userServicePort.createUser(user);
         UserResponseDto responseDto = userMapper.toResponse(createdUser);
         return buildSuccessResponse("User creation successful", responseDto);
+    }
+
+    @Override
+    public ApiGenericResponse<UserResponseDto> getUserByUuid(UUID userUuid) {
+        User user = userServicePort.getUserByUuid(userUuid);
+        UserResponseDto responseDto = userMapper.toResponse(user);
+        return buildSuccessResponse("User info retrieved successfully", responseDto);
     }
 }

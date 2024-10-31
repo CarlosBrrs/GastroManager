@@ -1,5 +1,6 @@
 package com.kaiho.gastromanager.application.ingredient.dto.response;
 
+import com.kaiho.gastromanager.domain.ingredient.model.Unit;
 import lombok.Builder;
 
 import java.time.Instant;
@@ -11,6 +12,11 @@ public record IngredientResponseDto(
         String name,
         int availableStock,
         String unit,
-        Double pricePerUnit,
+        double pricePerUnit,
+        String supplier,
+        int minimumStockQuantity,
+        String createdBy,
+        Instant createdDate,
+        String updatedBy,
         Instant updatedDate) {
 }

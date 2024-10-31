@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Repository
@@ -28,6 +29,12 @@ public class UserEntityAdapter implements UserPersistencePort {
     public Optional<User> findUserByUsername(String username) {
         Optional<UserEntity> entityOptional = userEntityRepository.findByUsername(username);
         return entityOptional.map(userEntityMapper::toDomain);
+    }
+
+    @Override
+    public Optional<User> findUserByUuid(UUID uuid) {
+        Optional<UserEntity> userEntityOptional = userEntityRepository.findById(uuid);
+        return userEntityOptional.map(userEntityMapper::toDomain);
     }
 
 }

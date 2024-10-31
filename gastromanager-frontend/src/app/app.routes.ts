@@ -1,8 +1,7 @@
 import {Routes} from '@angular/router';
 import {LayoutComponent} from "./core/layout/layout.component";
-import {LoginComponent} from "./pages/login/login.component";
-import {HomeComponent} from "./pages/home/home.component";
 import {authGuard} from "./core/guards/auth.guard";
+import {InventoryFormComponent} from "./pages/inventory/inventory-form/inventory-form.component";
 
 export const routes: Routes = [
   {
@@ -14,8 +13,34 @@ export const routes: Routes = [
     path: '',
     component: LayoutComponent,
     children: [
-      {path: 'login', component: LoginComponent},
-      {path: 'home', component: HomeComponent, canActivate: [authGuard]}
+      {path: 'login', loadComponent: () => import('./pages/login/login.component').then(m => m.LoginComponent)},
+      {
+        path: 'home',
+        loadComponent: () => import('./pages/home/home.component').then(m => m.HomeComponent),
+        canActivate: [authGuard]
+      },
+      {
+        path: 'inventory',
+        loadComponent: () => import('./pages/inventory/inventory.component').then(m => m.InventoryComponent),
+        canActivate: [authGuard],
+        children: [
+          {
+            path: 'new',
+            component: InventoryFormComponent,
+            outlet: 'sidebar'
+          }
+        ]
+      },
+      {
+        path: 'product-items',
+        loadComponent: () => import('./pages/product-item/product-item.component').then(m => m.ProductItemComponent),
+        canActivate: [authGuard]
+      },
+      {
+        path: 'orders',
+        loadComponent: () => import('./pages/order/order.component').then(m => m.OrderComponent),
+        canActivate: [authGuard]
+      },
     ]
   }
 ];

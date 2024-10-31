@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { LoginComponent } from "./pages/login/login.component";
+import {Component, OnInit} from '@angular/core';
+import {RouterOutlet} from '@angular/router';
+import {LoginComponent} from "./pages/login/login.component";
+import {PrimeNGConfig} from "primeng/api";
 
 @Component({
   selector: 'gm-root',
@@ -9,6 +10,13 @@ import { LoginComponent } from "./pages/login/login.component";
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
+
+  constructor(private primengConfig: PrimeNGConfig) {
+  }
+
+  ngOnInit(): void {
+    this.primengConfig.ripple = true;
+  }
 
 }

@@ -1,0 +1,30 @@
+.ingredient-selection {
+  padding: 0;
+  gap: 1.5rem;
+
+
+  .field {
+    padding: 0;
+
+    .p-multiselect {
+      width: 100%; // Asegúrate de que ocupe el ancho completo
+    }
+  }
+
+  .ingredients-quantity {
+
+    .name {
+      margin-right: 0.5rem;
+    }
+
+    p-inputnumber {
+      width: 100px;
+    }
+
+    .unit {
+      margin-left: 0.5rem;
+      width: 50px;
+    }
+  }
+
+}

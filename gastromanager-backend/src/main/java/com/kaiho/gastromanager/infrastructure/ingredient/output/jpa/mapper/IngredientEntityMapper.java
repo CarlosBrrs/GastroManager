@@ -17,6 +17,8 @@ public class IngredientEntityMapper {
                 .availableStock(ingredientEntity.getAvailableStock())
                 .unit(ingredientEntity.getUnit())
                 .pricePerUnit(ingredientEntity.getPricePerUnit())
+                .supplier(ingredientEntity.getSupplier())
+                .minimumStockQuantity(ingredientEntity.getMinimumStockQuantity())
                 .createdBy(ingredientEntity.getCreatedBy())
                 .createdDate(ingredientEntity.getCreatedDate())
                 .updatedBy(ingredientEntity.getUpdatedBy())

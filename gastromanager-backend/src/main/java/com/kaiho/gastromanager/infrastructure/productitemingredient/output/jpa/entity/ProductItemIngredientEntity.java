@@ -40,7 +40,4 @@ public class ProductItemIngredientEntity extends Auditable implements Serializab
     @Column(nullable = false)
     private double quantity; // Quantity of the ingredient for the dish
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Unit unit; // Define an Enum for units (GRAMS, UNITS, MILLILITRES)
 }

@@ -17,10 +17,15 @@ public class IngredientMapper {
         return IngredientResponseDto.builder()
                 .uuid(ingredient.uuid())
                 .name(ingredient.name())
+                .supplier(ingredient.supplier())
+                .minimumStockQuantity(ingredient.minimumStockQuantity())
                 .unit(ingredient.unit().getSymbol())
                 .pricePerUnit(ingredient.pricePerUnit())
                 .availableStock(ingredient.availableStock())
                 .updatedDate(ingredient.updatedDate())
+                .updatedBy(ingredient.updatedBy())
+                .createdBy(ingredient.createdBy())
+                .createdDate(ingredient.createdDate())
                 .build();
     }
 

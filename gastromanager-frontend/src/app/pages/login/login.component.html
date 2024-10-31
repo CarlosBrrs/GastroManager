@@ -3,14 +3,14 @@
     <form (ngSubmit)="handleLoginSubmit()" [formGroup]="loginForm">
       <div class="form-control username">
         <label for="username">Username: </label>
-        <input id="username" type="text" formControlName="username">
+        <input formControlName="username" id="username" type="text">
       </div>
       <div class="form-control password">
         <label for="username">Password: </label>
-        <input id="password" type="text" formControlName="password">
+        <input formControlName="password" id="password" type="text">
       </div>
       <div class="submit-button">
-        <button type="submit" [disabled]="this.loginForm.invalid">Login</button>
+        <button [disabled]="this.loginForm.invalid" type="submit">Login</button>
       </div>
     </form>
   </div>

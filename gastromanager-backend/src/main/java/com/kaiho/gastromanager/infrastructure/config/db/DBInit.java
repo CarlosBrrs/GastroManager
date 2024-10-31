@@ -73,66 +73,56 @@ public class DBInit implements CommandLineRunner {
         //pancakes
         List<String> pancakesIngredients = List.of("All-Purpose Flour", "Eggs", "Milk");
         List<Double> pancakesQuantities = List.of(200.0, 2.0, 250.0);
-        List<Unit> pancakesUnits = List.of(GRAMS, UNITS, MILLILITRES);
-        createRelation(pancakes, pancakesIngredients, pancakesQuantities, pancakesUnits, ingredients);
+        createRelation(pancakes, pancakesIngredients, pancakesQuantities, ingredients);
 
         //burger
         List<String> burgerIngredients = List.of("Bun", "Ground Beef", "Lettuce", "Tomato", "Cheese", "Tomato Sauce");
         List<Double> burgerQuantities = List.of(1.0, 120.0, 10.0, 5.0, 50.0, 3.0);
-        List<Unit> burgerUnits = List.of(UNITS, GRAMS, GRAMS, GRAMS, GRAMS, GRAMS);
-        createRelation(burger, burgerIngredients, burgerQuantities, burgerUnits, ingredients);
+        createRelation(burger, burgerIngredients, burgerQuantities, ingredients);
 
         //bolognese
         List<String> bologneseIngredients = List.of("Pasta", "Ground Beef", "Tomato Sauce", "Onion", "Garlic", "Olive Oil", "Salt", "Pepper");
         List<Double> bologneseQuantities = List.of(100.0, 100.0, 150.0, 50.0, 5.0, 15.0, 2.0, 1.0); // Cantidades más realistas para una porción
-        List<Unit> bologneseUnits = List.of(GRAMS, GRAMS, GRAMS, GRAMS, GRAMS, MILLILITRES, GRAMS, GRAMS);
-        createRelation(bolognese, bologneseIngredients, bologneseQuantities, bologneseUnits, ingredients);
+        createRelation(bolognese, bologneseIngredients, bologneseQuantities, ingredients);
 
         //salad
         List<String> saladIngredients = List.of("Lettuce", "Tomato", "Cucumber", "Chicken Breast", "Caesar Dressing", "Croutons", "Parmesan Cheese");
         List<Double> saladQuantities = List.of(50.0, 100.0, 50.0, 75.0, 30.0, 20.0, 10.0); // Cantidades más realistas para una porción
-        List<Unit> saladUnits = List.of(GRAMS, GRAMS, GRAMS, GRAMS, MILLILITRES, GRAMS, GRAMS);
-        createRelation(salad, saladIngredients, saladQuantities, saladUnits, ingredients);
+        createRelation(salad, saladIngredients, saladQuantities, ingredients);
 
         //milkshake
         List<String> milkshakeIngredients = List.of("Milk", "Chocolate Ice Cream", "Granulated Sugar", "Chocolate Syrup", "Whipped Cream");
         List<Double> milkshakeQuantities = List.of(200.0, 150.0, 10.0, 15.0, 20.0); // Cantidades realistas para un milkshake
-        List<Unit> milkshakeUnits = List.of(MILLILITRES, GRAMS, GRAMS, MILLILITRES, GRAMS);
-        createRelation(milkshake, milkshakeIngredients, milkshakeQuantities, milkshakeUnits, ingredients);
+        createRelation(milkshake, milkshakeIngredients, milkshakeQuantities, ingredients);
 
         //fries
         List<String> friesIngredients = List.of("Potatoes", "Oil", "Salt");
         List<Double> friesQuantities = List.of(200.0, 30.0, 5.0); // Cantidades realistas para French Fries
-        List<Unit> friesUnits = List.of(GRAMS, MILLILITRES, GRAMS);
-        createRelation(fries, friesIngredients, friesQuantities, friesUnits, ingredients);
+        createRelation(fries, friesIngredients, friesQuantities, ingredients);
 
         //chicken
         List<String> chickenIngredients = List.of("Chicken Breast", "All-Purpose Flour", "Eggs", "Breadcrumbs", "Salt", "Pepper", "Oil");
         List<Double> chickenQuantities = List.of(150.0, 50.0, 1.0, 30.0, 3.0, 1.0, 20.0); // Cantidades realistas para Fried Chicken
-        List<Unit> chickenUnits = List.of(GRAMS, GRAMS, UNITS, GRAMS, GRAMS, GRAMS, MILLILITRES);
-        createRelation(chicken, chickenIngredients, chickenQuantities, chickenUnits, ingredients);
+        createRelation(chicken, chickenIngredients, chickenQuantities, ingredients);
 
         //pizza
         List<String> pizzaIngredients = List.of("All-Purpose Flour", "Granulated Sugar", "Salt", "Butter", "Yeast", "Milk", "Tomato Sauce", "Cheese", "Pepperoni");
         List<Double> pizzaQuantities = List.of(500.0, 10.0, 5.0, 30.0, 7.0, 150.0, 200.0, 200.0, 100.0);
-        List<Unit> pizzaUnits = List.of(GRAMS, GRAMS, GRAMS, GRAMS, GRAMS, MILLILITRES, GRAMS, GRAMS, GRAMS);
-        createRelation(pizza, pizzaIngredients, pizzaQuantities, pizzaUnits, ingredients);
+        createRelation(pizza, pizzaIngredients, pizzaQuantities, ingredients);
 
         //cheescake
         List<String> cheesecakeIngredients = List.of("Digestive Biscuits", "Butter", "Cream Cheese", "Granulated Sugar", "Eggs", "Vanilla Extract", "Milk");
         List<Double> cheesecakeQuantities = List.of(200.0, 100.0, 400.0, 100.0, 3.0, 10.0, 50.0);
-        List<Unit> cheesecakeUnits = List.of(GRAMS, GRAMS, GRAMS, GRAMS, UNITS, MILLILITRES, MILLILITRES);
-        createRelation(cheesecake, cheesecakeIngredients, cheesecakeQuantities, cheesecakeUnits, ingredients);
+        createRelation(cheesecake, cheesecakeIngredients, cheesecakeQuantities, ingredients);
 
         //wrap
         List<String> wrapIngredients = List.of("Wraps", "Chicken Breast", "Lettuce", "Tomato", "Cheese", "Olive Oil");
         List<Double> wrapQuantities = List.of(2.0, 150.0, 50.0, 50.0, 50.0, 10.0);
-        List<Unit> wrapUnits = List.of(UNITS, GRAMS, GRAMS, GRAMS, GRAMS, MILLILITRES);
-        createRelation(wrap, wrapIngredients, wrapQuantities, wrapUnits, ingredients);
+        createRelation(wrap, wrapIngredients, wrapQuantities, ingredients);
     }
 
-    private void createRelation(ProductItemEntity product, List<String> usedIngredients, List<Double> usedQuantities, List<Unit> usedUnits, List<IngredientEntity> ingredients) {
-        if (usedIngredients.size() == usedQuantities.size() && usedIngredients.size() == usedUnits.size()) {
+    private void createRelation(ProductItemEntity product, List<String> usedIngredients, List<Double> usedQuantities, List<IngredientEntity> ingredients) {
+        if (usedIngredients.size() == usedQuantities.size()) {
             for (int i = 0; i < usedIngredients.size(); i++) {
                 log.info("Creating relation for " + product.getName() + " with " + usedIngredients.get(i));
                 int finalI = i;
@@ -140,7 +130,6 @@ public class DBInit implements CommandLineRunner {
                         .productItem(product)
                         .ingredient(ingredients.stream().filter(ing -> ing.getName().equals(usedIngredients.get(finalI))).findFirst().orElse(null))
                         .quantity(usedQuantities.get(finalI))
-                        .unit(usedUnits.get(finalI))
                         .build();
                 productItemIngredientRepository.save(productItemIngredient);
             }

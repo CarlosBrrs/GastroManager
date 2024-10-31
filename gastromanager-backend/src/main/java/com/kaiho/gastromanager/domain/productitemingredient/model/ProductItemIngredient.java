@@ -6,5 +6,5 @@ import lombok.Builder;
 import java.util.UUID;
 
 @Builder
-public record ProductItemIngredient(UUID ingredientUuid, double quantity, Unit unit) {
+public record ProductItemIngredient(UUID ingredientUuid, double quantity) {
 }

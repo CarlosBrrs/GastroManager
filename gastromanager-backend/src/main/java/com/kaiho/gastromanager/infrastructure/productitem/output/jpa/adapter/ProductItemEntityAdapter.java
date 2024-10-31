@@ -89,7 +89,6 @@ public class ProductItemEntityAdapter implements ProductItemPersistencePort {
             if (existingIngredientOpt.isPresent()) {
                 ProductItemIngredientEntity existingIngredient = existingIngredientOpt.get();
                 existingIngredient.setQuantity(newIngredient.quantity());
-                existingIngredient.setUnit(newIngredient.unit());
             } else {
                 Ingredient ingredient = ingredientServicePort.getIngredientById(newIngredient.ingredientUuid());
                 IngredientEntity ingredientEntity = ingredientEntityMapper.toEntity(ingredient);

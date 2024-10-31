@@ -1,0 +1,10 @@
+<div class="container">
+  <div class="ingredients-table">
+    <!--    <p-toast/>-->
+    <gm-inventory-table (addNew)="handleAdd($event)"
+                        (delete)="handleDelete($event)"
+                        (edit)="handleEdit($event)"
+                        [data]="ingredients()">>
+    </gm-inventory-table>
+  </div>
+</div>

@@ -1,0 +1,108 @@
+<form (ngSubmit)="onSubmit()" [formGroup]="productItemForm">
+
+  <div class="field">
+    <label for="name">Name:</label>
+    <input
+      formControlName="name"
+      id="name"
+      pInputText
+      required
+      type="text"
+    />
+    @if (productItemForm.get('name')?.errors?.['required'] && productItemForm.get('name')?.touched) {
+      <small class="p-error">
+        Name is required.
+      </small>
+    }
+  </div>
+  <div class="field">
+    <label for="description">Description:</label>
+    <textarea
+      formControlName="description"
+      rows="5"
+      cols="30"
+      id="description"
+      pInputTextarea
+      required></textarea>
+    <!-- @if (productItemForm.get('supplier')?.errors?.['required'] && productItemForm.get('supplier')?.touched) {
+       <small class="p-error">
+         Supplier is required.
+       </small>
+     }-->
+  </div>
+  <div class="field">
+    <label for="price">Price:</label>
+    <p-inputNumber [minFractionDigits]="1" [maxFractionDigits]="5" showClear [min]="0" mode="currency" currency="CAD"
+                   formControlName="price" id="price" inputId="price"
+                   required/>
+  </div>
+  <div class="field">
+    <label for="category">Category:</label>
+    <p-dropdown
+      formControlName="category"
+      [options]="categories"
+      optionLabel="label"
+      optionValue="value"
+      inputId="category"
+      id="category"
+      [checkmark]="true"
+      [showClear]="true"
+      required
+      placeholder="Select a category"/>
+  </div>
+  <div class="flex ingredient-selection align-items-center justify-content-between">
+
+    <div class="field col-6">
+      <label for="ingredients">Ingredients:</label>
+      <p-multiSelect
+        id="ingredients"
+        filter
+        [showToggleAll]="false"
+        emptyFilterMessage="No ingredients match your search..."
+        emptyMessage="No ingredients to display"
+        inputId="ingredients"
+        [options]="availableIngredients"
+        formControlName="ingredients"
+        optionLabel="name"
+        optionValue="uuid"
+        placeholder="Select the ingredients for the product"
+        (onChange)="onIngredientSelect($event.value)"/>
+    </div>
+    <div class="flex flex-column align-content-end ingredients-quantity" formGroupName="ingredientQuantities">
+      @for (selectedIngredient of selectedIngredients; track selectedIngredient.uuid) {
+        <div class="ingredient-quantity flex align-items-center justify-content-end">
+          <span class="name">{{ selectedIngredient.name }}:</span>
+
+          <p-inputNumber showClear [min]="0" mode="decimal"
+                         (onInput)="onQuantityChange(selectedIngredient.uuid, $event)"
+                         id="ingredient-name" inputId="quantity" [formControlName]="selectedIngredient.uuid"
+                         required/>
+          <span class="unit">{{ selectedIngredient.unit }}</span>
+
+        </div>
+      }
+    </div>
+  </div>
+  <!--  <div class="field">
+      <label for="pricePerUnit">Price per unit:</label>
+      <p-inputNumber [minFractionDigits]="1" [maxFractionDigits]="5" showClear [min]="0" mode="currency" currency="CAD"
+                     formControlName="pricePerUnit" id="pricePerUnit" inputId="pricePerUnit"
+                     required/>
+    </div>-->
+
+  <div class="flex justify-content-end gap-2">
+    <button
+      (click)="onCancel()"
+      class="p-button-text"
+      label="Cancel"
+      pButton
+      type="button">
+    </button>
+    <button
+      [disabled]="!productItemForm.valid"
+      label="Save"
+      pButton
+      type="submit">
+    </button>
+  </div>
+</form>

@@ -1,0 +1,133 @@
+<div class="card">
+  <div class="card">
+
+    <p-toolbar styleClass="mb-4 gap-2">
+      <ng-template pTemplate="left">
+        <p-button
+          (onClick)="openNew()"
+          class="mr-2"
+          icon="pi pi-plus"
+          label="Add new ingredient"
+          severity="success"/>
+      </ng-template>
+
+    </p-toolbar>
+
+    <p-table
+      #dt
+      [(selection)]="selectedIngredient"
+      [globalFilterFields]="['name', 'unit']"
+      [paginator]="true"
+      [resizableColumns]="true"
+      [rowHover]="true"
+      [rows]="8"
+      selectionMode="single"
+      [metaKeySelection]="false"
+      [showCurrentPageReport]="true"
+      [tableStyle]="{ 'min-width': '75rem' }"
+      [value]="ingredients()"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+      dataKey="uuid"
+    >
+<!--      (onRowSelect)="onRowSelect($event)"
+      (onRowUnselect)="onRowSelect($event)"-->
+      <ng-template pTemplate="caption">
+        <div class="flex align-items-center justify-content-between">
+          <h5 class="m-0">Manage Iventory</h5>
+          <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input
+                      (input)="onGlobalFilter(dt, $event)"
+                      pInputText
+                      placeholder="Search..."
+                      type="text"/>
+                </span>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+          <!--          <th style="width: 4rem">-->
+          <!--          </th>-->
+          <th pResizableColumn pSortableColumn="name" scope="col" style="min-width:15rem">
+            Name
+            <p-sortIcon field="name"/>
+          </th>
+          <!--                    <th>
+                                Image
+                              </th>-->
+          <th pResizableColumn pSortableColumn="pricePerUnit" scope="col">
+            Price per unit
+            <p-sortIcon field="pricePerUnit"/>
+          </th>
+          <!--                    <th pSortableColumn="category" style="min-width:10rem">
+                                Category <p-sortIcon field="category" />
+                              </th>
+                              <th pSortableColumn="rating">
+                                Reviews <p-sortIcon field="rating" />
+                              </th>-->
+          <th pResizableColumn pSortableColumn="unit" scope="col" style="min-width:10rem">
+            Unit
+            <p-sortIcon field="unit"/>
+          </th>
+          <th pResizableColumn scope="col">Edit - Delete</th>
+        </tr>
+      </ng-template>
+      <ng-template let-ingredient pTemplate="body">
+        <tr [pSelectableRow]="ingredient">
+
+          <td>
+            {{ ingredient.name }}
+          </td>
+
+          <td>
+            {{ ingredient.pricePerUnit | currency: 'CAD':'symbol-narrow': '1.1-6' }}
+          </td>
+          <td>{{ ingredient.unit }}</td>
+
+          <td>
+            <p-button
+              (onClick)="editIngredient(ingredient)"
+              [outlined]="true"
+              [rounded]="true"
+              class="mr-2"
+              icon="pi pi-pencil"
+              severity="success"/>
+            <p-button
+              (onClick)="deleteIngredient(ingredient.uuid)"
+              [outlined]="true"
+              [rounded]="true"
+              icon="pi pi-trash"
+              severity="danger"/>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="summary">
+        <div class="flex align-items-center justify-content-between">
+          In total there are {{ ingredients() ? ingredients().length : 0 }} products.
+        </div>
+      </ng-template>
+    </p-table>
+    <p-dialog
+      (onHide)="hideDialog()"
+      (onMaximize)="isMaximized($event)"
+      [(visible)]="visibleModal"
+      [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+      [maximizable]="true"
+      [modal]="true"
+      [style]="maximizeModal ? {} : {width: '800px', maxHeight: '600px'}"
+      header="Ingredient Details"
+      styleClass="p-fluid"
+    >
+
+      @if (visibleModal) {
+        <gm-inventory-form
+          #inventoryForm
+          [initialIngredient]="selectedIngredient"
+          (formSubmit)="onFormSubmit($event)"
+          (formCancel)="hideDialog()">
+        </gm-inventory-form>
+      }
+    </p-dialog>
+
+  </div>
+</div>

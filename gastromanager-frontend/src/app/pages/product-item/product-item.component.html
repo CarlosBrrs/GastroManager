@@ -1,0 +1,13 @@
+<div class="container">
+  <div class="product-items-table">
+    <!--    <p-toast/>-->
+    <gm-product-item-table
+      [data]="productItems()"
+      (addNew)="handleAdd($event)"
+      (delete)="handleDelete($event)"
+      (edit)="handleEdit($event)"
+    >
+      >
+    </gm-product-item-table>
+  </div>
+</div>

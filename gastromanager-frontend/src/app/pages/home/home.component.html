@@ -1,1 +1,17 @@
-<p>home works!</p>
+<div class="container">
+  @if (userInfo) {
+    <section>welcome {{ userInfo.name }}</section>
+    @for (role of userInfo.roles; track role.uuid) {
+
+      <section>quick actions for {{ role.name }}</section>
+    }
+    <section>useful cards with keymetrics
+      <ul>
+        <li>key metric 1</li>
+        <li>key metric 2</li>
+        <li>key metric 3</li>
+        <li>key metric 4</li>
+      </ul>
+    </section>
+  }
+</div>

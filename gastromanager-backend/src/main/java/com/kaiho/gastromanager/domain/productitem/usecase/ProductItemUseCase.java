@@ -84,13 +84,9 @@ public class ProductItemUseCase implements ProductItemServicePort {
 
                     Ingredient existingIngredient = ingredientServicePort.getIngredientById(ingredient.ingredientUuid());
 
-                    if (existingIngredient.unit() != ingredient.unit()) {
-                        throw new UnitConflictException(existingIngredient.name(), existingIngredient.unit());
-                    }
                     return ProductItemIngredient.builder()
                             .ingredientUuid(existingIngredient.uuid())
                             .quantity(ingredient.quantity())
-                            .unit(ingredient.unit())
                             .build();
                 })
                 .toList();

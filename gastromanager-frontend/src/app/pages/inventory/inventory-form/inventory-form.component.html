@@ -1,0 +1,80 @@
+<form (ngSubmit)="onSubmit()" [formGroup]="ingredientForm">
+
+  <div class="field">
+    <label for="name">Name:</label>
+    <input
+      formControlName="name"
+      id="name"
+      pInputText
+      required
+      type="text"
+    />
+    @if (ingredientForm.get('name')?.errors?.['required'] && ingredientForm.get('name')?.touched) {
+      <small class="p-error">
+        Name is required.
+      </small>
+    }
+  </div>
+  <div class="field">
+    <label for="supplier">Supplier:</label>
+    <input
+      formControlName="supplier"
+      id="supplier"
+      pInputText
+      required
+      type="text"
+    />
+    @if (ingredientForm.get('supplier')?.errors?.['required'] && ingredientForm.get('supplier')?.touched) {
+      <small class="p-error">
+        Supplier is required.
+      </small>
+    }
+  </div>
+  <div class="field">
+    <label for="minimumStockQuantity">Minimum stock quantity:</label>
+    <p-inputNumber [min]="0" formControlName="minimumStockQuantity" id="minimumStockQuantity"
+                   inputId="minimumStockQuantity"
+                   required/>
+
+  </div>
+  <div class="field">
+    <label for="availableStock">Stock level:</label>
+    <p-inputNumber [min]="0" formControlName="availableStock" id="availableStock" inputId="availableStock"
+                   required/>
+  </div>
+  <div class="field">
+    <label for="unit">Unit:</label>
+    @for (unit of units; track unit.symbol) {
+      <div id="unit" class="field-checkbox">
+        <p-radioButton
+          [inputId]="unit.name"
+          [value]="unit.symbol"
+          formControlName="unit"/>
+        <label [for]="unit" class="ml-2">
+          {{ unit.symbol }} - {{ unit.name.toLowerCase() }}
+        </label>
+      </div>
+    }
+  </div>
+  <div class="field">
+    <label for="pricePerUnit">Price per unit:</label>
+    <p-inputNumber [minFractionDigits]="1" [maxFractionDigits]="5" showClear [min]="0" mode="currency" currency="CAD" formControlName="pricePerUnit" id="pricePerUnit" inputId="pricePerUnit"
+                   required/>
+  </div>
+
+  <div class="flex justify-content-end gap-2">
+    <button
+      (click)="onCancel()"
+      class="p-button-text"
+      label="Cancel"
+      pButton
+      type="button">
+    </button>
+    <button
+      [disabled]="!ingredientForm.valid"
+      label="Save"
+      pButton
+      type="submit">
+    </button>
+  </div>
+</form>

@@ -1,1 +1,26 @@
-<button type="button" (click)="logoutHandle()">Logout</button>
+<div class="sidebar-wrapper">
+
+  <div class="modules">
+    <ul>
+      <li><a [routerLinkActiveOptions]="{exact: true}" routerLink="/home" routerLinkActive="active">Home </a></li>
+      <li><a [routerLinkActiveOptions]="{exact: true}" routerLink="/inventory" routerLinkActive="active">Inventory
+        module</a></li>
+      <li><a [routerLinkActiveOptions]="{exact: true}" routerLink="/product-items" routerLinkActive="active">Product
+        items module</a></li>
+      @if (auth.hasAnyRole(['ROLE_SUPERUSER', 'ROLE_OWNER', 'ROLE_MANAGER'])) {
+        <li><a routerLink="/employees" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Employees
+          module</a></li>
+      }
+      <li><a [routerLinkActiveOptions]="{exact: true}" routerLink="/orders" routerLinkActive="active">Orders module</a>
+      </li>
+      <!--      <li>Clients module</li>-->
+      <!--      <li>Suppliers module</li>-->
+      <!--      <li>Delivery module</li>-->
+      <!--      <li>Cash flow module</li>-->
+      <!--      <li>Reports module</li>-->
+      <!--      <li>Settings module</li>-->
+    </ul>
+  </div>
+
+  <button (click)="logoutHandle()" type="button">Logout</button>
+</div>
