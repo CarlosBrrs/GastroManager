@@ -3,7 +3,6 @@ import {ProductItemService} from "../../core/services/product-item/product-item.
 import {ProductItemResponseDto} from "../../core/model/interfaces/ProductItemResponseDto";
 import {InventoryTableComponent} from "../inventory/inventory-table/inventory-table.component";
 import {ProductItemTableComponent} from "./product-item-table/product-item-table.component";
-import {UpdateProductItemRequestDto} from "../../core/model/interfaces/UpdateProductItemRequestDto";
 import {finalize, Subject, takeUntil} from "rxjs";
 
 @Component({
@@ -31,10 +30,25 @@ export class ProductItemComponent implements OnInit {
   }
 
   handleAdd(productItem: any) {
-this.productItemService.addProductItem(productItem).subscribe(response => {
-  this.loadProductItems();
-})
-  }
+    this.productItemService.addProductItem(productItem).subscribe({
+      next: response => {
+        this.loadProductItems();
+      }, error: error => {
+        console.log("error adding product item")
+        this.error.set('Error adding product item');
+        window.alert(error.message);
+        console.log(error);
+      }, complete: ()=> {
+        console.log("completed handle add in product item component")
+      }});}
+/*
+
+      response => {
+
+    }, error => {
+      window.alert(error)
+    })
+  }*/
 
   handleDelete(productItemUuid: number) {
 

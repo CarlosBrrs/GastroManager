@@ -1,39 +1,17 @@
 <div class="card">
+  <h2 class="mb-4">Manage Iventory</h2>
   <div class="card">
 
     <p-toolbar styleClass="mb-4 gap-2">
       <ng-template pTemplate="left">
-        <p-button
-          (onClick)="openNew()"
-          class="mr-2"
-          icon="pi pi-plus"
-          label="Add new ingredient"
-          severity="success"/>
-      </ng-template>
-
-    </p-toolbar>
-
-    <p-table
-      #dt
-      [(selection)]="selectedIngredient"
-      [globalFilterFields]="['name', 'unit']"
-      [paginator]="true"
-      [resizableColumns]="true"
-      [rowHover]="true"
-      [rows]="8"
-      selectionMode="single"
-      [metaKeySelection]="false"
-      [showCurrentPageReport]="true"
-      [tableStyle]="{ 'min-width': '75rem' }"
-      [value]="ingredients()"
-      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-      dataKey="uuid"
-    >
-<!--      (onRowSelect)="onRowSelect($event)"
-      (onRowUnselect)="onRowSelect($event)"-->
-      <ng-template pTemplate="caption">
         <div class="flex align-items-center justify-content-between">
-          <h5 class="m-0">Manage Iventory</h5>
+
+          <p-button
+            (onClick)="openNew()"
+            class="mr-2"
+            icon="pi pi-plus"
+            label="Add new ingredient"
+            severity="success"/>
           <span class="p-input-icon-left">
                     <i class="pi pi-search"></i>
                     <input
@@ -44,6 +22,30 @@
                 </span>
         </div>
       </ng-template>
+
+    </p-toolbar>
+
+    <p-table
+      #dt
+      [(selection)]="selectedIngredient"
+      [globalFilterFields]="['name', 'unit']"
+      [metaKeySelection]="false"
+      [paginator]="true"
+      [resizableColumns]="true"
+      [rowHover]="true"
+      [rows]="8"
+      [showCurrentPageReport]="true"
+      [tableStyle]="{ 'min-width': '75rem' }"
+      [value]="ingredients()"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+      dataKey="uuid"
+      selectionMode="single"
+    >
+      <!--      (onRowSelect)="onRowSelect($event)"
+            (onRowUnselect)="onRowSelect($event)"-->
+      <!--      <ng-template pTemplate="caption">-->
+
+      <!--      </ng-template>-->
       <ng-template pTemplate="header">
         <tr>
           <!--          <th style="width: 4rem">-->

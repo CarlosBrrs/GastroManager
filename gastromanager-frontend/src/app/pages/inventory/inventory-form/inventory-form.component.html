@@ -58,8 +58,9 @@
   </div>
   <div class="field">
     <label for="pricePerUnit">Price per unit:</label>
-    <p-inputNumber [minFractionDigits]="1" [maxFractionDigits]="5" showClear [min]="0" mode="currency" currency="CAD" formControlName="pricePerUnit" id="pricePerUnit" inputId="pricePerUnit"
-                   required/>
+    <p-inputNumber [maxFractionDigits]="5" [minFractionDigits]="1" [min]="0" currency="CAD" formControlName="pricePerUnit" id="pricePerUnit"
+                   inputId="pricePerUnit" mode="currency" required
+                   showClear/>
   </div>
 
   <div class="flex justify-content-end gap-2">

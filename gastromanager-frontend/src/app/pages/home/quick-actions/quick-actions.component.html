@@ -1,0 +1,12 @@
+<p-panel class="quick-actions-panel" header="Quick Actions for you">
+
+  <p-listbox (onChange)="onActionSelect($event)" [options]="actions" [style]="{width: '100%'}"
+             class="quick-actions-listbox">
+    <ng-template let-action pTemplate="item">
+      <div class="p-d-flex p-ai-center">
+        <i [class]="'pi ' + action.icon + ' mr-2'"></i>
+        <span>{{ action.label }}</span>
+      </div>
+    </ng-template>
+  </p-listbox>
+</p-panel>

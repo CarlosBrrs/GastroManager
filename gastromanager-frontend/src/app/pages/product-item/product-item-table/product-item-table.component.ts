@@ -9,8 +9,6 @@ import {Table, TableModule} from "primeng/table";
 import {ToolbarModule} from "primeng/toolbar";
 import {ProductItemResponseDto} from "../../../core/model/interfaces/ProductItemResponseDto";
 import {ProductItemFormComponent} from "../product-item-form/product-item-form.component";
-import {UpdateProductItemRequestDto} from "../../../core/model/interfaces/UpdateProductItemRequestDto";
-import {IngredientResponseDto} from "../../../core/model/interfaces/IngredientResponseDto";
 
 @Component({
   selector: 'gm-product-item-table',
@@ -31,22 +29,21 @@ import {IngredientResponseDto} from "../../../core/model/interfaces/IngredientRe
 })
 export class ProductItemTableComponent {
 
-  private _productItems = signal<ProductItemResponseDto[]>([]);
-
-  @Input()
-  set data(value: ProductItemResponseDto[]) {
-    this._productItems.set(value);
-  }
-
-  productItems = computed(() => {
-    return this._productItems();
-  });
   visibleModal: boolean = false;
   maximizeModal: boolean = false;
   @Output() edit = new EventEmitter<any>();
   @Output() delete = new EventEmitter<number>();
   @Output() addNew = new EventEmitter<any>();
   selectedProductItem: any;
+  private _productItems = signal<ProductItemResponseDto[]>([]);
+  productItems = computed(() => {
+    return this._productItems();
+  });
+
+  @Input()
+  set data(value: ProductItemResponseDto[]) {
+    this._productItems.set(value);
+  }
 
   openNew() {
     this.selectedProductItem = undefined;

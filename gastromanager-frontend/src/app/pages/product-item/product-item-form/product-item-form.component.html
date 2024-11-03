@@ -18,12 +18,12 @@
   <div class="field">
     <label for="description">Description:</label>
     <textarea
-      formControlName="description"
-      rows="5"
       cols="30"
+      formControlName="description"
       id="description"
       pInputTextarea
-      required></textarea>
+      required
+      rows="5"></textarea>
     <!-- @if (productItemForm.get('supplier')?.errors?.['required'] && productItemForm.get('supplier')?.touched) {
        <small class="p-error">
          Supplier is required.
@@ -32,41 +32,41 @@
   </div>
   <div class="field">
     <label for="price">Price:</label>
-    <p-inputNumber [minFractionDigits]="1" [maxFractionDigits]="5" showClear [min]="0" mode="currency" currency="CAD"
-                   formControlName="price" id="price" inputId="price"
-                   required/>
+    <p-inputNumber [maxFractionDigits]="5" [minFractionDigits]="1" [min]="0" currency="CAD" formControlName="price" id="price"
+                   inputId="price" mode="currency" required
+                   showClear/>
   </div>
   <div class="field">
     <label for="category">Category:</label>
     <p-dropdown
-      formControlName="category"
+      [checkmark]="true"
       [options]="categories"
+      [showClear]="true"
+      formControlName="category"
+      id="category"
+      inputId="category"
       optionLabel="label"
       optionValue="value"
-      inputId="category"
-      id="category"
-      [checkmark]="true"
-      [showClear]="true"
-      required
-      placeholder="Select a category"/>
+      placeholder="Select a category"
+      required/>
   </div>
   <div class="flex ingredient-selection align-items-center justify-content-between">
 
     <div class="field col-6">
       <label for="ingredients">Ingredients:</label>
       <p-multiSelect
-        id="ingredients"
-        filter
+        (onChange)="onIngredientSelect($event.value)"
+        [options]="availableIngredients"
         [showToggleAll]="false"
         emptyFilterMessage="No ingredients match your search..."
         emptyMessage="No ingredients to display"
-        inputId="ingredients"
-        [options]="availableIngredients"
+        filter
         formControlName="ingredients"
+        id="ingredients"
+        inputId="ingredients"
         optionLabel="name"
         optionValue="uuid"
-        placeholder="Select the ingredients for the product"
-        (onChange)="onIngredientSelect($event.value)"/>
+        placeholder="Select the ingredients for the product"/>
     </div>
     <div class="flex flex-column align-content-end ingredients-quantity" formGroupName="ingredientQuantities">
       @for (selectedIngredient of selectedIngredients; track selectedIngredient.uuid) {

@@ -1,5 +1,5 @@
 import {Component, computed, EventEmitter, Input, Output, signal, ViewChild} from '@angular/core';
-import {Table, TableModule, TableRowSelectEvent} from "primeng/table";
+import {Table, TableModule} from "primeng/table";
 import {IngredientResponseDto} from "../../../core/model/interfaces/IngredientResponseDto";
 import {CurrencyPipe} from "@angular/common";
 import {ToastModule} from "primeng/toast";
@@ -93,7 +93,7 @@ export class InventoryTableComponent {
     return this.maximizeModal;
   }
 
-/*  onRowSelect($event: TableRowSelectEvent) {
-    console.dir($event) //selected
-  }*/
+  /*  onRowSelect($event: TableRowSelectEvent) {
+      console.dir($event) //selected
+    }*/
 }

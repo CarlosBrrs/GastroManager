@@ -1,17 +1,26 @@
-<div class="container">
+<div class="container m-3 flex flex-column">
   @if (userInfo) {
-    <section>welcome {{ userInfo.name }}</section>
-    @for (role of userInfo.roles; track role.uuid) {
+    <div class="flex justify-content-between align-items-center p-3 border-solid surface-border border-round mb-3">
+      <!-- Left side: Welcome message -->
+      <div class="welcome-message text-start">
+        <h2 class="m-0">Hello, {{ userInfo.name }}!</h2>
+        <p class="mt-2 mb-0 text-600">
+          Welcome back. Your quick actions for the <strong>{{ userInfo.roles[0].name }}</strong> role are ready.
+        </p>
+      </div>
 
-      <section>quick actions for {{ role.name }}</section>
-    }
-    <section>useful cards with keymetrics
-      <ul>
-        <li>key metric 1</li>
-        <li>key metric 2</li>
-        <li>key metric 3</li>
-        <li>key metric 4</li>
-      </ul>
-    </section>
+      <!-- Right side: Date and Time -->
+      <div class="text-end">
+        <p class="text-700 m-0">{{ currentDate | date: 'EEEE, MMMM d, y, h:mm a' }}</p>
+
+      </div>
+    </div>
+
+    <div class="home-body flex gap-4">
+      <gm-quick-actions class="w-4" [actions]="actions" (execute)="onQuickAction($event)"></gm-quick-actions>
+      <gm-key-metrics [metrics]="summaryMetrics" class="w-8 border-solid surface-border border-round"></gm-key-metrics>
+    </div>
+  } @else {
+
   }
 </div>

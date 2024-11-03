@@ -1,6 +1,6 @@
-import {Injectable} from '@angular/core';
+import {Injectable, signal} from '@angular/core';
 import {UserResponseDto} from "../../model/interfaces/UserResponseDto";
-import {Observable, tap} from "rxjs";
+import {Observable, of, tap} from "rxjs";
 import {ApiGenericResponse} from "../../model/interfaces/ApiGenericResponse";
 import {AuthService} from "../auth/auth.service";
 import {BaseHttpService} from "../basehttp/base-http.service";
@@ -10,6 +10,7 @@ import {BaseHttpService} from "../basehttp/base-http.service";
 })
 export class UserService extends BaseHttpService {
 
+  userInfo = signal<UserResponseDto | undefined>(undefined);
 
   constructor(private authService: AuthService) {
     super();
@@ -21,9 +22,15 @@ export class UserService extends BaseHttpService {
     }).pipe(
       tap(response => {
         if (response.flag) {
-          console.log(response.data)
+          console.log("User info from API")
+          this.userInfo.set(response.data)
+
         }
       })
     );
+  }
+
+  getRole(): string {
+    return this.userInfo()?.roles[0].name || "";
   }
 }

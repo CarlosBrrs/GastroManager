@@ -11,7 +11,6 @@ import {BaseHttpService} from "../basehttp/base-http.service";
 })
 export class AuthService extends BaseHttpService {
 
-
   isLoggedIn;
   private tokenKey: string = "jwtToken";
   private roles: string[] = [];

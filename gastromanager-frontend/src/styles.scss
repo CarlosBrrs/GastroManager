@@ -4,7 +4,8 @@
 @import "primeicons/primeicons.css";
 
 // primeng
-@import "primeng/resources/themes/vela-purple/theme.css";
+@import "assets/custom-themes/kaiho-dark-theme/vela-purple/theme.scss";
+//@import "primeng/resources/themes/vela-purple/theme.css";
 @import "primeng/resources/primeng.css";
 
 // primeflex
@@ -155,7 +156,7 @@ a {
   // 2
 
   &:focus {
-    outline: thin dotted;
+    //outline: thin dotted;
   }
 
   // 3

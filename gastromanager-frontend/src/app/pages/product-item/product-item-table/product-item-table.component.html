@@ -1,36 +1,9 @@
 <div class="card">
-  <div class="card">
-
-    <p-toolbar styleClass="mb-4 gap-2">
-      <ng-template pTemplate="left">
-        <p-button
-          (onClick)="openNew()"
-          class="mr-2"
-          icon="pi pi-plus"
-          label="Add new product item"
-          severity="success"/>
-      </ng-template>
-
-    </p-toolbar>
-
-    <p-table
-      #dt
-      [(selection)]="selectedProductItem"
-      [globalFilterFields]="['name']"
-      [paginator]="true"
-      [resizableColumns]="true"
-      [rowHover]="true"
-      [rows]="8"
-      [showCurrentPageReport]="true"
-      [tableStyle]="{ 'min-width': '75rem' }"
-      [value]="productItems()"
-      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-      dataKey="uuid"
-    >
-      <ng-template pTemplate="caption">
-        <div class="flex align-items-center justify-content-between">
-          <h5 class="m-0">Manage Product Items</h5>
-          <span class="p-input-icon-left">
+  <h2 class="mb-4">Manage Product Items</h2>
+  <p-toolbar styleClass="mb-4 gap-2">
+    <ng-template pTemplate="left">
+      <div class="flex gap-2">
+        <span class="p-input-icon-left">
                     <i class="pi pi-search"></i>
                     <input
                       (input)="onGlobalFilter(dt, $event)"
@@ -38,91 +11,120 @@
                       placeholder="Search..."
                       type="text"/>
                 </span>
-        </div>
-      </ng-template>
-      <ng-template pTemplate="header">
-        <tr>
-          <th pResizableColumn pSortableColumn="name" scope="col" style="min-width:15rem">
-            Name
-            <p-sortIcon field="name"/>
-          </th>
-          <!--                    <th>
-                                Image
-                              </th>-->
-          <th pResizableColumn pSortableColumn="description" scope="col">
-            Description
-            <p-sortIcon field="description"/>
-          </th>
-          <!--                    <th pSortableColumn="category" style="min-width:10rem">
-                                Category <p-sortIcon field="category" />
-                              </th>
-                              <th pSortableColumn="rating">
-                                Reviews <p-sortIcon field="rating" />
-                              </th>-->
-          <th pResizableColumn pSortableColumn="price" scope="col" style="min-width:10rem">
-            Price
-            <p-sortIcon field="price"/>
-          </th>
-          <th pResizableColumn scope="col">Edit - Delete</th>
-        </tr>
-      </ng-template>
-      <ng-template let-productItem pTemplate="body">
-        <tr>
+        <p-button
+          (onClick)="openNew()"
+          class="mr-2"
+          icon="pi pi-plus"
+          label="Add new product item"
+          severity="success"/>
+      </div>
+    </ng-template>
 
-          <td>
-            {{ productItem.name }}
-          </td>
+  </p-toolbar>
 
-          <td>
-            {{ productItem.description }}
-          </td>
-          <td>{{ productItem.price  | currency: 'CAD':'symbol-narrow': '1.2-5' }}</td>
+  <p-table
+    #dt
+    [(selection)]="selectedProductItem"
+    [globalFilterFields]="['name']"
+    [paginator]="true"
+    [resizableColumns]="true"
+    [rowHover]="true"
+    [rows]="8"
+    [showCurrentPageReport]="true"
+    [tableStyle]="{ 'min-width': '75rem' }"
+    [value]="productItems()"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    dataKey="uuid"
+  >
+    <ng-template pTemplate="caption">
+      <div class="flex align-items-center justify-content-between">
 
-          <td>
-            <p-button
-              (onClick)="editProductItem(productItem)"
-              [outlined]="true"
-              [rounded]="true"
-              class="mr-2"
-              icon="pi pi-pencil"
-              severity="success"/>
-            <p-button
-              (onClick)="deleteProductItem(productItem.uuid)"
-              [outlined]="true"
-              [rounded]="true"
-              icon="pi pi-trash"
-              severity="danger"/>
-          </td>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="summary">
-        <div class="flex align-items-center justify-content-between">
-          In total there are {{ productItems() ? productItems().length : 0 }} products.
-        </div>
-      </ng-template>
-    </p-table>
-    <p-dialog
-      (onHide)="hideDialog()"
-      (onMaximize)="isMaximized($event)"
-      [(visible)]="visibleModal"
-      [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
-      [maximizable]="true"
-      [modal]="true"
-      [style]="maximizeModal ? {} : {width: '800px', maxHeight: '600px'}"
-      header="Product item Details"
-      styleClass="p-fluid"
-    >
 
-      @if (visibleModal) {
-        <gm-product-item-form
-          #productItemForm
-          (formCancel)="hideDialog()"
-          (formSubmit)="onFormSubmit($event)"
-          [initialProductItem]="selectedProductItem"
-        >
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th pResizableColumn pSortableColumn="name" scope="col" style="min-width:15rem">
+          Name
+          <p-sortIcon field="name"/>
+        </th>
+        <!--                    <th>
+                              Image
+                            </th>-->
+        <th pResizableColumn pSortableColumn="description" scope="col">
+          Description
+          <p-sortIcon field="description"/>
+        </th>
+        <!--                    <th pSortableColumn="category" style="min-width:10rem">
+                              Category <p-sortIcon field="category" />
+                            </th>
+                            <th pSortableColumn="rating">
+                              Reviews <p-sortIcon field="rating" />
+                            </th>-->
+        <th pResizableColumn pSortableColumn="price" scope="col" style="min-width:10rem">
+          Price
+          <p-sortIcon field="price"/>
+        </th>
+        <th pResizableColumn scope="col">Edit - Delete</th>
+      </tr>
+    </ng-template>
+    <ng-template let-productItem pTemplate="body">
+      <tr>
+
+        <td>
+          {{ productItem.name }}
+        </td>
+
+        <td>
+          {{ productItem.description }}
+        </td>
+        <td>{{ productItem.price  | currency: 'CAD':'symbol-narrow': '1.2-5' }}</td>
+
+        <td>
+          <p-button
+            (onClick)="editProductItem(productItem)"
+            [outlined]="true"
+            [rounded]="true"
+            class="mr-2"
+            icon="pi pi-pencil"
+            severity="success"/>
+          <p-button
+            (onClick)="deleteProductItem(productItem.uuid)"
+            [outlined]="true"
+            [rounded]="true"
+            icon="pi pi-trash"
+            severity="danger"/>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="summary">
+      <div class="flex align-items-center justify-content-between">
+        In total there are {{ productItems() ? productItems().length : 0 }} products.
+      </div>
+    </ng-template>
+  </p-table>
+  <p-dialog
+    (onHide)="hideDialog()"
+    (onMaximize)="isMaximized($event)"
+    [(visible)]="visibleModal"
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+    [maximizable]="true"
+    [modal]="true"
+    [style]="maximizeModal ? {} : {width: '800px', maxHeight: '600px'}"
+    header="Product item Details"
+    styleClass="p-fluid"
+  >
+
+    @if (visibleModal) {
+      <gm-product-item-form
+        #productItemForm
+        (formCancel)="hideDialog()"
+        (formSubmit)="onFormSubmit($event)"
+        [initialProductItem]="selectedProductItem"
+      >
         <!---->
-        </gm-product-item-form>
-      }
-    </p-dialog>
-  </div>
+      </gm-product-item-form>
+    }
+  </p-dialog>
 </div>
+

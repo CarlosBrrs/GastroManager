@@ -80,7 +80,7 @@ export class ProductItemFormComponent implements OnInit {
             // Configuramos los controles de cantidades con la función centralizada
             this.setIngredientQuantitiesControls(selectedUuids, initialItem);
             // Actualizamos selectedIngredients con los ingredientes completos para mostrarlos preseleccionados
-            this.selectedIngredients = selectedUuids.map((uuid : string) =>
+            this.selectedIngredients = selectedUuids.map((uuid: string) =>
               this.availableIngredients.find(ing => ing.uuid === uuid)
             );
           }
@@ -95,7 +95,7 @@ export class ProductItemFormComponent implements OnInit {
 
   onSubmit() {
     debugger;
-    const { ingredientQuantities = {}, ...formValue } = {
+    const {ingredientQuantities = {}, ...formValue} = {
       ...this.productItemForm.value,
       ingredients: this.selectedIngredients.map(ingredient => ({
         ingredientUuid: ingredient.uuid,
@@ -107,7 +107,8 @@ export class ProductItemFormComponent implements OnInit {
 
   //send the uuids
   onIngredientSelect(selectedUuids: string[]): void {
-    this.setIngredientQuantitiesControls(selectedUuids);
+    console.log(this.productItemForm)
+    this.setIngredientQuantitiesControls(selectedUuids, this.initialProductItem);
     this.selectedIngredients = selectedUuids.map(uuid => this.availableIngredients.find(ing => ing.uuid === uuid));
     this.productItemForm.get('ingredients')?.setValue(selectedUuids);
   }
@@ -119,17 +120,17 @@ export class ProductItemFormComponent implements OnInit {
   }
 
   private setIngredientQuantitiesControls(selectedUuids: string[], initialItem?: any): void {
+    debugger;
     const quantitiesGroup = this.productItemForm.get('ingredientQuantities') as FormGroup;
 
     // Elimina los controles existentes para asegurarse de que solo queden los actuales
     Object.keys(quantitiesGroup.controls).forEach(controlName => {
       quantitiesGroup.removeControl(controlName);
     });
-
     // Agrega controles nuevos basados en los UUID seleccionados
     selectedUuids.forEach(uuid => {
       const initialQuantity = initialItem?.ingredients?.find((ing: any) => ing.ingredientUuid === uuid)?.quantity
-      quantitiesGroup.addControl(uuid, this.fb.control(initialQuantity, [Validators.required, Validators.min(1)]));
+      quantitiesGroup.addControl(uuid, this.fb.control(initialQuantity, [Validators.required]));
     });
   }
 }

@@ -23,8 +23,6 @@ export class InventoryComponent implements OnInit, OnDestroy {
   error = signal<string | null>(null);
   private destroy$ = new Subject<void>();
 
-  // showForm = false;
-
   constructor(private inventoryService: InventoryService, private router: Router
 
               /*, private messageService: MessageService, private confirmationService: ConfirmationService*/) {
@@ -66,7 +64,23 @@ export class InventoryComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.destroy$),
         finalize(() => this.loading.set(false)))
-      .subscribe(response => {
+      .subscribe({
+        next: response => {
+          this.loadIngredients()
+          this.loading.set(false);
+        },
+        error: error => {
+          console.log("error updating ingredients")
+          this.error.set('Error updating ingredients');
+          window.alert(error.message);
+          console.log(error);
+        },
+        complete: () => {
+          console.log("completed handle add in inventory component")
+        }
+      })
+
+/*        response => {
           this.loadIngredients()
           this.loading.set(false);
         }, error => {
@@ -78,7 +92,7 @@ export class InventoryComponent implements OnInit, OnDestroy {
           //   detail: 'Failed to load ingredients'
           // });
         }
-      );
+      );*/
 
   }
 
@@ -88,16 +102,20 @@ export class InventoryComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.destroy$),
         finalize(() => this.loading.set(false)))
-      .subscribe(response => {
-        this.ingredients.set(response.data);
-        this.loading.set(false)
-      }, error => {
-        this.error.set('Error loading ingredients');
-        // this.messageService.add({
-        //   severity: 'error',
-        //   summary: 'Error',
-        //   detail: 'Failed to load ingredients'
-        // });
+      .subscribe({
+        next: response => {
+          this.ingredients.set(response.data);
+          this.loading.set(false)
+        },
+        error: error => {
+          console.log("error loading ingredients")
+          this.error.set('Error loading ingredients');
+          window.alert(error.message);
+          console.log(error);
+        },
+        complete: () => {
+          console.log("completed successfully")
+        }
       })
   }
 }

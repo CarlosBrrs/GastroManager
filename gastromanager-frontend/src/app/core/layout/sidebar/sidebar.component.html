@@ -1,26 +1,13 @@
-<div class="sidebar-wrapper">
+<div class="flex">
+  <p-menu [model]="items">
 
-  <div class="modules">
-    <ul>
-      <li><a [routerLinkActiveOptions]="{exact: true}" routerLink="/home" routerLinkActive="active">Home </a></li>
-      <li><a [routerLinkActiveOptions]="{exact: true}" routerLink="/inventory" routerLinkActive="active">Inventory
-        module</a></li>
-      <li><a [routerLinkActiveOptions]="{exact: true}" routerLink="/product-items" routerLinkActive="active">Product
-        items module</a></li>
-      @if (auth.hasAnyRole(['ROLE_SUPERUSER', 'ROLE_OWNER', 'ROLE_MANAGER'])) {
-        <li><a routerLink="/employees" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Employees
-          module</a></li>
-      }
-      <li><a [routerLinkActiveOptions]="{exact: true}" routerLink="/orders" routerLinkActive="active">Orders module</a>
-      </li>
-      <!--      <li>Clients module</li>-->
-      <!--      <li>Suppliers module</li>-->
-      <!--      <li>Delivery module</li>-->
-      <!--      <li>Cash flow module</li>-->
-      <!--      <li>Reports module</li>-->
-      <!--      <li>Settings module</li>-->
-    </ul>
-  </div>
+    <ng-template let-item pTemplate="item">
+      <a [routerLink]="item.route" class="p-menuitem-link flex flex-column">
+        <div [class]="item.icon" style="color: var(--primary-color); font-size: 1.5rem"></div>
+        <div class="menu-label">{{ item.label }}</div>
+      </a>
 
-  <button (click)="logoutHandle()" type="button">Logout</button>
+    </ng-template>
+  </p-menu>
 </div>
+

@@ -48,7 +48,8 @@ import static org.springframework.http.HttpMethod.PUT;
 public class SecurityConfig {
 
     private final String[] WHITE_LIST_URL = {
-            BASE_URL + "/auth/login"
+            BASE_URL + "/auth/login",
+            "/swagger-ui/**", "/v3/api-docs*/**"
     };
     private final JwtAuthFilter jwtAuthFilter;
     private final UserServicePort userServicePort;
@@ -74,7 +75,7 @@ public class SecurityConfig {
                         // users controller
                         .requestMatchers(POST, BASE_URL + USERS_CONTROLLER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
                         .requestMatchers(GET, BASE_URL + USERS_CONTROLLER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
-                        .requestMatchers(GET, BASE_URL + USERS_CONTROLLER + USER_UUID_PARAMETER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
+                        .requestMatchers(GET, BASE_URL + USERS_CONTROLLER + USER_UUID_PARAMETER).authenticated()
                         .requestMatchers(PUT, BASE_URL + USERS_CONTROLLER + USER_UUID_PARAMETER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
                         .requestMatchers(PATCH, BASE_URL + USERS_CONTROLLER + USER_UUID_PARAMETER + "/deactivate").hasAnyRole(SUPERUSER, OWNER)
                         .requestMatchers(PATCH, BASE_URL + USERS_CONTROLLER + USER_UUID_PARAMETER + "/activate").hasAnyRole(SUPERUSER, OWNER)
