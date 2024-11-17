@@ -1,6 +1,8 @@
 package com.kaiho.gastromanager.application.ingredient.handler;
 
+import com.kaiho.gastromanager.application.ingredient.dto.request.AdjustStockRequestDto;
 import com.kaiho.gastromanager.application.ingredient.dto.request.IngredientRequestDto;
+import com.kaiho.gastromanager.application.ingredient.dto.request.UpdateIngredientRequestDto;
 import com.kaiho.gastromanager.application.ingredient.dto.response.IngredientResponseDto;
 import com.kaiho.gastromanager.application.ingredient.mapper.IngredientMapper;
 import com.kaiho.gastromanager.domain.ingredient.api.IngredientServicePort;
@@ -45,10 +47,16 @@ public class IngredientHandlerImpl implements IngredientHandler {
     }
 
     @Override
-    public ApiGenericResponse<IngredientResponseDto> updateIngredient(UUID uuid, IngredientRequestDto ingredientRequestDto) {
+    public ApiGenericResponse<IngredientResponseDto> updateIngredient(UUID uuid, UpdateIngredientRequestDto ingredientRequestDto) {
         Ingredient ingredient = ingredientMapper.toDomain(ingredientRequestDto);
         Ingredient updateIngredient = ingredientServicePort.updateIngredient(uuid, ingredient);
         IngredientResponseDto response = ingredientMapper.toResponse(updateIngredient);
         return buildSuccessResponse("Ingredient updated successfully", response);
+    }
+
+    @Override
+    public ApiGenericResponse<UUID> adjustIngredientStock(UUID ingredientUuid, AdjustStockRequestDto newStock) {
+        UUID returnedUuid = ingredientServicePort.adjustIngredientStock(ingredientUuid, newStock.newStock());
+        return buildSuccessResponse("Ingredient stock adjusted successfully", returnedUuid);
     }
 }

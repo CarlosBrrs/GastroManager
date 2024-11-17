@@ -8,6 +8,7 @@ import {AvatarModule} from "primeng/avatar";
 import {OverlayPanelModule} from "primeng/overlaypanel";
 import {RouterLink} from "@angular/router";
 import {AuthService} from "../../services/auth/auth.service";
+import {BadgeModule} from "primeng/badge";
 
 @Component({
   selector: 'gm-header',
@@ -20,7 +21,8 @@ import {AuthService} from "../../services/auth/auth.service";
     NgOptimizedImage,
     AvatarModule,
     OverlayPanelModule,
-    RouterLink
+    RouterLink,
+    BadgeModule
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'

@@ -1,0 +1,100 @@
+$oval-size: 100px;
+
+.item-card {
+  display: flex;
+  position: relative;
+  height: 300px;
+  box-sizing: border-box;
+  padding: $oval-size 10px 10px;
+  margin: 10px 1rem 20px 0;
+  cursor: pointer;
+  transition: transform 0.2s;
+
+
+  &:hover:not(.disabled) {
+    transform: translateY(-8px);
+  }
+
+  &.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.image-oval {
+  position: absolute;
+  top: - calc($oval-size / 3); // Coloca el ovalo fuera del cuadro
+  left: 50%;
+  transform: translateX(-50%);
+  width: $oval-size;
+  height: $oval-size;
+  border-radius: 50%; // Forma redondeada
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.disabled-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.product-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  overflow: hidden;
+
+
+  h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1rem;
+    line-height: 1.2;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: calc(1.2em * 2);
+    min-height: calc(1.2em * 2);
+  }
+
+  .description {
+    margin: 0 0 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: calc(1.4em * 3);
+    min-height: calc(1.4em * 3);
+  }
+
+  .price {
+    margin-top: auto;
+    font-size: 1.125rem;
+    font-weight: bold;
+    line-height: 1.5;
+    height: 1.5em;
+  }
+}

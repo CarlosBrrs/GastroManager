@@ -83,13 +83,6 @@
       }
     </div>
   </div>
-  <!--  <div class="field">
-      <label for="pricePerUnit">Price per unit:</label>
-      <p-inputNumber [minFractionDigits]="1" [maxFractionDigits]="5" showClear [min]="0" mode="currency" currency="CAD"
-                     formControlName="pricePerUnit" id="pricePerUnit" inputId="pricePerUnit"
-                     required/>
-    </div>-->
-
   <div class="flex justify-content-end gap-2">
     <button
       (click)="onCancel()"
@@ -100,7 +93,7 @@
     </button>
     <button
       [disabled]="!productItemForm.valid"
-      label="Save"
+      [label]="initialProductItem ? 'Update': 'Save'"
       pButton
       type="submit">
     </button>

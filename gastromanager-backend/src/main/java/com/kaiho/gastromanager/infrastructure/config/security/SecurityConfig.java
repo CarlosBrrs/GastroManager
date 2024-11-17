@@ -23,6 +23,7 @@ import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.B
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.CHEF;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.INGREDIENTS_CONTROLLER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.INGREDIENT_UUID_PARAMETER;
+import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.INVENTORY_MOVEMENT_CONTROLLER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.KITCHEN_STAFF;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.MANAGER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.ORDERS_CONTROLLER;
@@ -71,6 +72,7 @@ public class SecurityConfig {
                         .requestMatchers(PATCH, BASE_URL + INGREDIENTS_CONTROLLER + INGREDIENT_UUID_PARAMETER + "/deactivate").hasAnyRole(SUPERUSER, OWNER, MANAGER, CHEF)
                         .requestMatchers(PATCH, BASE_URL + INGREDIENTS_CONTROLLER + INGREDIENT_UUID_PARAMETER + "/activate").hasAnyRole(SUPERUSER, OWNER, MANAGER, CHEF)
                         .requestMatchers(DELETE, BASE_URL + INGREDIENTS_CONTROLLER + INGREDIENT_UUID_PARAMETER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
+                        .requestMatchers(PATCH, BASE_URL + INGREDIENTS_CONTROLLER + INGREDIENT_UUID_PARAMETER + "/adjust-ingredient-stock").hasAnyRole(SUPERUSER, OWNER, MANAGER)
 
                         // users controller
                         .requestMatchers(POST, BASE_URL + USERS_CONTROLLER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
@@ -100,6 +102,8 @@ public class SecurityConfig {
                         .requestMatchers(PATCH, BASE_URL + ORDERS_CONTROLLER + ORDER_UUID_PARAMETER + "/status").hasAnyRole(SUPERUSER, OWNER, MANAGER, WAITER, CHEF, KITCHEN_STAFF)
                         .requestMatchers(DELETE, BASE_URL + ORDERS_CONTROLLER + ORDER_UUID_PARAMETER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
 
+                        // inventory movements controller
+                        .requestMatchers(POST, BASE_URL + INVENTORY_MOVEMENT_CONTROLLER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
                         // superuser matcher has to be below all the rest controller matchers and before deny all
 //                        .requestMatchers("/**").hasRole(SUPERUSER) // superuser has full authorities- Not working yet
                         .anyRequest().denyAll()) // All other requests must be denied

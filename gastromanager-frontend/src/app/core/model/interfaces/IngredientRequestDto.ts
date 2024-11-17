@@ -1,5 +1,8 @@
 export interface IngredientRequestDto {
-  ingredientUuid: string,
-  quantity: number,
-  unit: string
+  name: string;
+  availableStock?: number;
+  unit: string;
+  supplier: string;
+  pricePerUnit: number;
+  minimumStockQuantity: number;
 }

@@ -1,0 +1,129 @@
+<div class="card">
+  <h2 class="mb-4">Manage Orders</h2>
+  <p-toolbar styleClass="mb-4 gap-2">
+    <div class="flex align-items-center w-full justify-content-between">
+      <p-button
+        (onClick)="newOrder()"
+        class="mr-2"
+        icon="pi pi-plus"
+        label="Create new order"
+        severity="success"/>
+      <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input
+                      (input)="onGlobalFilter(dt, $event)"
+                      pInputText
+                      placeholder="Search..."
+                      type="text"/>
+                </span>
+    </div>
+
+  </p-toolbar>
+
+  <p-table
+    #dt
+    [(selection)]="selectedOrder"
+    [globalFilterFields]="['name']"
+    [paginator]="true"
+    [resizableColumns]="true"
+    [rowHover]="true"
+    [rows]="8"
+    [showCurrentPageReport]="true"
+    [tableStyle]="{ 'min-width': '75rem' }"
+    [value]="orders()"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    dataKey="uuid"
+  >
+    <ng-template pTemplate="caption">
+      <div class="flex align-items-center justify-content-between">
+
+
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th pResizableColumn pSortableColumn="placedBy" scope="col" style="min-width:15rem">
+          Order placed by
+          <p-sortIcon field="placedBy"/>
+        </th>
+        <!--                    <th>
+                              Image
+                            </th>-->
+        <th pResizableColumn pSortableColumn="totalAmount" scope="col">
+          Total Amount
+          <p-sortIcon field="totalAmount"/>
+        </th>
+        <!--                    <th pSortableColumn="category" style="min-width:10rem">
+                              Category <p-sortIcon field="category" />
+                            </th>
+                            <th pSortableColumn="rating">
+                              Reviews <p-sortIcon field="rating" />
+                            </th>-->
+        <th pResizableColumn pSortableColumn="itemsOrdered" scope="col" style="min-width:10rem">
+          Items ordered
+          <p-sortIcon field="itemsOrdered"/>
+        </th>
+        <th pResizableColumn pSortableColumn="status" scope="col" style="min-width:10rem">
+          Status
+          <p-sortIcon field="status"/>
+        </th>
+        <!--        <th pResizableColumn scope="col" style="min-width:10rem">-->
+        <!--          Enable for menu-->
+        <!--        </th>-->
+        <th pResizableColumn scope="col">Edit - Delete</th>
+      </tr>
+    </ng-template>
+    <ng-template let-order pTemplate="body">
+      <tr>
+
+        <td>
+          {{ order.userUuid }}
+        </td>
+
+        <td>
+          {{ order.totalPrice  | currency: 'CAD':'symbol-narrow': '1.2-5' }}
+        </td>
+        <td>
+          <ul>
+            @for(orderItem of order.orderItems; track $index) {
+              <li>{{orderItem.productItemUuid}} x {{orderItem.quantity}}</li>
+            }
+          </ul>
+        </td>
+        <td>
+          <p-tag [value]="order.status" />
+
+        </td>
+        <!--        <td>
+                  <p-checkbox
+                    [binary]="true"
+                    [(ngModel)]="productItem.isEnabled"
+                    (onChange)="onToggleEnableConfirm(productItem, $event)"
+                    [inputId]="productItem.uuid"/>-->
+        <td>
+          <p-button
+            (onClick)="editOrder(order)"
+            [outlined]="true"
+            [rounded]="true"
+            class="mr-2"
+            icon="pi pi-pencil"
+            severity="success"/>
+<!--          <p-button
+            (onClick)="deleteProductItem(productItem.uuid)"
+            [outlined]="true"
+            [rounded]="true"
+            icon="pi pi-trash"
+            severity="danger"/>-->
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="summary">
+      <div class="flex align-items-center justify-content-between">
+        In total there are {{ orders() ? orders().length : 0 }} orders.
+      </div>
+    </ng-template>
+  </p-table>
+
+  <p-confirmDialog></p-confirmDialog>
+</div>
+

@@ -13,6 +13,7 @@ import {QuickActionsComponent} from "./quick-actions/quick-actions.component";
 import {QuickAction} from "../../core/model/interfaces/QuickAction";
 import {KeyMetricsComponent} from "./key-metrics/key-metrics.component";
 import {MetricsService} from "../../core/services/metrics/metrics.service";
+import {BadgeModule} from "primeng/badge";
 
 export interface Metric {
   label: string; // Nombre de la métrica, como "Revenue", "Orders Today", etc.
@@ -44,6 +45,7 @@ export interface RecentActivity {
     QuickActionsComponent,
     DatePipe,
     KeyMetricsComponent,
+    BadgeModule,
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'

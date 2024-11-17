@@ -1,8 +1,9 @@
 package com.kaiho.gastromanager.domain.ingredient.usecase;
 
-import com.kaiho.gastromanager.domain.ingredient.exception.IngredientDoesNotExistExceptionException;
+import com.kaiho.gastromanager.domain.ingredient.exception.IngredientDoesNotExistException;
 import com.kaiho.gastromanager.domain.ingredient.model.Ingredient;
 import com.kaiho.gastromanager.domain.ingredient.spi.IngredientPersistencePort;
+import com.kaiho.gastromanager.domain.inventorymovement.api.InventoryMovementServicePort;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,6 +19,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -30,6 +33,8 @@ class IngredientUseCaseTest {
 
     @Mock
     IngredientPersistencePort ingredientPersistencePort;
+    @Mock
+    InventoryMovementServicePort inventoryMovementServicePort;
 
     @Test
     void testFindAllIngredientsSuccess() {
@@ -86,7 +91,7 @@ class IngredientUseCaseTest {
         );
 
         //then
-        assertThat(thrown).isInstanceOf(IngredientDoesNotExistExceptionException.class)
+        assertThat(thrown).isInstanceOf(IngredientDoesNotExistException.class)
                 .hasMessage("Ingredient with UUID: " + uuid + " does not exist");
         verify(ingredientPersistencePort, times(1)).getIngredientByUuid(uuid);
     }
@@ -95,14 +100,17 @@ class IngredientUseCaseTest {
     void testCreateIngredientSuccess() {
         //given
         UUID uuid = UUID.randomUUID();
-        Ingredient ingredient = Ingredient.builder().name("eggs").build();
+        Ingredient ingredient = Ingredient.builder().minimumStockQuantity(10).availableStock(100).name("eggs").build();
         given(ingredientPersistencePort.addIngredient(any(Ingredient.class))).willReturn(uuid);
+
+
 
         //when
         UUID savedUuid = underTest.addIngredient(ingredient);
         //then
         assertThat(savedUuid).isEqualTo(uuid);
         verify(ingredientPersistencePort, times(1)).addIngredient(ingredient);
+        verify(inventoryMovementServicePort, times(1)).recordInventoryMovement(uuid, 100, "Initial stock");
     }
 
     @Test
@@ -120,7 +128,6 @@ class IngredientUseCaseTest {
                 .build();
 
         Ingredient updatedIngredient = Ingredient.builder()
-                .uuid(uuid)
                 .name("eggs")
                 .unit(UNITS)
                 .availableStock(9500)
@@ -130,7 +137,7 @@ class IngredientUseCaseTest {
                 .build();
 
         given(ingredientPersistencePort.getIngredientByUuid(uuid)).willReturn(Optional.of(oldIngredient));
-        given(ingredientPersistencePort.updateIngredient(any(Ingredient.class))).willReturn(updatedIngredient);
+        given(ingredientPersistencePort.updateIngredient(any(UUID.class),any(Ingredient.class))).willReturn(updatedIngredient);
 
         //when
         Ingredient result = underTest.updateIngredient(uuid, updatedIngredient);
@@ -142,7 +149,7 @@ class IngredientUseCaseTest {
         assertThat(result.pricePerUnit()).isEqualTo(updatedIngredient.pricePerUnit());
         assertThat(result.minimumStockQuantity()).isEqualTo(updatedIngredient.minimumStockQuantity());
         verify(ingredientPersistencePort, times(1)).getIngredientByUuid(uuid);
-        verify(ingredientPersistencePort, times(1)).updateIngredient(updatedIngredient);
+        verify(ingredientPersistencePort, times(1)).updateIngredient(uuid, updatedIngredient);
     }
 
     @Test
@@ -162,11 +169,11 @@ class IngredientUseCaseTest {
         given(ingredientPersistencePort.getIngredientByUuid(uuid)).willReturn(Optional.empty());
 
         //when
-        assertThrows(IngredientDoesNotExistExceptionException.class, () -> underTest.updateIngredient(uuid, updatedIngredient));
+        assertThrows(IngredientDoesNotExistException.class, () -> underTest.updateIngredient(uuid, updatedIngredient));
 
         //then
 
         verify(ingredientPersistencePort, times(1)).getIngredientByUuid(uuid);
-        verify(ingredientPersistencePort, times(0)).updateIngredient(updatedIngredient);
+        verify(ingredientPersistencePort, times(0)).updateIngredient(uuid, updatedIngredient);
     }
 }

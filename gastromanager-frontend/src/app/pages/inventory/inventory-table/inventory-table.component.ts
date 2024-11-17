@@ -1,5 +1,5 @@
 import {Component, computed, EventEmitter, Input, Output, signal, ViewChild} from '@angular/core';
-import {Table, TableModule} from "primeng/table";
+import {Table, TableModule, TableRowSelectEvent} from "primeng/table";
 import {IngredientResponseDto} from "../../../core/model/interfaces/IngredientResponseDto";
 import {CurrencyPipe} from "@angular/common";
 import {ToastModule} from "primeng/toast";
@@ -10,6 +10,8 @@ import {DialogModule} from "primeng/dialog";
 import {InputTextModule} from "primeng/inputtext";
 import {InventoryFormComponent} from "../inventory-form/inventory-form.component";
 import {Ripple} from "primeng/ripple";
+import {IngredientRequestDto} from "../../../core/model/interfaces/IngredientRequestDto";
+import {SidebarModule} from "primeng/sidebar";
 
 @Component({
   selector: 'gm-inventory-table',
@@ -24,7 +26,8 @@ import {Ripple} from "primeng/ripple";
     DialogModule,
     InputTextModule,
     InventoryFormComponent,
-    Ripple
+    Ripple,
+    SidebarModule
   ],
   templateUrl: './inventory-table.component.html',
   styleUrl: './inventory-table.component.scss'
@@ -35,37 +38,39 @@ export class InventoryTableComponent {
   @ViewChild('dt') table!: Table;
   @ViewChild('inventoryForm') inventoryForm!: InventoryFormComponent;
 
-  maximizeModal: boolean = false;
-  visibleModal: boolean = false;
+  isModalMaximized: boolean = false;
+  isModalVisible: boolean = false;
   // @Input() selectedIngredients: IngredientResponseDto[] = [];
   selectedIngredient?: IngredientResponseDto;
-  @Output() edit = new EventEmitter<any>();
+  @Output() edit = new EventEmitter<{ payload: IngredientRequestDto, uuid: string }>();
   @Output() delete = new EventEmitter<string>();
-  @Output() addNew = new EventEmitter<void>();
-  private _ingredients = signal<IngredientResponseDto[]>([]);
+  @Output() addNew = new EventEmitter<IngredientRequestDto>();
+  private ingredientList = signal<IngredientResponseDto[]>([]);
   // Computed signal para filtrado
   ingredients = computed(() => {
-    return this._ingredients();
+    return this.ingredientList();
   });
 
   // to receive the data from parent
   @Input()
   set data(value: IngredientResponseDto[]) {
-    this._ingredients.set(value);
+    this.ingredientList.set(value);
   }
 
   openNew() {
     this.selectedIngredient = undefined;
-    this.visibleModal = true;
+    this.isModalVisible = true;
   }
 
   hideDialog(): void {
-    this.visibleModal = false;
+    this.isModalVisible = false;
+    this.selectedIngredient = undefined;  // Desseleccionamos el ingrediente
+    this.table.clear();  // Limpiamos la selección en la tabla
   }
 
   editIngredient(ingredient: IngredientResponseDto) {
     this.selectedIngredient = ingredient;
-    this.visibleModal = true;
+    this.isModalVisible = true;
   }
 
   deleteIngredient(ingredientUuid: string) {
@@ -78,10 +83,11 @@ export class InventoryTableComponent {
 
   // TODO: CAMBIAR TIPO y separar el uuid del ingredient, ambos parametros estan llevando el uuid
 
-  // request ing without uuid and emit an object with the payload and the uuid
-  onFormSubmit(ingredient: any) {
+  onFormSubmit(ingredient: IngredientRequestDto) {
     if (this.selectedIngredient) {
-      this.edit.emit({payload: ingredient, uuid: this.selectedIngredient.uuid});
+      const ingredientData = { ...ingredient };
+      delete ingredientData.availableStock;  // Quitar availableStock solo en edición
+      this.edit.emit({ payload: ingredientData, uuid: this.selectedIngredient.uuid });
     } else {
       this.addNew.emit(ingredient);
     }
@@ -89,11 +95,26 @@ export class InventoryTableComponent {
   }
 
   isMaximized(event: any): boolean {
-    this.maximizeModal = event.maximized;
-    return this.maximizeModal;
+    this.isModalMaximized = event.maximized;
+    return this.isModalMaximized;
   }
 
-  /*  onRowSelect($event: TableRowSelectEvent) {
+    onRowSelect($event: TableRowSelectEvent) {
       console.dir($event) //selected
-    }*/
+      this.selectedIngredient = $event.data;
+      this.openSidebar()
+    }
+  sidebarVisible: boolean = false;
+
+  // Abrir el sidebar
+  openSidebar() {
+    this.sidebarVisible = true;
+  }
+
+  // Cerrar el sidebar
+  closeSidebar() {
+    this.sidebarVisible = false;
+    this.selectedIngredient = undefined;  // Desseleccionamos el ingrediente
+    this.table.clear();  // Limpiamos la selección en la tabla
+  }
 }

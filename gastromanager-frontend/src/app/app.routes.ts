@@ -38,8 +38,18 @@ export const routes: Routes = [
       },
       {
         path: 'orders',
-        loadComponent: () => import('./pages/order/order.component').then(m => m.OrderComponent),
-        canActivate: [authGuard]
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./pages/order/order.component').then(m => m.OrderComponent),
+            canActivate: [authGuard]
+          },
+          {
+            path: 'create-order',
+            loadComponent: () => import('./pages/order/create-order/create-order.component').then(m => m.CreateOrderComponent),
+            canActivate: [authGuard]
+          }
+        ]
       },
     ]
   }

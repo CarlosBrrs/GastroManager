@@ -1,0 +1,20 @@
+// Estilos para el elemento activo y los elementos adyacentes
+.active {
+  background-color: var(--surface-0);
+  position: relative;
+  color: var(--primary-color);
+
+  // Aplicar borde izquierdo para diferenciar el elemento activo
+  border-left: 5px solid var(--primary-color);
+
+  // Efecto especial para íconos y texto dentro del item activo
+  .pi,
+  .menu-label {
+    color: var(--primary-color);
+  }
+}
+
+// Efecto de transición suave para los elementos adyacentes
+.p-menuitem-link {
+  transition: all 0.5s ease;
+}

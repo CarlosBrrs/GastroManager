@@ -3,6 +3,7 @@ package com.kaiho.gastromanager.domain.ingredient.api;
 import com.kaiho.gastromanager.domain.ingredient.model.Ingredient;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public interface IngredientServicePort {
@@ -13,4 +14,7 @@ public interface IngredientServicePort {
     UUID addIngredient(Ingredient ingredient);
 
     Ingredient updateIngredient(UUID uuid, Ingredient ingredient);
+
+    UUID adjustIngredientStock(UUID ingredientUuid, int newStock);
+
 }

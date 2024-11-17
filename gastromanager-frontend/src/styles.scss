@@ -11,6 +11,12 @@
 // primeflex
 @import "primeflex/primeflex.css";
 
+// fontawsome
+@import '@fortawesome/fontawesome-free/scss/fontawesome.scss';
+@import '@fortawesome/fontawesome-free/scss/regular.scss';
+@import '@fortawesome/fontawesome-free/scss/brands.scss';
+@import '@fortawesome/fontawesome-free/scss/solid.scss';
+
 // =============================================================================
 // Normalize.scss based on Nicolas Gallagher and Jonathan Neal's
 // normalize.css v2.1.3 | MIT License | git.io/normalize
@@ -325,7 +331,11 @@ sub {
 // =============================================================================
 // Lists
 // =============================================================================
-
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
 // Addresses margins set differently in IE6/7
 @if $legacy_support_for_ie {
 

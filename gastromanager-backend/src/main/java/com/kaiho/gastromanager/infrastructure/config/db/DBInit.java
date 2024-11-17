@@ -56,8 +56,8 @@ public class DBInit implements CommandLineRunner {
         createUserIfNotExists("chef", "Chef", "User", "+16723381841", "chef", Set.of(RoleType.ROLE_CHEF));
         createUserIfNotExists("kitchenstaff", "Kitchen", "Staff", "+16723381842", "kitchenstaff", Set.of(RoleType.ROLE_KITCHEN_STAFF));
         createUserIfNotExists("cashier", "Cashier", "User", "+16723381843", "cashier", Set.of(RoleType.ROLE_CASHIER));
-        productItemRepository.deleteAll();
-        List<IngredientEntity> ingredients = ingredientRepository.findAll();
+/*       productItemRepository.deleteAll();
+       List<IngredientEntity> ingredients = ingredientRepository.findAll();
 
         ProductItemEntity pancakes = createProduct("Pancakes", "Fluffy breakfast pancakes", 5.99, BREAKFAST);
         ProductItemEntity burger = createProduct("Classic Burger", "Beef burger with lettuce, tomato, and cheese", 9.99, LUNCH);
@@ -118,9 +118,10 @@ public class DBInit implements CommandLineRunner {
         //wrap
         List<String> wrapIngredients = List.of("Wraps", "Chicken Breast", "Lettuce", "Tomato", "Cheese", "Olive Oil");
         List<Double> wrapQuantities = List.of(2.0, 150.0, 50.0, 50.0, 50.0, 10.0);
-        createRelation(wrap, wrapIngredients, wrapQuantities, ingredients);
+        createRelation(wrap, wrapIngredients, wrapQuantities, ingredients);*/
     }
 
+/*
     private void createRelation(ProductItemEntity product, List<String> usedIngredients, List<Double> usedQuantities, List<IngredientEntity> ingredients) {
         if (usedIngredients.size() == usedQuantities.size()) {
             for (int i = 0; i < usedIngredients.size(); i++) {
@@ -138,6 +139,7 @@ public class DBInit implements CommandLineRunner {
             log.info("Dimensions are not equals");
         }
     }
+*/
 
     private void createUserIfNotExists(String username, String name, String lastname, String phone, String password, Set<RoleType> roles) {
         if (userPersistencePort.findUserByUsername(username).isEmpty()) {

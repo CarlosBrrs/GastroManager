@@ -5,11 +5,9 @@ import com.kaiho.gastromanager.application.order.dto.response.OrderResponseDto;
 import com.kaiho.gastromanager.application.order.handler.OrderHandler;
 import com.kaiho.gastromanager.domain.user.model.User;
 import com.kaiho.gastromanager.infrastructure.common.model.ApiGenericResponse;
-import io.jsonwebtoken.Jwt;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,7 +34,7 @@ public class OrderRestController {
     }
 
     @GetMapping("/{orderUuid}")
-    public ResponseEntity<ApiGenericResponse<OrderResponseDto>> getOrderByUUID(@PathVariable UUID orderUuid) {
+    public ResponseEntity<ApiGenericResponse<OrderResponseDto>> getOrderByUuid(@PathVariable UUID orderUuid) {
         ApiGenericResponse<OrderResponseDto> handlerResponse = orderHandler.getOrderByUUID(orderUuid);
         return new ResponseEntity<>(handlerResponse, HttpStatus.OK);
     }

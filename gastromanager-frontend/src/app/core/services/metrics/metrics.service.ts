@@ -53,6 +53,14 @@ export class MetricsService {
             tooltip: 'Average customer feedback rating',
             color: 'text-success'
           },
+          {
+            label: 'Another metric',
+            value: '4.5/5',
+            icon: 'pi pi-sitemap',
+            trend: 'up',
+            tooltip: 'Average customer feedback rating',
+            color: 'text-success'
+          },
         ];
 
       case 'ROLE_MANAGER':
@@ -97,6 +105,14 @@ export class MetricsService {
             tooltip: 'Overall inventory status',
             color: 'text-info'
           },
+          {
+            label: 'Another metric',
+            value: '4.5/5',
+            icon: 'pi pi-sitemap',
+            trend: 'up',
+            tooltip: 'Average customer feedback rating',
+            color: 'text-success'
+          },
         ];
 
       case 'ROLE_WAITER':
@@ -131,6 +147,14 @@ export class MetricsService {
             icon: 'pi pi-money-bill',
             trend: 'up',
             tooltip: 'Total tips earned today',
+            color: 'text-success'
+          },
+          {
+            label: 'Another metric',
+            value: '4.5/5',
+            icon: 'pi pi-sitemap',
+            trend: 'up',
+            tooltip: 'Average customer feedback rating',
             color: 'text-success'
           },
         ];
@@ -169,6 +193,14 @@ export class MetricsService {
             tooltip: 'Total refunds processed today',
             color: 'text-danger'
           },
+          {
+            label: 'Another metric',
+            value: '4.5/5',
+            icon: 'pi pi-sitemap',
+            trend: 'up',
+            tooltip: 'Average customer feedback rating',
+            color: 'text-success'
+          },
         ];
 
       case 'ROLE_CHEF':
@@ -204,6 +236,14 @@ export class MetricsService {
             trend: 'neutral',
             tooltip: 'Current inventory status in the kitchen',
             color: 'text-info'
+          },
+          {
+            label: 'Another metric',
+            value: '4.5/5',
+            icon: 'pi pi-sitemap',
+            trend: 'up',
+            tooltip: 'Average customer feedback rating',
+            color: 'text-success'
           },
         ];
 
@@ -241,6 +281,14 @@ export class MetricsService {
             tooltip: 'Number of staff currently working',
             color: 'text-info'
           },
+          {
+            label: 'Another metric',
+            value: '4.5/5',
+            icon: 'pi pi-sitemap',
+            trend: 'up',
+            tooltip: 'Average customer feedback rating',
+            color: 'text-success'
+          }
         ];
 
       default:

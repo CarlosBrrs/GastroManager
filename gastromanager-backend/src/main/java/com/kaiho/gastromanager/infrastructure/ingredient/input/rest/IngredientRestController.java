@@ -1,13 +1,17 @@
 package com.kaiho.gastromanager.infrastructure.ingredient.input.rest;
 
+import com.kaiho.gastromanager.application.ingredient.dto.request.AdjustStockRequestDto;
 import com.kaiho.gastromanager.application.ingredient.dto.request.IngredientRequestDto;
+import com.kaiho.gastromanager.application.ingredient.dto.request.UpdateIngredientRequestDto;
 import com.kaiho.gastromanager.application.ingredient.dto.response.IngredientResponseDto;
 import com.kaiho.gastromanager.application.ingredient.handler.IngredientHandler;
 import com.kaiho.gastromanager.infrastructure.common.model.ApiGenericResponse;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -38,14 +42,20 @@ public class IngredientRestController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiGenericResponse<UUID>> addIngredient(@RequestBody IngredientRequestDto ingredientRequestDto) {
+    public ResponseEntity<ApiGenericResponse<UUID>> addIngredient(@RequestBody @Valid IngredientRequestDto ingredientRequestDto) {
         return new ResponseEntity<>(ingredientHandler.addIngredient(ingredientRequestDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/{ingredientUuid}")
     public ResponseEntity<ApiGenericResponse<IngredientResponseDto>> updateIngredient(
-            @PathVariable UUID ingredientUuid, @RequestBody IngredientRequestDto ingredientRequestDto) {
+            @PathVariable UUID ingredientUuid, @RequestBody UpdateIngredientRequestDto ingredientRequestDto) {
         ApiGenericResponse<IngredientResponseDto> handlerResponse = ingredientHandler.updateIngredient(ingredientUuid, ingredientRequestDto);
         return new ResponseEntity<>(handlerResponse, HttpStatus.OK);
     }
+
+    @PatchMapping("/{ingredientUuid}/adjust-ingredient-stock")
+    public ResponseEntity<ApiGenericResponse<UUID>> adjustIngredientStock(@PathVariable UUID ingredientUuid, @RequestBody @Valid AdjustStockRequestDto adjustStockRequestDto) {
+        return new ResponseEntity<>(ingredientHandler.adjustIngredientStock(ingredientUuid, adjustStockRequestDto), HttpStatus.OK);
+    }
+
 }

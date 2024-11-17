@@ -1,12 +1,15 @@
 package com.kaiho.gastromanager.domain.order.usecase;
 
+import com.kaiho.gastromanager.domain.ingredient.api.IngredientServicePort;
+import com.kaiho.gastromanager.domain.ingredient.model.Ingredient;
 import com.kaiho.gastromanager.domain.order.api.OrderServicePort;
 import com.kaiho.gastromanager.domain.order.model.Order;
 import com.kaiho.gastromanager.domain.order.spi.OrderPersistencePort;
-import com.kaiho.gastromanager.domain.orderitem.api.OrderItemServicePort;
 import com.kaiho.gastromanager.domain.orderitem.model.OrderItem;
 import com.kaiho.gastromanager.domain.productitem.api.ProductItemServicePort;
 import com.kaiho.gastromanager.domain.productitem.model.ProductItem;
+import com.kaiho.gastromanager.domain.productitemingredient.api.ProductItemIngredientServicePort;
+import com.kaiho.gastromanager.domain.productitemingredient.model.ProductItemIngredient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +25,8 @@ public class OrderUseCase implements OrderServicePort {
 
     private final OrderPersistencePort orderPersistencePort;
     private final ProductItemServicePort productItemServicePort;
+    private final ProductItemIngredientServicePort productItemIngredientServicePort;
+    private final IngredientServicePort ingredientServicePort;
 
     @Override
     public List<Order> getAllOrders() {
@@ -72,7 +77,39 @@ public class OrderUseCase implements OrderServicePort {
                 .orderItems(orderItemsWithPrices)
                 .build();
 
-        return orderPersistencePort.createOrder(orderWithAmount).uuid();
+        // TODO: Verificar que se cuenta con el stock necesario para crear la orden
+        // TODO: Esto tal vez deberia hacerse antes de hacer todo el proceso de creacion de orden, deshabilitar productos que no tengan suficiente stock
 
+        UUID placedOrderUuid = orderPersistencePort.createOrder(orderWithAmount).uuid();
+
+        //TODO: Este ajuste se deberia hacer cuando la orden se inicie a preparar en cocina, no cuando se coloque la orden
+        decreaseIngredientsStockOrder(orderWithAmount.orderItems());
+        return placedOrderUuid;
+
+    }
+
+    private void decreaseIngredientsStockOrder(List<OrderItem> orderItems) {
+// Obtener los UUIDs de los productos ordenados
+        List<UUID> productItemUuids = orderItems.stream()
+                .map(OrderItem::productItemUuid)
+                .toList();
+
+        // Consultar la tabla productitemingredient para obtener las relaciones
+        List<ProductItemIngredient> productItemIngredients = productItemIngredientServicePort.getByProductItemUuids(productItemUuids);
+
+        // Disminuir el stock de los ingredientes
+        for (OrderItem orderItem : orderItems) {
+            // Encontrar las relaciones de ingredientes correspondientes al ProductItem de este OrderItem
+            List<ProductItemIngredient> relatedIngredients = productItemIngredients.stream()
+                    .filter(ingredient -> ingredient.productItemUuid().equals(orderItem.productItemUuid()))
+                    .toList();
+
+            // Disminuir el stock de cada ingrediente relacionado
+            for (ProductItemIngredient productItemIngredient : relatedIngredients) {
+                Ingredient ingredient = ingredientServicePort.getIngredientById(productItemIngredient.ingredientUuid());
+                double quantityToDecrease = orderItem.quantity() * productItemIngredient.quantity();  // Cantidad a reducir por el multiplicador
+                ingredientServicePort.adjustIngredientStock(productItemIngredient.ingredientUuid(), (int) (ingredient.availableStock() - quantityToDecrease));
+            }
+        }
     }
 }

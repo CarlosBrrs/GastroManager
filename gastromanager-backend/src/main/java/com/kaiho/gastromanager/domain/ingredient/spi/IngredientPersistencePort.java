@@ -11,8 +11,11 @@ public interface IngredientPersistencePort {
     List<Ingredient> getAllIngredients();
 
     Optional<Ingredient> getIngredientByUuid(UUID uuid);
+    boolean ingredientExistsByName(String name);
 
     UUID addIngredient(Ingredient ingredient);
 
-    Ingredient updateIngredient(Ingredient ingredient);
+    Ingredient updateIngredient(UUID uuid, Ingredient ingredient);
+
+    UUID updateIngredientStock(UUID ingredientUuid, int newStock);
 }

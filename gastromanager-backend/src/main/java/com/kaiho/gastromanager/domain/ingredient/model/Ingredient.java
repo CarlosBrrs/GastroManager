@@ -18,4 +18,9 @@ public record Ingredient(
         Instant createdDate,
         String updatedBy,
         Instant updatedDate) {
+
+//    public Ingredient adjustAvailableStock(int newStock) {
+//        return new Ingredient(this.uuid, this.name, newStock, this.unit, this.pricePerUnit, this.supplier,
+//                this.minimumStockQuantity, this.createdBy, this.createdDate, this.updatedBy, this.updatedDate);
+//    }
 }

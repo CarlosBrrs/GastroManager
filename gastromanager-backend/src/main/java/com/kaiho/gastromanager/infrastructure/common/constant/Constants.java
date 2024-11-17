@@ -16,6 +16,7 @@ public abstract class Constants {
     public static final String ROLES_CONTROLLER = "/roles";
     public static final String PRODUCT_ITEMS_CONTROLLER = "/product-items";
     public static final String ORDERS_CONTROLLER = "/orders";
+    public static final String INVENTORY_MOVEMENT_CONTROLLER = "/inventory-movements";
     public static final String INGREDIENT_UUID_PARAMETER = "/{ingredientUuid}";
     public static final String USER_UUID_PARAMETER = "/{userUuid}";
     public static final String ROLE_UUID_PARAMETER = "/{roleUuid}";

@@ -15,6 +15,8 @@ public class ProductItemIngredientEntityMapper {
             return null;
         }
         return ProductItemIngredient.builder()
+                .uuid(productItemIngredientEntity.getUuid())
+                .productItemUuid(productItemIngredientEntity.getProductItem().getUuid())
                 .ingredientUuid(productItemIngredientEntity.getIngredient().getUuid())
                 .quantity(productItemIngredientEntity.getQuantity())
                 .build();

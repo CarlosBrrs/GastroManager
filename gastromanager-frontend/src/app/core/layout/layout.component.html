@@ -1,10 +1,10 @@
 <div class="layout-wrapper">
-  @if (isLoggedIn() && tokenRole()) {
-    <header class="header-container">
-      <gm-header [role]="tokenRole()" [restaurants]="restaurants" [assignedRestaurant]="assignedRestaurant"
-                 (restaurantSelection)="onRestaurantSelection($event)"></gm-header>
-    </header>
-  }
+<!--  @if (isLoggedIn() && tokenRole()) {-->
+<!--    <header class="header-container">-->
+<!--      <gm-header [role]="tokenRole()" [restaurants]="restaurants" [assignedRestaurant]="assignedRestaurant"-->
+<!--                 (restaurantSelection)="onRestaurantSelection($event)"></gm-header>-->
+<!--    </header>-->
+<!--  }-->
   <div class="main-wrapper">
 
     @if (isLoggedIn()) {
@@ -17,10 +17,10 @@
       <router-outlet></router-outlet>
     </div>
   </div>
-  @if (isLoggedIn()) {
-    <footer class="footer-container">
+<!--  @if (isLoggedIn()) {-->
+<!--    <footer class="footer-container">-->
 
-      <gm-footer></gm-footer>
-    </footer>
-  }
+<!--      <gm-footer></gm-footer>-->
+<!--    </footer>-->
+<!--  }-->
 </div>

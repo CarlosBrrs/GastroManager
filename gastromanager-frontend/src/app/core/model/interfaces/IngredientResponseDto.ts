@@ -1,8 +1,9 @@
 export interface IngredientResponseDto {
-  uuid: string
-  name: string
-  availableStock: number
-  unit: string
-  pricePerUnit: number
-  updatedDate: string
+  uuid: string;
+  name: string;
+  availableStock: number;
+  unit: string;
+  pricePerUnit: number;
+  minimumStockQuantity: number;
+  // updatedDate: string;
 }

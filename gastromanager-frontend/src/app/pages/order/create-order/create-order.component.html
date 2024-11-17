@@ -1,0 +1,156 @@
+
+<p-confirmDialog />
+<p-splitter
+  [panelSizes]="[65, 35]"
+  [minSizes]="[65,35]"
+  [style]="{ height: '100%' }">
+
+
+  <ng-template pTemplate>
+    <div class="col flex align-items-start justify-content-start overflow-y-auto overflow-x-hidden">
+      <div class="card">
+        <p-tabView class="flex flex-column w-full">
+          <p-tabPanel header="ALL MENU ITEMS">
+            <ng-template pTemplate="content">
+              <div class="flex flex-wrap items-container pt-4">
+                @for (product of productItems(); track product.uuid) {
+                  <gm-menu-item-card class="menu-item-card" [product]="product"
+                                     (addToOrder)="addToOrder(product)"></gm-menu-item-card>
+                }
+              </div>
+            </ng-template>
+          </p-tabPanel>
+          @for (category of categories(); track $index) {
+            <p-tabPanel [header]="category">
+              <ng-template pTemplate="content">
+                <div class="flex flex-wrap items-container pt-4">
+                  @for (product of getProductsByCategory(category); track product.uuid) {
+                    <gm-menu-item-card class="menu-item-card" [product]="product"
+                                       (addToOrder)="addToOrder(product)"></gm-menu-item-card>
+                  }
+                </div>
+              </ng-template>
+            </p-tabPanel>
+
+          }
+
+        </p-tabView>
+      </div>
+    </div>
+  </ng-template>
+  <!-- Panel derecho - Detalles de la orden -->
+  <ng-template pTemplate>
+    <div class="col flex flex-column h-full p-2 gap-2">
+      <!-- Encabezado de la orden -->
+      <div class="order-header border-bottom-1 surface-border pb-2">
+        <h2 class="text-xl font-bold m-0">Order details</h2>
+        <!--        <span class="text-500">{{ currentDate | date:'medium' }}</span>-->
+      </div>
+
+      <!-- formulario-->
+      <form (ngSubmit)="confirm1($event)" [formGroup]="orderForm" class="flex-grow-1 flex flex-column overflow-y-auto">
+        <!-- Lista de items seleccionados -->
+
+        <!-- Notas del cliente - Fuera del formArrayName -->
+        @if (selectedProducts.length > 0) {
+          <textarea
+            formControlName="customerNotes"
+            class="mb-2"
+            [autoResize]="true"
+            cols="55"
+            rows="1"
+            placeholder="Customer notes for the order..."
+            pInputTextarea>
+        </textarea>
+        }
+
+        <!-- Lista de items seleccionados -->
+        <div class="order-items flex-grow-1 overflow-y-auto overflow-x-hidden">
+          @if (selectedProducts.length === 0) {
+            <div class="flex flex-column align-items-center justify-content-center p-5 text-500">
+              <i class="pi pi-shopping-cart text-4xl mb-3"></i>
+              <span>Your order is empty</span>
+              <span class="text-sm">Pick something from the menu to your left to start</span>
+            </div>
+          } @else {
+            <div formArrayName="orderItems">
+              @for (item of selectedProducts; track item.uuid; let i = $index) {
+                <div [formGroupName]="i"
+                     class="order-item flex align-items-center justify-content-between py-3 px-2 border-round-lg mb-2 surface-ground">
+                  <!-- Imagen y detalles -->
+                  <div class="flex align-items-center gap-2">
+                    <div class="item-image border-circle overflow-hidden"
+                         style="width: 40px; height: 40px;">
+                      <img ngSrc="/assets/images/testfood.jpeg"
+                           [alt]="item.name"
+                           class="w-full h-full"
+                           style="object-fit: cover;" height="315" width="474">
+                    </div>
+                    <div class="item-details">
+                      <div class="font-semibold">{{ item.name }}</div>
+                      <div class="text-500 text-sm">{{ item.price | currency }}</div>
+                    </div>
+                  </div>
+
+                  <!-- Control de cantidad y botón eliminar -->
+                  <div class="flex align-items-center gap-2 ml-auto">
+                    <div class="card flex justify-content-center">
+                      <p-inputNumber
+                        formControlName="quantity"
+                        [showButtons]="true"
+                        buttonLayout="horizontal"
+                        [size]="1"
+                        [min]="1"
+                        [allowEmpty]="false"
+                        incrementButtonIcon="pi pi-plus"
+                        decrementButtonIcon="pi pi-minus"
+                        (onInput)="onQuantityChange(i, $event)"
+                      >
+                      </p-inputNumber>
+                    </div>
+
+                    <p-button
+                      type="button"
+                      icon="pi pi-trash"
+                      class="p-button-danger p-button-sm"
+                      (click)="removeItem(i)"
+                    >
+                    </p-button>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+        <!--         Resumen y totales -->
+        <div class="order-summary border-top-1 surface-border pt-2 pb-2">
+          <div class="flex justify-content-between mb-2">
+            <span class="text-500">Subtotal</span>
+                        <span>{{ getSubtotal() | currency }}</span>
+          </div>
+          <div class="flex justify-content-between mb-2">
+            <span class="text-500">Taxes</span>
+                        <span>{{ getTax() | currency }}</span>
+          </div>
+
+          <div class="flex justify-content-between font-bold text-xl">
+            <span>Total</span>
+                        <span>{{ getTotal() | currency }}</span>
+          </div>
+        </div>
+
+        <!--         Botón de ordenar -->
+        <div class="order-actions">
+          <p-button
+            label="Place order"
+            icon="pi pi-check"
+            [disabled]="selectedProducts.length === 0 || !orderForm.valid"
+            styleClass="w-full p-button-raised"
+            type="submit">
+          </p-button>
+        </div>
+      </form>
+    </div>
+  </ng-template>
+</p-splitter>

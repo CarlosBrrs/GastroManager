@@ -2,12 +2,15 @@ package com.kaiho.gastromanager.infrastructure.common.exceptionhandler;
 
 import com.kaiho.gastromanager.domain.common.exception.EntityAlreadyExistsException;
 import com.kaiho.gastromanager.domain.common.exception.EntityDoesNotExistException;
+import com.kaiho.gastromanager.domain.inventorymovement.exception.InvalidInventoryMovementQuantityException;
 import com.kaiho.gastromanager.infrastructure.common.model.ApiGenericResponse;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -55,6 +58,12 @@ public class ControllerAdvice {
         return new ResponseEntity<>(response, NOT_FOUND);
     }
 
+    @ExceptionHandler(InvalidInventoryMovementQuantityException.class)
+    public ResponseEntity<ApiGenericResponse<Object>> handleInvalidInventoryMovementQuantityException(InvalidInventoryMovementQuantityException ex) {
+        ApiGenericResponse<Object> response = buildErrorResponse(ex.getMessage());
+        return new ResponseEntity<>(response, BAD_REQUEST);
+    }
+
     /*extends DataAccessException*/
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ApiGenericResponse<Object>> handleSqlException(DataIntegrityViolationException ex) {
@@ -63,9 +72,14 @@ public class ControllerAdvice {
     }
 
     @ExceptionHandler(InsufficientAuthenticationException.class)
-    public ResponseEntity<ApiGenericResponse<Object>> handleAllExceptions(InsufficientAuthenticationException ex) {
+    public ResponseEntity<ApiGenericResponse<Object>> handleInsufficientAuthenticationException(InsufficientAuthenticationException ex) {
         ApiGenericResponse<Object> response = buildErrorResponse(ex.getMessage() + ". You are not allowed to perform this action");
         return new ResponseEntity<>(response, FORBIDDEN);
+    }
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiGenericResponse<Object>> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        ApiGenericResponse<Object> response = buildErrorResponse(ex.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+        return new ResponseEntity<>(response, BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)

@@ -1,6 +1,7 @@
-<div class="container m-3 flex flex-column">
+
+<div class="container flex flex-column">
   @if (userInfo) {
-    <div class="flex justify-content-between align-items-center p-3 border-solid surface-border border-round mb-3">
+    <div class="flex justify-content-between align-items-center mb-3">
       <!-- Left side: Welcome message -->
       <div class="welcome-message text-start">
         <h2 class="m-0">Hello, {{ userInfo.name }}!</h2>
@@ -17,9 +18,10 @@
     </div>
 
     <div class="home-body flex gap-4">
-      <gm-quick-actions class="w-4" [actions]="actions" (execute)="onQuickAction($event)"></gm-quick-actions>
-      <gm-key-metrics [metrics]="summaryMetrics" class="w-8 border-solid surface-border border-round"></gm-key-metrics>
+      <gm-quick-actions class="w-3" [actions]="actions" (execute)="onQuickAction($event)"></gm-quick-actions>
+      <gm-key-metrics [metrics]="summaryMetrics" class="min-h-full max-w-30rem"></gm-key-metrics>
     </div>
+    <p>tabla de info de productos, por ej inventario bajo</p>
   } @else {
 
   }

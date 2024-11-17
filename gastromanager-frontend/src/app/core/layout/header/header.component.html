@@ -2,7 +2,7 @@
   <div class="p-toolbar-group-left gap-4">
     <div class="company-logo">
       <img ngSrc="assets/images/icon.png" alt="icon" height="40" width="40"></div>
-    <p-button icon="pi pi-bars" (click)="toggleSidebar()" class="p-button-secondary"></p-button>
+    <p-button [outlined]="true" icon="pi pi-bars" (click)="toggleSidebar()" class="p-button-secondary" [style]="{border: 'none'}"></p-button>
   </div>
 
   <div class="p-toolbar-group-center">
@@ -22,6 +22,7 @@
   </div>
 
   <div class="p-toolbar-group-right">
+    <i class="pi pi-bell mr-4 p-text-secondary" pBadge style="font-size: 2rem" value="2"></i>
     <p-button icon="pi pi-user" [rounded]="true" severity="info" [outlined]="true" (onClick)="op.toggle($event)"/>
     <p-overlayPanel #op>
       <div class="flex flex-column gap-3 w-15rem">

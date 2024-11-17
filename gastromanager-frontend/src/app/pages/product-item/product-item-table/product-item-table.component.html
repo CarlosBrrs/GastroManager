@@ -1,9 +1,14 @@
 <div class="card">
   <h2 class="mb-4">Manage Product Items</h2>
   <p-toolbar styleClass="mb-4 gap-2">
-    <ng-template pTemplate="left">
-      <div class="flex gap-2">
-        <span class="p-input-icon-left">
+    <div class="flex align-items-center w-full justify-content-between">
+      <p-button
+        (onClick)="openNew()"
+        class="mr-2"
+        icon="pi pi-plus"
+        label="Add new product item"
+        severity="success"/>
+      <span class="p-input-icon-left">
                     <i class="pi pi-search"></i>
                     <input
                       (input)="onGlobalFilter(dt, $event)"
@@ -11,14 +16,7 @@
                       placeholder="Search..."
                       type="text"/>
                 </span>
-        <p-button
-          (onClick)="openNew()"
-          class="mr-2"
-          icon="pi pi-plus"
-          label="Add new product item"
-          severity="success"/>
-      </div>
-    </ng-template>
+    </div>
 
   </p-toolbar>
 
@@ -65,6 +63,9 @@
           Price
           <p-sortIcon field="price"/>
         </th>
+<!--        <th pResizableColumn scope="col" style="min-width:10rem">-->
+<!--          Enable for menu-->
+<!--        </th>-->
         <th pResizableColumn scope="col">Edit - Delete</th>
       </tr>
     </ng-template>
@@ -79,7 +80,12 @@
           {{ productItem.description }}
         </td>
         <td>{{ productItem.price  | currency: 'CAD':'symbol-narrow': '1.2-5' }}</td>
-
+<!--        <td>
+          <p-checkbox
+            [binary]="true"
+            [(ngModel)]="productItem.isEnabled"
+            (onChange)="onToggleEnableConfirm(productItem, $event)"
+            [inputId]="productItem.uuid"/>-->
         <td>
           <p-button
             (onClick)="editProductItem(productItem)"
@@ -126,5 +132,6 @@
       </gm-product-item-form>
     }
   </p-dialog>
+  <p-confirmDialog></p-confirmDialog>
 </div>
 

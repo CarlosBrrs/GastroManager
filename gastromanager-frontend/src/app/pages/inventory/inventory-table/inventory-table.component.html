@@ -2,27 +2,25 @@
   <h2 class="mb-4">Manage Iventory</h2>
   <div class="card">
 
-    <p-toolbar styleClass="mb-4 gap-2">
-      <ng-template pTemplate="left">
-        <div class="flex align-items-center justify-content-between">
+    <p-toolbar styleClass="mb-4">
+      <div class="flex align-items-center w-full justify-content-between">
 
-          <p-button
-            (onClick)="openNew()"
-            class="mr-2"
-            icon="pi pi-plus"
-            label="Add new ingredient"
-            severity="success"/>
-          <span class="p-input-icon-left">
+        <p-button
+          (onClick)="openNew()"
+          class="mr-2"
+          icon="pi pi-plus"
+          label="Add new ingredient"
+          severity="success"/>
+        <span class="p-input-icon-left">
                     <i class="pi pi-search"></i>
                     <input
                       (input)="onGlobalFilter(dt, $event)"
                       pInputText
                       placeholder="Search..."
+
                       type="text"/>
                 </span>
-        </div>
-      </ng-template>
-
+      </div>
     </p-toolbar>
 
     <p-table
@@ -40,9 +38,9 @@
       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
       dataKey="uuid"
       selectionMode="single"
+      (onRowSelect)="onRowSelect($event)"
     >
-      <!--      (onRowSelect)="onRowSelect($event)"
-            (onRowUnselect)="onRowSelect($event)"-->
+<!--      (onRowUnselect)="onRowSelect($event)"-->
       <!--      <ng-template pTemplate="caption">-->
 
       <!--      </ng-template>-->
@@ -109,19 +107,37 @@
         </div>
       </ng-template>
     </p-table>
+
+    <p-sidebar [(visible)]="sidebarVisible" position="right" (onHide)="closeSidebar()" styleClass="w-30rem">
+      <h3>Ingredient Details</h3>
+      <!-- Verifica si hay un ingrediente seleccionado antes de mostrar los detalles -->
+      @if (selectedIngredient) {
+        <div>
+          <p><strong>Name:</strong> {{ selectedIngredient.name }}</p>
+          <p><strong>Price per unit:</strong> {{ selectedIngredient.pricePerUnit | currency: 'CAD':'symbol-narrow': '1.2-5' }}</p>
+          <p><strong>Unit:</strong> {{ selectedIngredient.unit }}</p>
+          <!-- Agrega más detalles aquí si es necesario -->
+        </div>
+      } @else {
+        <div>
+          <p>No ingredient selected.</p>
+        </div>
+      }
+    </p-sidebar>
+
     <p-dialog
       (onHide)="hideDialog()"
       (onMaximize)="isMaximized($event)"
-      [(visible)]="visibleModal"
+      [(visible)]="isModalVisible"
       [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
       [maximizable]="true"
       [modal]="true"
-      [style]="maximizeModal ? {} : {width: '800px', maxHeight: '600px'}"
+      [style]="isModalMaximized ? {} : {width: '800px', maxHeight: '600px'}"
       header="Ingredient Details"
       styleClass="p-fluid"
     >
 
-      @if (visibleModal) {
+      @if (isModalVisible) {
         <gm-inventory-form
           #inventoryForm
           [initialIngredient]="selectedIngredient"

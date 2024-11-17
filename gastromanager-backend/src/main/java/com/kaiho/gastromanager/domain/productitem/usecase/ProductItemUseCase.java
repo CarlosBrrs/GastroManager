@@ -71,6 +71,7 @@ public class ProductItemUseCase implements ProductItemServicePort {
 
     @Override
     public List<ProductItem> getAllProductItemsByUuid(List<UUID> uuids) {
+        // TODO: Lanzar excepcion aqui para UUID no relacionados a productitems
         return productItemPersistencePort.findAllProductItemsByUuid(uuids);
     }
 

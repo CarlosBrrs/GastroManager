@@ -37,11 +37,13 @@
                    required/>
 
   </div>
+  @if (!initialIngredient) {
   <div class="field">
     <label for="availableStock">Stock level:</label>
     <p-inputNumber [min]="0" formControlName="availableStock" id="availableStock" inputId="availableStock"
                    required/>
   </div>
+  }
   <div class="field">
     <label for="unit">Unit:</label>
     @for (unit of units; track unit.symbol) {
@@ -73,7 +75,7 @@
     </button>
     <button
       [disabled]="!ingredientForm.valid"
-      label="Save"
+      [label]="initialIngredient ? 'Update': 'Save'"
       pButton
       type="submit">
     </button>

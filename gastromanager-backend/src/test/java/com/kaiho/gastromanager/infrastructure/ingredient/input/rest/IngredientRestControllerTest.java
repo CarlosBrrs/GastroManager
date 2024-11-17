@@ -2,9 +2,10 @@ package com.kaiho.gastromanager.infrastructure.ingredient.input.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kaiho.gastromanager.application.ingredient.dto.request.IngredientRequestDto;
+import com.kaiho.gastromanager.application.ingredient.dto.request.UpdateIngredientRequestDto;
 import com.kaiho.gastromanager.application.ingredient.dto.response.IngredientResponseDto;
 import com.kaiho.gastromanager.application.ingredient.handler.IngredientHandler;
-import com.kaiho.gastromanager.domain.ingredient.exception.IngredientDoesNotExistExceptionException;
+import com.kaiho.gastromanager.domain.ingredient.exception.IngredientDoesNotExistException;
 import com.kaiho.gastromanager.domain.ingredient.model.Unit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -122,7 +123,7 @@ class IngredientRestControllerTest {
     void testGetIngredientByIdNotFound() throws Exception {
         UUID uuid = UUID.randomUUID();
         given(ingredientHandler.getIngredientById(uuid)).willThrow(
-                new IngredientDoesNotExistExceptionException(uuid.toString())
+                new IngredientDoesNotExistException(uuid.toString())
         );
 
         this.mockMvc.perform(get(this.baseUrl + "/ingredients/" + uuid)
@@ -160,9 +161,8 @@ class IngredientRestControllerTest {
     @Test
     void testUpdateIngredientSuccess() throws Exception {
         UUID uuid = UUID.randomUUID();
-        IngredientRequestDto requestDto = IngredientRequestDto.builder()
+        UpdateIngredientRequestDto requestDto = UpdateIngredientRequestDto.builder()
                 .name("Oil")
-                .availableStock(3000)
                 .minimumStockQuantity(500)
                 .supplier("Oil supplier")
                 .unit("MILLILITRES")
@@ -178,7 +178,7 @@ class IngredientRestControllerTest {
                 .updatedDate(Instant.now())
                 .build();
 
-        given(ingredientHandler.updateIngredient(any(UUID.class),any(IngredientRequestDto.class))).willReturn(
+        given(ingredientHandler.updateIngredient(any(UUID.class),any(UpdateIngredientRequestDto.class))).willReturn(
                 buildSuccessResponse("Ingredient updated successfully", updated)
         );
 
@@ -200,17 +200,16 @@ class IngredientRestControllerTest {
     @Test
     void testUpdateIngredientNonExistingUuidException() throws Exception {
         UUID uuid = UUID.randomUUID();
-        IngredientRequestDto requestDto = IngredientRequestDto.builder()
+        UpdateIngredientRequestDto requestDto = UpdateIngredientRequestDto.builder()
                 .name("Oil")
-                .availableStock(3000)
                 .minimumStockQuantity(500)
                 .supplier("Oil supplier")
                 .unit("MILLILITRES")
                 .pricePerUnit(0.006)
                 .build();
 
-        given(ingredientHandler.updateIngredient(any(UUID.class),any(IngredientRequestDto.class))).willThrow(
-                new IngredientDoesNotExistExceptionException(uuid.toString()));
+        given(ingredientHandler.updateIngredient(any(UUID.class),any(UpdateIngredientRequestDto.class))).willThrow(
+                new IngredientDoesNotExistException(uuid.toString()));
 
         this.mockMvc.perform(put(this.baseUrl + "/ingredients/" + uuid)
                         .characterEncoding(StandardCharsets.UTF_8)

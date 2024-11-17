@@ -29,12 +29,13 @@
 
     .sidebar-container {
       flex: 0 0 200px;
-      //overflow-y: scroll;
+      overflow-y: auto;
     }
 
     .main-container {
-      overflow-y: scroll;
+      overflow-y: auto;
       flex: 1 0 0;
+      padding: 15px;
     }
   }
 }

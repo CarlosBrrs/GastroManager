@@ -38,6 +38,6 @@ public class ProductItemIngredientEntity extends Auditable implements Serializab
     private IngredientEntity ingredient;
 
     @Column(nullable = false)
-    private double quantity; // Quantity of the ingredient for the dish
+    private double quantity;
 
 }

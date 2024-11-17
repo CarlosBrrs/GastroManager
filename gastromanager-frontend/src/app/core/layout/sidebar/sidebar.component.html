@@ -1,13 +1,14 @@
-<div class="flex">
-  <p-menu [model]="items">
+<div class="flex h-full">
+  <p-menu class="flex h-full" [model]="items">
 
     <ng-template let-item pTemplate="item">
-      <a [routerLink]="item.route" class="p-menuitem-link flex flex-column">
+      <a [routerLink]="item.route" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{exact: true}"
+         class="p-menuitem-link flex flex-column">
         <div [class]="item.icon" style="color: var(--primary-color); font-size: 1.5rem"></div>
         <div class="menu-label">{{ item.label }}</div>
       </a>
-
     </ng-template>
+
   </p-menu>
 </div>
 

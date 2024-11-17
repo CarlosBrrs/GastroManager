@@ -5,6 +5,7 @@ import {ApiGenericResponse} from "../../model/interfaces/ApiGenericResponse";
 import {Router} from "@angular/router";
 import {jwtDecode} from 'jwt-decode';
 import {BaseHttpService} from "../basehttp/base-http.service";
+import {DecodedToken} from "../../model/interfaces/DecodedToken";
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,7 @@ export class AuthService extends BaseHttpService {
 
   isLoggedIn;
   private tokenKey: string = "jwtToken";
+  private userInfoKey: string = "userInfo";
   private roles: string[] = [];
 
   constructor(private router: Router) {
@@ -29,7 +31,7 @@ export class AuthService extends BaseHttpService {
       tap(response => {
         if (response.flag) {
           const token = response.data;
-          const decodedToken: any = jwtDecode(token);
+          const decodedToken: DecodedToken = jwtDecode<DecodedToken>(token);
           this.roles = decodedToken.roles;
           this.setTokenInSystem(token);
           this.isLoggedIn.set(this.hasToken());
@@ -41,7 +43,7 @@ export class AuthService extends BaseHttpService {
   getUserUuid(): string {
     const tokenFromSystem = this.getTokenFromSystem();
     if (tokenFromSystem) {
-      const decodedToken: any = jwtDecode(tokenFromSystem);
+      const decodedToken: DecodedToken = jwtDecode<DecodedToken>(tokenFromSystem);
       return decodedToken.uuid;
     }
     return "";
@@ -61,6 +63,7 @@ export class AuthService extends BaseHttpService {
 
   logout(): void {
     localStorage.removeItem(this.tokenKey);
+    localStorage.removeItem(this.userInfoKey);
     this.isLoggedIn.set(false);  // Cambiamos el signal a false al cerrar sesión
     this.router.navigate(["login"]);
   }
@@ -68,7 +71,7 @@ export class AuthService extends BaseHttpService {
   private loadRolesFromToken(): void {
     const token = localStorage.getItem(this.tokenKey);
     if (token) {
-      const decodedToken: any = jwtDecode(token);
+      const decodedToken: DecodedToken = jwtDecode<DecodedToken>(token);
       this.roles = decodedToken.roles || [];
     }
   }

@@ -4,11 +4,14 @@ import {CurrencyPipe} from "@angular/common";
 import {DialogModule} from "primeng/dialog";
 import {InputTextModule} from "primeng/inputtext";
 import {InventoryFormComponent} from "../../inventory/inventory-form/inventory-form.component";
-import {PrimeTemplate} from "primeng/api";
+import {ConfirmationService, MessageService, PrimeTemplate} from "primeng/api";
 import {Table, TableModule} from "primeng/table";
 import {ToolbarModule} from "primeng/toolbar";
 import {ProductItemResponseDto} from "../../../core/model/interfaces/ProductItemResponseDto";
 import {ProductItemFormComponent} from "../product-item-form/product-item-form.component";
+import {CheckboxChangeEvent, CheckboxModule} from "primeng/checkbox";
+import {ConfirmDialogModule} from "primeng/confirmdialog";
+import {FormsModule} from "@angular/forms";
 
 @Component({
   selector: 'gm-product-item-table',
@@ -22,7 +25,10 @@ import {ProductItemFormComponent} from "../product-item-form/product-item-form.c
     PrimeTemplate,
     TableModule,
     ToolbarModule,
-    ProductItemFormComponent
+    ProductItemFormComponent,
+    CheckboxModule,
+    ConfirmDialogModule,
+    FormsModule
   ],
   templateUrl: './product-item-table.component.html',
   styleUrl: './product-item-table.component.scss'
@@ -34,6 +40,7 @@ export class ProductItemTableComponent {
   @Output() edit = new EventEmitter<any>();
   @Output() delete = new EventEmitter<number>();
   @Output() addNew = new EventEmitter<any>();
+  @Output() productStatus = new EventEmitter<boolean>();
   selectedProductItem: any;
   private _productItems = signal<ProductItemResponseDto[]>([]);
   productItems = computed(() => {
@@ -43,6 +50,12 @@ export class ProductItemTableComponent {
   @Input()
   set data(value: ProductItemResponseDto[]) {
     this._productItems.set(value);
+  }
+
+  constructor(
+    private confirmationService: ConfirmationService, // Inyectamos ConfirmationService
+    private messageService: MessageService // Inyectamos MessageService para notificaciones
+  ) {
   }
 
   openNew() {
@@ -83,4 +96,48 @@ export class ProductItemTableComponent {
       window.alert("item deleted with uuid " + uuid);
     }
   }
+
+
+  onToggleEnableConfirm(productItem: any, event: CheckboxChangeEvent): void {
+    const originalStatus = productItem.isEnabled; // Guarda el estado original del producto
+    event.originalEvent?.preventDefault()
+    // Muestra la confirmación antes de actualizar el estado
+    this.confirmationService.confirm({
+      message: `¿Estás seguro de que quieres ${originalStatus ? 'desactivar' : 'activar'} este producto?`,
+      header: 'Confirmar Cambio',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        // Si el usuario confirma, emitimos el cambio al backend
+        this.onToggleEnable(productItem.uuid, !originalStatus);
+      },
+      reject: () => {
+        // Si el usuario cancela, revertimos el cambio del checkbox
+        productItem.isEnabled = originalStatus;
+      }
+    });
+  }
+
+  onToggleEnable(uuid: string, isEnabled: boolean): void {
+    // Aquí actualizamos el backend con el nuevo estado
+    alert(`Cambio de estado emitido para el producto con UUID ${uuid}, nuevo estado: ${isEnabled ? 'habilitado' : 'deshabilitado'}`);
+
+    /* this.productService.updateProductStatus(uuid, isEnabled).subscribe({
+      next: (response) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Estado del producto actualizado correctamente.'
+        });
+      },
+      error: (error) => {
+        console.error('Error al actualizar el estado del producto:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Hubo un error al actualizar el estado del producto.'
+        });
+      }
+    }); */
+  }
+
 }

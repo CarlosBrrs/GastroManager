@@ -1,0 +1,21 @@
+$oval-size: 100px;
+
+.card {
+  max-width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.menu-item-card {
+  flex: 0 0 calc(33.33% - 1rem);
+  min-width: 150px;
+  padding-bottom: 1.5rem;
+}
+
+:host {
+  ::ng-deep .p-tabview-nav {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+}

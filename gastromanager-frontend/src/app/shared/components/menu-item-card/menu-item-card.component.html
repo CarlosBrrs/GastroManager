@@ -1,0 +1,17 @@
+<div class="item-card border-1 surface-border border-round"
+  [class.disabled]="!product.isEnabled"
+  (click)="onProductClick()">
+  <div class="image-oval">
+    <img src="/assets/images/testfood.jpeg" [alt]="product.name"/>
+    @if (!product.isEnabled) {
+      <div class="disabled-overlay">
+        <i class="pi pi-ban text-xl"></i>
+      </div>
+    }
+  </div>
+  <div class="product-info">
+    <h3 class="text-lg font-semibold mb-2">{{ product.name }}</h3>
+    <p class="description text-sm text-500 mb-2">{{ product.description }}</p>
+    <p class="price text-lg font-bold text-primary">{{ product.price | currency }}</p>
+  </div>
+</div>

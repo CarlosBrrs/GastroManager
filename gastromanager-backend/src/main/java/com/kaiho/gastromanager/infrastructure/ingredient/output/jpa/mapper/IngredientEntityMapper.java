@@ -4,6 +4,8 @@ import com.kaiho.gastromanager.domain.ingredient.model.Ingredient;
 import com.kaiho.gastromanager.infrastructure.ingredient.output.jpa.entity.IngredientEntity;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+
 @Component
 public class IngredientEntityMapper {
 
@@ -36,6 +38,7 @@ public class IngredientEntityMapper {
                 .availableStock(ingredient.availableStock())
                 .unit(ingredient.unit())
                 .pricePerUnit(ingredient.pricePerUnit())
+                .inventoryMovements(new ArrayList<>())
                 .minimumStockQuantity(ingredient.minimumStockQuantity())
                 .supplier(ingredient.supplier())
                 .createdDate(ingredient.createdDate())

@@ -1,1 +1,11 @@
-<p>order works!</p>
+<div class="container">
+  <div class="orders-table">
+    <gm-order-table
+      (addNew)="handleAdd($event)"
+      (delete)="handleDelete($event)"
+      (edit)="handleEdit($event)"
+      [data]="orders()"
+    >
+    </gm-order-table>
+  </div>
+</div>

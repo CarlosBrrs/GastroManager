@@ -20,7 +20,7 @@ $shade500: #3e526d !default;
 $shade600: #304562 !default; //input bg, border, divider
 $shade700: #283951 !default; //unused
 $shade800: #1f2d40 !default; //elevated surface
-$shade900: #17212f !default; //ground surface
+$shade900: #1f1d2b !default; //ground surface
 
 $hoverBg: rgba(255, 255, 255, 0.03) !default;
 
@@ -31,7 +31,7 @@ $fontSize: 1rem !default;
 $fontWeight: normal !default;
 $textColor: $shade000 !default;
 $textSecondaryColor: $shade100 !default;
-$borderRadius: 2px !default;
+$borderRadius: 10px !default;
 $transitionDuration: 0.2s !default;
 $formElementTransition: background-color $transitionDuration,
 color $transitionDuration, border-color $transitionDuration,
@@ -703,7 +703,7 @@ $progressBarValueTextColor: $primaryTextColor !default;
 //menu (e.g. menu, menubar, tieredmenu)
 $menuWidth: 12.5rem !default;
 $menuBg: $shade800 !default;
-$menuBorder: 1px solid $shade600 !default;
+$menuBorder: 0px solid $shade600 !default;
 $menuTextColor: $shade000 !default;
 $menuitemPadding: 0.75rem 1rem !default;
 $menuitemBorderRadius: 0 !default;
@@ -730,7 +730,7 @@ $overlayMenuBg: $menuBg !default;
 $overlayMenuBorder: 1px solid $shade600 !default;
 $overlayMenuShadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2),
 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12) !default;
-$verticalMenuPadding: 0.25rem 0 !default;
+$verticalMenuPadding: 0.01rem 0 !default;
 $verticalMenuitemMargin: 0 !default;
 $menuSeparatorMargin: 0.25rem 0 !default;
 

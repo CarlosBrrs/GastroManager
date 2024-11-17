@@ -6,6 +6,7 @@ import {IngredientResponseDto} from "../../../core/model/interfaces/IngredientRe
 import {ButtonDirective} from "primeng/button";
 import {InputNumberModule} from "primeng/inputnumber";
 import {RadioButtonModule} from "primeng/radiobutton";
+import {Unit} from "../../../core/model/interfaces/UnitType";
 
 @Component({
   selector: 'gm-inventory-form',
@@ -24,10 +25,10 @@ import {RadioButtonModule} from "primeng/radiobutton";
 export class InventoryFormComponent implements OnInit {
 
   @Input() initialIngredient?: IngredientResponseDto;
-  @Output() formSubmit = new EventEmitter<any>();
+  @Output() formSubmit = new EventEmitter<any>(); //should be an interface with the fields of the form
   ingredientForm: FormGroup;
   @Output() formCancel = new EventEmitter<void>();
-  units: any[] = [
+  units: Unit[] = [
     {symbol: 'g', name: 'GRAMS'},
     {symbol: 'mL', name: 'MILLILITRES'},
     {symbol: 'units', name: 'UNITS'}];
@@ -56,6 +57,7 @@ export class InventoryFormComponent implements OnInit {
 
   onSubmit(): void {
     this.mapUnitFromSymbolToEnum(this.ingredientForm.value)
+    console.log(this.ingredientForm.value)
     this.formSubmit.emit(this.ingredientForm.value);
   }
 

@@ -62,17 +62,17 @@ export class SidebarComponent implements OnInit {
       route: '/orders',
       routerLinkActiveOptions: {exact: true},
     });
-
     this.items.push({
       label: 'Logout',
       icon: 'pi pi-sign-out',
-      command: () => this.logoutHandle(),
-      routerLinkActiveOptions: {exact: true},
+      command: () => this.logout(),
+      // routerLinkActiveOptions: {exact: true},
     });
+
 
   }
 
-  logoutHandle(): void {
+  logout() {
     this.authService.logout();
   }
 }
