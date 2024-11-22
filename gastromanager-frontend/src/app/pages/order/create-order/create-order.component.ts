@@ -214,8 +214,8 @@ export class CreateOrderComponent implements OnInit {
       },
       reject: () => {
         this.messageService.add({
-          severity: 'error',
-          summary: 'Rejected',
+          severity: 'info',
+          summary: 'Order still in process ',
           detail: 'Continue setting up your order',
           life: 3000
         });

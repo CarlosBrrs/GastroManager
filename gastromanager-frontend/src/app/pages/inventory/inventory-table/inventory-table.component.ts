@@ -1,7 +1,7 @@
 import {Component, computed, EventEmitter, Input, Output, signal, ViewChild} from '@angular/core';
 import {Table, TableModule, TableRowSelectEvent} from "primeng/table";
 import {IngredientResponseDto} from "../../../core/model/interfaces/IngredientResponseDto";
-import {CurrencyPipe} from "@angular/common";
+import {CurrencyPipe, DatePipe} from "@angular/common";
 import {ToastModule} from "primeng/toast";
 import {ToolbarModule} from "primeng/toolbar";
 import {Button} from "primeng/button";
@@ -27,7 +27,8 @@ import {SidebarModule} from "primeng/sidebar";
     InputTextModule,
     InventoryFormComponent,
     Ripple,
-    SidebarModule
+    SidebarModule,
+    DatePipe
   ],
   templateUrl: './inventory-table.component.html',
   styleUrl: './inventory-table.component.scss'
@@ -36,7 +37,7 @@ export class InventoryTableComponent {
 
   @Input() loading = false;
   @ViewChild('dt') table!: Table;
-  @ViewChild('inventoryForm') inventoryForm!: InventoryFormComponent;
+  // @ViewChild('inventoryForm') inventoryForm!: InventoryFormComponent;
 
   isModalMaximized: boolean = false;
   isModalVisible: boolean = false;
@@ -85,9 +86,9 @@ export class InventoryTableComponent {
 
   onFormSubmit(ingredient: IngredientRequestDto) {
     if (this.selectedIngredient) {
-      const ingredientData = { ...ingredient };
+      const ingredientData = {...ingredient};
       delete ingredientData.availableStock;  // Quitar availableStock solo en edición
-      this.edit.emit({ payload: ingredientData, uuid: this.selectedIngredient.uuid });
+      this.edit.emit({payload: ingredientData, uuid: this.selectedIngredient.uuid});
     } else {
       this.addNew.emit(ingredient);
     }
@@ -99,11 +100,12 @@ export class InventoryTableComponent {
     return this.isModalMaximized;
   }
 
-    onRowSelect($event: TableRowSelectEvent) {
-      console.dir($event) //selected
-      this.selectedIngredient = $event.data;
-      this.openSidebar()
-    }
+  onRowSelect($event: TableRowSelectEvent) {
+    console.dir($event) //selected
+    this.selectedIngredient = $event.data;
+    this.openSidebar()
+  }
+
   sidebarVisible: boolean = false;
 
   // Abrir el sidebar
@@ -116,5 +118,9 @@ export class InventoryTableComponent {
     this.sidebarVisible = false;
     this.selectedIngredient = undefined;  // Desseleccionamos el ingrediente
     this.table.clear();  // Limpiamos la selección en la tabla
+  }
+
+  displayInputNewStock() {
+
   }
 }

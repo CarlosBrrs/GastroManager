@@ -34,14 +34,14 @@ public class OrderEntity extends Auditable implements Serializable {
     @ManyToOne
     @JoinColumn(name = "user_uuid", nullable = false)
     private UserEntity user;
-
+    private String code;
     private double totalPrice;
     private String customerNotes;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
-    @OneToMany(mappedBy = "order",cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItemEntity> orderItems = new ArrayList<>();
 
     public void addOrderItem(OrderItemEntity orderItemEntity) {

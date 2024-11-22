@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -17,13 +18,13 @@ public class InventoryMovementUseCasePort implements InventoryMovementServicePor
 
     private final InventoryMovementPersistencePort inventoryMovementPersistencePort;
 
-    @Override
-    public UUID createInventoryMovement(InventoryMovement movement) {
-        if (movement.changeQuantity() == 0) {
-            throw new InvalidInventoryMovementQuantityException();
-        }
-        return inventoryMovementPersistencePort.createInventoryMovement(movement);
-    }
+//    @Override
+//    public UUID createInventoryMovement(InventoryMovement movement) {
+//        if (movement.changeQuantity() == 0) {
+//            throw new InvalidInventoryMovementQuantityException();
+//        }
+//        return inventoryMovementPersistencePort.createInventoryMovement(movement);
+//    }
 
     @Override
     public void recordInventoryMovement(UUID ingredientUuid, int changeQuantity, String reason) {
@@ -37,5 +38,10 @@ public class InventoryMovementUseCasePort implements InventoryMovementServicePor
         }
         UUID inventoryMovement = inventoryMovementPersistencePort.createInventoryMovement(movement);
         log.info("Movement created with uuid" + inventoryMovement);
+    }
+
+    @Override
+    public void recordInventoryMovements(Map<UUID, Integer> changeQuantities, String reason) {
+
     }
 }

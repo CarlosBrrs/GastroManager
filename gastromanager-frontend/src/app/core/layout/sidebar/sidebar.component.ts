@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthService} from "../../services/auth/auth.service";
-import {RouterLink, RouterLinkActive} from "@angular/router";
+import {Router, RouterLink, RouterLinkActive} from "@angular/router";
 import {MenuModule} from "primeng/menu";
 import {MenuItem} from "primeng/api";
 import {SidebarService} from "../../services/sidebar/sidebar.service";
@@ -21,7 +21,7 @@ export class SidebarComponent implements OnInit {
   auth: AuthService;
   items: MenuItem[];
 
-  constructor(private authService: AuthService, private sidebarService: SidebarService) {
+  constructor(private authService: AuthService, private sidebarService: SidebarService, private router: Router) {
     this.auth = authService;
     this.items = []
     this.sidebarService.getMenuItems()
@@ -74,5 +74,9 @@ export class SidebarComponent implements OnInit {
 
   logout() {
     this.authService.logout();
+  }
+
+  message() {
+    this.router.navigate(['/home'])
   }
 }

@@ -55,8 +55,8 @@ public class IngredientHandlerImpl implements IngredientHandler {
     }
 
     @Override
-    public ApiGenericResponse<UUID> adjustIngredientStock(UUID ingredientUuid, AdjustStockRequestDto newStock) {
-        UUID returnedUuid = ingredientServicePort.adjustIngredientStock(ingredientUuid, newStock.newStock());
+    public ApiGenericResponse<UUID> adjustIngredientStock(UUID ingredientUuid, AdjustStockRequestDto adjustStockRequestDto) {
+        UUID returnedUuid = ingredientServicePort.adjustIngredientStock(ingredientUuid, adjustStockRequestDto.newStock(), adjustStockRequestDto.reason());
         return buildSuccessResponse("Ingredient stock adjusted successfully", returnedUuid);
     }
 }

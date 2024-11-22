@@ -4,6 +4,7 @@ import {ProductItemResponseDto} from "../../core/model/interfaces/ProductItemRes
 import {InventoryTableComponent} from "../inventory/inventory-table/inventory-table.component";
 import {ProductItemTableComponent} from "./product-item-table/product-item-table.component";
 import {finalize, Subject, takeUntil} from "rxjs";
+import {MessageService} from "primeng/api";
 
 @Component({
   selector: 'gm-product-item',
@@ -22,7 +23,7 @@ export class ProductItemComponent implements OnInit {
   error = signal<string | null>(null);
   private destroy$ = new Subject<void>();
 
-  constructor(private productItemService: ProductItemService) {
+  constructor(private productItemService: ProductItemService, private messageService: MessageService) {
   }
 
   ngOnInit(): void {
@@ -68,8 +69,27 @@ export class ProductItemComponent implements OnInit {
   }
 
   private loadProductItems() {
-    this.productItemService.getAllProductItems().subscribe(response => {
-      this.productItems.set(response.data);
-    })
+    this.loading.set(true)
+    this.productItemService.getAllProductItems().pipe(
+      takeUntil(this.destroy$),
+      finalize(() => this.loading.set(false)))
+      .subscribe({
+        next: response => {
+          this.productItems.set(response.data);
+          this.loading.set(false)
+        },
+        error: error => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error loading product items',
+            detail: error.error.message
+          });
+          console.log("error loading product items", error)
+          this.error.set('Error loading product items');
+        },
+        complete: () => {
+          console.log("completed successfully")
+        }
+      })
   }
 }

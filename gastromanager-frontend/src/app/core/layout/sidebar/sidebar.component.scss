@@ -1,20 +1,85 @@
-// Estilos para el elemento activo y los elementos adyacentes
+// Estilos base para los pseudo-elementos (siempre presentes pero inicialmente invisibles)
+.p-menuitem-link {
+  transition: all 0.5s ease;
+  overflow: visible;
+  position: relative;
+
+  &:before, &:after {
+    position: absolute;
+    content: "";
+    height: 30px;
+    width: 30px;
+    right: 0;
+    background: var(--shade-800);
+    opacity: 0;
+    transition: all 0.5s ease;
+  }
+
+  &:before {
+    top: 100%;
+    box-shadow: 0 -17px transparent;
+    border-top-right-radius: 15px;
+  }
+
+  &:after {
+    bottom: 100%;
+    box-shadow: 0 17px transparent;
+    border-bottom-right-radius: 15px;
+  }
+}
+
+// Estilos para el elemento activo
 .active {
   background-color: var(--surface-0);
   position: relative;
   color: var(--primary-color);
-
-  // Aplicar borde izquierdo para diferenciar el elemento activo
   border-left: 5px solid var(--primary-color);
 
-  // Efecto especial para íconos y texto dentro del item activo
+  // Activar pseudo-elementos con transición
+  &:before, &:after {
+    opacity: 1;
+  }
+
+  &:before {
+    box-shadow: 0 -17px var(--surface-0);
+  }
+
+  &:after {
+    box-shadow: 0 17px var(--surface-0);
+  }
+
   .pi,
   .menu-label {
     color: var(--primary-color);
   }
 }
 
-// Efecto de transición suave para los elementos adyacentes
-.p-menuitem-link {
-  transition: all 0.5s ease;
+.sidenav-logo-container {
+  position: relative;
+
+  &:after {
+    content: "";
+    display: block;
+    width: 85%;
+    height: 2px;
+    background-color: var(--primary-color);
+  }
+
+  .logo-container {
+    margin: 15px;
+    background-color: #584758;
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+
+    &:hover  {
+      cursor: pointer;
+    }
+
+    img {
+      width: 50px;
+      height: 50px;
+      transform: translate(6px, 6px);
+    }
+  }
 }

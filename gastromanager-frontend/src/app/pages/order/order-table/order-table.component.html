@@ -29,7 +29,7 @@
     [rowHover]="true"
     [rows]="8"
     [showCurrentPageReport]="true"
-    [tableStyle]="{ 'min-width': '75rem' }"
+    [tableStyle]="{ 'min-width': '74rem' }"
     [value]="orders()"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
     dataKey="uuid"
@@ -42,9 +42,9 @@
     </ng-template>
     <ng-template pTemplate="header">
       <tr>
-        <th pResizableColumn pSortableColumn="placedBy" scope="col" style="min-width:15rem">
+        <th pResizableColumn pSortableColumn="createdBy" scope="col" style="min-width:15rem">
           Order placed by
-          <p-sortIcon field="placedBy"/>
+          <p-sortIcon field="createdBy"/>
         </th>
         <!--                    <th>
                               Image

@@ -1,7 +1,9 @@
 <div class="card">
   <h2 class="mb-4">Manage Product Items</h2>
-  <p-toolbar styleClass="mb-4 gap-2">
+
+  <p-toolbar styleClass="mb-4">
     <div class="flex align-items-center w-full justify-content-between">
+
       <p-button
         (onClick)="openNew()"
         class="mr-2"
@@ -17,22 +19,26 @@
                       type="text"/>
                 </span>
     </div>
-
   </p-toolbar>
 
   <p-table
     #dt
     [(selection)]="selectedProductItem"
-    [globalFilterFields]="['name']"
+    [globalFilterFields]="['name', 'description']"
+    [metaKeySelection]="false"
     [paginator]="true"
     [resizableColumns]="true"
     [rowHover]="true"
-    [rows]="8"
+    [rows]="7"
+    [loading]="loading"
+    loadingIcon="pi pi-spin pi-spinner"
     [showCurrentPageReport]="true"
-    [tableStyle]="{ 'min-width': '75rem' }"
+    [tableStyle]="{ 'min-width': '74rem' }"
     [value]="productItems()"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
     dataKey="uuid"
+    selectionMode="single"
+    (onRowSelect)="onRowSelect($event)"
   >
     <ng-template pTemplate="caption">
       <div class="flex align-items-center justify-content-between">
@@ -63,14 +69,14 @@
           Price
           <p-sortIcon field="price"/>
         </th>
-<!--        <th pResizableColumn scope="col" style="min-width:10rem">-->
-<!--          Enable for menu-->
-<!--        </th>-->
+        <!--        <th pResizableColumn scope="col" style="min-width:10rem">-->
+        <!--          Enable for menu-->
+        <!--        </th>-->
         <th pResizableColumn scope="col">Edit - Delete</th>
       </tr>
     </ng-template>
     <ng-template let-productItem pTemplate="body">
-      <tr>
+      <tr [pSelectableRow]="productItem">
 
         <td>
           {{ productItem.name }}
@@ -80,12 +86,12 @@
           {{ productItem.description }}
         </td>
         <td>{{ productItem.price  | currency: 'CAD':'symbol-narrow': '1.2-5' }}</td>
-<!--        <td>
-          <p-checkbox
-            [binary]="true"
-            [(ngModel)]="productItem.isEnabled"
-            (onChange)="onToggleEnableConfirm(productItem, $event)"
-            [inputId]="productItem.uuid"/>-->
+        <!--        <td>
+                  <p-checkbox
+                    [binary]="true"
+                    [(ngModel)]="productItem.isEnabled"
+                    (onChange)="onToggleEnableConfirm(productItem, $event)"
+                    [inputId]="productItem.uuid"/>-->
         <td>
           <p-button
             (onClick)="editProductItem(productItem)"
@@ -109,6 +115,28 @@
       </div>
     </ng-template>
   </p-table>
+
+  <p-sidebar [(visible)]="sidebarVisible" position="right" (onHide)="closeSidebar()" styleClass="w-30rem">
+    <h3>Product item Details</h3>
+    <!-- Verifica si hay un ingrediente seleccionado antes de mostrar los detalles -->
+     @if (selectedProductItem) {
+       <div>
+         <p><strong>Name:</strong> {{ selectedProductItem.name }}</p>
+         <p><strong>Unit:</strong> {{ selectedProductItem.description }}</p>
+         <p><strong>Price:</strong> {{ selectedProductItem.price | currency: 'CAD':'symbol-narrow': '1.2-5' }}</p>
+         <p><strong>Used ingredients:</strong> {{ selectedProductItem.ingredients | json }}</p>
+ <!--        <p-button label="Set new Stock" [loading]="loading"
+                                                                                                    (onClick)="displayInputNewStock()" ></p-button>-->
+ <!--        <p><strong>Created by:</strong> {{ selectedIngredient.createdBy }}</p>-->
+
+       </div>
+     } @else {
+       <div>
+         <p>No product item selected.</p>
+       </div>
+     }
+  </p-sidebar>
+
   <p-dialog
     (onHide)="hideDialog()"
     (onMaximize)="isMaximized($event)"

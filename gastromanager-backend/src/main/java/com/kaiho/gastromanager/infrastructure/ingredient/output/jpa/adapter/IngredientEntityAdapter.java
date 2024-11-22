@@ -10,7 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -54,7 +56,6 @@ public class IngredientEntityAdapter implements IngredientPersistencePort {
         existingEntity.setMinimumStockQuantity(ingredient.minimumStockQuantity());
         existingEntity.setPricePerUnit(ingredient.pricePerUnit());
 
-//        IngredientEntity entity = ingredientEntityMapper.toEntity(existingEntity);
         IngredientEntity saved = ingredientEntityRepository.save(existingEntity);
         return ingredientEntityMapper.toDomain(saved);
     }
@@ -64,6 +65,16 @@ public class IngredientEntityAdapter implements IngredientPersistencePort {
         IngredientEntity existingEntity = ingredientEntityRepository.findById(ingredientUuid).orElseThrow(() -> new IngredientDoesNotExistException(ingredientUuid.toString()));
         existingEntity.setAvailableStock(newStock);
         return existingEntity.getUuid();
+    }
+
+    @Override
+    public List<Ingredient> findIngredientsByUuids(Set<UUID> uuids) {
+        return ingredientEntityRepository.findAllById(uuids).stream().map(ingredientEntityMapper::toDomain).toList();
+    }
+
+    @Override
+    public void updateIngredientsStock(Map<UUID, Integer> newAvailableStocks) {
+        newAvailableStocks.forEach(ingredientEntityRepository::updateStockByUuid);
     }
 
 }

@@ -9,6 +9,7 @@ import java.util.UUID;
 
 @Builder
 public record Order(UUID uuid,
+                    String orderCode,
                     UUID userUuid,
                     String customerNotes,
                     List<OrderItem> orderItems,

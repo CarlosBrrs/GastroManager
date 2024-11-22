@@ -53,8 +53,8 @@ public class OrderEntityAdapter implements OrderPersistencePort {
         orderEntity.getOrderItems().clear();
 
         //para cada orderitementity hay que setear la order y el productitem
-        List<OrderItemEntity> orderItemEntityList = order.orderItems().stream()
-                .map(orderItem ->
+        order.orderItems()
+                .forEach(orderItem ->
                         {
                             //map the order to orderitem
                             OrderItemEntity orderItemEntity = orderItemEntityMapper.toEntity(orderItem);
@@ -67,19 +67,19 @@ public class OrderEntityAdapter implements OrderPersistencePort {
 
                             //set the found productitem to the orderitem
                             productItemEntity.addOrderItem(orderItemEntity);
-orderEntity.addOrderItem(orderItemEntity);
-                            return orderItemEntity;
+                            orderEntity.addOrderItem(orderItemEntity);
                         }
-                )
-                .toList();
-
-        //associate each orderitem to the order
-        orderItemEntityList.forEach(orderEntity::addOrderItem);
+                );
 
         // the order is added to the user´s orders and the order is setted with this user
         userEntity.addOrder(orderEntity);
 
         //TODO: after saving the order we have to update the inventory of the ingredient. Not implemented yet
         return orderEntityMapper.toDomain(orderEntityRepository.save(orderEntity));
+    }
+
+    @Override
+    public boolean existsOrderByOrderCode(String base36) {
+        return orderEntityRepository.existsByCode(base36);
     }
 }

@@ -9,4 +9,6 @@ public interface OrderPersistencePort {
     List<Order> findAllOrders();
 
     Order createOrder(Order order);
+
+    boolean existsOrderByOrderCode(String base36);
 }

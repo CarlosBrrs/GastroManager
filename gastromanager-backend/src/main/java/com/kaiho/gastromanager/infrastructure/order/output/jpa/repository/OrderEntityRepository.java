@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.UUID;
 
 public interface OrderEntityRepository extends JpaRepository<OrderEntity, UUID> {
+    boolean existsByCode(String base36);
 }

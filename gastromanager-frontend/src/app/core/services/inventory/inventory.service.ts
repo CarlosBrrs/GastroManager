@@ -11,6 +11,11 @@ import {IngredientRequestDto} from "../../model/interfaces/IngredientRequestDto"
 })
 export class InventoryService extends BaseHttpService {
 
+  getAllIngredientsTest(): Observable<ApiGenericResponse<IngredientResponseDto[]>> {
+    return this.http.get<ApiGenericResponse<IngredientResponseDto[]>>(`${this.apiUrl}/ingredients`,
+      {headers: {'Accept': 'application/json'}});
+  }
+
 
   getAllIngredients(): Observable<ApiGenericResponse<IngredientResponseDto[]>> {
     return this.http.get<ApiGenericResponse<IngredientResponseDto[]>>(`${this.apiUrl}/ingredients`,

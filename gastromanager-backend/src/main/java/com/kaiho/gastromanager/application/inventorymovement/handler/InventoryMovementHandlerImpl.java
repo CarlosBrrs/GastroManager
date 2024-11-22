@@ -22,9 +22,8 @@ public class InventoryMovementHandlerImpl implements InventoryMovementHandler {
 
     @Override
     public ApiGenericResponse<UUID> createInventoryMovement(InventoryMovementRequestDto inventoryMovement) {
-        System.out.println("receiving in handler");
-        InventoryMovement movement = inventoryMovementMapper.toDomain(inventoryMovement);
-        return buildSuccessResponse("Movement registered successfully", inventoryMovementServicePort.createInventoryMovement(movement));
+        inventoryMovementServicePort.recordInventoryMovement(inventoryMovement.ingredientUuid(), inventoryMovement.changeQuantity(), inventoryMovement.reason());
+        return buildSuccessResponse("Movement registered successfully. No data to send back to client", null);
     }
 
     @Override

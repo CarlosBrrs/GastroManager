@@ -1,5 +1,10 @@
-<div class="flex h-full">
-  <p-menu class="flex h-full" [model]="items">
+<div class="flex flex-column h-full">
+  <div class="sidenav-logo-container flex flex-column align-items-center justify-content-center">
+    <div class="logo-container" (click)="message()">
+      <img src="assets/images/gm-logo.svg"/>
+    </div>
+  </div>
+  <p-menu class="flex h-full pt-3" [model]="items">
 
     <ng-template let-item pTemplate="item">
       <a [routerLink]="item.route" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{exact: true}"

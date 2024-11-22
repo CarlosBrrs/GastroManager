@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, signal} from '@angular/core';
+import {Component, inject, OnDestroy, OnInit, signal} from '@angular/core';
 import {IngredientResponseDto} from "../../core/model/interfaces/IngredientResponseDto";
 import {InventoryService} from "../../core/services/inventory/inventory.service";
 import {finalize, Subject, takeUntil} from "rxjs";
@@ -7,6 +7,7 @@ import {InventoryTableComponent} from "./inventory-table/inventory-table.compone
 import {MessageService} from "primeng/api";
 import {ToastModule} from "primeng/toast";
 import {IngredientRequestDto} from "../../core/model/interfaces/IngredientRequestDto";
+import {IngredientStore} from "../../core/store/inventory/ingredient.store";
 
 @Component({
   selector: 'gm-inventory',
@@ -25,13 +26,14 @@ export class InventoryComponent implements OnInit, OnDestroy {
   loading = signal<boolean>(false);
   error = signal<string | null>(null);
   private destroy$ = new Subject<void>();
+  ingredientStore = inject(IngredientStore);
 
   constructor(private inventoryService: InventoryService, private messageService: MessageService/*, private confirmationService: ConfirmationService*/) {
   }
 
   ngOnInit(): void {
     this.loadIngredients();
-
+    // this.ingredientStore
   }
 
   ngOnDestroy(): void {
@@ -49,7 +51,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
       ).subscribe({
       next: (response) => {
         this.loadIngredients()
-        this.messageService.add({ severity: 'success', summary: 'Ingredient Updated', detail: 'Ingredient updated successfully.' });
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Ingredient Updated',
+          detail: 'Ingredient updated successfully.'
+        });
         // this.loading.set(false);
       }
       ,
@@ -82,7 +88,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
       .subscribe({
         next: response => {
           this.loadIngredients()
-          this.messageService.add({ severity: 'success', summary: 'Ingredient Added', detail: 'Ingredient added successfully.' });
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Ingredient Added',
+            detail: 'Ingredient added successfully.'
+          });
         },
         error: error => {
           this.messageService.add({severity: 'error', summary: 'Error adding ingredient', detail: error.error.message});
@@ -108,7 +118,11 @@ export class InventoryComponent implements OnInit, OnDestroy {
           this.loading.set(false)
         },
         error: error => {
-          this.messageService.add({severity: 'error', summary: 'Error loading ingredients', detail: error.error.message});
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error loading ingredients',
+            detail: error.error.message
+          });
           console.log("error loading ingredients", error)
           this.error.set('Error loading ingredients');
         },

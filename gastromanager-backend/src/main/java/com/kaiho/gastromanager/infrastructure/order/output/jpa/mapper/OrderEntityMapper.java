@@ -24,6 +24,7 @@ public class OrderEntityMapper {
         List<OrderItem> orderItems = orderEntity.getOrderItems().stream().map(orderItemEntityMapper::toDomain).toList();
         return Order.builder()
                 .uuid(orderEntity.getUuid())
+                .orderCode(orderEntity.getCode())
                 .userUuid(orderEntity.getUser().getUuid())
                 .customerNotes(orderEntity.getCustomerNotes())
                 .totalAmount(orderEntity.getTotalPrice())
@@ -41,6 +42,7 @@ public class OrderEntityMapper {
             return null;
         }
         return OrderEntity.builder()
+                .code(order.orderCode())
                 .totalPrice(order.totalAmount())
                 .status(order.status())
                 .orderItems(new ArrayList<>())
