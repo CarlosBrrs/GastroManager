@@ -7,6 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "analyze": "ng build --stats-json && esbuild-visualizer --open=true --metadata dist/gastromanager-frontend/stats.json",
     "api-gen": "ng-openapi-gen --input ./src/openapi/openapi.json --output ./src/app/services",
     "lint": "ng lint"
   },
@@ -42,6 +43,7 @@
     "@angular/compiler-cli": "^18.2.0",
     "@types/jasmine": "~5.1.0",
     "angular-eslint": "18.4.0",
+    "esbuild-visualizer": "^0.6.0",
     "eslint": "^9.13.0",
     "jasmine-core": "~5.2.0",
     "karma": "~6.4.0",
@@ -50,6 +52,7 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "typescript": "~5.5.2",
-    "typescript-eslint": "8.10.0"
+    "typescript-eslint": "8.10.0",
+    "webpack-bundle-analyzer": "^4.10.2"
   }
 }
