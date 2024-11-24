@@ -1,0 +1,51 @@
+spring:
+  application:
+    name: GastroManager
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+  datasource:
+    driver-class-name: org.postgresql.Driver
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+
+api:
+  endpoint:
+    base-url: /api/v1
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
+
+## Datasource config
+#spring.datasource.url=jdbc:postgresql://localhost:5432/
+#spring.datasource.username=postgres
+#spring.datasource.password=admin
+
+
+
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  datasource:
+    url: jdbc:postgresql://database-diagnomanager-database-diagnomanager.l.aivencloud.com:18407/healthcars?ssl=require
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
