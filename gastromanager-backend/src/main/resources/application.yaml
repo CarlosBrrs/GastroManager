@@ -45,7 +45,7 @@ spring:
       on-profile: dev
 
   datasource:
-    url: jdbc:postgresql://database-diagnomanager-database-diagnomanager.l.aivencloud.com:18407/healthcars?ssl=require
+    url: jdbc:postgresql://ep-red-credit-a63sdemi.us-west-2.aws.neon.tech/gastromanager-db?sslmode=require
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
