@@ -24,7 +24,7 @@ export class AuthService extends BaseHttpService {
   }
 
   login(loginRequestDto: LoginRequestDto): Observable<ApiGenericResponse<string>> {
-    return this.http.post<ApiGenericResponse<string>>("http://localhost:8080/api/v1/auth/login", loginRequestDto, {
+    return this.http.post<ApiGenericResponse<string>>(`${this.apiUrl}/auth/login`, loginRequestDto, {
       headers: {'Content-Type': 'application/json'}
     }).pipe(
       // for sideffects

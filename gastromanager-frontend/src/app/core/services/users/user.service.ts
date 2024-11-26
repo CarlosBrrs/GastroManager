@@ -19,7 +19,7 @@ export class UserService extends BaseHttpService {
   }
 
   loadUserInfo(): Observable<ApiGenericResponse<UserResponseDto>> {
-    return this.http.get<ApiGenericResponse<UserResponseDto>>("http://localhost:8080/api/v1/users/" + this.authService.getUserUuid(), {
+    return this.http.get<ApiGenericResponse<UserResponseDto>>(`${this.apiUrl}/users/` + this.authService.getUserUuid(), {
       headers: {'Accept': 'application/json'}
     }).pipe(
       tap(response => {
