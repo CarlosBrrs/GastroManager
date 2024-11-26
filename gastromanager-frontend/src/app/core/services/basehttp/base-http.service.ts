@@ -8,5 +8,7 @@ import {environment} from "../../../../environments/environment";
 export class BaseHttpService {
 
   apiUrl: string = environment.API_URL;
+  constructor() {
+  }
   http: HttpClient = inject(HttpClient);
 }

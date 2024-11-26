@@ -22,5 +22,6 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.primengConfig.ripple = true;
+    console.log("Envornment loadad " , environment)
   }
 }
