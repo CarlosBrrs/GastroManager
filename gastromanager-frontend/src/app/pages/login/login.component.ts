@@ -56,9 +56,9 @@ export class LoginComponent implements OnInit {
             }
           });
         },
-        error: (response) => {
-          this.messageService.add({severity: 'error', summary: 'Error on login', detail: response.error.message});
-          console.error("Error al hacer login: ", response);
+        error: (error) => {
+          this.messageService.add({severity: 'error', summary: 'Error on login', detail: error.error.message || error.message});
+          console.error("Error al hacer login: ", error);
         },
         complete: () => {
           // this.isLoading = false;

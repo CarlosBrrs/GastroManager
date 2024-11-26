@@ -3,6 +3,7 @@ import {RouterOutlet} from '@angular/router';
 import {LoginComponent} from "./pages/login/login.component";
 import {ConfirmationService, MessageService, PrimeNGConfig} from "primeng/api";
 import {ToastModule} from "primeng/toast";
+import {environment} from "../environments/environment";
 
 @Component({
   selector: 'gm-root',
@@ -22,5 +23,4 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.primengConfig.ripple = true;
   }
-
 }

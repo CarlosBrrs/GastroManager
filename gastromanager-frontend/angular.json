@@ -27,7 +27,6 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               {
-
                 "glob": "**/*",
                 "input": "public"
               },"src/assets"
@@ -39,7 +38,7 @@
             "statsJson": true
           },
           "configurations": {
-            "production": {
+            "prod": {
               "budgets": [
                 {
                   "type": "initial",
@@ -54,31 +53,45 @@
               ],
               "outputHashing": "all"
             },
-            "development": {
+            "dev": {
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.development.ts"
+                  "with": "src/environments/environment.dev.ts"
+                }
+              ]
+            },
+            "local": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.local.ts"
                 }
               ]
             }
           },
-          "defaultConfiguration": "production"
+          "defaultConfiguration": "local"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
-            "production": {
-              "buildTarget": "gastromanager-frontend:build:production"
+            "prod": {
+              "buildTarget": "gastromanager-frontend:build:prod"
             },
-            "development": {
-              "buildTarget": "gastromanager-frontend:build:development"
+            "local": {
+              "buildTarget": "gastromanager-frontend:build:local"
+            },
+            "dev": {
+              "buildTarget": "gastromanager-frontend:build:dev"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "local"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n"
