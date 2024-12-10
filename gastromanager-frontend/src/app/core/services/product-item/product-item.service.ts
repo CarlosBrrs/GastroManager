@@ -1,13 +1,26 @@
-import {Injectable, signal} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {BaseHttpService} from "../basehttp/base-http.service";
 import {Observable, tap} from "rxjs";
 import {ApiGenericResponse} from "../../model/interfaces/ApiGenericResponse";
 import {ProductItemResponseDto} from "../../model/interfaces/ProductItemResponseDto";
+import {ProductItem} from "../../store/product-item/product-item.model";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductItemService extends BaseHttpService {
+
+
+  getAllProductItemsTest(): Observable<ApiGenericResponse<ProductItem[]>> {
+    return this.http.get<ApiGenericResponse<ProductItem[]>>(`${this.apiUrl}/product-items`, {headers: {'Accept': 'application/json'}})
+      .pipe(
+        tap(response => {
+          if (response.flag) {
+            console.log('Productos obtenidos:', response.data);
+          }
+        })
+      );
+  }
 
   getAllProductItems(): Observable<ApiGenericResponse<ProductItemResponseDto[]>> {
     return this.http.get<ApiGenericResponse<ProductItemResponseDto[]>>(`${this.apiUrl}/product-items`, {headers: {'Accept': 'application/json'}}).pipe(
@@ -48,6 +61,7 @@ export class ProductItemService extends BaseHttpService {
       })
     )
   }
+
   deleteProductItem(productItemUuid: string): void {
     alert("not implemented yet");
   }

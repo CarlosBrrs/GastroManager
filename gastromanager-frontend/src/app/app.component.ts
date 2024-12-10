@@ -11,7 +11,8 @@ import {environment} from "../environments/environment";
   imports: [RouterOutlet, LoginComponent, ToastModule],
   providers: [
     MessageService,
-    ConfirmationService],
+    ConfirmationService
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

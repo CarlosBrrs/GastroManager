@@ -14,12 +14,12 @@ $colors: (
 ) !default;
 
 //shades
-$shade000: rgba(255, 255, 255, 0.87) !default; //text color
+$shade000: #FFFFFF !default; //text color
 $shade100: rgba(255, 255, 255, 0.6) !default; //text secondary color
 $shade500: #3e526d !default;
 $shade600: #304562 !default; //input bg, border, divider
 $shade700: #283951 !default; //unused
-$shade800: #1f2d40 !default; //elevated surface
+$shade800: #1F1D2B !default; //elevated surface
 $shade900: #1f1d2b !default; //ground surface
 
 $hoverBg: rgba(255, 255, 255, 0.03) !default;
@@ -913,7 +913,7 @@ $imagePreviewActionIconBorderRadius: 50% !default;
   --text-color-secondary: #{$shade100};
   --primary-color: #{$primaryColor};
   --primary-color-text: #{$primaryTextColor};
-  --surface-0: #17212f;
+  --surface-0: #252836;
   --surface-50: #2e3744;
   --surface-100: #454d59;
   --surface-200: #5d646d;
@@ -937,7 +937,7 @@ $imagePreviewActionIconBorderRadius: 50% !default;
   --content-padding: #{$panelContentPadding};
   --inline-spacing: #{$inlineSpacing};
   --border-radius: #{$borderRadius};
-  --surface-ground: #17212f;
+  --surface-ground: #252836;
   --surface-section: #17212f;
   --surface-card: #1f2d40;
   --surface-overlay: #1f2d40;

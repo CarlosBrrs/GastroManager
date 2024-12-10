@@ -10,6 +10,7 @@ import {MultiSelectModule} from "primeng/multiselect";
 import {Category} from "../../../core/model/enums/Category";
 import {DropdownModule} from "primeng/dropdown";
 import {forkJoin, of} from "rxjs";
+import {JsonPipe} from "@angular/common";
 
 @Component({
   selector: 'gm-product-item-form',
@@ -23,7 +24,8 @@ import {forkJoin, of} from "rxjs";
     ReactiveFormsModule,
     InputTextareaModule,
     MultiSelectModule,
-    DropdownModule
+    DropdownModule,
+    JsonPipe
   ],
   templateUrl: './product-item-form.component.html',
   styleUrl: './product-item-form.component.scss'
@@ -35,8 +37,10 @@ export class ProductItemFormComponent implements OnInit {
   @Output() formSubmit = new EventEmitter<unknown>();
   selectedIngredients: any[] = [];
   availableIngredients: any[] = [];
+  costOfProduction: number = 0;
 
   categories: { label: string; value: Category }[] = [];
+  suggestedPrice: number = 0;
 
   constructor(private fb: FormBuilder, private inventoryService: InventoryService) {
 
@@ -94,7 +98,6 @@ export class ProductItemFormComponent implements OnInit {
   }
 
   onSubmit() {
-    debugger;
     const {ingredientQuantities = {}, ...formValue} = {
       ...this.productItemForm.value,
       ingredients: this.selectedIngredients.map(ingredient => ({
@@ -107,7 +110,6 @@ export class ProductItemFormComponent implements OnInit {
 
   //send the uuids
   onIngredientSelect(selectedUuids: string[]): void {
-    console.log(this.productItemForm)
     this.setIngredientQuantitiesControls(selectedUuids, this.initialProductItem);
     this.selectedIngredients = selectedUuids.map(uuid => this.availableIngredients.find(ing => ing.uuid === uuid));
     this.productItemForm.get('ingredients')?.setValue(selectedUuids);
@@ -117,10 +119,10 @@ export class ProductItemFormComponent implements OnInit {
     const quantitiesGroup = this.productItemForm.get('ingredientQuantities') as FormGroup;
     const quantity1 = quantity.value as unknown as number;
     quantitiesGroup.get(uuid)?.setValue(quantity1);
+    this.costOfProduction = this.calculateCostAndPrice()
   }
 
   private setIngredientQuantitiesControls(selectedUuids: string[], initialItem?: any): void {
-    debugger;
     const quantitiesGroup = this.productItemForm.get('ingredientQuantities') as FormGroup;
 
     // Elimina los controles existentes para asegurarse de que solo queden los actuales
@@ -132,5 +134,22 @@ export class ProductItemFormComponent implements OnInit {
       const initialQuantity = initialItem?.ingredients?.find((ing: any) => ing.ingredientUuid === uuid)?.quantity
       quantitiesGroup.addControl(uuid, this.fb.control(initialQuantity, [Validators.required]));
     });
+  }
+
+  calculateCostAndPrice(): number {
+    let totalCost = 0;
+    this.selectedIngredients.forEach(ingredient => {
+      const quantity = this.productItemForm.get(`ingredientQuantities.${ingredient.uuid}`)?.value || 0;
+      const ingredientCost = this.availableIngredients.find(i => ingredient.uuid === i.uuid).pricePerUnit * quantity;
+      totalCost += ingredientCost;
+    });
+
+    const profitMargin = this.productItemForm.get('profitMargin')?.value || 30;  // Obtener porcentaje de ganancia
+    const suggestedPrice = totalCost * (1 + profitMargin / 100);  // Precio sugerido con ganancia
+    this.suggestedPrice = suggestedPrice;
+
+    // También podrías actualizar el precio en el formulario si lo deseas:
+    // this.productItemForm.get('price')?.setValue(suggestedPrice);
+    return totalCost;
   }
 }

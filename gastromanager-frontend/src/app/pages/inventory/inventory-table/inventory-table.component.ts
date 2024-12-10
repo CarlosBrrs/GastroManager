@@ -12,6 +12,7 @@ import {InventoryFormComponent} from "../inventory-form/inventory-form.component
 import {Ripple} from "primeng/ripple";
 import {IngredientRequestDto} from "../../../core/model/interfaces/IngredientRequestDto";
 import {SidebarModule} from "primeng/sidebar";
+import {IngredientItem} from "../../../core/store/inventory/ingredient.model";
 
 @Component({
   selector: 'gm-inventory-table',
@@ -37,24 +38,21 @@ export class InventoryTableComponent {
 
   @Input() loading = false;
   @ViewChild('dt') table!: Table;
-  // @ViewChild('inventoryForm') inventoryForm!: InventoryFormComponent;
 
   isModalMaximized: boolean = false;
   isModalVisible: boolean = false;
-  // @Input() selectedIngredients: IngredientResponseDto[] = [];
   selectedIngredient?: IngredientResponseDto;
   @Output() edit = new EventEmitter<{ payload: IngredientRequestDto, uuid: string }>();
   @Output() delete = new EventEmitter<string>();
   @Output() addNew = new EventEmitter<IngredientRequestDto>();
-  private ingredientList = signal<IngredientResponseDto[]>([]);
-  // Computed signal para filtrado
+  private ingredientList = signal<IngredientItem[]>([]);
   ingredients = computed(() => {
     return this.ingredientList();
   });
 
   // to receive the data from parent
   @Input()
-  set data(value: IngredientResponseDto[]) {
+  set data(value: IngredientItem[]) {
     this.ingredientList.set(value);
   }
 
@@ -122,5 +120,9 @@ export class InventoryTableComponent {
 
   displayInputNewStock() {
 
+  }
+
+  clearText() {
+    alert("to clear text")
   }
 }

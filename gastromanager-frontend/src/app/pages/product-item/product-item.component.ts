@@ -1,10 +1,12 @@
-import {Component, OnInit, signal} from '@angular/core';
+import {Component, effect, inject, OnInit, signal} from '@angular/core';
 import {ProductItemService} from "../../core/services/product-item/product-item.service";
-import {ProductItemResponseDto} from "../../core/model/interfaces/ProductItemResponseDto";
 import {InventoryTableComponent} from "../inventory/inventory-table/inventory-table.component";
 import {ProductItemTableComponent} from "./product-item-table/product-item-table.component";
 import {finalize, Subject, takeUntil} from "rxjs";
 import {MessageService} from "primeng/api";
+import {ProductItemStore} from "../../core/store/product-item/product-item.store";
+import {StoreEventService} from "../../core/services/store-event/store-event.service";
+import {ProductItem} from "../../core/store/product-item/product-item.model";
 
 @Component({
   selector: 'gm-product-item',
@@ -18,12 +20,43 @@ import {MessageService} from "primeng/api";
 })
 export class ProductItemComponent implements OnInit {
 
-  productItems = signal<ProductItemResponseDto[]>([]);
+  productItems = signal<ProductItem[]>([]).asReadonly();
   loading = signal<boolean>(false);
   error = signal<string | null>(null);
-  private destroy$ = new Subject<void>();
+  productItemStore = inject(ProductItemStore)
 
-  constructor(private productItemService: ProductItemService, private messageService: MessageService) {
+  constructor(private productItemService: ProductItemService, private messageService: MessageService, private storeEventService: StoreEventService) {
+    // Efecto para manejar eventos de éxito
+    effect(() => {
+      const successMessage = this.storeEventService.successSignal();
+      const successHeaderMessage = this.storeEventService.successHeaderSignal();
+      if (successMessage) {
+        this.messageService.add({
+          severity: 'success',
+          summary: successHeaderMessage,
+          detail: successMessage
+        });
+        // Opcional: limpiar el mensaje después de mostrarlo
+        this.storeEventService.successSignal.set(null);
+        this.storeEventService.successHeaderSignal.set(undefined);
+      }
+    }, {allowSignalWrites: true});
+
+    // Efecto para manejar eventos de error
+    effect(() => {
+      const errorMessage = this.storeEventService.errorSignal();
+      const errorHeaderMessage = this.storeEventService.errorHeaderSignal();
+      if (errorMessage) {
+        this.messageService.add({
+          severity: 'error',
+          summary: errorHeaderMessage,
+          detail: errorMessage
+        });
+        // Opcional: limpiar el mensaje después de mostrarlo
+        this.storeEventService.errorSignal.set(null);
+        this.storeEventService.errorHeaderSignal.set(undefined);
+      }
+    }, {allowSignalWrites: true});
   }
 
   ngOnInit(): void {
@@ -31,65 +64,19 @@ export class ProductItemComponent implements OnInit {
   }
 
   handleAdd(productItem: any) {
-    this.productItemService.addProductItem(productItem).subscribe({
-      next: response => {
-        this.loadProductItems();
-      }, error: error => {
-        console.log("error adding product item")
-        this.error.set('Error adding product item');
-        window.alert(error.message);
-        console.log(error);
-      }, complete: ()=> {
-        console.log("completed handle add in product item component")
-      }});}
-/*
-
-      response => {
-
-    }, error => {
-      window.alert(error)
-    })
-  }*/
-
-  handleDelete(productItemUuid: number) {
-
-
+    this.productItemStore.addProductItem(productItem);
   }
 
   handleEdit(productItem: any) {
-    this.loading.set(true);
-    this.productItemService.updateProductItem(productItem.uuid, productItem.payload)
-      .pipe(
-        takeUntil(this.destroy$),
-        finalize(() => this.loading.set(false))
-      ).subscribe(response => {
-      this.loadProductItems()
-      this.loading.set(false);
-    })
+    // this.loading.set(true);
+    this.productItemStore.editProductItem(productItem.uuid, productItem.payload);
+  }
+
+  handleDelete(productItemUuid: number) {
   }
 
   private loadProductItems() {
     this.loading.set(true)
-    this.productItemService.getAllProductItems().pipe(
-      takeUntil(this.destroy$),
-      finalize(() => this.loading.set(false)))
-      .subscribe({
-        next: response => {
-          this.productItems.set(response.data);
-          this.loading.set(false)
-        },
-        error: error => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error loading product items',
-            detail: error.error.message
-          });
-          console.log("error loading product items", error)
-          this.error.set('Error loading product items');
-        },
-        complete: () => {
-          console.log("completed successfully")
-        }
-      })
+    this.productItems = this.productItemStore.productItems;
   }
 }

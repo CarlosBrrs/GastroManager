@@ -4,6 +4,7 @@ export type IngredientItem = {
   uuid: string;
   name: string;
   availableStock: number;
+  supplier: string;
   category: string;
   unit: Unit;
   pricePerUnit: number;

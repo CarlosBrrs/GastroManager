@@ -10,7 +10,7 @@
           icon="pi pi-plus"
           label="Add new ingredient"
           severity="success"/>
-        <span class="p-input-icon-left">
+        <span class="p-input-icon-left p-input-icon-right">
                     <i class="pi pi-search"></i>
                     <input
                       (input)="onGlobalFilter(dt, $event)"
@@ -18,6 +18,7 @@
                       placeholder="Search..."
 
                       type="text"/>
+          <i (click)="clearText()" class="pi pi-times cursor-pointer"></i>
                 </span>
       </div>
     </p-toolbar>

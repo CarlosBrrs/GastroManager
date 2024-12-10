@@ -13,6 +13,7 @@ import {CheckboxChangeEvent, CheckboxModule} from "primeng/checkbox";
 import {ConfirmDialogModule} from "primeng/confirmdialog";
 import {FormsModule} from "@angular/forms";
 import {SidebarModule} from "primeng/sidebar";
+import {ProductItem} from "../../../core/store/product-item/product-item.model";
 
 @Component({
   selector: 'gm-product-item-table',
@@ -48,20 +49,19 @@ export class ProductItemTableComponent {
   @Output() delete = new EventEmitter<number>();
   @Output() addNew = new EventEmitter<any>();
   @Output() productStatus = new EventEmitter<boolean>();
-  private _productItemList = signal<ProductItemResponseDto[]>([]);
+  private _productItemList = signal<ProductItem[]>([]);
   productItems = computed(() => {
     return this._productItemList();
   });
   sidebarVisible: boolean = false;
 
   @Input()
-  set data(value: ProductItemResponseDto[]) {
+  set data(value: ProductItem[]) {
     this._productItemList.set(value);
   }
 
   constructor(
     private confirmationService: ConfirmationService, // Inyectamos ConfirmationService
-    private messageService: MessageService // Inyectamos MessageService para notificaciones
   ) {
   }
 
@@ -105,7 +105,6 @@ export class ProductItemTableComponent {
       window.alert("item deleted with uuid " + uuid);
     }
   }
-
 
   onToggleEnableConfirm(productItem: any, event: CheckboxChangeEvent): void {
     const originalStatus = productItem.isEnabled; // Guarda el estado original del producto
@@ -165,5 +164,9 @@ export class ProductItemTableComponent {
     this.sidebarVisible = false;
     this.selectedProductItem = undefined;  // Desseleccionamos el ingrediente
     this.table.clear();  // Limpiamos la selección en la tabla
+  }
+
+  clearText() {
+    alert("clear text")
   }
 }

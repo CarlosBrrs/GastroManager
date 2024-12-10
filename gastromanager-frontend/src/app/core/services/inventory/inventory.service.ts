@@ -5,14 +5,15 @@ import {ApiGenericResponse} from "../../model/interfaces/ApiGenericResponse";
 import {IngredientResponseDto} from "../../model/interfaces/IngredientResponseDto";
 import {IngredientDetailResponseDto} from "../../model/interfaces/IngredientDetailResponseDto";
 import {IngredientRequestDto} from "../../model/interfaces/IngredientRequestDto";
+import {IngredientItem} from "../../store/inventory/ingredient.model";
 
 @Injectable({
   providedIn: 'root'
 })
 export class InventoryService extends BaseHttpService {
 
-  getAllIngredientsTest(): Observable<ApiGenericResponse<IngredientResponseDto[]>> {
-    return this.http.get<ApiGenericResponse<IngredientResponseDto[]>>(`${this.apiUrl}/ingredients`,
+  getAllIngredientsTest(): Observable<ApiGenericResponse<IngredientItem[]>> {
+    return this.http.get<ApiGenericResponse<IngredientItem[]>>(`${this.apiUrl}/ingredients`,
       {headers: {'Accept': 'application/json'}});
   }
 

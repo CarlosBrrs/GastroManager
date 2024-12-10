@@ -10,13 +10,14 @@
         icon="pi pi-plus"
         label="Add new product item"
         severity="success"/>
-      <span class="p-input-icon-left">
+      <span class="p-input-icon-left p-input-icon-right">
                     <i class="pi pi-search"></i>
                     <input
                       (input)="onGlobalFilter(dt, $event)"
                       pInputText
                       placeholder="Search..."
                       type="text"/>
+        <i (click)="clearText()" class="pi pi-times cursor-pointer"></i>
                 </span>
     </div>
   </p-toolbar>
@@ -40,12 +41,7 @@
     selectionMode="single"
     (onRowSelect)="onRowSelect($event)"
   >
-    <ng-template pTemplate="caption">
-      <div class="flex align-items-center justify-content-between">
 
-
-      </div>
-    </ng-template>
     <ng-template pTemplate="header">
       <tr>
         <th pResizableColumn pSortableColumn="name" scope="col" style="min-width:15rem">
@@ -119,22 +115,22 @@
   <p-sidebar [(visible)]="sidebarVisible" position="right" (onHide)="closeSidebar()" styleClass="w-30rem">
     <h3>Product item Details</h3>
     <!-- Verifica si hay un ingrediente seleccionado antes de mostrar los detalles -->
-     @if (selectedProductItem) {
-       <div>
-         <p><strong>Name:</strong> {{ selectedProductItem.name }}</p>
-         <p><strong>Unit:</strong> {{ selectedProductItem.description }}</p>
-         <p><strong>Price:</strong> {{ selectedProductItem.price | currency: 'CAD':'symbol-narrow': '1.2-5' }}</p>
-         <p><strong>Used ingredients:</strong> {{ selectedProductItem.ingredients | json }}</p>
- <!--        <p-button label="Set new Stock" [loading]="loading"
-                                                                                                    (onClick)="displayInputNewStock()" ></p-button>-->
- <!--        <p><strong>Created by:</strong> {{ selectedIngredient.createdBy }}</p>-->
+    @if (selectedProductItem) {
+      <div>
+        <p><strong>Name:</strong> {{ selectedProductItem.name }}</p>
+        <p><strong>Unit:</strong> {{ selectedProductItem.description }}</p>
+        <p><strong>Price:</strong> {{ selectedProductItem.price | currency: 'CAD':'symbol-narrow': '1.2-5' }}</p>
+        <p><strong>Used ingredients:</strong> {{ selectedProductItem.ingredients | json }}</p>
+        <!--        <p-button label="Set new Stock" [loading]="loading"
+                                                                                                           (onClick)="displayInputNewStock()" ></p-button>-->
+        <!--        <p><strong>Created by:</strong> {{ selectedIngredient.createdBy }}</p>-->
 
-       </div>
-     } @else {
-       <div>
-         <p>No product item selected.</p>
-       </div>
-     }
+      </div>
+    } @else {
+      <div>
+        <p>No product item selected.</p>
+      </div>
+    }
   </p-sidebar>
 
   <p-dialog

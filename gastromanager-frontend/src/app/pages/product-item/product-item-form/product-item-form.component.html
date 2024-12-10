@@ -32,7 +32,8 @@
   </div>
   <div class="field">
     <label for="price">Price:</label>
-    <p-inputNumber [maxFractionDigits]="5" [minFractionDigits]="1" [min]="0" currency="CAD" formControlName="price" id="price"
+    <p-inputNumber [maxFractionDigits]="5" [minFractionDigits]="1" [min]="0" currency="CAD" formControlName="price"
+                   id="price"
                    inputId="price" mode="currency" required
                    showClear/>
   </div>
@@ -73,15 +74,21 @@
         <div class="ingredient-quantity flex align-items-center justify-content-end">
           <span class="name">{{ selectedIngredient.name }}:</span>
 
-          <p-inputNumber showClear [min]="0" mode="decimal"
+          <p-inputNumber [min]="0" mode="decimal"
                          (onInput)="onQuantityChange(selectedIngredient.uuid, $event)"
                          id="ingredient-name" inputId="quantity" [formControlName]="selectedIngredient.uuid"
                          required/>
           <span class="unit">{{ selectedIngredient.unit }}</span>
-
         </div>
       }
     </div>
+  </div>
+  <div class="recipe-calculation flex flex-column">
+    @if (this.selectedIngredients.length > 0 && this.productItemForm.get('ingredientQuantities')?.value) {
+      <p> total cost of producing your product item is $ {{ costOfProduction }}</p>
+      <p>The suggested price for a 30% of profit would be {{ suggestedPrice }}</p>
+    }
+
   </div>
   <div class="flex justify-content-end gap-2">
     <button
