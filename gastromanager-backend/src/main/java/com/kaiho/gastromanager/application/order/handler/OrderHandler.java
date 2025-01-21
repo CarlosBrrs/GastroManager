@@ -1,5 +1,6 @@
 package com.kaiho.gastromanager.application.order.handler;
 
+import com.kaiho.gastromanager.application.order.dto.request.ChangeOrderStatusRequestDto;
 import com.kaiho.gastromanager.application.order.dto.request.OrderRequestDto;
 import com.kaiho.gastromanager.application.order.dto.response.OrderResponseDto;
 import com.kaiho.gastromanager.infrastructure.common.model.ApiGenericResponse;
@@ -15,4 +16,6 @@ public interface OrderHandler {
     ApiGenericResponse<UUID> createOrder(OrderRequestDto orderRequestDto, UUID userUuid);
 
     ApiGenericResponse<OrderResponseDto> updateOrder(UUID orderUuid, OrderRequestDto orderRequestDto);
+
+    ApiGenericResponse<UUID> changeOrderStatus(UUID orderUuid, ChangeOrderStatusRequestDto changeOrderStatusRequestDto, UUID userUuid);
 }

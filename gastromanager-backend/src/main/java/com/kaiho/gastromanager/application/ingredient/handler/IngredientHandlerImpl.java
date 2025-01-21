@@ -7,7 +7,9 @@ import com.kaiho.gastromanager.application.ingredient.dto.response.IngredientRes
 import com.kaiho.gastromanager.application.ingredient.mapper.IngredientMapper;
 import com.kaiho.gastromanager.domain.ingredient.api.IngredientServicePort;
 import com.kaiho.gastromanager.domain.ingredient.model.Ingredient;
+import com.kaiho.gastromanager.domain.restaurant.api.RestaurantServicePort;
 import com.kaiho.gastromanager.infrastructure.common.model.ApiGenericResponse;
+import com.kaiho.gastromanager.infrastructure.config.context.RestaurantContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +17,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.kaiho.gastromanager.infrastructure.common.model.ApiGenericResponse.buildSuccessResponse;
+import static com.kaiho.gastromanager.infrastructure.config.context.RestaurantContext.getCurrentRestaurant;
 
 @RequiredArgsConstructor
 @Component
@@ -22,6 +25,7 @@ public class IngredientHandlerImpl implements IngredientHandler {
 
     private final IngredientServicePort ingredientServicePort;
     private final IngredientMapper ingredientMapper;
+    private final RestaurantServicePort restaurantServicePort;
 
     @Override
     public ApiGenericResponse<List<IngredientResponseDto>> getAllIngredients() {
@@ -34,7 +38,7 @@ public class IngredientHandlerImpl implements IngredientHandler {
 
     @Override
     public ApiGenericResponse<IngredientResponseDto> getIngredientById(UUID uuid) {
-        Ingredient ingredientById = ingredientServicePort.getIngredientById(uuid);
+        Ingredient ingredientById = ingredientServicePort.getIngredientById(uuid, getCurrentRestaurant());
         IngredientResponseDto response = ingredientMapper.toResponse(ingredientById);
         return buildSuccessResponse("Ingredient retrieved successfully", response);
     }
@@ -42,6 +46,7 @@ public class IngredientHandlerImpl implements IngredientHandler {
     @Override
     public ApiGenericResponse<UUID> addIngredient(IngredientRequestDto ingredientRequestDto) {
         Ingredient ingredient = ingredientMapper.toDomain(ingredientRequestDto);
+        ingredient.setRestaurant(restaurantServicePort.getRestaurantById(getCurrentRestaurant()));
         UUID ingredientUuid = ingredientServicePort.addIngredient(ingredient);
         return buildSuccessResponse("Ingredient added successfully", ingredientUuid);
     }
@@ -49,6 +54,7 @@ public class IngredientHandlerImpl implements IngredientHandler {
     @Override
     public ApiGenericResponse<IngredientResponseDto> updateIngredient(UUID uuid, UpdateIngredientRequestDto ingredientRequestDto) {
         Ingredient ingredient = ingredientMapper.toDomain(ingredientRequestDto);
+        ingredient.setRestaurant(restaurantServicePort.getRestaurantById(getCurrentRestaurant()));
         Ingredient updateIngredient = ingredientServicePort.updateIngredient(uuid, ingredient);
         IngredientResponseDto response = ingredientMapper.toResponse(updateIngredient);
         return buildSuccessResponse("Ingredient updated successfully", response);
@@ -56,7 +62,7 @@ public class IngredientHandlerImpl implements IngredientHandler {
 
     @Override
     public ApiGenericResponse<UUID> adjustIngredientStock(UUID ingredientUuid, AdjustStockRequestDto adjustStockRequestDto) {
-        UUID returnedUuid = ingredientServicePort.adjustIngredientStock(ingredientUuid, adjustStockRequestDto.newStock(), adjustStockRequestDto.reason());
+        UUID returnedUuid = ingredientServicePort.adjustIngredientStock(ingredientUuid, adjustStockRequestDto.newStock(), adjustStockRequestDto.reason(), getCurrentRestaurant());
         return buildSuccessResponse("Ingredient stock adjusted successfully", returnedUuid);
     }
 }

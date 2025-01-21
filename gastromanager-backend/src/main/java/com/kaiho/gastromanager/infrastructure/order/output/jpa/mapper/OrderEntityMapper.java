@@ -42,11 +42,11 @@ public class OrderEntityMapper {
             return null;
         }
         return OrderEntity.builder()
-                .code(order.orderCode())
-                .totalPrice(order.totalAmount())
-                .status(order.status())
+                .code(order.getOrderCode())
+                .totalPrice(order.getTotalAmount())
+                .status(order.getStatus())
                 .orderItems(new ArrayList<>())
-                .customerNotes(order.customerNotes())
+                .customerNotes(order.getCustomerNotes())
                 .build();
     }
 }

@@ -33,16 +33,16 @@ public class IngredientEntityMapper {
             return null;
         }
         return IngredientEntity.builder()
-                .uuid(ingredient.uuid())
-                .name(ingredient.name())
-                .availableStock(ingredient.availableStock())
-                .unit(ingredient.unit())
-                .pricePerUnit(ingredient.pricePerUnit())
+                .uuid(ingredient.getUuid())
+                .name(ingredient.getName())
+                .availableStock(ingredient.getAvailableStock())
+                .unit(ingredient.getUnit())
+                .pricePerUnit(ingredient.getPricePerUnit())
                 .inventoryMovements(new ArrayList<>())
-                .minimumStockQuantity(ingredient.minimumStockQuantity())
-                .supplier(ingredient.supplier())
-                .createdDate(ingredient.createdDate())
-                .createdBy(ingredient.createdBy())
+                .minimumStockQuantity(ingredient.getMinimumStockQuantity())
+                .supplier(ingredient.getSupplier())
+                .createdDate(ingredient.getCreatedDate())
+                .createdBy(ingredient.getCreatedBy())
                 .build();
     }
 }

@@ -7,8 +7,6 @@ import com.kaiho.gastromanager.application.orderitem.mapper.OrderItemMapper;
 import com.kaiho.gastromanager.domain.order.model.Order;
 import com.kaiho.gastromanager.domain.order.model.OrderStatus;
 import com.kaiho.gastromanager.domain.orderitem.model.OrderItem;
-import com.kaiho.gastromanager.domain.productitemingredient.model.ProductItemIngredient;
-import com.kaiho.gastromanager.infrastructure.config.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -20,22 +18,23 @@ import java.util.UUID;
 public class OrderMapper {
 
     private final OrderItemMapper orderItemMapper;
+
     public OrderResponseDto toResponse(Order order) {
-        if (order==null){
+        if (order == null) {
             return null;
         }
-        List<OrderItemResponse> list = order.orderItems().stream().map(orderItemMapper::toResponse).toList();
+        List<OrderItemResponse> list = order.getOrderItems().stream().map(orderItemMapper::toResponse).toList();
         return OrderResponseDto.builder()
-                .uuid(order.uuid())
-                .userUuid(order.userUuid())
-                .totalPrice(order.totalAmount())
-                .status(order.status())
+                .uuid(order.getUuid())
+                .userUuid(order.getUserUuid())
+                .totalPrice(order.getTotalAmount())
+                .status(order.getStatus())
                 .orderItems(list)
                 .build();
     }
 
     public Order toDomain(OrderRequestDto orderRequestDto, UUID userUuid) {
-        if (orderRequestDto == null){
+        if (orderRequestDto == null) {
             return null;
         }
         List<OrderItem> items = orderRequestDto.orderItems().stream()
@@ -45,7 +44,7 @@ public class OrderMapper {
                 .userUuid(userUuid)
                 .customerNotes(orderRequestDto.customerNotes())
                 .orderItems(items)
-                .status(OrderStatus.PENDING)
+                .status(OrderStatus.AWAITING_PAYMENT)
                 .build();
     }
 }

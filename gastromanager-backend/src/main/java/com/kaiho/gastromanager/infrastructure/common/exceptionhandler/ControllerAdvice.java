@@ -4,7 +4,6 @@ import com.kaiho.gastromanager.domain.common.exception.EntityAlreadyExistsExcept
 import com.kaiho.gastromanager.domain.common.exception.EntityDoesNotExistException;
 import com.kaiho.gastromanager.domain.inventorymovement.exception.InvalidInventoryMovementQuantityException;
 import com.kaiho.gastromanager.infrastructure.common.model.ApiGenericResponse;
-import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -14,8 +13,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-
-import java.util.Arrays;
 
 import static com.kaiho.gastromanager.infrastructure.common.model.ApiGenericResponse.buildErrorResponse;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -42,6 +39,13 @@ public class ControllerAdvice {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ApiGenericResponse<Object>> handleMethodArgumentTypeMismatchException(
             MethodArgumentTypeMismatchException ex) {
+        ApiGenericResponse<Object> response = buildErrorResponse(ex.getMessage());
+        return new ResponseEntity<>(response, BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MissingRestaurantUuidHeaderException.class)
+    public ResponseEntity<ApiGenericResponse<Object>> handleMissingRestaurantUuidHeaderException(
+            MissingRestaurantUuidHeaderException ex) {
         ApiGenericResponse<Object> response = buildErrorResponse(ex.getMessage());
         return new ResponseEntity<>(response, BAD_REQUEST);
     }
@@ -76,6 +80,7 @@ public class ControllerAdvice {
         ApiGenericResponse<Object> response = buildErrorResponse(ex.getMessage() + ". You are not allowed to perform this action");
         return new ResponseEntity<>(response, FORBIDDEN);
     }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiGenericResponse<Object>> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         ApiGenericResponse<Object> response = buildErrorResponse(ex.getBindingResult().getAllErrors().get(0).getDefaultMessage());

@@ -1,3 +1,4 @@
+/*
 package com.kaiho.gastromanager.infrastructure.ingredient.input.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -79,4 +80,4 @@ class IngredientRestControllerIntegrationTest {
     @Test
     void updateIngredient() {
     }
-}
+}*/

@@ -12,6 +12,8 @@ import com.kaiho.gastromanager.domain.productitem.api.ProductItemServicePort;
 import com.kaiho.gastromanager.domain.productitem.model.ProductItem;
 import com.kaiho.gastromanager.domain.productitemingredient.api.ProductItemIngredientServicePort;
 import com.kaiho.gastromanager.domain.productitemingredient.model.ProductItemIngredient;
+import com.kaiho.gastromanager.domain.restaurant.spi.RestaurantPersistencePort;
+import com.kaiho.gastromanager.domain.user.spi.UserPersistencePort;
 import com.kaiho.gastromanager.infrastructure.config.generator.OrderCodeGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -42,62 +44,41 @@ public class OrderUseCase implements OrderServicePort {
     @Override
     @Transactional
     public UUID createOrder(Order order) {
+/*        UUID restaurantUuid = userPersistencePort.getRestaurantByUserUuid(order.getUserUuid()).orElseThrow(() -> new IllegalArgumentException("Restaurante no encontrado")).getUuid();
+        RestaurantConfig config = restaurantPersistencePort.getRestaurantConfig(resturantUuid).orElseThrow(() -> new IllegalArgumentException("Configuración no encontrada para el restaurante"));
+
+// Seleccionar la estrategia de colocación
+        OrderPlacementStrategy strategy = placementStrategyFactory.getStrategy(config);*/
 
         // TODO: No se va a necesitar porque se va a validar el request que la lista sea > 0
-        if (order.orderItems().isEmpty()) {
+        if (order.getOrderItems().isEmpty()) {
             throw new IllegalArgumentException("Order items cannot be 0");
         }
 
-/*        // Validar stock de ingredientes antes de procesar la orden
-        validateIngredientsStock(order.orderItems());*/
+        validateIngredientsStock(order.getOrderItems());
 
-        // Obtén los UUIDs de los productos
-        List<UUID> productItemUuids = order.orderItems().stream()
+        List<UUID> productItemUuids = order.getOrderItems().stream()
                 .map(OrderItem::productItemUuid)
                 .toList();
 
         List<ProductItem> productItemList = productItemServicePort.getAllProductItemsByUuid(productItemUuids);
 
-        // Crear un mapa de precios, cuanto cuesta cada product item en el sistema
         Map<UUID, Double> productItemPriceMap = productItemList.stream()
                 .collect(Collectors.toMap(ProductItem::uuid, ProductItem::price));
 
-        // Validar el stock de ingredientes
-        validateIngredientsStock(order.orderItems());
-
         // Calcular el total de la orden usando el PricingService usando cada orderItem y el precio que tiene cada producto
-        double totalAmount = pricingServicePort.calculateOrderTotal(order.orderItems(), productItemPriceMap);
+        double totalAmount = pricingServicePort.calculateOrderTotal(order.getOrderItems(), productItemPriceMap);
 
-        /*// Calcular el total de la orden
-        double totalAmount = 0.0;
-
-        //Here would go any logic to apply general discounts, or be more detailed about the order rubrics
-        List<OrderItem> orderItemsWithPrices = new ArrayList<>();
-        for (OrderItem orderItem : order.orderItems()) {
-            Double unitPrice = productItemPriceMap.get(orderItem.productItemUuid());
-            if (unitPrice == null) {
-                throw new IllegalArgumentException("El producto con UUID " + orderItem.productItemUuid() + " no se encuentra disponible.");
-            }
-            OrderItem itemWithPrice = OrderItem.builder()
-                    .productItemUuid(orderItem.productItemUuid())
-                    .unitPrice(unitPrice)
-                    .quantity(orderItem.quantity())
-                    .build();
-            orderItemsWithPrices.add(itemWithPrice);
-
-            totalAmount += unitPrice * orderItem.quantity();
-
-        }*/
-        List<OrderItem> orderItemsWithPrices = addPricesToOrderItems(order.orderItems(), productItemPriceMap);
+        List<OrderItem> orderItemsWithPrices = addPricesToOrderItems(order.getOrderItems(), productItemPriceMap);
         String orderCode = generateFiveLengthUniqueCode();
 
         Order orderWithAmount = Order.builder()
-                .userUuid(order.userUuid())
+                .userUuid(order.getUserUuid())
                 .orderCode(orderCode)
-                .customerNotes(order.customerNotes())
-                .status(order.status())
+                .customerNotes(order.getCustomerNotes())
+                .status(order.getStatus())
                 .totalAmount(totalAmount)
-                .orderItems(orderItemsWithPrices) // Items sin stock reducido aún
+                .orderItems(orderItemsWithPrices)
                 .build();
 
 
@@ -105,13 +86,30 @@ public class OrderUseCase implements OrderServicePort {
         // TODO: Esto tal vez deberia hacerse antes de hacer todo el proceso de creacion de orden, deshabilitar productos que no tengan suficiente stock
 
         // Persistir la orden
-        UUID placedOrderUuid = orderPersistencePort.createOrder(orderWithAmount).uuid();
+        UUID placedOrderUuid = orderPersistencePort.createOrder(orderWithAmount).getUuid();
 
         //TODO: Este ajuste se deberia hacer cuando la orden se inicie a preparar en cocina, no cuando se coloque la orden
         // Disminuir el stock de los ingredientes
-        decreaseIngredientsStockOrder(orderWithAmount.orderItems() , orderCode);
+        decreaseIngredientsStockOrder(orderWithAmount.getOrderItems(), orderCode);
         return placedOrderUuid;
 
+    }
+
+    @Override
+    public UUID changeOrderStatus(UUID orderUuid, String newStatus, String reason, UUID userUuid) {
+        /*Order order = orderPersistencePort.getOrderByUuid(orderUuid)
+                .orElseThrow(() -> new OrderDoesNotExistException(orderUuid));
+
+        User user = userPersistencePort.getUserByUuid(userUuid)
+                .orElseThrow(() -> new UserDoesNotExistException(userUuid));
+
+        // TODO: Change to database impl orderstatus
+        if (!isTransitionAllowed(order.getStatus().name(), newStatus, user.roles())) {
+            throw new UnauthorizedOrderStatusChangeException(userUuid, newStatus);
+        }
+
+        return orderPersistencePort.changeOrderStatus(orderUuid, newStatus, reason);*/
+        return null;
     }
 
     private List<OrderItem> addPricesToOrderItems(List<OrderItem> orderItems, Map<UUID, Double> productItemPriceMap) {
@@ -127,7 +125,7 @@ public class OrderUseCase implements OrderServicePort {
                     .quantity(orderItem.quantity())
                     .build();
             orderItemsWithPrices.add(itemWithPrice);
-    }
+        }
         return orderItemsWithPrices;
     }
 
@@ -146,8 +144,8 @@ public class OrderUseCase implements OrderServicePort {
 
             Ingredient ingredient = ingredientMap.get(ingredientUuid);
             // Si tengo menos stock del que quiero usar para la orden lanzar excepcion
-            if (ingredient.availableStock() < requiredQuantity) {
-                throw new InsufficientStockException(ingredient.name(), requiredQuantity, ingredient.availableStock());
+            if (ingredient.getAvailableStock() < requiredQuantity) {
+                throw new InsufficientStockException(ingredient.getName(), requiredQuantity, ingredient.getAvailableStock());
             }
         }
     }
@@ -188,6 +186,38 @@ public class OrderUseCase implements OrderServicePort {
         Map<UUID, Integer> stockAdjustments = calculateRequiredIngredients(orderItems);
 
         // Enviar ajustes al servicio para procesamiento en lote
-        ingredientServicePort.batchAdjustStock(stockAdjustments, "Order placement for code "+ orderCode);
+        ingredientServicePort.batchAdjustStock(stockAdjustments, "Order placement for code " + orderCode);
     }
+
+/*    private boolean isTransitionAllowed(String currentStatus, String newStatus, Set<Role> userRoles) {
+        Map<String, Map<String, List<String>>> transitions = Map.of(
+                "PENDING", Map.of(
+                        "PREPARING", List.of("Manager", "Waiter"),
+                        "CANCELLED", List.of("Manager")
+                ),
+                "PREPARING", Map.of(
+                        "READY", List.of("Chef", "KitchenStaff"),
+                        "PENDING", List.of("Manager"),
+                        "CANCELLED", List.of("Manager")
+                ),
+                "READY", Map.of(
+                        "ON_TABLE", List.of("Waiter"),
+                        "CANCELLED", List.of("Manager")
+                ),
+                "ON_TABLE", Map.of(
+                        "COMPLETED", List.of("Waiter", "Cashier"),
+                        "CANCELLED", List.of("Manager")
+                )
+        );
+
+        // Obtener la lista de roles autorizados para la transición
+        List<String> allowedRoles = transitions
+                .getOrDefault(currentStatus, Map.of())
+                .getOrDefault(newStatus, List.of());
+
+        // Validar si alguno de los roles del usuario está en la lista de roles permitidos
+        return userRoles.stream()
+                .map(Role::roleType) // Asumiendo que Role tiene un método `getName` que devuelve el nombre del rol
+                .anyMatch(allowedRoles::contains);
+    }*/
 }

@@ -1,6 +1,8 @@
 package com.kaiho.gastromanager.infrastructure.config.security;
 
 import com.kaiho.gastromanager.domain.user.api.UserServicePort;
+import com.kaiho.gastromanager.infrastructure.config.security.customfilters.JwtAuthFilter;
+import com.kaiho.gastromanager.infrastructure.config.security.customfilters.RestaurantAuthFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,6 +33,8 @@ import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.O
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.OWNER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.PRODUCT_ITEMS_CONTROLLER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.PRODUCT_ITEM_UUID_PARAMETER;
+import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.RESTAURANTS_CONTROLLER;
+import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.RESTAURANT_UUID_PARAMETER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.ROLES_CONTROLLER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.ROLE_UUID_PARAMETER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.SUPERUSER;
@@ -42,6 +46,7 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpMethod.PUT;
+import static org.springframework.security.authorization.AuthorizationManagers.allOf;
 
 @Configuration
 @EnableWebSecurity
@@ -55,14 +60,15 @@ public class SecurityConfig {
     private final JwtAuthFilter jwtAuthFilter;
     private final UserServicePort userServicePort;
     private final CustomBearerTokenAuthenticationEntryPoint authenticationEntryPoint;
+    private final RestaurantAuthFilter restaurantAuthFilter;
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
-                .csrf(AbstractHttpConfigurer::disable) // Disabling CSRF as we use JWT which is immune to CSRF
+                .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(WHITE_LIST_URL).permitAll() // Whitelisting some paths from authentication
+                        .requestMatchers(WHITE_LIST_URL).permitAll()
 
                         // ingredients controller
                         .requestMatchers(POST, BASE_URL + INGREDIENTS_CONTROLLER).hasAnyRole(SUPERUSER, OWNER, MANAGER, CHEF)
@@ -73,7 +79,6 @@ public class SecurityConfig {
                         .requestMatchers(PATCH, BASE_URL + INGREDIENTS_CONTROLLER + INGREDIENT_UUID_PARAMETER + "/activate").hasAnyRole(SUPERUSER, OWNER, MANAGER, CHEF)
                         .requestMatchers(DELETE, BASE_URL + INGREDIENTS_CONTROLLER + INGREDIENT_UUID_PARAMETER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
                         .requestMatchers(PATCH, BASE_URL + INGREDIENTS_CONTROLLER + INGREDIENT_UUID_PARAMETER + "/adjust-ingredient-stock").hasAnyRole(SUPERUSER, OWNER, MANAGER)
-
                         // users controller
                         .requestMatchers(POST, BASE_URL + USERS_CONTROLLER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
                         .requestMatchers(GET, BASE_URL + USERS_CONTROLLER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
@@ -102,6 +107,18 @@ public class SecurityConfig {
                         .requestMatchers(PATCH, BASE_URL + ORDERS_CONTROLLER + ORDER_UUID_PARAMETER + "/status").hasAnyRole(SUPERUSER, OWNER, MANAGER, WAITER, CHEF, KITCHEN_STAFF)
                         .requestMatchers(DELETE, BASE_URL + ORDERS_CONTROLLER + ORDER_UUID_PARAMETER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
 
+                        // restaurants controller
+                        .requestMatchers(GET, BASE_URL + RESTAURANTS_CONTROLLER).hasAnyRole(SUPERUSER)
+                        .requestMatchers(GET, BASE_URL + RESTAURANTS_CONTROLLER + RESTAURANT_UUID_PARAMETER).hasAnyRole(SUPERUSER)
+                        .requestMatchers(PUT, BASE_URL + RESTAURANTS_CONTROLLER + RESTAURANT_UUID_PARAMETER).hasAnyRole(SUPERUSER)
+                        .requestMatchers(POST, BASE_URL + RESTAURANTS_CONTROLLER).hasAnyRole(SUPERUSER)
+                        .requestMatchers(PATCH, BASE_URL + RESTAURANTS_CONTROLLER + RESTAURANT_UUID_PARAMETER).hasAnyRole(SUPERUSER)
+                        .requestMatchers(DELETE, BASE_URL + RESTAURANTS_CONTROLLER + RESTAURANT_UUID_PARAMETER).hasAnyRole(SUPERUSER)
+
+
+                        .requestMatchers(GET, BASE_URL + RESTAURANTS_CONTROLLER + "/**").hasAnyRole(SUPERUSER)
+
+
                         // inventory movements controller
                         .requestMatchers(POST, BASE_URL + INVENTORY_MOVEMENT_CONTROLLER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
                         // superuser matcher has to be below all the rest controller matchers and before deny all
@@ -110,6 +127,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless session management
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(this.authenticationEntryPoint))
+                .addFilterAfter(restaurantAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class) // Registering our JwtAuthFilter
                 .build();
     }

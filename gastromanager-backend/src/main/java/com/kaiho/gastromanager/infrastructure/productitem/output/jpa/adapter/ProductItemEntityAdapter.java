@@ -16,6 +16,7 @@ import com.kaiho.gastromanager.infrastructure.productitemingredient.output.jpa.m
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -47,8 +48,13 @@ public class ProductItemEntityAdapter implements ProductItemPersistencePort {
     public ProductItem saveProductItem(ProductItem productItem) {
 
         //TODO: Revisar y reformular esta logica, aqui solo se debe mapear a entidades y operar base de datos
+/*
         List<IngredientEntity> dbIngredientEntityList = productItem.ingredients().stream()
-                .map(productItemIngredient -> ingredientEntityMapper.toEntity(ingredientServicePort.getIngredientById(productItemIngredient.ingredientUuid()))).toList();
+                .map(productItemIngredient -> ingredientEntityMapper.toEntity(ingredientServicePort.getIngredientById(productItemIngredient.ingredientUuid(), restaurantUuid))).toList();
+*/
+        // TODO: FIX
+        List<IngredientEntity> dbIngredientEntityList = new ArrayList<>();
+
 
         ProductItemEntity productItemEntity = productItemEntityMapper.toEntity(productItem);
 
@@ -69,6 +75,12 @@ public class ProductItemEntityAdapter implements ProductItemPersistencePort {
 
     @Override
     public ProductItem updateProductItem(UUID uuid, ProductItem updatedProductItem) {
+        return null;
+    }
+/*
+
+    @Override
+    public ProductItem updateProductItem(UUID uuid, ProductItem updatedProductItem, UUID restaurantUuid) {
 
         ProductItemEntity existingProductItem = productItemRepository.findById(uuid).orElseThrow(
                 () -> new ProductItemDoesNotExistException(uuid)
@@ -91,6 +103,7 @@ public class ProductItemEntityAdapter implements ProductItemPersistencePort {
                 existingIngredient.setQuantity(newIngredient.quantity());
             } else {
                 Ingredient ingredient = ingredientServicePort.getIngredientById(newIngredient.ingredientUuid());
+
                 IngredientEntity ingredientEntity = ingredientEntityMapper.toEntity(ingredient);
                 ProductItemIngredientEntity newIngredientEntity = productItemIngredientEntityMapper.toEntity(newIngredient, ingredientEntity);
                 existingProductItem.addIngredient(newIngredientEntity);
@@ -106,6 +119,7 @@ public class ProductItemEntityAdapter implements ProductItemPersistencePort {
         return productItemEntityMapper.toDomain(productItemRepository.save(existingProductItem));
 
     }
+*/
 
     @Override
     public boolean existsByName(String name) {

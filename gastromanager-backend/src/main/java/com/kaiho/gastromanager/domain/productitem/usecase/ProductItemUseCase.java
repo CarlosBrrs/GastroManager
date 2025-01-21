@@ -5,7 +5,6 @@ import com.kaiho.gastromanager.domain.ingredient.model.Ingredient;
 import com.kaiho.gastromanager.domain.productitem.api.ProductItemServicePort;
 import com.kaiho.gastromanager.domain.productitem.exception.ProductItemAlreadyExistsException;
 import com.kaiho.gastromanager.domain.productitem.exception.ProductItemDoesNotExistException;
-import com.kaiho.gastromanager.domain.productitem.exception.UnitConflictException;
 import com.kaiho.gastromanager.domain.productitem.model.ProductItem;
 import com.kaiho.gastromanager.domain.productitem.spi.ProductItemPersistencePort;
 import com.kaiho.gastromanager.domain.productitemingredient.exception.ProductItemIngredientEmptyException;
@@ -17,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import static com.kaiho.gastromanager.infrastructure.config.context.RestaurantContext.getCurrentRestaurant;
 
 @RequiredArgsConstructor
 @Service
@@ -83,10 +84,10 @@ public class ProductItemUseCase implements ProductItemServicePort {
         return ingredients.stream()
                 .map(ingredient -> {
 
-                    Ingredient existingIngredient = ingredientServicePort.getIngredientById(ingredient.ingredientUuid());
+                    Ingredient existingIngredient = ingredientServicePort.getIngredientById(ingredient.ingredientUuid(), getCurrentRestaurant());
 
                     return ProductItemIngredient.builder()
-                            .ingredientUuid(existingIngredient.uuid())
+                            .ingredientUuid(existingIngredient.getUuid())
                             .quantity(ingredient.quantity())
                             .build();
                 })

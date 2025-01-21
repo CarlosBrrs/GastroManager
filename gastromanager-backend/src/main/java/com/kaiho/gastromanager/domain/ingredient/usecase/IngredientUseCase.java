@@ -9,6 +9,8 @@ import com.kaiho.gastromanager.domain.ingredient.model.Ingredient;
 import com.kaiho.gastromanager.domain.ingredient.spi.IngredientPersistencePort;
 import com.kaiho.gastromanager.domain.inventorymovement.api.InventoryMovementServicePort;
 import com.kaiho.gastromanager.domain.order.exception.InsufficientStockException;
+import com.kaiho.gastromanager.domain.restaurant.exception.RestaurantDoesNotExistException;
+import com.kaiho.gastromanager.domain.restaurant.model.Restaurant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,20 +37,20 @@ public class IngredientUseCase implements IngredientServicePort {
 
     @Override
     @Transactional(readOnly = true)
-    public Ingredient getIngredientById(UUID uuid) {
-        return ingredientPersistencePort.getIngredientByUuid(uuid)
+    public Ingredient getIngredientById(UUID uuid, UUID restaurantUuid) {
+        return ingredientPersistencePort.getIngredientByUuid(uuid, restaurantUuid)
                 .orElseThrow(() -> new IngredientDoesNotExistException(uuid.toString()));
     }
 
     @Override
     @Transactional
     public UUID addIngredient(Ingredient ingredient) {
-        if (ingredientPersistencePort.ingredientExistsByName(ingredient.name())) {
-            throw new IngredientAlreadyExistsException(ingredient.name());
+        if (ingredientPersistencePort.ingredientExistsByName(ingredient.getName(), ingredient.getRestaurant().getUuid())) {
+            throw new IngredientAlreadyExistsException(ingredient.getName());
         }
-        validateStockQuantities(ingredient.minimumStockQuantity(), ingredient.availableStock());
+        validateStockQuantities(ingredient.getMinimumStockQuantity(), ingredient.getAvailableStock());
         UUID ingredientUuid = ingredientPersistencePort.addIngredient(ingredient);
-        inventoryMovementServicePort.recordInventoryMovement(ingredientUuid, ingredient.availableStock(), "Initial stock");
+        inventoryMovementServicePort.recordInventoryMovement(ingredientUuid, ingredient.getAvailableStock(), "Initial stock", ingredient.getRestaurant());
         return ingredientUuid;
     }
 
@@ -62,31 +64,32 @@ public class IngredientUseCase implements IngredientServicePort {
     @Transactional
     public Ingredient updateIngredient(UUID uuid, Ingredient ingredient) {
 
-        Ingredient ingredientById = ingredientPersistencePort.getIngredientByUuid(uuid)
+        Ingredient ingredientById = ingredientPersistencePort.getIngredientByUuid(uuid, ingredient.getRestaurant().getUuid())
                 .orElseThrow(() -> new IngredientDoesNotExistException(uuid.toString()));
-        if (!ingredientById.name().equals(ingredient.name()) &&
-                ingredientPersistencePort.ingredientExistsByName(ingredient.name())) {
-            throw new IngredientAlreadyExistsException(ingredient.name());
+        if (!ingredientById.getName().equals(ingredient.getName()) &&
+                ingredientPersistencePort.ingredientExistsByName(ingredient.getName(), ingredient.getRestaurant().getUuid())) {
+            throw new IngredientAlreadyExistsException(ingredient.getName());
         }
-        validateStockQuantities(ingredient.minimumStockQuantity(), ingredientById.availableStock());
+        validateStockQuantities(ingredient.getMinimumStockQuantity(), ingredientById.getAvailableStock());
         return ingredientPersistencePort.updateIngredient(uuid, ingredient);
     }
+
     @Override
     @Transactional
-    public UUID adjustIngredientStock(UUID ingredientUuid, int newStock, String reason) {
-        Ingredient ingredientToUpdate = ingredientPersistencePort.getIngredientByUuid(ingredientUuid)
+    public UUID adjustIngredientStock(UUID ingredientUuid, int newStock, String reason, UUID restaurantUuid) {
+        Ingredient ingredientToUpdate = ingredientPersistencePort.getIngredientByUuid(ingredientUuid, restaurantUuid)
                 .orElseThrow(() -> new IngredientDoesNotExistException(ingredientUuid.toString()));
 
-        if (newStock == ingredientToUpdate.availableStock()) {
+        if (newStock == ingredientToUpdate.getAvailableStock()) {
             throw new AvailableStockNotUpdatedException();
         }
 //        validateStockQuantities(ingredientToUpdate.minimumStockQuantity(), newStock);
         UUID updatedIngredientUuid = ingredientPersistencePort.updateIngredientStock(ingredientUuid, newStock);
 
         // Registrar la diferencia de stock en caso de que haya un cambio en el inventario
-        int stockDifference = newStock - ingredientToUpdate.availableStock();
+        int stockDifference = newStock - ingredientToUpdate.getAvailableStock();
 //        String reason = stockDifference > 0 ? "Adjust of stock for increment" : "Adjust of stock for reduction";
-        inventoryMovementServicePort.recordInventoryMovement(updatedIngredientUuid, stockDifference, reason);
+        inventoryMovementServicePort.recordInventoryMovement(updatedIngredientUuid, stockDifference, reason, ingredientToUpdate.getRestaurant());
         return updatedIngredientUuid;
     }
 
@@ -97,7 +100,7 @@ public class IngredientUseCase implements IngredientServicePort {
 
         // Convertir la lista de ingredientes en un mapa con el UUID como clave
         return ingredients.stream()
-                .collect(Collectors.toMap(Ingredient::uuid, ingredient -> ingredient));
+                .collect(Collectors.toMap(Ingredient::getUuid, ingredient -> ingredient));
     }
 
     @Override
@@ -110,22 +113,27 @@ public class IngredientUseCase implements IngredientServicePort {
 
         // Actualizar el stock de cada ingrediente
         for (Ingredient ingredient : ingredients) {
-            Integer adjustment = stockAdjustments.get(ingredient.uuid());
-            int newStock = (ingredient.availableStock() - adjustment);
+            Integer adjustment = stockAdjustments.get(ingredient.getUuid());
+            int newStock = (ingredient.getAvailableStock() - adjustment);
 
             if (newStock < 0) {
-                throw new InsufficientStockException(ingredient.name(), adjustment, ingredient.availableStock());
+                throw new InsufficientStockException(ingredient.getName(), adjustment, ingredient.getAvailableStock());
             }
-            newAvailableStocks.put(ingredient.uuid(), newStock);
+            newAvailableStocks.put(ingredient.getUuid(), newStock);
         }
 
         // Persistir los cambios en lote
         ingredientPersistencePort.updateIngredientsStock(newAvailableStocks);
 
         // (Opcional) Registrar el motivo del ajuste, si se requiere un log o auditoría
-        for (Map.Entry<UUID, Integer> newAvailableStock: newAvailableStocks.entrySet()) {
-            inventoryMovementServicePort.recordInventoryMovement(newAvailableStock.getKey(), -stockAdjustments.get(newAvailableStock.getKey()), reason);
+        for (Map.Entry<UUID, Integer> newAvailableStock : newAvailableStocks.entrySet()) {
+//            inventoryMovementServicePort.recordInventoryMovement(newAvailableStock.getKey(), -stockAdjustments.get(newAvailableStock.getKey()), reason, ingredient.getRestaurant().getUuid());
         }
 //        ingredientPersistencePort.logStockAdjustment(ingredientUuids, reason);
+    }
+
+    @Override
+    public Restaurant getRestaurantByIngredientUuid(UUID ingredientUuid) {
+        return ingredientPersistencePort.getRestaurantByIngredientUuid(ingredientUuid).orElseThrow(() -> new RestaurantDoesNotExistException("..."));
     }
 }

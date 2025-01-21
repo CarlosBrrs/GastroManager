@@ -18,6 +18,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Repository
@@ -38,13 +40,13 @@ public class OrderEntityAdapter implements OrderPersistencePort {
     public Order createOrder(Order order) {
 
         // todos los productitem relacionados de cada orderitem
-        List<ProductItemEntity> productItemEntityList = productItemRepository.findByUuidIn(order.orderItems().stream()
+        List<ProductItemEntity> productItemEntityList = productItemRepository.findByUuidIn(order.getOrderItems().stream()
                 .map(OrderItem::productItemUuid)
                 .toList());
 
         // el user de la order
-        UserEntity userEntity = userEntityRepository.findById(order.userUuid())
-                .orElseThrow(() -> new UsernameNotFoundException(order.userUuid().toString()));
+        UserEntity userEntity = userEntityRepository.findById(order.getUserUuid())
+                .orElseThrow(() -> new UsernameNotFoundException(order.getUserUuid().toString()));
 
         // la order
         OrderEntity orderEntity = orderEntityMapper.toEntity(order);
@@ -53,7 +55,7 @@ public class OrderEntityAdapter implements OrderPersistencePort {
         orderEntity.getOrderItems().clear();
 
         //para cada orderitementity hay que setear la order y el productitem
-        order.orderItems()
+        order.getOrderItems()
                 .forEach(orderItem ->
                         {
                             //map the order to orderitem
@@ -81,5 +83,15 @@ public class OrderEntityAdapter implements OrderPersistencePort {
     @Override
     public boolean existsOrderByOrderCode(String base36) {
         return orderEntityRepository.existsByCode(base36);
+    }
+
+    @Override
+    public Optional<Order> getOrderByUuid(UUID orderUuid) {
+        return orderEntityRepository.findById(orderUuid).map(orderEntityMapper::toDomain);
+    }
+
+    @Override
+    public UUID changeOrderStatus(UUID orderUuid, String newStatus, String reason) {
+        return null;
     }
 }

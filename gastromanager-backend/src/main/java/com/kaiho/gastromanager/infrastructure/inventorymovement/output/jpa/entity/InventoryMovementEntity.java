@@ -1,6 +1,7 @@
 package com.kaiho.gastromanager.infrastructure.inventorymovement.output.jpa.entity;
 
 import com.kaiho.gastromanager.infrastructure.ingredient.output.jpa.entity.IngredientEntity;
+import com.kaiho.gastromanager.infrastructure.restaurant.output.jpa.entity.RestaurantEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -43,6 +44,10 @@ public class InventoryMovementEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "ingredient_uuid", nullable = false)
     private IngredientEntity ingredient;
+
+    @ManyToOne
+    @JoinColumn(name = "restaurant_uuid")
+    private RestaurantEntity restaurant;
 
     @CreatedDate
     private Instant createdDate;

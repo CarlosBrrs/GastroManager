@@ -1,5 +1,6 @@
 package com.kaiho.gastromanager.application.order.handler;
 
+import com.kaiho.gastromanager.application.order.dto.request.ChangeOrderStatusRequestDto;
 import com.kaiho.gastromanager.application.order.dto.request.OrderRequestDto;
 import com.kaiho.gastromanager.application.order.dto.response.OrderResponseDto;
 import com.kaiho.gastromanager.application.order.mapper.OrderMapper;
@@ -20,9 +21,10 @@ public class OrderHandlerImpl implements OrderHandler {
 
     private final OrderServicePort orderServicePort;
     private final OrderMapper orderMapper;
+
     @Override
     public ApiGenericResponse<List<OrderResponseDto>> getAllOrders() {
-        List<Order> orderList =  orderServicePort.getAllOrders();
+        List<Order> orderList = orderServicePort.getAllOrders();
         List<OrderResponseDto> orderResponseDtoList = orderList.stream().map(orderMapper::toResponse).toList();
         return buildSuccessResponse("List of orders retrieved successfully", orderResponseDtoList);
     }
@@ -42,6 +44,14 @@ public class OrderHandlerImpl implements OrderHandler {
     @Override
     public ApiGenericResponse<OrderResponseDto> updateOrder(UUID orderUuid, OrderRequestDto orderRequestDto) {
         return null;
+    }
+
+    @Override
+    public ApiGenericResponse<UUID> changeOrderStatus(UUID orderUuid, ChangeOrderStatusRequestDto changeOrderStatusRequestDto, UUID userUuid) {
+
+        UUID orderUuidChanged = orderServicePort.changeOrderStatus(orderUuid, changeOrderStatusRequestDto.newStatus(), changeOrderStatusRequestDto.reason(), userUuid);
+        return buildSuccessResponse("Order status changed successfully", orderUuidChanged);
+
     }
 }
 
