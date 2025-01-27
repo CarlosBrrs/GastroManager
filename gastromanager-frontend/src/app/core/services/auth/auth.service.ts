@@ -6,12 +6,15 @@ import {Router} from "@angular/router";
 import {jwtDecode} from 'jwt-decode';
 import {BaseHttpService} from "../basehttp/base-http.service";
 import {DecodedToken} from "../../model/interfaces/DecodedToken";
-import {IngredientDetailResponseDto} from "../../model/interfaces/IngredientDetailResponseDto";
+
+interface RestaurantDto {
+  name: string;
+  uuid: string;
+}
 
 interface LoginResponseDto {
   jwtToken: string;
-  restaurantUuid: string;
-
+  restaurants: RestaurantDto[];
 }
 
 @Injectable({
@@ -39,7 +42,8 @@ export class AuthService extends BaseHttpService {
       tap(response => {
         if (response.flag) {
           const token = response.data.jwtToken;
-          const restaurantUuid = response.data.restaurantUuid;
+          // TODO: LA ESTRUCTURA VA A VARIAR SI ES OWNER O MANAGER, AJUSTAR
+          const restaurantUuid = response.data.restaurants[0].uuid;
           console.log(token)
           console.log(restaurantUuid)
           const decodedToken: DecodedToken = jwtDecode<DecodedToken>(token);
