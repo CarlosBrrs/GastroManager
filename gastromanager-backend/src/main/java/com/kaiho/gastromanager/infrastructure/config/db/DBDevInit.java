@@ -9,6 +9,7 @@ import com.kaiho.gastromanager.infrastructure.productitem.output.jpa.repository.
 import com.kaiho.gastromanager.infrastructure.restaurant.output.jpa.repository.RestaurantEntityRepository;
 import com.kaiho.gastromanager.infrastructure.user.output.jpa.entity.RoleEntity;
 import com.kaiho.gastromanager.infrastructure.user.output.jpa.entity.UserEntity;
+import com.kaiho.gastromanager.infrastructure.user.output.jpa.repository.RoleEntityRepository;
 import com.kaiho.gastromanager.infrastructure.user.output.jpa.repository.UserEntityRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,7 @@ import java.util.UUID;
 @Slf4j
 @Profile("dev")
 public class DBDevInit implements CommandLineRunner {
+    private final RoleEntityRepository roleEntityRepository;
     private final UserEntityRepository userEntityRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -37,13 +39,12 @@ public class DBDevInit implements CommandLineRunner {
 
     private void createUserIfNotExists() {
         Optional<UserEntity> cbarrios = userEntityRepository.findByUsername("cbarrios");
+        RoleEntity ownerRole = roleEntityRepository.findById(UUID.fromString("754234e5-8c3d-4d13-b5de-3b4de4a4bc99")).orElseThrow();
         if (cbarrios.isPresent()) {
             cbarrios.get().setEncodedPassword(passwordEncoder.encode("cbarrios"));
-            cbarrios.get().setRoles(Set.of(RoleEntity.builder()
-                    .roleType(RoleType.ROLE_OWNER)
-                    .uuid(UUID.randomUUID())
-                    .build()));
+            cbarrios.get().setRoles(Set.of(ownerRole));
             userEntityRepository.save(cbarrios.get());
+            log.error("User created successfully");
         } else {
             log.error("Critical error: The user cbarrios does not exists. Please contact admin");
         }
