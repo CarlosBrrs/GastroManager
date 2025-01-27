@@ -1,7 +1,6 @@
 package com.kaiho.gastromanager.domain.productitem.usecase;
 
 import com.kaiho.gastromanager.domain.ingredient.api.IngredientServicePort;
-import com.kaiho.gastromanager.domain.ingredient.model.Ingredient;
 import com.kaiho.gastromanager.domain.productitem.api.ProductItemServicePort;
 import com.kaiho.gastromanager.domain.productitem.exception.ProductItemAlreadyExistsException;
 import com.kaiho.gastromanager.domain.productitem.exception.ProductItemDoesNotExistException;
@@ -34,63 +33,43 @@ public class ProductItemUseCase implements ProductItemServicePort {
 
     @Override
     @Transactional(readOnly = true)
-    public ProductItem getProductItemByUUID(UUID uuid) {
-        return productItemPersistencePort.findProductItemByUuid(uuid)
+    public ProductItem getProductItemByUUID(UUID uuid, UUID restaurantUuid) {
+        return productItemPersistencePort.findProductItemByUuid(uuid, restaurantUuid)
                 .orElseThrow(() -> new ProductItemDoesNotExistException(uuid));
     }
 
     @Override
     @Transactional
     public UUID addProductItem(ProductItem productItem) {
-        if (productItemPersistencePort.existsByName(productItem.name())) {
-            throw new ProductItemAlreadyExistsException(productItem.name());
+        if (productItemPersistencePort.existsByName(productItem.getName(), productItem.getRestaurant().getUuid())) {
+            throw new ProductItemAlreadyExistsException(productItem.getName());
         }
-        // TODO: Move this to adapter, here we validate business rules and in adapter we retrieve and map to entity
-        ProductItem toSave = ProductItem.builder()
-                .name(productItem.name())
-                .description(productItem.description())
-                .category(productItem.category())
-                .price(productItem.price())
-                .isEnabled(productItem.isEnabled())
-                .ingredients(validateAndRetrieveIngredients(productItem.ingredients()))
-                .build();
-        return productItemPersistencePort.saveProductItem(toSave).uuid();
+        validateIngredients(productItem.getIngredients());
+
+        return productItemPersistencePort.saveProductItem(productItem);
     }
 
     @Override
     @Transactional
     public ProductItem updateProductItem(UUID uuid, ProductItem productItem) {
-        Optional<ProductItem> optionalProductItem = productItemPersistencePort.findProductItemByUuid(uuid);
+        Optional<ProductItem> optionalProductItem = productItemPersistencePort.findProductItemByUuid(uuid, productItem.getRestaurant().getUuid());
         if (optionalProductItem.isEmpty()) {
             throw new ProductItemDoesNotExistException(uuid);
-        } else if (!optionalProductItem.get().name().equals(productItem.name()) &&
-                productItemPersistencePort.existsByName(productItem.name())) {
-            throw new ProductItemAlreadyExistsException(productItem.name());
+        } else if (!optionalProductItem.get().getName().equals(productItem.getName()) &&
+                productItemPersistencePort.existsByName(productItem.getName(), productItem.getRestaurant().getUuid())) {
+            throw new ProductItemAlreadyExistsException(productItem.getName());
         }
         return productItemPersistencePort.updateProductItem(uuid, productItem);
     }
 
-    @Override
-    public List<ProductItem> getAllProductItemsByUuid(List<UUID> uuids) {
-        // TODO: Lanzar excepcion aqui para UUID no relacionados a productitems
-        return productItemPersistencePort.findAllProductItemsByUuid(uuids);
-    }
 
-    private List<ProductItemIngredient> validateAndRetrieveIngredients(List<ProductItemIngredient> ingredients) {
+    private void validateIngredients(List<ProductItemIngredient> ingredients) {
 
         if (ingredients == null || ingredients.isEmpty()) {
             throw new ProductItemIngredientEmptyException();
         }
-        return ingredients.stream()
-                .map(ingredient -> {
-
-                    Ingredient existingIngredient = ingredientServicePort.getIngredientById(ingredient.ingredientUuid(), getCurrentRestaurant());
-
-                    return ProductItemIngredient.builder()
-                            .ingredientUuid(existingIngredient.getUuid())
-                            .quantity(ingredient.quantity())
-                            .build();
-                })
-                .toList();
+        ingredients.forEach(ingredient ->
+                ingredientServicePort.getIngredientById(ingredient.getIngredient().getUuid(), getCurrentRestaurant())
+        );
     }
 }

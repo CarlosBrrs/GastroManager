@@ -9,7 +9,6 @@ import com.kaiho.gastromanager.domain.ingredient.api.IngredientServicePort;
 import com.kaiho.gastromanager.domain.ingredient.model.Ingredient;
 import com.kaiho.gastromanager.domain.restaurant.api.RestaurantServicePort;
 import com.kaiho.gastromanager.infrastructure.common.model.ApiGenericResponse;
-import com.kaiho.gastromanager.infrastructure.config.context.RestaurantContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

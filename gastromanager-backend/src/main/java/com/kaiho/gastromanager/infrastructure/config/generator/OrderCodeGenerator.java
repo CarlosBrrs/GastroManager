@@ -17,8 +17,14 @@ public class OrderCodeGenerator {
         String stringYear = String.valueOf(today.get(Calendar.YEAR)).substring(2, 4);
         sb.append(stringYear);
         sb.append("-");
-        sb.append(today.get(Calendar.MONTH)+1);
+        if ((today.get(Calendar.MONTH) + 1) < 10) {
+            sb.append("" + 0);
+        }
+        sb.append(today.get(Calendar.MONTH) + 1);
         sb.append("-");
+        if (today.get(Calendar.DAY_OF_MONTH) < 10) {
+            sb.append("" + 0);
+        }
         sb.append(today.get(Calendar.DAY_OF_MONTH));
         sb.append("/");
 

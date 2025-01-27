@@ -20,7 +20,8 @@ public class RestaurantFilterAspect {
     private final EntityManager entityManager;
 
     @Pointcut("within(org.springframework.data.jpa.repository.JpaRepository+)")
-    public void repositoryMethods() {}
+    public void repositoryMethods() {
+    }
 
     @Around("repositoryMethods()")
     public Object applyFilter(ProceedingJoinPoint joinPoint) throws Throwable {

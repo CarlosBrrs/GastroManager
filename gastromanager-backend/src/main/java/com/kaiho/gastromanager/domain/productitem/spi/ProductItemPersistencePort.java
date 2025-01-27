@@ -9,13 +9,12 @@ import java.util.UUID;
 public interface ProductItemPersistencePort {
     List<ProductItem> findAllProductItems();
 
-    Optional<ProductItem> findProductItemByUuid(UUID uuid);
+    Optional<ProductItem> findProductItemByUuid(UUID uuid, UUID restaurantUuid);
 
-    ProductItem saveProductItem(ProductItem productItem);
+    UUID saveProductItem(ProductItem productItem);
 
     ProductItem updateProductItem(UUID uuid, ProductItem updatedProductItem);
 
-    boolean existsByName(String name);
+    boolean existsByName(String name, UUID restaurantUuid);
 
-    List<ProductItem> findAllProductItemsByUuid(List<UUID> uuids);
 }

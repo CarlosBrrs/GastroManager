@@ -6,6 +6,13 @@ import {Router} from "@angular/router";
 import {jwtDecode} from 'jwt-decode';
 import {BaseHttpService} from "../basehttp/base-http.service";
 import {DecodedToken} from "../../model/interfaces/DecodedToken";
+import {IngredientDetailResponseDto} from "../../model/interfaces/IngredientDetailResponseDto";
+
+interface LoginResponseDto {
+  jwtToken: string;
+  restaurantUuid: string;
+
+}
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +23,7 @@ export class AuthService extends BaseHttpService {
   private tokenKey: string = "jwtToken";
   private userInfoKey: string = "userInfo";
   private roles: string[] = [];
+  private restaurantUuidKey: string = "restaurantUuid";
 
   constructor(private router: Router) {
     super();
@@ -23,17 +31,21 @@ export class AuthService extends BaseHttpService {
     this.loadRolesFromToken();
   }
 
-  login(loginRequestDto: LoginRequestDto): Observable<ApiGenericResponse<string>> {
-    return this.http.post<ApiGenericResponse<string>>(`${this.apiUrl}/auth/login`, loginRequestDto, {
+  login(loginRequestDto: LoginRequestDto): Observable<ApiGenericResponse<LoginResponseDto>> {
+    return this.http.post<ApiGenericResponse<LoginResponseDto>>(`${this.apiUrl}/auth/login`, loginRequestDto, {
       headers: {'Content-Type': 'application/json'}
     }).pipe(
       // for sideffects
       tap(response => {
         if (response.flag) {
-          const token = response.data;
+          const token = response.data.jwtToken;
+          const restaurantUuid = response.data.restaurantUuid;
+          console.log(token)
+          console.log(restaurantUuid)
           const decodedToken: DecodedToken = jwtDecode<DecodedToken>(token);
           this.roles = decodedToken.roles;
           this.setTokenInSystem(token);
+          this.setRestaurantUuidInSystem(restaurantUuid);
           this.isLoggedIn.set(this.hasToken());
         }
       })
@@ -117,5 +129,13 @@ export class AuthService extends BaseHttpService {
   private hasToken(): boolean {
     const tokenInStorage = localStorage.getItem(this.tokenKey);
     return !!tokenInStorage && this.validateToken(tokenInStorage);
+  }
+
+  private setRestaurantUuidInSystem(restaurantUuid: string) {
+    localStorage.setItem(this.restaurantUuidKey, restaurantUuid);
+  }
+
+  private getRestaurantUuidFromSystem(): string | null {
+    return localStorage.getItem(this.restaurantUuidKey);
   }
 }

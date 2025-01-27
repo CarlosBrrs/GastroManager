@@ -1,6 +1,7 @@
 package com.kaiho.gastromanager.infrastructure.restaurant.output.jpa.entity;
 
 import com.kaiho.gastromanager.infrastructure.common.model.Auditable;
+import com.kaiho.gastromanager.infrastructure.order.output.jpa.entity.OrderEntity;
 import com.kaiho.gastromanager.infrastructure.user.output.jpa.entity.UserEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -33,6 +34,9 @@ public class RestaurantEntity extends Auditable implements Serializable {
     @OneToMany(mappedBy = "restaurant", fetch = FetchType.EAGER)
     private List<UserEntity> employees;
 
+    @OneToMany(mappedBy = "restaurant", fetch = FetchType.EAGER)
+    private List<OrderEntity> orders;
+
     @ManyToOne
     @JoinColumn(name = "owner_uuid", referencedColumnName = "uuid")
     private UserEntity owner;
@@ -45,5 +49,10 @@ public class RestaurantEntity extends Auditable implements Serializable {
     public void addEmployee(UserEntity employee) {
         this.employees.add(employee);
         employee.setRestaurant(this);
+    }
+
+    public void addOrder(OrderEntity orderEntity) {
+        this.orders.add(orderEntity);
+        orderEntity.setRestaurant(this);
     }
 }

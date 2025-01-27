@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.kaiho.gastromanager.infrastructure.common.model.ApiGenericResponse.buildSuccessResponse;
+import static com.kaiho.gastromanager.infrastructure.config.context.RestaurantContext.getCurrentRestaurant;
 
 @RequiredArgsConstructor
 @Component
@@ -30,7 +31,7 @@ public class ProductItemHandlerImpl implements ProductItemHandler {
 
     @Override
     public ApiGenericResponse<ProductItemResponseDto> getProductItemByUUID(UUID uuid) {
-        ProductItem productItemByUUID = productItemServicePort.getProductItemByUUID(uuid);
+        ProductItem productItemByUUID = productItemServicePort.getProductItemByUUID(uuid, getCurrentRestaurant());
         ProductItemResponseDto response = productItemMapper.toResponse(productItemByUUID);
         return buildSuccessResponse("Product item retrieved successfully", response);
     }
@@ -38,12 +39,15 @@ public class ProductItemHandlerImpl implements ProductItemHandler {
     @Override
     public ApiGenericResponse<UUID> addProductItem(ProductItemRequestDto productItemRequestDto) {
         ProductItem productItem = productItemMapper.toDomain(productItemRequestDto);
+
         UUID productItemUuid = productItemServicePort.addProductItem(productItem);
+
         return buildSuccessResponse("Product item added successfully", productItemUuid);
     }
 
     @Override
     public ApiGenericResponse<ProductItemResponseDto> updateProductItem(UUID uuid, ProductItemRequestDto productItemRequestDto) {
+
         ProductItem productItem = productItemMapper.toDomain(productItemRequestDto);
         ProductItem updateProductItem = productItemServicePort.updateProductItem(uuid, productItem);
         ProductItemResponseDto response = productItemMapper.toResponse(updateProductItem);

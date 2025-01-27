@@ -1,19 +1,18 @@
 package com.kaiho.gastromanager.domain.order.usecase;
 
 import com.kaiho.gastromanager.domain.ingredient.api.IngredientServicePort;
+import com.kaiho.gastromanager.domain.ingredient.exception.IngredientDoesNotExistException;
 import com.kaiho.gastromanager.domain.ingredient.model.Ingredient;
 import com.kaiho.gastromanager.domain.order.api.OrderServicePort;
 import com.kaiho.gastromanager.domain.order.exception.InsufficientStockException;
+import com.kaiho.gastromanager.domain.order.exception.OrderDoesNotExistException;
 import com.kaiho.gastromanager.domain.order.model.Order;
 import com.kaiho.gastromanager.domain.order.spi.OrderPersistencePort;
 import com.kaiho.gastromanager.domain.orderitem.model.OrderItem;
 import com.kaiho.gastromanager.domain.pricing.api.PricingServicePort;
-import com.kaiho.gastromanager.domain.productitem.api.ProductItemServicePort;
+import com.kaiho.gastromanager.domain.productitem.exception.ProductItemDoesNotExistException;
 import com.kaiho.gastromanager.domain.productitem.model.ProductItem;
-import com.kaiho.gastromanager.domain.productitemingredient.api.ProductItemIngredientServicePort;
 import com.kaiho.gastromanager.domain.productitemingredient.model.ProductItemIngredient;
-import com.kaiho.gastromanager.domain.restaurant.spi.RestaurantPersistencePort;
-import com.kaiho.gastromanager.domain.user.spi.UserPersistencePort;
 import com.kaiho.gastromanager.infrastructure.config.generator.OrderCodeGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,8 +30,6 @@ import java.util.stream.Collectors;
 public class OrderUseCase implements OrderServicePort {
 
     private final OrderPersistencePort orderPersistencePort;
-    private final ProductItemServicePort productItemServicePort;
-    private final ProductItemIngredientServicePort productItemIngredientServicePort;
     private final IngredientServicePort ingredientServicePort;
     private final PricingServicePort pricingServicePort;
 
@@ -44,7 +41,7 @@ public class OrderUseCase implements OrderServicePort {
     @Override
     @Transactional
     public UUID createOrder(Order order) {
-/*        UUID restaurantUuid = userPersistencePort.getRestaurantByUserUuid(order.getUserUuid()).orElseThrow(() -> new IllegalArgumentException("Restaurante no encontrado")).getUuid();
+/*
         RestaurantConfig config = restaurantPersistencePort.getRestaurantConfig(resturantUuid).orElseThrow(() -> new IllegalArgumentException("Configuración no encontrada para el restaurante"));
 
 // Seleccionar la estrategia de colocación
@@ -54,43 +51,37 @@ public class OrderUseCase implements OrderServicePort {
         if (order.getOrderItems().isEmpty()) {
             throw new IllegalArgumentException("Order items cannot be 0");
         }
+        // TODO: No se va a necesitar porque se va a validar el request que la lista sea > 0
 
         validateIngredientsStock(order.getOrderItems());
 
-        List<UUID> productItemUuids = order.getOrderItems().stream()
-                .map(OrderItem::productItemUuid)
+        List<ProductItem> productItemList = order.getOrderItems().stream()
+                .map(OrderItem::getProductItem)
                 .toList();
 
-        List<ProductItem> productItemList = productItemServicePort.getAllProductItemsByUuid(productItemUuids);
-
         Map<UUID, Double> productItemPriceMap = productItemList.stream()
-                .collect(Collectors.toMap(ProductItem::uuid, ProductItem::price));
+                .collect(Collectors.toMap(ProductItem::getUuid, ProductItem::getPrice));
 
         // Calcular el total de la orden usando el PricingService usando cada orderItem y el precio que tiene cada producto
+        // Este totalAmount se calcula leyendo el precio en la tabla de productitem, luego de esto deberia aplicar descuentos si aplica
         double totalAmount = pricingServicePort.calculateOrderTotal(order.getOrderItems(), productItemPriceMap);
 
+        // aqui se agrega para enviar una orden con toda la informacion necesaria, aunque primero deberia calcular el precio de cada producto, aplicar descuentos y luego calcular el totalAmount
         List<OrderItem> orderItemsWithPrices = addPricesToOrderItems(order.getOrderItems(), productItemPriceMap);
         String orderCode = generateFiveLengthUniqueCode();
 
-        Order orderWithAmount = Order.builder()
-                .userUuid(order.getUserUuid())
-                .orderCode(orderCode)
-                .customerNotes(order.getCustomerNotes())
-                .status(order.getStatus())
-                .totalAmount(totalAmount)
-                .orderItems(orderItemsWithPrices)
-                .build();
-
+        order.setOrderCode(orderCode);
+        order.setTotalAmount(totalAmount);
+        order.setOrderItems(orderItemsWithPrices);
 
         // TODO: Verificar que se cuenta con el stock necesario para crear la orden
         // TODO: Esto tal vez deberia hacerse antes de hacer todo el proceso de creacion de orden, deshabilitar productos que no tengan suficiente stock
 
-        // Persistir la orden
-        UUID placedOrderUuid = orderPersistencePort.createOrder(orderWithAmount).getUuid();
+        UUID placedOrderUuid = orderPersistencePort.createOrder(order).getUuid();
 
         //TODO: Este ajuste se deberia hacer cuando la orden se inicie a preparar en cocina, no cuando se coloque la orden
         // Disminuir el stock de los ingredientes
-        decreaseIngredientsStockOrder(orderWithAmount.getOrderItems(), orderCode);
+        decreaseIngredientsStockOrder(order.getOrderItems(), orderCode);
         return placedOrderUuid;
 
     }
@@ -112,19 +103,22 @@ public class OrderUseCase implements OrderServicePort {
         return null;
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Order getOrderByUUID(UUID orderUuid, UUID restaurantUuid) {
+        return orderPersistencePort.findOrderByUuid(orderUuid, restaurantUuid)
+                .orElseThrow(() -> new OrderDoesNotExistException(orderUuid));
+    }
+    //TODO: Modify the list and return void
     private List<OrderItem> addPricesToOrderItems(List<OrderItem> orderItems, Map<UUID, Double> productItemPriceMap) {
         List<OrderItem> orderItemsWithPrices = new ArrayList<>();
         for (OrderItem orderItem : orderItems) {
-            Double unitPrice = productItemPriceMap.get(orderItem.productItemUuid());
+            Double unitPrice = productItemPriceMap.get(orderItem.getProductItem().getUuid());
             if (unitPrice == null) {
-                throw new IllegalArgumentException("El producto con UUID " + orderItem.productItemUuid() + " no se encuentra disponible.");
+                throw new IllegalArgumentException("El producto con UUID " + orderItem.getProductItem().getUuid() + " no se encuentra disponible.");
             }
-            OrderItem itemWithPrice = OrderItem.builder()
-                    .productItemUuid(orderItem.productItemUuid())
-                    .unitPrice(unitPrice)
-                    .quantity(orderItem.quantity())
-                    .build();
-            orderItemsWithPrices.add(itemWithPrice);
+            orderItem.setUnitPrice(unitPrice);
+            orderItemsWithPrices.add(orderItem);
         }
         return orderItemsWithPrices;
     }
@@ -135,14 +129,14 @@ public class OrderUseCase implements OrderServicePort {
         Map<UUID, Integer> requiredIngredientQuantities = calculateRequiredIngredients(orderItems);
 
         // Consultar todos los ingredientes necesarios de una vez
-        Map<UUID, Ingredient> ingredientMap = ingredientServicePort.getIngredientsByUuids(requiredIngredientQuantities.keySet());
+        List<Ingredient> ingredients = ingredientServicePort.getIngredientsByUuid(requiredIngredientQuantities.keySet());
 
         // Para cada registro del mapa de ingredientes
         for (Map.Entry<UUID, Integer> entry : requiredIngredientQuantities.entrySet()) {
             UUID ingredientUuid = entry.getKey();
             int requiredQuantity = entry.getValue();
 
-            Ingredient ingredient = ingredientMap.get(ingredientUuid);
+            Ingredient ingredient = ingredients.stream().filter(ing -> ing.getUuid().equals(ingredientUuid)).findFirst().orElseThrow(() -> new IngredientDoesNotExistException(ingredientUuid.toString()));
             // Si tengo menos stock del que quiero usar para la orden lanzar excepcion
             if (ingredient.getAvailableStock() < requiredQuantity) {
                 throw new InsufficientStockException(ingredient.getName(), requiredQuantity, ingredient.getAvailableStock());
@@ -150,25 +144,25 @@ public class OrderUseCase implements OrderServicePort {
         }
     }
 
-    //the uuid of the ingredient and the quantity to decrease, or how much it is used in the order according to the recipe
     private Map<UUID, Integer> calculateRequiredIngredients(List<OrderItem> orderItems) {
-        List<UUID> productItemUuids = orderItems.stream()
-                .map(OrderItem::productItemUuid)
-                .toList();
 
-        List<ProductItemIngredient> productItemIngredients = productItemIngredientServicePort.getByProductItemUuids(productItemUuids);
+        List<ProductItemIngredient> productItemIngredients = orderItems.stream()
+                .flatMap(orderItem -> orderItem.getProductItem().getIngredients().stream()
+                        .peek(productItemIngredient -> productItemIngredient.setProductItem(orderItem.getProductItem()))
+                ).toList();
 
         Map<UUID, Integer> requiredQuantities = new HashMap<>();
         for (OrderItem orderItem : orderItems) {
             List<ProductItemIngredient> relatedIngredients = productItemIngredients.stream()
-                    .filter(ingredient -> ingredient.productItemUuid().equals(orderItem.productItemUuid()))
+                    .filter(ingredient -> ingredient.getProductItem().getUuid().equals(orderItem.getProductItem().getUuid()))
                     .toList();
 
             for (ProductItemIngredient productItemIngredient : relatedIngredients) {
-                int usedQuantity = (int) (orderItem.quantity() * productItemIngredient.quantity());
-                requiredQuantities.merge(productItemIngredient.ingredientUuid(), usedQuantity, Integer::sum);
+                int usedQuantity = (int) (orderItem.getQuantity() * productItemIngredient.getQuantity());
+                requiredQuantities.merge(productItemIngredient.getIngredient().getUuid(), usedQuantity, Integer::sum);
             }
         }
+
         return requiredQuantities;
     }
 
@@ -181,43 +175,9 @@ public class OrderUseCase implements OrderServicePort {
     }
 
     private void decreaseIngredientsStockOrder(List<OrderItem> orderItems, String orderCode) {
-        // Calcular ajustes de stock
-        //the uuid of the ingredient and the quantity to decrease, or how much it is used in the order
+
         Map<UUID, Integer> stockAdjustments = calculateRequiredIngredients(orderItems);
 
-        // Enviar ajustes al servicio para procesamiento en lote
         ingredientServicePort.batchAdjustStock(stockAdjustments, "Order placement for code " + orderCode);
     }
-
-/*    private boolean isTransitionAllowed(String currentStatus, String newStatus, Set<Role> userRoles) {
-        Map<String, Map<String, List<String>>> transitions = Map.of(
-                "PENDING", Map.of(
-                        "PREPARING", List.of("Manager", "Waiter"),
-                        "CANCELLED", List.of("Manager")
-                ),
-                "PREPARING", Map.of(
-                        "READY", List.of("Chef", "KitchenStaff"),
-                        "PENDING", List.of("Manager"),
-                        "CANCELLED", List.of("Manager")
-                ),
-                "READY", Map.of(
-                        "ON_TABLE", List.of("Waiter"),
-                        "CANCELLED", List.of("Manager")
-                ),
-                "ON_TABLE", Map.of(
-                        "COMPLETED", List.of("Waiter", "Cashier"),
-                        "CANCELLED", List.of("Manager")
-                )
-        );
-
-        // Obtener la lista de roles autorizados para la transición
-        List<String> allowedRoles = transitions
-                .getOrDefault(currentStatus, Map.of())
-                .getOrDefault(newStatus, List.of());
-
-        // Validar si alguno de los roles del usuario está en la lista de roles permitidos
-        return userRoles.stream()
-                .map(Role::roleType) // Asumiendo que Role tiene un método `getName` que devuelve el nombre del rol
-                .anyMatch(allowedRoles::contains);
-    }*/
 }

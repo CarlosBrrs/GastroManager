@@ -6,5 +6,5 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ProductItemIngredientPersistencePort {
-    List<ProductItemIngredient> findByProductItemUuids(List<UUID> productItemUuids);
+    List<ProductItemIngredient> findByProductItemUuids(List<UUID> productItemUuids, UUID restaurantUuid);
 }

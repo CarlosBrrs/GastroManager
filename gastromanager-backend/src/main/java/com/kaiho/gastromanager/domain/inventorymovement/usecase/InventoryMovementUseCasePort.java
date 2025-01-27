@@ -1,11 +1,9 @@
 package com.kaiho.gastromanager.domain.inventorymovement.usecase;
 
-import com.kaiho.gastromanager.domain.ingredient.api.IngredientServicePort;
 import com.kaiho.gastromanager.domain.inventorymovement.api.InventoryMovementServicePort;
 import com.kaiho.gastromanager.domain.inventorymovement.exception.InvalidInventoryMovementQuantityException;
 import com.kaiho.gastromanager.domain.inventorymovement.model.InventoryMovement;
 import com.kaiho.gastromanager.domain.inventorymovement.spi.InventoryMovementPersistencePort;
-import com.kaiho.gastromanager.domain.restaurant.api.RestaurantServicePort;
 import com.kaiho.gastromanager.domain.restaurant.model.Restaurant;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,15 +17,6 @@ import java.util.UUID;
 public class InventoryMovementUseCasePort implements InventoryMovementServicePort {
 
     private final InventoryMovementPersistencePort inventoryMovementPersistencePort;
-
-
-//    @Override
-//    public UUID createInventoryMovement(InventoryMovement movement) {
-//        if (movement.changeQuantity() == 0) {
-//            throw new InvalidInventoryMovementQuantityException();
-//        }
-//        return inventoryMovementPersistencePort.createInventoryMovement(movement);
-//    }
 
     @Override
     public void recordInventoryMovement(UUID ingredientUuid, int changeQuantity, String reason, Restaurant restaurant) {

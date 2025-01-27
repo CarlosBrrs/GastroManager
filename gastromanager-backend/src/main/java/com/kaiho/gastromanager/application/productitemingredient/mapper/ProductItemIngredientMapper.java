@@ -2,21 +2,29 @@ package com.kaiho.gastromanager.application.productitemingredient.mapper;
 
 import com.kaiho.gastromanager.application.productitemingredient.dto.request.ProductItemIngredientRequestDto;
 import com.kaiho.gastromanager.application.productitemingredient.dto.response.ProductItemIngredientResponseDto;
-import com.kaiho.gastromanager.domain.ingredient.model.Unit;
+import com.kaiho.gastromanager.domain.ingredient.api.IngredientServicePort;
+import com.kaiho.gastromanager.domain.ingredient.model.Ingredient;
 import com.kaiho.gastromanager.domain.productitemingredient.model.ProductItemIngredient;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import static com.kaiho.gastromanager.infrastructure.config.context.RestaurantContext.getCurrentRestaurant;
+
 @Component
+@RequiredArgsConstructor
 public class ProductItemIngredientMapper {
 
-    public ProductItemIngredient toDomain(ProductItemIngredientRequestDto ingredientRequestDto) {
-        if (ingredientRequestDto == null) {
+    private final IngredientServicePort ingredientServicePort;
+
+    public ProductItemIngredient toDomain(ProductItemIngredientRequestDto productItemIngredientRequestDto) {
+        if (productItemIngredientRequestDto == null) {
             return null;
         }
+        Ingredient ingredient = ingredientServicePort.getIngredientById(productItemIngredientRequestDto.ingredientUuid(), getCurrentRestaurant());
 
         return ProductItemIngredient.builder()
-                .ingredientUuid(ingredientRequestDto.ingredientUuid())
-                .quantity(ingredientRequestDto.quantity())
+                .ingredient(ingredient)
+                .quantity(productItemIngredientRequestDto.quantity())
                 .build();
     }
 
@@ -25,8 +33,8 @@ public class ProductItemIngredientMapper {
             return null;
         }
         return ProductItemIngredientResponseDto.builder()
-                .ingredientUuid(productItemIngredient.ingredientUuid())
-                .quantity(productItemIngredient.quantity())
+                .ingredientUuid(productItemIngredient.getIngredient().getUuid())
+                .quantity(productItemIngredient.getQuantity())
                 .build();
     }
 }

@@ -19,7 +19,7 @@ public interface IngredientServicePort {
 
     UUID adjustIngredientStock(UUID ingredientUuid, int newStock, String reason, UUID currentRestaurant);
 
-    Map<UUID, Ingredient> getIngredientsByUuids(Set<UUID> uuids);
+    List<Ingredient> getIngredientsByUuid(Set<UUID> uuids);
 
     void batchAdjustStock(Map<UUID, Integer> stockAdjustments, String orderPlacement);
 

@@ -1,19 +1,16 @@
 package com.kaiho.gastromanager.infrastructure.orderitem.output.jpa.entity;
 
-import com.kaiho.gastromanager.domain.order.model.Order;
 import com.kaiho.gastromanager.infrastructure.common.model.Auditable;
 import com.kaiho.gastromanager.infrastructure.order.output.jpa.entity.OrderEntity;
 import com.kaiho.gastromanager.infrastructure.productitem.output.jpa.entity.ProductItemEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;

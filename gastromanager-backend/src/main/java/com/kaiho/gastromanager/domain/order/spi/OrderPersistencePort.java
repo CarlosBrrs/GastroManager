@@ -13,7 +13,9 @@ public interface OrderPersistencePort {
 
     boolean existsOrderByOrderCode(String base36);
 
-    Optional<Order> getOrderByUuid(UUID orderUuid);
+    Optional<Order> getOrderByUuid(UUID orderUuid, UUID restaurantUuid);
 
     UUID changeOrderStatus(UUID orderUuid, String newStatus, String reason);
+
+    Optional<Order> findOrderByUuid(UUID orderUuid, UUID restaurantUuid);
 }

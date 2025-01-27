@@ -16,7 +16,7 @@ public class ProductItemIngredientUseCase implements ProductItemIngredientServic
     private final ProductItemIngredientPersistencePort productItemIngredientPersistencePort;
 
     @Override
-    public List<ProductItemIngredient> getByProductItemUuids(List<UUID> productItemUuids) {
-        return productItemIngredientPersistencePort.findByProductItemUuids(productItemUuids);
+    public List<ProductItemIngredient> getByProductItemUuids(List<UUID> productItemUuids, UUID restaurantUuid) {
+        return productItemIngredientPersistencePort.findByProductItemUuids(productItemUuids, restaurantUuid);
     }
 }

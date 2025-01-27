@@ -1,13 +1,10 @@
 package com.kaiho.gastromanager.infrastructure.productitemingredient.output.jpa.entity;
 
-import com.kaiho.gastromanager.domain.ingredient.model.Unit;
 import com.kaiho.gastromanager.infrastructure.common.model.Auditable;
 import com.kaiho.gastromanager.infrastructure.ingredient.output.jpa.entity.IngredientEntity;
 import com.kaiho.gastromanager.infrastructure.productitem.output.jpa.entity.ProductItemEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;

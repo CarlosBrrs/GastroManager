@@ -38,7 +38,11 @@ public class IngredientEntityAdapter implements IngredientPersistencePort {
 
     @Override
     public Optional<Ingredient> getIngredientByUuid(UUID uuid, UUID restaurantUuid) {
-        return ingredientEntityRepository.findById(uuid, restaurantUuid).map(ingredientEntityMapper::toDomain);
+        Optional<Ingredient> ingredient = ingredientEntityRepository.findById(uuid, restaurantUuid).map(ingredientEntityMapper::toDomain);
+        RestaurantEntity restaurantEntity = restaurantEntityRepository.findById(restaurantUuid).orElseThrow(() -> new RestaurantDoesNotExistException(restaurantUuid.toString()));
+        Restaurant restaurant = restaurantEntityMapper.toDomain(restaurantEntity);
+        ingredient.ifPresent(ing -> ing.setRestaurant(restaurant));
+        return ingredient;
     }
 
     @Override
@@ -51,7 +55,6 @@ public class IngredientEntityAdapter implements IngredientPersistencePort {
         RestaurantEntity restaurantEntity = restaurantEntityRepository.findById(ingredient.getRestaurant().getUuid())
                 .orElseThrow(() -> new RestaurantDoesNotExistException(ingredient.getRestaurant().getUuid().toString()));
         IngredientEntity entity = ingredientEntityMapper.toEntity(ingredient);
-        entity.setRestaurant(restaurantEntity);
         IngredientEntity saved = ingredientEntityRepository.save(entity);
         return saved.getUuid();
     }

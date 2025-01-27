@@ -25,7 +25,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("${api.endpoint.base-url}/orders")
 @AllArgsConstructor
-//@RestaurantDomainRestController(specificDomain = "/orders")
 public class OrderRestController {
 
     private final OrderHandler orderHandler;
@@ -43,8 +42,8 @@ public class OrderRestController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiGenericResponse<UUID>> createOrder(@RequestBody OrderRequestDto orderRequestDto, @AuthenticationPrincipal User user) {
-        return new ResponseEntity<>(orderHandler.createOrder(orderRequestDto, user.uuid()), HttpStatus.CREATED);
+    public ResponseEntity<ApiGenericResponse<UUID>> createOrder(@RequestBody OrderRequestDto orderRequestDto) {
+        return new ResponseEntity<>(orderHandler.createOrder(orderRequestDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/{orderUuid}")

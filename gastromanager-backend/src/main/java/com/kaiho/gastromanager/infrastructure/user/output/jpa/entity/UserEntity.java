@@ -69,7 +69,7 @@ public class UserEntity extends Auditable implements Serializable {
         order.setUser(this);
     }
 
-    public void addRestaurantToOwner(RestaurantEntity restaurant ) {
+    public void addRestaurantToOwner(RestaurantEntity restaurant) {
         restaurants.add(restaurant);
     }
 

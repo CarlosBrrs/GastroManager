@@ -7,5 +7,5 @@ import java.util.UUID;
 
 public interface ProductItemIngredientServicePort {
 
-    List<ProductItemIngredient> getByProductItemUuids(List<UUID> productItemUuids);
+    List<ProductItemIngredient> getByProductItemUuids(List<UUID> productItemUuids, UUID restaurantUuid);
 }

@@ -9,6 +9,7 @@ import com.kaiho.gastromanager.domain.ingredient.model.Ingredient;
 import com.kaiho.gastromanager.domain.ingredient.spi.IngredientPersistencePort;
 import com.kaiho.gastromanager.domain.inventorymovement.api.InventoryMovementServicePort;
 import com.kaiho.gastromanager.domain.order.exception.InsufficientStockException;
+import com.kaiho.gastromanager.domain.restaurant.api.RestaurantServicePort;
 import com.kaiho.gastromanager.domain.restaurant.exception.RestaurantDoesNotExistException;
 import com.kaiho.gastromanager.domain.restaurant.model.Restaurant;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
+
+import static com.kaiho.gastromanager.infrastructure.config.context.RestaurantContext.getCurrentRestaurant;
 
 @RequiredArgsConstructor
 @Service
@@ -28,6 +30,13 @@ public class IngredientUseCase implements IngredientServicePort {
 
     private final IngredientPersistencePort ingredientPersistencePort;
     private final InventoryMovementServicePort inventoryMovementServicePort;
+    private final RestaurantServicePort restaurantServicePort;
+
+    private static void validateStockQuantities(int minimumStockQuantity, int availableStock) {
+        if (minimumStockQuantity >= availableStock) {
+            throw new UnacceptableStockQuantitiesException();
+        }
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -52,12 +61,6 @@ public class IngredientUseCase implements IngredientServicePort {
         UUID ingredientUuid = ingredientPersistencePort.addIngredient(ingredient);
         inventoryMovementServicePort.recordInventoryMovement(ingredientUuid, ingredient.getAvailableStock(), "Initial stock", ingredient.getRestaurant());
         return ingredientUuid;
-    }
-
-    private static void validateStockQuantities(int minimumStockQuantity, int availableStock) {
-        if (minimumStockQuantity >= availableStock) {
-            throw new UnacceptableStockQuantitiesException();
-        }
     }
 
     @Override
@@ -94,13 +97,9 @@ public class IngredientUseCase implements IngredientServicePort {
     }
 
     @Override
-    public Map<UUID, Ingredient> getIngredientsByUuids(Set<UUID> uuids) {
+    public List<Ingredient> getIngredientsByUuid(Set<UUID> uuids) {
         // Consulta los ingredientes desde el puerto de persistencia
-        List<Ingredient> ingredients = ingredientPersistencePort.findIngredientsByUuids(uuids);
-
-        // Convertir la lista de ingredientes en un mapa con el UUID como clave
-        return ingredients.stream()
-                .collect(Collectors.toMap(Ingredient::getUuid, ingredient -> ingredient));
+        return ingredientPersistencePort.findIngredientsByUuids(uuids);
     }
 
     @Override
@@ -125,9 +124,10 @@ public class IngredientUseCase implements IngredientServicePort {
         // Persistir los cambios en lote
         ingredientPersistencePort.updateIngredientsStock(newAvailableStocks);
 
+        Restaurant restaurant = restaurantServicePort.getRestaurantById(getCurrentRestaurant());
         // (Opcional) Registrar el motivo del ajuste, si se requiere un log o auditoría
         for (Map.Entry<UUID, Integer> newAvailableStock : newAvailableStocks.entrySet()) {
-//            inventoryMovementServicePort.recordInventoryMovement(newAvailableStock.getKey(), -stockAdjustments.get(newAvailableStock.getKey()), reason, ingredient.getRestaurant().getUuid());
+            inventoryMovementServicePort.recordInventoryMovement(newAvailableStock.getKey(), -stockAdjustments.get(newAvailableStock.getKey()), reason, restaurant);
         }
 //        ingredientPersistencePort.logStockAdjustment(ingredientUuids, reason);
     }

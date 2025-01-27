@@ -59,19 +59,19 @@ DROP TABLE IF EXISTS product_items CASCADE;
 
 CREATE TABLE product_items
 (
-    uuid         UUID PRIMARY KEY,
-    name         VARCHAR(255) UNIQUE NOT NULL,
-    description  TEXT,
-    price        DOUBLE PRECISION    NOT NULL,
-    category     VARCHAR(20)         NOT NULL CHECK (category IN
-                                                     ('BREAKFAST', 'LUNCH', 'DINNER', 'DRINK', 'SIDE_DISH',
-                                                      'FRIED_FOOD', 'FAST_FOOD', 'DESSERT')),
-    is_enabled   BOOLEAN             NOT NULL DEFAULT TRUE,
---     restaurant_uuid UUID                NOT NULL,
-    created_date TIMESTAMP           NOT NULL,
-    created_by   VARCHAR(50)         NOT NULL,
-    updated_date TIMESTAMP,
-    updated_by   VARCHAR(50)
+    uuid            UUID PRIMARY KEY,
+    name            VARCHAR(255) UNIQUE NOT NULL,
+    description     TEXT,
+    price           DOUBLE PRECISION    NOT NULL,
+    category        VARCHAR(20)         NOT NULL CHECK (category IN
+                                                        ('BREAKFAST', 'LUNCH', 'DINNER', 'DRINK', 'SIDE_DISH',
+                                                         'FRIED_FOOD', 'FAST_FOOD', 'DESSERT')),
+    is_enabled      BOOLEAN             NOT NULL DEFAULT TRUE,
+    restaurant_uuid UUID                NOT NULL,
+    created_date    TIMESTAMP           NOT NULL,
+    created_by      VARCHAR(50)         NOT NULL,
+    updated_date    TIMESTAMP,
+    updated_by      VARCHAR(50)
 );
 
 DROP TABLE IF EXISTS product_item_ingredients;
@@ -113,6 +113,8 @@ CREATE TABLE restaurants
 ALTER TABLE IF EXISTS _users
     ADD CONSTRAINT fk_restaurant FOREIGN KEY (restaurant_uuid) REFERENCES restaurants (uuid) ON DELETE SET NULL;
 ALTER TABLE IF EXISTS ingredients
+    ADD CONSTRAINT fk_restaurant FOREIGN KEY (restaurant_uuid) REFERENCES restaurants (uuid) ON DELETE SET NULL;
+ALTER TABLE IF EXISTS product_items
     ADD CONSTRAINT fk_restaurant FOREIGN KEY (restaurant_uuid) REFERENCES restaurants (uuid) ON DELETE SET NULL;
 
 DROP TABLE IF EXISTS restaurant_configs CASCADE;
@@ -176,7 +178,7 @@ CREATE TABLE order_items
     uuid              UUID PRIMARY KEY,
     order_uuid        UUID             NOT NULL,
     product_item_uuid UUID             NOT NULL,
-    restaurant_uuid   UUID             NOT NULL,
+--     restaurant_uuid   UUID             NOT NULL,
     quantity          INT              NOT NULL,
     unit_price        DOUBLE PRECISION NOT NULL,
     created_date      TIMESTAMP        NOT NULL,

@@ -46,7 +46,6 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpMethod.PUT;
-import static org.springframework.security.authorization.AuthorizationManagers.allOf;
 
 @Configuration
 @EnableWebSecurity

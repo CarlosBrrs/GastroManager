@@ -11,12 +11,12 @@ public class RestaurantContext {
     private RestaurantContext() {
     }
 
-    public static void setCurrentRestaurant(UUID restaurantUuid) {
-        currentRestaurantUuid.set(restaurantUuid);
-    }
-
     public static UUID getCurrentRestaurant() {
         return currentRestaurantUuid.get();
+    }
+
+    public static void setCurrentRestaurant(UUID restaurantUuid) {
+        currentRestaurantUuid.set(restaurantUuid);
     }
 
     public static void clear() {

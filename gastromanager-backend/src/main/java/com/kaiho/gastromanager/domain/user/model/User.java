@@ -15,7 +15,8 @@ import java.util.stream.Collectors;
 
 @Builder
 public record User(UUID uuid, String name, String lastname, String phone, String email, String username,
-                   String encodedPassword, Set<Role> roles, Restaurant restaurant, List<Restaurant> restaurants) implements UserDetails {
+                   String encodedPassword, Set<Role> roles, Restaurant restaurant,
+                   List<Restaurant> restaurants) implements UserDetails {
 
 
     @Override

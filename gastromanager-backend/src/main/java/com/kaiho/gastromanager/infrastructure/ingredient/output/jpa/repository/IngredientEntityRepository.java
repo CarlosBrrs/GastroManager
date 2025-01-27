@@ -1,15 +1,12 @@
 package com.kaiho.gastromanager.infrastructure.ingredient.output.jpa.repository;
 
-import aj.org.objectweb.asm.commons.Remapper;
 import com.kaiho.gastromanager.infrastructure.ingredient.output.jpa.entity.IngredientEntity;
 import com.kaiho.gastromanager.infrastructure.restaurant.output.jpa.entity.RestaurantEntity;
-import com.kaiho.gastromanager.infrastructure.restaurant.output.jpa.entity.RestaurantReference;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 

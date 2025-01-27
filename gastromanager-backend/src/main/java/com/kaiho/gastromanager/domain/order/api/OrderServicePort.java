@@ -11,4 +11,6 @@ public interface OrderServicePort {
     UUID createOrder(Order order);
 
     UUID changeOrderStatus(UUID orderUuid, String newStatus, String reason, UUID userUuid);
+
+    Order getOrderByUUID(UUID orderUuid, UUID currentRestaurant);
 }

@@ -8,11 +8,10 @@ import java.util.UUID;
 public interface ProductItemServicePort {
     List<ProductItem> getAllProductItems();
 
-    ProductItem getProductItemByUUID(UUID uuid);
+    ProductItem getProductItemByUUID(UUID uuid, UUID restaurantUuid);
 
     UUID addProductItem(ProductItem productItem);
 
     ProductItem updateProductItem(UUID uuid, ProductItem productItem);
 
-    List<ProductItem> getAllProductItemsByUuid(List<UUID> uuids);
 }

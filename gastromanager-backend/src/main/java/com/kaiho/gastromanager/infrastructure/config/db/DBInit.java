@@ -1,7 +1,6 @@
 package com.kaiho.gastromanager.infrastructure.config.db;
 
 import com.kaiho.gastromanager.domain.ingredient.model.Unit;
-import com.kaiho.gastromanager.domain.ingredient.spi.IngredientPersistencePort;
 import com.kaiho.gastromanager.domain.productitem.model.Category;
 import com.kaiho.gastromanager.domain.restaurant.model.Restaurant;
 import com.kaiho.gastromanager.domain.restaurant.spi.RestaurantPersistencePort;
@@ -17,11 +16,11 @@ import com.kaiho.gastromanager.infrastructure.productitem.output.jpa.repository.
 import com.kaiho.gastromanager.infrastructure.restaurant.output.jpa.entity.RestaurantEntity;
 import com.kaiho.gastromanager.infrastructure.restaurant.output.jpa.repository.RestaurantEntityRepository;
 import com.kaiho.gastromanager.infrastructure.user.output.jpa.entity.UserEntity;
-import com.kaiho.gastromanager.infrastructure.user.output.jpa.mapper.RoleEntityMapper;
 import com.kaiho.gastromanager.infrastructure.user.output.jpa.repository.UserEntityRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -32,6 +31,7 @@ import java.util.Set;
 @Component
 @RequiredArgsConstructor
 @Slf4j
+@Profile("default")
 public class DBInit implements CommandLineRunner {
     private final UserEntityRepository userEntityRepository;
     private final IngredientEntityRepository ingredientEntityRepository;
@@ -92,6 +92,9 @@ public class DBInit implements CommandLineRunner {
         createIngredientIfNotExists("Chocolate Ice Cream", 5000, "GRAMS", "random_supplier", 0.05, "Crepes & Waffles", 150);
         createIngredientIfNotExists("Chocolate Syrup", 1000, "MILLILITRES", "random_supplier", 0.02, "Crepes & Waffles", 100);
         createIngredientIfNotExists("Chocolate Syrup KFC", 5000, "MILLILITRES", "random_supplier KFC", 0.02, "KFC", 100);
+        createIngredientIfNotExists("Eggs KFC", 900, "UNITS", "random_supplier KFC", 0.2, "KFC", 30);
+        createIngredientIfNotExists("Tomato KFC", 2000, "GRAMS", "random_supplier KFC", 0.02, "KFC", 80);
+        createIngredientIfNotExists("Onion KFC", 5000, "GRAMS", "random_supplier KFC", 0.05, "KFC", 90);
 
         assignRestaurantToUser("Crepes & Waffles", "manager");
         assignRestaurantToUser("Crepes & Waffles", "waiter");

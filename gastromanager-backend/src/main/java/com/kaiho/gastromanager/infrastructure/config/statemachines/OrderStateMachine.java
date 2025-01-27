@@ -8,10 +8,6 @@ import org.springframework.statemachine.config.StateMachineConfigurerAdapter;
 import org.springframework.statemachine.config.builders.StateMachineStateConfigurer;
 import org.springframework.statemachine.config.builders.StateMachineTransitionConfigurer;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
-
-import static com.kaiho.gastromanager.domain.order.model.OrderEvent.PAYMENT_COMPLETED;
 import static com.kaiho.gastromanager.domain.order.model.OrderStatus.AWAITING_PAYMENT;
 import static com.kaiho.gastromanager.domain.order.model.OrderStatus.CANCELLED;
 import static com.kaiho.gastromanager.domain.order.model.OrderStatus.COMPLETED;
@@ -19,7 +15,6 @@ import static com.kaiho.gastromanager.domain.order.model.OrderStatus.PENDING;
 import static com.kaiho.gastromanager.domain.order.model.OrderStatus.PREPARING;
 import static com.kaiho.gastromanager.domain.order.model.OrderStatus.READY;
 import static com.kaiho.gastromanager.domain.order.model.OrderStatus.SERVED;
-import static com.kaiho.gastromanager.domain.order.model.OrderStatus.values;
 
 @Configuration
 @EnableStateMachine

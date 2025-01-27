@@ -1,6 +1,5 @@
 package com.kaiho.gastromanager.application.inventorymovement.handler;
 
-import com.kaiho.gastromanager.application.inventorymovement.dto.request.InventoryMovementRequestDto;
 import com.kaiho.gastromanager.application.inventorymovement.dto.response.InventoryMovementResponseDto;
 import com.kaiho.gastromanager.infrastructure.common.model.ApiGenericResponse;
 
@@ -8,7 +7,6 @@ import java.util.List;
 import java.util.UUID;
 
 public interface InventoryMovementHandler {
-    ApiGenericResponse<UUID> createInventoryMovement(InventoryMovementRequestDto inventoryMovement);
 
     ApiGenericResponse<List<InventoryMovementResponseDto>> getAllInventoryMovements();
 

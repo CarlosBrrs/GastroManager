@@ -16,11 +16,11 @@ public class PricingServiceUseCase implements PricingServicePort {
 
         //Here would go any logic to apply general discounts, or be more detailed about the order rubrics
         for (OrderItem orderItem : orderItems) {
-            Double unitPrice = productItemPriceMap.get(orderItem.productItemUuid());
+            Double unitPrice = productItemPriceMap.get(orderItem.getProductItem().getUuid());
             if (unitPrice == null) {
-                throw new IllegalArgumentException("El producto con UUID " + orderItem.productItemUuid() + " no se encuentra disponible.");
+                throw new IllegalArgumentException("El producto con UUID " + orderItem.getProductItem().getUuid() + " no se encuentra disponible.");
             }
-            totalAmount += unitPrice * orderItem.quantity();
+            totalAmount += unitPrice * orderItem.getQuantity();
 
         }
         return totalAmount;

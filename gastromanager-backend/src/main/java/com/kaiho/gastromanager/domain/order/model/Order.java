@@ -1,6 +1,8 @@
 package com.kaiho.gastromanager.domain.order.model;
 
 import com.kaiho.gastromanager.domain.orderitem.model.OrderItem;
+import com.kaiho.gastromanager.domain.restaurant.model.Restaurant;
+import com.kaiho.gastromanager.domain.user.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,8 +21,8 @@ import java.util.UUID;
 public class Order {
     private UUID uuid;
     private String orderCode;
-    private UUID userUuid;
-    private UUID restaurantUuid;
+    private User user;
+    private Restaurant restaurant;
     private String customerNotes;
     private List<OrderItem> orderItems;
     private double totalAmount;

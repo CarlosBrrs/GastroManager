@@ -13,7 +13,7 @@ public interface OrderHandler {
 
     ApiGenericResponse<OrderResponseDto> getOrderByUUID(UUID orderUuid);
 
-    ApiGenericResponse<UUID> createOrder(OrderRequestDto orderRequestDto, UUID userUuid);
+    ApiGenericResponse<UUID> createOrder(OrderRequestDto orderRequestDto);
 
     ApiGenericResponse<OrderResponseDto> updateOrder(UUID orderUuid, OrderRequestDto orderRequestDto);
 
