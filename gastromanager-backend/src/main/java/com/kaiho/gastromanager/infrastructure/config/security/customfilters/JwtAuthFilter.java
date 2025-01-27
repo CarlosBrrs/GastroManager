@@ -1,6 +1,7 @@
-package com.kaiho.gastromanager.infrastructure.config.security;
+package com.kaiho.gastromanager.infrastructure.config.security.customfilters;
 
 import com.kaiho.gastromanager.domain.user.api.UserServicePort;
+import com.kaiho.gastromanager.infrastructure.config.security.JwtTokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

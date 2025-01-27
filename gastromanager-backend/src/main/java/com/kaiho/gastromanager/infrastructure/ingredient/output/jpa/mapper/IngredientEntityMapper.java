@@ -1,13 +1,20 @@
 package com.kaiho.gastromanager.infrastructure.ingredient.output.jpa.mapper;
 
 import com.kaiho.gastromanager.domain.ingredient.model.Ingredient;
+import com.kaiho.gastromanager.domain.restaurant.exception.RestaurantDoesNotExistException;
 import com.kaiho.gastromanager.infrastructure.ingredient.output.jpa.entity.IngredientEntity;
+import com.kaiho.gastromanager.infrastructure.restaurant.output.jpa.entity.RestaurantEntity;
+import com.kaiho.gastromanager.infrastructure.restaurant.output.jpa.repository.RestaurantEntityRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 
 @Component
+@RequiredArgsConstructor
 public class IngredientEntityMapper {
+
+    private final RestaurantEntityRepository restaurantEntityRepository;
 
     public Ingredient toDomain(IngredientEntity ingredientEntity) {
         if (ingredientEntity == null) {
@@ -32,17 +39,19 @@ public class IngredientEntityMapper {
         if (ingredient == null) {
             return null;
         }
+        RestaurantEntity restaurantEntity = restaurantEntityRepository.findById(ingredient.getRestaurant().getUuid()).orElseThrow(() -> new RestaurantDoesNotExistException(ingredient.getRestaurant().getUuid().toString()));
         return IngredientEntity.builder()
-                .uuid(ingredient.uuid())
-                .name(ingredient.name())
-                .availableStock(ingredient.availableStock())
-                .unit(ingredient.unit())
-                .pricePerUnit(ingredient.pricePerUnit())
+                .uuid(ingredient.getUuid())
+                .name(ingredient.getName())
+                .availableStock(ingredient.getAvailableStock())
+                .unit(ingredient.getUnit())
+                .restaurant(restaurantEntity)
+                .pricePerUnit(ingredient.getPricePerUnit())
                 .inventoryMovements(new ArrayList<>())
-                .minimumStockQuantity(ingredient.minimumStockQuantity())
-                .supplier(ingredient.supplier())
-                .createdDate(ingredient.createdDate())
-                .createdBy(ingredient.createdBy())
+                .minimumStockQuantity(ingredient.getMinimumStockQuantity())
+                .supplier(ingredient.getSupplier())
+                .createdDate(ingredient.getCreatedDate())
+                .createdBy(ingredient.getCreatedBy())
                 .build();
     }
 }

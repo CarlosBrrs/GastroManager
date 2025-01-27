@@ -1,13 +1,7 @@
 package com.kaiho.gastromanager.infrastructure.productitem.output.jpa.adapter;
 
-import com.kaiho.gastromanager.domain.ingredient.api.IngredientServicePort;
-import com.kaiho.gastromanager.domain.ingredient.model.Ingredient;
-import com.kaiho.gastromanager.domain.productitem.exception.ProductItemDoesNotExistException;
 import com.kaiho.gastromanager.domain.productitem.model.ProductItem;
 import com.kaiho.gastromanager.domain.productitem.spi.ProductItemPersistencePort;
-import com.kaiho.gastromanager.domain.productitemingredient.model.ProductItemIngredient;
-import com.kaiho.gastromanager.infrastructure.ingredient.output.jpa.entity.IngredientEntity;
-import com.kaiho.gastromanager.infrastructure.ingredient.output.jpa.mapper.IngredientEntityMapper;
 import com.kaiho.gastromanager.infrastructure.productitem.output.jpa.entity.ProductItemEntity;
 import com.kaiho.gastromanager.infrastructure.productitem.output.jpa.mapper.ProductItemEntityMapper;
 import com.kaiho.gastromanager.infrastructure.productitem.output.jpa.repository.ProductItemRepository;
@@ -24,51 +18,46 @@ import java.util.UUID;
 @Repository
 public class ProductItemEntityAdapter implements ProductItemPersistencePort {
 
-    private final ProductItemRepository productItemRepository;
+    private final ProductItemRepository productItemEntityRepository;
     private final ProductItemEntityMapper productItemEntityMapper;
     private final ProductItemIngredientEntityMapper productItemIngredientEntityMapper;
-    private final IngredientServicePort ingredientServicePort;
-    private final IngredientEntityMapper ingredientEntityMapper;
 
     @Override
     public List<ProductItem> findAllProductItems() {
-        return productItemRepository.findAll().stream()
+        return productItemEntityRepository.findAll().stream()
                 .map(productItemEntityMapper::toDomain)
                 .toList();
     }
 
     @Override
-    public Optional<ProductItem> findProductItemByUuid(UUID uuid) {
-        return productItemRepository.findById(uuid)
+    public Optional<ProductItem> findProductItemByUuid(UUID uuid, UUID restaurantUuid) {
+        Optional<ProductItemEntity> productItemEntity = productItemEntityRepository.findById(uuid, restaurantUuid);
+        return productItemEntity
                 .map(productItemEntityMapper::toDomain);
     }
 
     @Override
-    public ProductItem saveProductItem(ProductItem productItem) {
-
-        //TODO: Revisar y reformular esta logica, aqui solo se debe mapear a entidades y operar base de datos
-        List<IngredientEntity> dbIngredientEntityList = productItem.ingredients().stream()
-                .map(productItemIngredient -> ingredientEntityMapper.toEntity(ingredientServicePort.getIngredientById(productItemIngredient.ingredientUuid()))).toList();
+    public UUID saveProductItem(ProductItem productItem) {
 
         ProductItemEntity productItemEntity = productItemEntityMapper.toEntity(productItem);
 
-        List<ProductItemIngredientEntity> productItemIngredientEntityList = productItem.ingredients().stream()
-                .map(productItemIngredient -> {
-                    IngredientEntity ingredientEntity = dbIngredientEntityList.stream()
-                            .filter(ing -> ing.getUuid().equals(productItemIngredient.ingredientUuid()))
-                            .findFirst()
-                            .get();
-                    return productItemIngredientEntityMapper.toEntity(productItemIngredient, ingredientEntity);
-                }).toList();
+        List<ProductItemIngredientEntity> productItemIngredientEntityList = productItem.getIngredients().stream()
+                .map(productItemIngredientEntityMapper::toEntity).toList();
 
-        productItemIngredientEntityList.forEach(productItemEntity::addIngredient);
+        productItemIngredientEntityList.forEach(productItemEntity::addProductItemIngredient);
 
-        ProductItemEntity savedEntity = productItemRepository.save(productItemEntity);
-        return productItemEntityMapper.toDomain(savedEntity);
+        ProductItemEntity savedEntity = productItemEntityRepository.save(productItemEntity);
+        return savedEntity.getUuid();
     }
 
     @Override
     public ProductItem updateProductItem(UUID uuid, ProductItem updatedProductItem) {
+        return null;
+    }
+/*
+
+    @Override
+    public ProductItem updateProductItem(UUID uuid, ProductItem updatedProductItem, UUID restaurantUuid) {
 
         ProductItemEntity existingProductItem = productItemRepository.findById(uuid).orElseThrow(
                 () -> new ProductItemDoesNotExistException(uuid)
@@ -91,6 +80,7 @@ public class ProductItemEntityAdapter implements ProductItemPersistencePort {
                 existingIngredient.setQuantity(newIngredient.quantity());
             } else {
                 Ingredient ingredient = ingredientServicePort.getIngredientById(newIngredient.ingredientUuid());
+
                 IngredientEntity ingredientEntity = ingredientEntityMapper.toEntity(ingredient);
                 ProductItemIngredientEntity newIngredientEntity = productItemIngredientEntityMapper.toEntity(newIngredient, ingredientEntity);
                 existingProductItem.addIngredient(newIngredientEntity);
@@ -106,15 +96,11 @@ public class ProductItemEntityAdapter implements ProductItemPersistencePort {
         return productItemEntityMapper.toDomain(productItemRepository.save(existingProductItem));
 
     }
+*/
 
     @Override
-    public boolean existsByName(String name) {
-        return productItemRepository.existsByName(name);
-    }
-
-    @Override
-    public List<ProductItem> findAllProductItemsByUuid(List<UUID> uuids) {
-        return productItemRepository.findByUuidIn(uuids).stream().map(productItemEntityMapper::toDomain).toList();
+    public boolean existsByName(String name, UUID restaurantUuid) {
+        return productItemEntityRepository.existsByName(name, restaurantUuid);
     }
 
 }

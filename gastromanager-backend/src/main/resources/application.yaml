@@ -4,6 +4,7 @@ spring:
   jpa:
     properties:
       hibernate:
+        format_sql: true
         jdbc:
           time_zone: UTC
     show-sql: true
@@ -11,6 +12,9 @@ spring:
       ddl-auto: validate
   datasource:
     driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/
+    username: postgres
+    password: admin
   jackson:
     deserialization:
       fail-on-unknown-properties: true
@@ -22,6 +26,13 @@ api:
 logging:
   level:
     org:
+      springframework:
+        jdbc: DEBUG
+        data:
+          jpa: TRACE
+      orm:
+        jdbc:
+          bind: TRACE
       hibernate:
         SQL: DEBUG
         type:

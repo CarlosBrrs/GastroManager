@@ -1,26 +1,32 @@
 package com.kaiho.gastromanager.domain.ingredient.model;
 
+import com.kaiho.gastromanager.domain.restaurant.model.Restaurant;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.time.Instant;
 import java.util.UUID;
 
 @Builder
-public record Ingredient(
-        UUID uuid,
-        String name,
-        int availableStock,
-        Unit unit,
-        double pricePerUnit,
-        String supplier,
-        int minimumStockQuantity,
-        String createdBy,
-        Instant createdDate,
-        String updatedBy,
-        Instant updatedDate) {
+@Getter
+@Setter
+@RequiredArgsConstructor
+@AllArgsConstructor
+public class Ingredient {
+    private final UUID uuid;
+    private String name;
+    private int availableStock;
+    private Unit unit;
+    private double pricePerUnit;
+    private String supplier;
+    private int minimumStockQuantity;
+    private String createdBy;
+    private Instant createdDate;
+    private String updatedBy;
+    private Instant updatedDate;
+    private Restaurant restaurant;
 
-//    public Ingredient adjustAvailableStock(int newStock) {
-//        return new Ingredient(this.uuid, this.name, newStock, this.unit, this.pricePerUnit, this.supplier,
-//                this.minimumStockQuantity, this.createdBy, this.createdDate, this.updatedBy, this.updatedDate);
-//    }
 }

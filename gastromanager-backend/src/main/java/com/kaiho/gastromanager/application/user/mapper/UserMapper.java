@@ -3,6 +3,7 @@ package com.kaiho.gastromanager.application.user.mapper;
 import com.kaiho.gastromanager.application.user.dto.request.UserRequestDto;
 import com.kaiho.gastromanager.application.user.dto.response.RoleResponseDto;
 import com.kaiho.gastromanager.application.user.dto.response.UserResponseDto;
+import com.kaiho.gastromanager.domain.restaurant.model.Restaurant;
 import com.kaiho.gastromanager.domain.user.model.Role;
 import com.kaiho.gastromanager.domain.user.model.User;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ public class UserMapper {
 
     private final PasswordEncoder passwordEncoder;
 
-    public User toDomain(UserRequestDto userRequestDto, Set<Role> roleSet) {
+    public User toDomain(UserRequestDto userRequestDto, Set<Role> roleSet, Restaurant restaurant) {
 
         if (userRequestDto == null) {
             return null;
@@ -29,6 +30,7 @@ public class UserMapper {
                 .email(userRequestDto.email())
                 .phone(userRequestDto.phone())
                 .username(userRequestDto.username())
+                .restaurant(restaurant)
                 .encodedPassword(passwordEncoder.encode(userRequestDto.password()))
                 .roles(roleSet)
                 .build();

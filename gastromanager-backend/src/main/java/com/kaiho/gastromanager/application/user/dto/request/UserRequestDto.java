@@ -7,6 +7,5 @@ import java.util.UUID;
 
 @Builder
 public record UserRequestDto(String name, String lastname, String phone, String email, String username,
-                             String password, Set<UUID> roles) {
-
+                             String password, Set<UUID> roles, UUID restaurantUuid) {
 }

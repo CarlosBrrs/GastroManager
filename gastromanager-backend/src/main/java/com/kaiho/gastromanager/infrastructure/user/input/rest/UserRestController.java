@@ -29,6 +29,7 @@ public class UserRestController {
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
+    // TODO: filter by restaurantuuid
     @GetMapping("/{userUuid}")
     public ResponseEntity<ApiGenericResponse<UserResponseDto>> getUserInfoByUuid(@PathVariable UUID userUuid) {
         ApiGenericResponse<UserResponseDto> user = userHandler.getUserByUuid(userUuid);

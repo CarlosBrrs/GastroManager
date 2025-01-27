@@ -1,5 +1,6 @@
 package com.kaiho.gastromanager.infrastructure.order.input.rest;
 
+import com.kaiho.gastromanager.application.order.dto.request.ChangeOrderStatusRequestDto;
 import com.kaiho.gastromanager.application.order.dto.request.OrderRequestDto;
 import com.kaiho.gastromanager.application.order.dto.response.OrderResponseDto;
 import com.kaiho.gastromanager.application.order.handler.OrderHandler;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -40,14 +42,24 @@ public class OrderRestController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiGenericResponse<UUID>> createOrder(@RequestBody OrderRequestDto orderRequestDto, @AuthenticationPrincipal User user) {
-        return new ResponseEntity<>(orderHandler.createOrder(orderRequestDto, user.uuid()), HttpStatus.CREATED);
+    public ResponseEntity<ApiGenericResponse<UUID>> createOrder(@RequestBody OrderRequestDto orderRequestDto) {
+        return new ResponseEntity<>(orderHandler.createOrder(orderRequestDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/{orderUuid}")
     public ResponseEntity<ApiGenericResponse<OrderResponseDto>> updateOrder(
             @PathVariable UUID orderUuid, @RequestBody OrderRequestDto orderRequestDto) {
         ApiGenericResponse<OrderResponseDto> handlerResponse = orderHandler.updateOrder(orderUuid, orderRequestDto);
+        return new ResponseEntity<>(handlerResponse, HttpStatus.OK);
+    }
+
+    @PatchMapping("/{orderUuid}/status")
+    public ResponseEntity<ApiGenericResponse<UUID>> changeOrderStatus(
+            @PathVariable UUID orderUuid,
+            @RequestBody ChangeOrderStatusRequestDto changeOrderStatusRequestDto,
+            @AuthenticationPrincipal User user) {
+
+        ApiGenericResponse<UUID> handlerResponse = orderHandler.changeOrderStatus(orderUuid, changeOrderStatusRequestDto, user.uuid());
         return new ResponseEntity<>(handlerResponse, HttpStatus.OK);
     }
 }

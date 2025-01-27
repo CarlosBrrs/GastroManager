@@ -1,15 +1,23 @@
 package com.kaiho.gastromanager.infrastructure.user.output.jpa.mapper;
 
+import com.kaiho.gastromanager.domain.restaurant.model.Restaurant;
 import com.kaiho.gastromanager.domain.user.model.Role;
 import com.kaiho.gastromanager.domain.user.model.User;
+import com.kaiho.gastromanager.infrastructure.restaurant.output.jpa.mapper.RestaurantEntityMapper;
 import com.kaiho.gastromanager.infrastructure.user.output.jpa.entity.RoleEntity;
 import com.kaiho.gastromanager.infrastructure.user.output.jpa.entity.UserEntity;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class UserEntityMapper {
+
+    private final RestaurantEntityMapper restaurantEntityMapper;
+
 
     public User toDomain(UserEntity userEntity) {
         if (userEntity == null) {
@@ -23,6 +31,15 @@ public class UserEntityMapper {
                 .username(userEntity.getUsername())
                 .email(userEntity.getEmail())
                 .encodedPassword(userEntity.getEncodedPassword())
+                .restaurant(restaurantEntityMapper.toDomain(userEntity.getRestaurant()))
+                .restaurants(userEntity.getRestaurants().stream()
+                        .map(restEntity -> Restaurant.builder()
+                                .uuid(restEntity.getUuid())
+                                .address(restEntity.getAddress())
+                                .name(restEntity.getName())
+                                .description(restEntity.getDescription())
+                                .ownerUuid(restEntity.getOwner().getUuid()).build())
+                        .toList())
                 .roles(userEntity.getRoles().stream()
                         .map(roleEntity -> Role.builder()
                                 .uuid(roleEntity.getUuid())
@@ -42,6 +59,7 @@ public class UserEntityMapper {
                 .phone(user.phone())
                 .email(user.email())
                 .username(user.username())
+                .restaurants(new ArrayList<>()) //TODO: CHANGE THIS TO NOT OVERRIDE THE INCOMING INFO
                 .encodedPassword(user.getPassword())
                 .roles(user.roles().stream()
                         .map(role -> RoleEntity.builder()

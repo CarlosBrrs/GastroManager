@@ -10,5 +10,11 @@ public interface UserPersistencePort {
 
     Optional<User> findUserByUsername(String username);
 
-    Optional<User> findUserByUuid(UUID uuid);
+    Optional<User> getUserByUuid(UUID uuid);
+
+    boolean usernameExists(String username);
+
+    boolean emailExists(String email);
+
+    boolean phoneExists(String phone);
 }

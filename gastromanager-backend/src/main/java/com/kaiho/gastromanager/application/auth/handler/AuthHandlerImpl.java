@@ -8,6 +8,8 @@ import com.kaiho.gastromanager.infrastructure.common.model.ApiGenericResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+
 import static com.kaiho.gastromanager.infrastructure.common.model.ApiGenericResponse.buildSuccessResponse;
 
 @RequiredArgsConstructor
@@ -18,10 +20,10 @@ public class AuthHandlerImpl implements AuthHandler {
     private final AuthServicePort authServicePort;
 
     @Override
-    public ApiGenericResponse<String> loginUser(LoginRequestDto loginRequestDto) {
+    public ApiGenericResponse<Map<String, Object>> loginUser(LoginRequestDto loginRequestDto) {
         Login login = authMapper.toDomain(loginRequestDto);
-        String jwt = authServicePort.login(login);
-        return buildSuccessResponse("Login successful", jwt);
+        Map<String, Object> response = authServicePort.login(login);
+        return buildSuccessResponse("Login successful", response);
     }
 
 }

@@ -1,6 +1,5 @@
 package com.kaiho.gastromanager.application.ingredient.dto.response;
 
-import com.kaiho.gastromanager.domain.ingredient.model.Unit;
 import lombok.Builder;
 
 import java.time.Instant;

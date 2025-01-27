@@ -19,9 +19,9 @@ public class ProductItemIngredientEntityAdapter implements ProductItemIngredient
     private final ProductItemIngredientEntityMapper productItemIngredientEntityMapper;
 
     @Override
-    public List<ProductItemIngredient> findByProductItemUuids(List<UUID> productItemUuids) {
-        // Consultar la base de datos para obtener las relaciones productItem -> ingredient
-        List<ProductItemIngredientEntity> entities = productItemIngredientRepository.findByProductItemUuidIn(productItemUuids);
+    public List<ProductItemIngredient> findByProductItemUuids(List<UUID> productItemUuids, UUID restaurantUuid) {
+        // Consultar la base de datos para obtener las relaciones productItem -> ingredient // entrega 0 si no encuentra productitemingredient que coincidan
+        List<ProductItemIngredientEntity> entities = productItemIngredientRepository.findByProductItemUuidIn(productItemUuids, restaurantUuid);
 
         // Mapear las entidades de la base de datos a objetos de dominio
         return entities.stream()

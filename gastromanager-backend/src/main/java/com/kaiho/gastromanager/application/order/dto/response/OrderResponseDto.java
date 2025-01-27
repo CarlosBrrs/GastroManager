@@ -8,5 +8,6 @@ import java.util.List;
 import java.util.UUID;
 
 @Builder
-public record OrderResponseDto(UUID uuid, UUID userUuid, double totalPrice, OrderStatus status, List<OrderItemResponse> orderItems) {
+public record OrderResponseDto(UUID uuid, UUID userUuid, double totalPrice, OrderStatus status,
+                               List<OrderItemResponse> orderItems) {
 }
