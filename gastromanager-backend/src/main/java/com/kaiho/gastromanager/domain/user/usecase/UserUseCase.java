@@ -47,7 +47,8 @@ public class UserUseCase implements UserServicePort {
     }
 
     private boolean isEmployeeForRestaurant(User user, Restaurant restaurant) {
-        return user.restaurant().getUuid().equals(restaurant.getUuid());
+        Restaurant userRestaurant = user.restaurant();
+        return userRestaurant != null && userRestaurant.getUuid().equals(restaurant.getUuid());
     }
 
     private void validateUserCreation(User user) {
