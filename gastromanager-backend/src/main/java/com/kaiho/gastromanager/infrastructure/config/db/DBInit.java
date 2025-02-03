@@ -1,5 +1,6 @@
 package com.kaiho.gastromanager.infrastructure.config.db;
 
+import com.kaiho.gastromanager.domain.auth.model.Contact;
 import com.kaiho.gastromanager.domain.ingredient.model.Unit;
 import com.kaiho.gastromanager.domain.productitem.model.Category;
 import com.kaiho.gastromanager.domain.restaurant.model.Restaurant;
@@ -131,7 +132,7 @@ public class DBInit implements CommandLineRunner {
             log.error("Owner with username '{}' not found. Cannot create restaurant.", ownerUsername);
             return new IllegalStateException("Owner not found.");
         });
-        if (restaurantPersistencePort.restaurantExistsByNameAndAddressAndOwnerUuid(name, address, owner.uuid())) {
+        if (restaurantPersistencePort.restaurantExistsByNameAndAddressAndOwnerUuid(name, address, owner.getUuid())) {
             log.info("Restaurant '{}' at address '{}' already exists for owner '{}'.", name, address, owner.getUsername());
             return;
         }
@@ -140,7 +141,7 @@ public class DBInit implements CommandLineRunner {
                 .name(name)
                 .description(description)
                 .address(address)
-                .ownerUuid(owner.uuid()) // Asociar al propietario
+                .ownerUuid(owner.getUuid()) // Asociar al propietario
                 .build();
 
         // Guardar el restaurante en la base de datos
@@ -158,14 +159,15 @@ public class DBInit implements CommandLineRunner {
                         log.error("Critical error: A role does not exist. Please create it before running the application.");
                         return new IllegalStateException("Role not found.");
                     });
-
+            Contact contact = Contact.builder().phone(phone)
+                    .email(name.toLowerCase() + "@example.com").build(); // Asignar un email único basado en el nombre.build()
             User user = User.builder()
                     .name(name)
                     .lastname(lastname)
-                    .phone(phone)
-                    .email(name.toLowerCase() + "@example.com") // Asignar un email único basado en el nombre
+                    .contact(contact)
                     .username(username)
                     .restaurant(null)
+                    .verified(true)
                     .restaurants(new ArrayList<>())
                     .encodedPassword(passwordEncoder.encode(password))
                     .roles(Set.of(role)) // Assign the found role

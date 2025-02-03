@@ -19,7 +19,7 @@ public class RestaurantMapper {
         }
         return Restaurant.builder()
                 .name(restaurantRequestDto.name())
-                .address(restaurantRequestDto.address())
+                .address(restaurantRequestDto.address().street())
                 .description(restaurantRequestDto.description())
                 .ownerUuid(ownerUuid)
                 .build();

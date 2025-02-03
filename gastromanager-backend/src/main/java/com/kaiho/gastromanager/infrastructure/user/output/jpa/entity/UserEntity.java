@@ -1,5 +1,6 @@
 package com.kaiho.gastromanager.infrastructure.user.output.jpa.entity;
 
+import com.kaiho.gastromanager.infrastructure.auth.output.jpa.entity.VerificationTokenEntity;
 import com.kaiho.gastromanager.infrastructure.common.model.Auditable;
 import com.kaiho.gastromanager.infrastructure.order.output.jpa.entity.OrderEntity;
 import com.kaiho.gastromanager.infrastructure.restaurant.output.jpa.entity.RestaurantEntity;
@@ -12,6 +13,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,6 +39,9 @@ public class UserEntity extends Auditable implements Serializable {
     private String name;
     private String lastname;
     private String phone;
+    private boolean verified;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private VerificationTokenEntity verificationToken;
 
     @Column(unique = true)
     private String username;
@@ -73,4 +78,15 @@ public class UserEntity extends Auditable implements Serializable {
         restaurants.add(restaurant);
     }
 
+    public void assignVerificationToken(VerificationTokenEntity verificationTokenEntity) {
+        this.verificationToken = verificationTokenEntity;
+        verificationTokenEntity.setUser(this);
+    }
+
+    public void removeVerificationToken() {
+        if (this.verificationToken != null) {
+            this.verificationToken.setUser(null);
+            this.verificationToken = null;
+        }
+    }
 }

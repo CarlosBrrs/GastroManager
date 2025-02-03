@@ -3,6 +3,7 @@ package com.kaiho.gastromanager.domain.user.usecase;
 import com.kaiho.gastromanager.domain.user.api.RoleServicePort;
 import com.kaiho.gastromanager.domain.user.exception.RoleDoesNotExistException;
 import com.kaiho.gastromanager.domain.user.model.Role;
+import com.kaiho.gastromanager.domain.user.model.RoleType;
 import com.kaiho.gastromanager.domain.user.spi.RolePersistencePort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,5 +39,12 @@ public class RoleUseCase implements RoleServicePort {
             throw new RoleDoesNotExistException(missingUuids.toString());
         }
         return allRolesByUuid;
+    }
+
+    @Override
+    public Role findOwnerRole() {
+        return rolePersistencePort
+                .findByName(RoleType.ROLE_OWNER)
+                .orElseThrow(() -> new RoleDoesNotExistException(RoleType.ROLE_OWNER.name()));
     }
 }

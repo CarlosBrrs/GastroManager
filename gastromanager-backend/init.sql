@@ -10,7 +10,8 @@ CREATE TABLE _users
     restaurant_uuid  UUID,
     username         VARCHAR(50) UNIQUE  NOT NULL,
     encoded_password VARCHAR(255)        NOT NULL,
-    is_enabled       BOOLEAN             NOT NULL DEFAULT TRUE,
+--     subscription_plan_uuid UUID NOT NULL,
+    verified         BOOLEAN             NOT NULL,
     created_date     TIMESTAMP           NOT NULL,
     created_by       VARCHAR(50)         NOT NULL,
     updated_date     TIMESTAMP,
@@ -34,6 +35,40 @@ CREATE TABLE _users_roles
     PRIMARY KEY (user_uuid, role_uuid),
     FOREIGN KEY (user_uuid) REFERENCES _users (uuid) ON DELETE CASCADE,
     FOREIGN KEY (role_uuid) REFERENCES roles (uuid) ON DELETE CASCADE
+);
+
+DROP TABLE IF EXISTS verification_tokens;
+
+CREATE TABLE verification_tokens
+(
+    uuid        UUID PRIMARY KEY,
+    token       UUID UNIQUE NOT NULL,
+    user_uuid   UUID        NOT NULL,
+    expiry_date TIMESTAMP   NOT NULL,
+    FOREIGN KEY (user_uuid) REFERENCES _users (uuid) ON DELETE CASCADE
+);
+
+DROP TABLE IF EXISTS subscription_plans;
+
+CREATE TABLE subscription_plans
+(
+    uuid         UUID PRIMARY KEY,
+    name         VARCHAR(50) UNIQUE NOT NULL, -- Ej: "Basic", "Premium"
+    description  TEXT,                        -- Descripción del plan
+    price        DOUBLE PRECISION   NOT NULL, -- Precio mensual
+    created_date TIMESTAMP          NOT NULL DEFAULT NOW()
+);
+
+DROP TABLE IF EXISTS plan_features;
+
+CREATE TABLE plan_features
+(
+    uuid          UUID PRIMARY KEY,
+    plan_uuid     UUID        NOT NULL,
+    feature_type  VARCHAR(50) NOT NULL,
+    feature_value VARCHAR(255),
+    valid_from    TIMESTAMP   NOT NULL DEFAULT NOW(),
+    valid_to      TIMESTAMP
 );
 
 DROP TABLE IF EXISTS ingredients CASCADE;
@@ -110,6 +145,15 @@ CREATE TABLE restaurants
     FOREIGN KEY (owner_uuid) REFERENCES _users (uuid) ON DELETE CASCADE
 );
 
+DROP TABLE IF EXISTS restaurant_partners;
+
+CREATE TABLE restaurant_partners
+(
+    user_uuid       UUID      NOT NULL,
+    restaurant_uuid UUID      NOT NULL,
+    created_at      TIMESTAMP NOT NULL DEFAULT NOW(),
+    PRIMARY KEY (user_uuid, restaurant_uuid)
+);
 ALTER TABLE IF EXISTS _users
     ADD CONSTRAINT fk_restaurant FOREIGN KEY (restaurant_uuid) REFERENCES restaurants (uuid) ON DELETE SET NULL;
 ALTER TABLE IF EXISTS ingredients
@@ -248,7 +292,20 @@ VALUES (uuid_generate_v4(), 'ROLE_SUPERUSER'),
        (uuid_generate_v4(), 'ROLE_KITCHEN_STAFF'),
        (uuid_generate_v4(), 'ROLE_CASHIER');
 
+INSERT INTO subscription_plans (uuid, name, description, price)
+VALUES ('5e2cb774-bcf0-4e26-aedf-622eb6f35501', 'Basic', '3 restaurantes, 10 empleados', 29.99),
+       ('58347f11-d555-4b73-95a1-6344b26aee51', 'Pro', '10 restaurantes, 50 empleados + Reportes', 99.99),
+       ('61184460-4c95-476e-94ce-23f676ee94f4', 'Enterprise', 'Ilimitado + Soporte premium', 199.99);
 
+INSERT INTO plan_features (uuid, plan_uuid, feature_type, feature_value)
+VALUES (uuid_generate_v4(),'5e2cb774-bcf0-4e26-aedf-622eb6f35501', 'max_restaurants', '3'),
+       (uuid_generate_v4(),'5e2cb774-bcf0-4e26-aedf-622eb6f35501', 'max_employees', '10'),
+       (uuid_generate_v4(),'58347f11-d555-4b73-95a1-6344b26aee51', 'max_restaurants', '10'),
+       (uuid_generate_v4(),'58347f11-d555-4b73-95a1-6344b26aee51', 'max_employees', '50'),
+       (uuid_generate_v4(),'58347f11-d555-4b73-95a1-6344b26aee51', 'advanced_features', 'true'),
+       (uuid_generate_v4(),'61184460-4c95-476e-94ce-23f676ee94f4', 'max_restaurants', 'unlimited'),
+       (uuid_generate_v4(),'61184460-4c95-476e-94ce-23f676ee94f4', 'max_employees', 'unlimited'),
+       (uuid_generate_v4(),'61184460-4c95-476e-94ce-23f676ee94f4', 'priority_support', 'true');
 --product items
 /*INSERT INTO product_items (uuid, name, description, price, category, is_enabled, created_date, created_by, updated_date,
                            updated_by)

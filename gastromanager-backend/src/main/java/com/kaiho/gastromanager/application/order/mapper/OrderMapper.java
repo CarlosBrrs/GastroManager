@@ -33,7 +33,7 @@ public class OrderMapper {
         List<OrderItemResponse> list = order.getOrderItems().stream().map(orderItemMapper::toResponse).toList();
         return OrderResponseDto.builder()
                 .uuid(order.getUuid())
-                .userUuid(order.getUser().uuid())
+                .userUuid(order.getUser().getUuid())
                 .totalPrice(order.getTotalAmount())
                 .status(order.getStatus())
                 .orderItems(list)

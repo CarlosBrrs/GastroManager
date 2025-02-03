@@ -60,9 +60,9 @@ public class JwtTokenProvider {
 
     public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("uuid", user.uuid());
+        claims.put("uuid", user.getUuid());
         claims.put("roles", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList());
-        return createToken(claims, user.username());
+        return createToken(claims, user.getUsername());
     }
 
     private String createToken(Map<String, Object> claims, String username) {

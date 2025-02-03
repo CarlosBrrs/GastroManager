@@ -1,11 +1,14 @@
 package com.kaiho.gastromanager.domain.user.usecase;
 
+import com.kaiho.gastromanager.domain.auth.model.Contact;
 import com.kaiho.gastromanager.domain.restaurant.model.Restaurant;
 import com.kaiho.gastromanager.domain.user.api.UserServicePort;
+import com.kaiho.gastromanager.domain.user.exception.UserDoesNotExistException;
 import com.kaiho.gastromanager.domain.user.exception.UsernameDoesNotExistException;
 import com.kaiho.gastromanager.domain.user.model.Role;
 import com.kaiho.gastromanager.domain.user.model.User;
 import com.kaiho.gastromanager.domain.user.spi.UserPersistencePort;
+import com.kaiho.gastromanager.infrastructure.config.context.RestaurantContext;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -42,12 +45,34 @@ public class UserUseCase implements UserServicePort {
         return isEmployeeForRestaurant(user, restaurant) || hasOwnership(user, restaurant);
     }
 
+    @Override
+    public boolean isUserAlreadyRegistered(User user) {
+        return userPersistencePort.isUserAlreadyRegistered(user);
+    }
+
+    @Override
+    public User updateUser(User user) {
+        User existingUser = userPersistencePort.getUserByUuid(user.getUuid()).orElseThrow(() -> new UserDoesNotExistException(user.getUuid()));
+
+        if (!existingUser.getUsername().equals(user.getUsername())) {
+            throw new IllegalArgumentException("No puedes cambiar el nombre de usuario.");
+        }
+        if (!existingUser.getContact().getEmail().equals(user.getContact().getEmail())) {
+            throw new IllegalArgumentException("No puedes cambiar el correo electrónico.");
+        }
+        if (RestaurantContext.getCurrentRestaurant() != null) {
+            // Validaciones para cuando este logueado
+        }
+
+        return userPersistencePort.updateUser(user);
+    }
+
     private boolean hasOwnership(User user, Restaurant restaurant) {
-        return restaurant.getOwnerUuid().equals(user.uuid());
+        return restaurant.getOwnerUuid().equals(user.getUuid());
     }
 
     private boolean isEmployeeForRestaurant(User user, Restaurant restaurant) {
-        Restaurant userRestaurant = user.restaurant();
+        Restaurant userRestaurant = user.getRestaurant();
         return userRestaurant != null && userRestaurant.getUuid().equals(restaurant.getUuid());
     }
 
@@ -55,20 +80,19 @@ public class UserUseCase implements UserServicePort {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User principal = (User) authentication.getPrincipal();
 
-        validateRoleHierarchyCreation(principal.roles(), user);
+        validateRoleHierarchyCreation(principal.getRoles(), user);
 
         validateUniqueFields(user);
     }
 
-    //todo: this has to be by restaurant?
     private void validateUniqueFields(User user) {
         if (userPersistencePort.usernameExists(user.getUsername())) {
             throw new ValidationException("Username is already taken.");
         }
-        if (userPersistencePort.emailExists(user.email())) {
+        if (userPersistencePort.emailExists(user.getContact().getEmail())) {
             throw new ValidationException("Email is already taken.");
         }
-        if (userPersistencePort.phoneExists(user.phone())) {
+        if (userPersistencePort.phoneExists(user.getContact().getPhone())) {
             throw new ValidationException("Phone number is already taken.");
         }
     }
@@ -78,21 +102,21 @@ public class UserUseCase implements UserServicePort {
         final String SUPERUSER_ROLE_NAME = "ROLE_SUPERUSER";
         final String ADMIN_ROLE_NAME = "ROLE_MANAGER";
         if (principalRoles.stream().anyMatch(role -> role.roleType().name().equals(OWNER_ROLE_NAME))) {
-            if (userToCreate.roles().stream().anyMatch(role -> role.roleType().name().equals(SUPERUSER_ROLE_NAME))) {
+            if (userToCreate.getRoles().stream().anyMatch(role -> role.roleType().name().equals(SUPERUSER_ROLE_NAME))) {
                 throw new ValidationException("An owner cannot create a superuser.");
             }
-            if (userToCreate.roles().stream().anyMatch(role -> role.roleType().name().equals(OWNER_ROLE_NAME))) {
+            if (userToCreate.getRoles().stream().anyMatch(role -> role.roleType().name().equals(OWNER_ROLE_NAME))) {
                 throw new ValidationException("An owner cannot create another owner.");
             }
         }
         if (principalRoles.stream().anyMatch(role -> role.roleType().name().equals(ADMIN_ROLE_NAME))) {
-            if (userToCreate.roles().stream().anyMatch(role -> role.roleType().name().equals(SUPERUSER_ROLE_NAME))) {
+            if (userToCreate.getRoles().stream().anyMatch(role -> role.roleType().name().equals(SUPERUSER_ROLE_NAME))) {
                 throw new ValidationException("An admin cannot create a superuser.");
             }
-            if (userToCreate.roles().stream().anyMatch(role -> role.roleType().name().equals(OWNER_ROLE_NAME))) {
+            if (userToCreate.getRoles().stream().anyMatch(role -> role.roleType().name().equals(OWNER_ROLE_NAME))) {
                 throw new ValidationException("An admin cannot create an owner.");
             }
-            if (userToCreate.roles().stream().anyMatch(role -> role.roleType().name().equals(ADMIN_ROLE_NAME))) {
+            if (userToCreate.getRoles().stream().anyMatch(role -> role.roleType().name().equals(ADMIN_ROLE_NAME))) {
                 throw new ValidationException("An admin cannot create another admin.");
             }
         }
@@ -103,17 +127,18 @@ public class UserUseCase implements UserServicePort {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userPersistencePort.findUserByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username " + username + " does not exist."));
+        Contact contact = Contact.builder().phone(user.getContact().getPhone())
+                .email(user.getContact().getEmail()).build();
         return User.builder()
-                .uuid(user.uuid())
-                .name(user.name())
-                .lastname(user.lastname())
-                .phone(user.phone())
-                .email(user.email())
-                .encodedPassword(user.encodedPassword())
-                .username(user.username())
-                .restaurant(user.restaurant())
-                .restaurants(user.restaurants())
-                .roles(user.roles())
+                .uuid(user.getUuid())
+                .name(user.getName())
+                .lastname(user.getLastname())
+                .contact(contact)
+                .encodedPassword(user.getEncodedPassword())
+                .username(user.getUsername())
+                .restaurant(user.getRestaurant())
+                .restaurants(user.getRestaurants())
+                .roles(user.getRoles())
                 .build();
     }
 }

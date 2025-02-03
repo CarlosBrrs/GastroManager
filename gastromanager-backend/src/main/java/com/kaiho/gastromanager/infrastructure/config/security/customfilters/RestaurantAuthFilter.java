@@ -21,10 +21,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
+import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.BASE_URL;
+
 @Component
 @RequiredArgsConstructor
 public class RestaurantAuthFilter extends OncePerRequestFilter {
-    private static final List<String> EXCLUDED_PATHS = List.of("/api/v1/auth/login");
+    private static final List<String> EXCLUDED_PATHS = List.of("/api/v1/auth/login", "/api/v1/auth/sign-up", BASE_URL + "/auth/verify");
     private static final String RESTAURANT_UUID_HEADER = "X-Restaurant-Uuid";
     private final RestaurantServicePort restaurantServicePort;
     private final UserServicePort userServicePort;
@@ -68,7 +70,7 @@ public class RestaurantAuthFilter extends OncePerRequestFilter {
         Restaurant restaurant = restaurantServicePort.getRestaurantById(UUID.fromString(restaurantUuid));
 
         if (!userServicePort.hasAccessToRestaurant(principal, restaurant)) {
-            throw new AccessDeniedException("User " + principal.uuid() + " has no access to this restaurant");
+            throw new AccessDeniedException("User " + principal.getUuid() + " has no access to this restaurant");
         }
 
     }

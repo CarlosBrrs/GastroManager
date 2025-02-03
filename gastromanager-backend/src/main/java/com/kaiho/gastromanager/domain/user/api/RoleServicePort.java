@@ -7,4 +7,6 @@ import java.util.UUID;
 
 public interface RoleServicePort {
     Set<Role> findRolesByUuids(Set<UUID> roles);
+
+    Role findOwnerRole();
 }
