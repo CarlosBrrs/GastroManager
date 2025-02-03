@@ -59,7 +59,7 @@ public class OrderRestController {
             @RequestBody ChangeOrderStatusRequestDto changeOrderStatusRequestDto,
             @AuthenticationPrincipal User user) {
 
-        ApiGenericResponse<UUID> handlerResponse = orderHandler.changeOrderStatus(orderUuid, changeOrderStatusRequestDto, user.uuid());
+        ApiGenericResponse<UUID> handlerResponse = orderHandler.changeOrderStatus(orderUuid, changeOrderStatusRequestDto, user.getUuid());
         return new ResponseEntity<>(handlerResponse, HttpStatus.OK);
     }
 }

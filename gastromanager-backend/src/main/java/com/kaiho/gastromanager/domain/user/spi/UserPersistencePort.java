@@ -17,4 +17,8 @@ public interface UserPersistencePort {
     boolean emailExists(String email);
 
     boolean phoneExists(String phone);
+
+    boolean isUserAlreadyRegistered(User user);
+
+    User updateUser(User updatedUser);
 }

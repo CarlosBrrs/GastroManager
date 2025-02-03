@@ -42,13 +42,13 @@ public class RestaurantRestController {
 
     @PostMapping
     public ResponseEntity<ApiGenericResponse<UUID>> createRestaurant(@RequestBody RestaurantRequestDto restaurantRequestDto, @AuthenticationPrincipal User user) {
-        return new ResponseEntity<>(restaurantHandler.createRestaurant(restaurantRequestDto, user.uuid()), HttpStatus.CREATED);
+        return new ResponseEntity<>(restaurantHandler.createRestaurant(restaurantRequestDto, user.getUuid()), HttpStatus.CREATED);
     }
 
     @PutMapping("/{restaurantUuid}")
     public ResponseEntity<ApiGenericResponse<RestaurantResponseDto>> updateRestaurant(
             @PathVariable UUID restaurantUuid, @RequestBody RestaurantRequestDto restaurantRequestDto, @AuthenticationPrincipal User user) {
-        ApiGenericResponse<RestaurantResponseDto> handlerResponse = restaurantHandler.updateRestaurant(restaurantUuid, restaurantRequestDto, user.uuid());
+        ApiGenericResponse<RestaurantResponseDto> handlerResponse = restaurantHandler.updateRestaurant(restaurantUuid, restaurantRequestDto, user.getUuid());
         return new ResponseEntity<>(handlerResponse, HttpStatus.OK);
     }
 

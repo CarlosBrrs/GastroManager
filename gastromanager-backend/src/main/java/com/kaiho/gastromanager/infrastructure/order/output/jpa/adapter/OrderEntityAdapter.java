@@ -44,7 +44,7 @@ public class OrderEntityAdapter implements OrderPersistencePort {
                 .map(orderItem -> orderItem.getProductItem().getUuid())
                 .toList());
 
-        UserEntity userEntity = userEntityRepository.findById(order.getUser().uuid()).orElseThrow(() -> new UsernameNotFoundException(order.getUser().uuid().toString()));
+        UserEntity userEntity = userEntityRepository.findById(order.getUser().getUuid()).orElseThrow(() -> new UsernameNotFoundException(order.getUser().getUuid().toString()));
 
         RestaurantEntity restaurantEntity = restaurantEntityRepository.findById(order.getRestaurant().getUuid())
                 .orElseThrow(() -> new RestaurantDoesNotExistException(order.getRestaurant().getUuid().toString()));

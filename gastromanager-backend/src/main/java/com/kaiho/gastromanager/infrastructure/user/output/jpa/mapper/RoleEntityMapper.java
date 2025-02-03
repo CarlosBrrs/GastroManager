@@ -16,4 +16,8 @@ public class RoleEntityMapper {
                 .roleType(roleEntity.getRoleType())
                 .build();
     }
+
+    public RoleEntity toEntity(Role role) {
+        return null;
+    }
 }

@@ -11,7 +11,11 @@ public interface UserServicePort extends UserDetailsService {
     User getUserByUuid(UUID userUuid);
 
 
-    User createUser(User domainProvisional);
+    User createUser(User user);
 
     boolean hasAccessToRestaurant(User user, Restaurant restaurant);
+
+    boolean isUserAlreadyRegistered(User user);
+
+    User updateUser(User user);
 }

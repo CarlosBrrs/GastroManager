@@ -54,7 +54,10 @@ public class SecurityConfig {
 
     private final String[] WHITE_LIST_URL = {
             BASE_URL + "/auth/login",
-            "/swagger-ui/**", "/v3/api-docs*/**"
+            BASE_URL + "/auth/sign-up",
+            BASE_URL + "/auth/verify",
+            "/swagger-ui/**",
+            "/v3/api-docs*/**"
     };
     private final JwtAuthFilter jwtAuthFilter;
     private final UserServicePort userServicePort;
