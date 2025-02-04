@@ -12,9 +12,15 @@ interface RestaurantDto {
   uuid: string;
 }
 
+interface RestaurantDto {
+  uuid: string;
+  // ...otros campos del restaurante
+}
+
 interface LoginResponseDto {
   jwtToken: string;
-  restaurants: RestaurantDto[];
+  restaurants?: RestaurantDto[];      // Opcional: lista de restaurantes
+  restaurantUuid?: string;            // Opcional: único restaurantUuid
 }
 
 @Injectable({
@@ -23,27 +29,29 @@ interface LoginResponseDto {
 export class AuthService extends BaseHttpService {
 
   isLoggedIn;
-  private tokenKey: string = "jwtToken";
-  private userInfoKey: string = "userInfo";
+  private readonly tokenKey: string = "jwtToken";
+  private readonly userInfoKey: string = "userInfo";
   private roles: string[] = [];
-  private restaurantUuidKey: string = "restaurantUuid";
+  private readonly restaurantUuidKey: string = "restaurantUuid";
 
-  constructor(private router: Router) {
+  constructor(private readonly router: Router) {
     super();
     this.isLoggedIn = signal<boolean>(this.hasToken());
     this.loadRolesFromToken();
   }
 
   login(loginRequestDto: LoginRequestDto): Observable<ApiGenericResponse<LoginResponseDto>> {
+    debugger;
     return this.http.post<ApiGenericResponse<LoginResponseDto>>(`${this.apiUrl}/auth/login`, loginRequestDto, {
       headers: {'Content-Type': 'application/json'}
     }).pipe(
       // for sideffects
       tap(response => {
+        debugger;
         if (response.flag) {
           const token = response.data.jwtToken;
           // TODO: LA ESTRUCTURA VA A VARIAR SI ES OWNER O MANAGER, AJUSTAR
-          const restaurantUuid = response.data.restaurants[0].uuid;
+          const restaurantUuid = response.data.restaurants?.[0]?.uuid ?? response.data.restaurantUuid ?? "";
           console.log(token)
           console.log(restaurantUuid)
           const decodedToken: DecodedToken = jwtDecode<DecodedToken>(token);
