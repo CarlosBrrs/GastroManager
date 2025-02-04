@@ -41,13 +41,11 @@ export class AuthService extends BaseHttpService {
   }
 
   login(loginRequestDto: LoginRequestDto): Observable<ApiGenericResponse<LoginResponseDto>> {
-    debugger;
     return this.http.post<ApiGenericResponse<LoginResponseDto>>(`${this.apiUrl}/auth/login`, loginRequestDto, {
       headers: {'Content-Type': 'application/json'}
     }).pipe(
       // for sideffects
       tap(response => {
-        debugger;
         if (response.flag) {
           const token = response.data.jwtToken;
           // TODO: LA ESTRUCTURA VA A VARIAR SI ES OWNER O MANAGER, AJUSTAR
