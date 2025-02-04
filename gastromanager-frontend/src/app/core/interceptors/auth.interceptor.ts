@@ -5,7 +5,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const token: string | null = localStorage.getItem("jwtToken");
   const restaurantUuid: string | null = localStorage.getItem("restaurantUuid");
 
-  if (token && (!req.url.includes("/auth/login") || !req.url.includes("/auth/verify") || !req.url.includes("/auth/register"))) {
+  if (token && !req.url.includes("/auth/login") &&
+    !req.url.includes("/auth/verify") &&
+    !req.url.includes("/auth/register")) {
     const authReq: HttpRequest<any> = req.clone({
       setHeaders:
         {
