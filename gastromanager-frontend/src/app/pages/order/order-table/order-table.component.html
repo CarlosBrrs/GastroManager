@@ -29,16 +29,26 @@
     [rowHover]="true"
     [rows]="8"
     [showCurrentPageReport]="true"
+    sortField="updatedDate"
+    [sortOrder]="-1"
     [tableStyle]="{ 'min-width': '74rem' }"
-    [value]="orders()"
+    [value]="data"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
     dataKey="uuid"
   >
     <ng-template pTemplate="header">
       <tr>
-        <th pResizableColumn pSortableColumn="createdBy" scope="col" style="min-width:15rem">
+        <th pResizableColumn pSortableColumn="code" scope="col" style="min-width:10rem">
+          Order Code
+          <p-sortIcon field="code"/>
+        </th>
+        <th pResizableColumn pSortableColumn="createdBy" scope="col" style="min-width:10rem">
           Order placed by
           <p-sortIcon field="createdBy"/>
+        </th>
+        <th pResizableColumn pSortableColumn="updatedDate" scope="col" style="min-width:15rem">
+          Order updated at
+          <p-sortIcon field="updatedDate"/>
         </th>
         <!--                    <th>
                               Image
@@ -69,9 +79,14 @@
     </ng-template>
     <ng-template let-order pTemplate="body">
       <tr>
-
         <td>
-          {{ order.userUuid }}
+          {{ order.code }}
+        </td>
+        <td>
+          {{ order.user }}
+        </td>
+        <td>
+          {{ order.updatedDate | date:"dd MMM, yyyy 'at' hh:mm a" }}
         </td>
 
         <td>
@@ -80,7 +95,7 @@
         <td>
           <ul>
             @for(orderItem of order.orderItems; track $index) {
-              <li>{{orderItem.productItemUuid}} x {{orderItem.quantity}}</li>
+              <li>{{orderItem.productItemName}} x {{orderItem.quantity}}</li>
             }
           </ul>
         </td>
@@ -113,7 +128,7 @@
     </ng-template>
     <ng-template pTemplate="summary">
       <div class="flex align-items-center justify-content-between">
-        In total there are {{ orders() ? orders().length : 0 }} orders.
+        In total there are {{ data ? data.length : 0 }} orders.
       </div>
     </ng-template>
   </p-table>

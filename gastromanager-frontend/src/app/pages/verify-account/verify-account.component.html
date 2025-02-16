@@ -1,0 +1,13 @@
+<div class="account-verification">
+  @if (loading) {
+    <div class="card flex justify-content-center">
+      <p-progressSpinner ariaLabel="loading"/>
+      <p>Verificando, por favor espere...</p>
+    </div>
+
+  } @else {
+    <!--    todo: si hay error al verificar brindar acciones a tomar-->
+      muy bien, vaya a login
+    <button (click)="redirectToLogin()">Ir a Login</button>
+  }
+</div>

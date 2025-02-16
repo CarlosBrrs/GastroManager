@@ -1,6 +1,5 @@
 package com.kaiho.gastromanager.domain.auth.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

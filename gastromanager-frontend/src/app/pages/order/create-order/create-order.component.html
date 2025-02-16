@@ -13,18 +13,18 @@
           <p-tabPanel header="ALL MENU ITEMS">
             <ng-template pTemplate="content">
               <div class="flex flex-wrap items-container pt-4">
-                @for (product of productItems(); track product.uuid) {
+                @for (product of productItemStore.productItems(); track product.uuid) {
                   <gm-menu-item-card class="menu-item-card" [product]="product"
                                      (addToOrder)="addToOrder(product)"></gm-menu-item-card>
                 }
               </div>
             </ng-template>
           </p-tabPanel>
-          @for (category of categories(); track $index) {
+          @for (category of productItemStore.categories(); track $index) {
             <p-tabPanel [header]="category">
               <ng-template pTemplate="content">
                 <div class="flex flex-wrap items-container pt-4">
-                  @for (product of getProductsByCategory(category); track product.uuid) {
+                  @for (product of productItemStore.productsByCategory()(category); track product.uuid) {
                     <gm-menu-item-card class="menu-item-card" [product]="product"
                                        (addToOrder)="addToOrder(product)"></gm-menu-item-card>
                   }

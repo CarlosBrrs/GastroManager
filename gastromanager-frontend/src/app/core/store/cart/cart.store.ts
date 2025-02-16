@@ -1,4 +1,4 @@
-import {patchState, signalStore, withMethods, withState} from "@ngrx/signals";
+import {signalStore, withMethods, withState} from "@ngrx/signals";
 import {OrderItem} from "./cart.model";
 
 type CartState = {
@@ -16,13 +16,13 @@ export const CartStore = signalStore(
   {providedIn: "root"},
   withState(initialState),
   withMethods((store) => ({
-   /* addOrderItem(newOrderItem: OrderItem) {
-      patchState(store, {
-        orderItems: []
-      });
-    },
-    addCustomerNote(customerNotes: string) {}
-*/
+    /* addOrderItem(newOrderItem: OrderItem) {
+       patchState(store, {
+         orderItems: []
+       });
+     },
+     addCustomerNote(customerNotes: string) {}
+ */
     // , newMethod() {} //duplicate this to add new methods
   }))
 );

@@ -83,3 +83,9 @@ services:
     # secrets:
     #   db-password:
     #     file: db/password.txt
+  mail-dev:
+    container_name: mail-dev-gastromanager
+    image: maildev/maildev
+    ports:
+      - "1080:1080"
+      - "1025:1025"

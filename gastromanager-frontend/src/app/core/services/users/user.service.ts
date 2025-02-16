@@ -11,11 +11,11 @@ import {BaseHttpService} from "../basehttp/base-http.service";
 export class UserService extends BaseHttpService {
 
   userInfo = signal<UserResponseDto | undefined>(undefined);
-  private userInfoKey: string = 'userInfo';
+  private readonly userInfoKey: string = 'userInfo';
 
-  constructor(private authService: AuthService) {
+  constructor(private readonly authService: AuthService) {
     super();
-    this.initUserInfo();
+    this.initUserInfo(); //TODO: DESACTIVAR PARA LAYOUT QUE NO ESTA LOGUEADO
   }
 
   loadUserInfo(): Observable<ApiGenericResponse<UserResponseDto>> {

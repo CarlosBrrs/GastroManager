@@ -75,6 +75,7 @@
           <span class="name">{{ selectedIngredient.name }}:</span>
 
           <p-inputNumber [min]="0" mode="decimal"
+                         [maxFractionDigits]="2"
                          (onInput)="onQuantityChange(selectedIngredient.uuid, $event)"
                          id="ingredient-name" inputId="quantity" [formControlName]="selectedIngredient.uuid"
                          required/>

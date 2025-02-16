@@ -11,22 +11,17 @@ import com.kaiho.gastromanager.domain.auth.model.Login;
 import com.kaiho.gastromanager.domain.auth.model.Plan;
 import com.kaiho.gastromanager.domain.auth.model.Signup;
 import com.kaiho.gastromanager.domain.auth.model.Subscription;
-import com.kaiho.gastromanager.domain.user.api.RoleServicePort;
-import com.kaiho.gastromanager.domain.user.model.Role;
 import com.kaiho.gastromanager.domain.user.model.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
-import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
 public class AuthMapper {
 
     private final UserMapper userMapper;
-    private final RoleServicePort roleServicePort;
 
     public Login toDomain(LoginRequestDto loginRequestDto) {
         if (loginRequestDto == null) {

@@ -1,12 +1,10 @@
-import {Component, effect, inject, OnInit, signal} from '@angular/core';
-import {ProductItemService} from "../../core/services/product-item/product-item.service";
+import {Component, effect, inject, OnDestroy, OnInit} from '@angular/core';
 import {InventoryTableComponent} from "../inventory/inventory-table/inventory-table.component";
 import {ProductItemTableComponent} from "./product-item-table/product-item-table.component";
-import {finalize, Subject, takeUntil} from "rxjs";
 import {MessageService} from "primeng/api";
 import {ProductItemStore} from "../../core/store/product-item/product-item.store";
 import {StoreEventService} from "../../core/services/store-event/store-event.service";
-import {ProductItem} from "../../core/store/product-item/product-item.model";
+import {Subject, takeUntil} from "rxjs";
 
 @Component({
   selector: 'gm-product-item',
@@ -18,14 +16,12 @@ import {ProductItem} from "../../core/store/product-item/product-item.model";
   templateUrl: './product-item.component.html',
   styleUrl: './product-item.component.scss'
 })
-export class ProductItemComponent implements OnInit {
+export class ProductItemComponent implements OnInit, OnDestroy {
 
-  productItems = signal<ProductItem[]>([]).asReadonly();
-  loading = signal<boolean>(false);
-  error = signal<string | null>(null);
   productItemStore = inject(ProductItemStore)
+  private readonly destroy$ = new Subject<void>();
 
-  constructor(private productItemService: ProductItemService, private messageService: MessageService, private storeEventService: StoreEventService) {
+  constructor(private readonly messageService: MessageService, private readonly storeEventService: StoreEventService) {
     // Efecto para manejar eventos de éxito
     effect(() => {
       const successMessage = this.storeEventService.successSignal();
@@ -60,23 +56,29 @@ export class ProductItemComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadProductItems();
+    this.productItemStore.loadProductItems()
+      .pipe(
+        takeUntil(this.destroy$)
+      ).subscribe();
   }
 
   handleAdd(productItem: any) {
-    this.productItemStore.addProductItem(productItem);
+    this.productItemStore.addProductItem(productItem).subscribe(productItems => {
+      console.log("product item added, loading new product item list", productItems)
+    });
   }
 
   handleEdit(productItem: any) {
-    // this.loading.set(true);
-    this.productItemStore.editProductItem(productItem.uuid, productItem.payload);
+    this.productItemStore.updateProductItem(productItem.uuid, productItem.payload).subscribe(productItems => {
+      console.log("product item edited, loading new product item list", productItems)
+    });
   }
 
   handleDelete(productItemUuid: number) {
   }
 
-  private loadProductItems() {
-    this.loading.set(true)
-    this.productItems = this.productItemStore.productItems;
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

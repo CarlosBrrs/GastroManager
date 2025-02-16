@@ -1,6 +1,5 @@
 package com.kaiho.gastromanager.infrastructure.auth.output.jpa.repository;
 
-import com.kaiho.gastromanager.domain.user.model.User;
 import com.kaiho.gastromanager.infrastructure.auth.output.jpa.entity.VerificationTokenEntity;
 import com.kaiho.gastromanager.infrastructure.user.output.jpa.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

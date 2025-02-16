@@ -5,6 +5,8 @@ import {Observable, tap} from "rxjs";
 import {ApiGenericResponse} from "../../model/interfaces/ApiGenericResponse";
 import {OrderRequestDto} from "../../../services/models/order-request-dto";
 import {IngredientResponseDto} from "../../model/interfaces/IngredientResponseDto";
+import {ProductItem} from "../../store/product-item/product-item.model";
+import {Order} from "../../store/order/order.model";
 
 @Injectable({
   providedIn: 'root'
@@ -28,13 +30,6 @@ export class OrderService extends BaseHttpService {
   }
 
   getAllOrders() {
-    return this.http.get<ApiGenericResponse<IngredientResponseDto[]>>(`${this.apiUrl}/orders`,
-      {headers: {'Accept': 'application/json'}}).pipe(
-      tap(response => {
-        if (response.flag) {
-          console.log('Ordenes obtenidas:', response.data);
-        }
-      })
-    );
+    return this.handleRequest<Order[]>("GET", "orders");
   }
 }

@@ -42,7 +42,7 @@ export class ProductItemFormComponent implements OnInit {
   categories: { label: string; value: Category }[] = [];
   suggestedPrice: number = 0;
 
-  constructor(private fb: FormBuilder, private inventoryService: InventoryService) {
+  constructor(private readonly fb: FormBuilder, private readonly inventoryService: InventoryService) {
 
     this.productItemForm = this.fb.group({
       name: ['', Validators.required],
@@ -50,7 +50,7 @@ export class ProductItemFormComponent implements OnInit {
       price: [0, [Validators.required, Validators.min(0.1)]],
       ingredients: [null, Validators.required],
       category: [null, Validators.required],
-      ingredientQuantities: this.fb.group({}) // Grupo dinámico para las cantidades
+      ingredientQuantities: this.fb.group({})
     })
   }
 
@@ -65,19 +65,16 @@ export class ProductItemFormComponent implements OnInit {
       initialItem: this.initialProductItem ? of(this.initialProductItem) : of(null)
     }).subscribe({
         next: ({ingredients, initialItem}) => {
-          this.availableIngredients = ingredients.data;
+          this.availableIngredients = ingredients;
 
           if (initialItem) {
-            // Preseleccionar ingredientes y cantidades para actualizar
             this.productItemForm.patchValue({
               name: initialItem.name,
               description: initialItem.description,
               price: initialItem.price,
               category: initialItem.category,
             });
-            //perform logic in case of update
 
-            // Extraer los uuids de los ingredientes del producto inicial
             const selectedUuids = initialItem.ingredients.map((ing: any) => ing.ingredientUuid);
             this.productItemForm.get('ingredients')?.setValue(selectedUuids);
 
@@ -87,6 +84,7 @@ export class ProductItemFormComponent implements OnInit {
             this.selectedIngredients = selectedUuids.map((uuid: string) =>
               this.availableIngredients.find(ing => ing.uuid === uuid)
             );
+            this.costOfProduction = this.calculateCostAndPrice();
           }
         },
       }
@@ -125,15 +123,15 @@ export class ProductItemFormComponent implements OnInit {
   private setIngredientQuantitiesControls(selectedUuids: string[], initialItem?: any): void {
     const quantitiesGroup = this.productItemForm.get('ingredientQuantities') as FormGroup;
 
-    // Elimina los controles existentes para asegurarse de que solo queden los actuales
     Object.keys(quantitiesGroup.controls).forEach(controlName => {
       quantitiesGroup.removeControl(controlName);
     });
-    // Agrega controles nuevos basados en los UUID seleccionados
     selectedUuids.forEach(uuid => {
       const initialQuantity = initialItem?.ingredients?.find((ing: any) => ing.ingredientUuid === uuid)?.quantity
       quantitiesGroup.addControl(uuid, this.fb.control(initialQuantity, [Validators.required]));
     });
+
+    this.costOfProduction = this.calculateCostAndPrice();
   }
 
   calculateCostAndPrice(): number {

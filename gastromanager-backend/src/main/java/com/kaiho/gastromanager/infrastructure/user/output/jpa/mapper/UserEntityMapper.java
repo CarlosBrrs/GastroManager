@@ -37,6 +37,7 @@ public class UserEntityMapper {
                 .lastname(userEntity.getLastname())
                 .username(userEntity.getUsername())
                 .contact(contact)
+                .verified(userEntity.isVerified())
                 .encodedPassword(userEntity.getEncodedPassword())
                 .restaurant(restaurantEntityMapper.toDomain(userEntity.getRestaurant()))
                 .restaurants(userEntity.getRestaurants().stream()

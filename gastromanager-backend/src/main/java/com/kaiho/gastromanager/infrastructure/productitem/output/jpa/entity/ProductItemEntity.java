@@ -60,5 +60,4 @@ public class ProductItemEntity extends Auditable implements Serializable {
         orderItemEntity.setProductItem(this);
     }
 
-
 }

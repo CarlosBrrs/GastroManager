@@ -1,6 +1,5 @@
 package com.kaiho.gastromanager.domain.user.usecase;
 
-import com.kaiho.gastromanager.domain.auth.model.Contact;
 import com.kaiho.gastromanager.domain.restaurant.model.Restaurant;
 import com.kaiho.gastromanager.domain.user.api.UserServicePort;
 import com.kaiho.gastromanager.domain.user.exception.UserDoesNotExistException;
@@ -18,6 +17,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -65,6 +65,11 @@ public class UserUseCase implements UserServicePort {
         }
 
         return userPersistencePort.updateUser(user);
+    }
+
+    @Override
+    public Optional<User> getUserByUuidOrEmail(String username, String email) {
+        return userPersistencePort.findUserByUsernameOrEmail(username, email);
     }
 
     private boolean hasOwnership(User user, Restaurant restaurant) {
@@ -125,20 +130,7 @@ public class UserUseCase implements UserServicePort {
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userPersistencePort.findUserByUsername(username)
+        return userPersistencePort.findUserByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username " + username + " does not exist."));
-        Contact contact = Contact.builder().phone(user.getContact().getPhone())
-                .email(user.getContact().getEmail()).build();
-        return User.builder()
-                .uuid(user.getUuid())
-                .name(user.getName())
-                .lastname(user.getLastname())
-                .contact(contact)
-                .encodedPassword(user.getEncodedPassword())
-                .username(user.getUsername())
-                .restaurant(user.getRestaurant())
-                .restaurants(user.getRestaurants())
-                .roles(user.getRoles())
-                .build();
     }
 }

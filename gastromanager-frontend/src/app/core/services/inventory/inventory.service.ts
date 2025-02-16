@@ -6,6 +6,7 @@ import {IngredientResponseDto} from "../../model/interfaces/IngredientResponseDt
 import {IngredientDetailResponseDto} from "../../model/interfaces/IngredientDetailResponseDto";
 import {IngredientRequestDto} from "../../model/interfaces/IngredientRequestDto";
 import {IngredientItem} from "../../store/inventory/ingredient.model";
+import {AdjustStockRequestDto} from "../../../pages/inventory/inventory-table/inventory-table.component";
 
 @Injectable({
   providedIn: 'root'
@@ -18,47 +19,23 @@ export class InventoryService extends BaseHttpService {
   }
 
 
-  getAllIngredients(): Observable<ApiGenericResponse<IngredientResponseDto[]>> {
-    return this.http.get<ApiGenericResponse<IngredientResponseDto[]>>(`${this.apiUrl}/ingredients`,
-      {headers: {'Accept': 'application/json'}}).pipe(
-      tap(response => {
-        if (response.flag) {
-          console.log('Ingredientes obtenidos:', response.data);
-        }
-      })
-    );
+  getAllIngredients(): Observable<IngredientItem[]> {
+    return this.handleRequest<IngredientItem[]>("GET", 'ingredients');
   }
 
-  addIngredient(ingredient: IngredientRequestDto): Observable<ApiGenericResponse<string>> {
-    return this.http.post<ApiGenericResponse<string>>(`${this.apiUrl}/ingredients`, ingredient, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      }
-    }).pipe(
-      tap(response => {
-        if (response.flag) {
-          console.log('Ingrediente añadido con UUID:', response.data);
-        }
-      })
-    )
-
+  addIngredient(ingredient: IngredientRequestDto): Observable<string> {
+    return this.handleRequest<string>("POST", 'ingredients', ingredient);
   }
 
-  updateIngredient(uuid: string, ingredient: Partial<IngredientRequestDto>): Observable<ApiGenericResponse<IngredientDetailResponseDto>> {
-    return this.http.put<ApiGenericResponse<IngredientDetailResponseDto>>(`${this.apiUrl}/ingredients/${uuid}`, ingredient, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      }
-    }).pipe(tap(response => {
-      if (response.flag) {
-        console.log('Ingrediente actualizado:', response.data);
-      }
-    }))
+  updateIngredient(uuid: string, ingredient: Partial<IngredientRequestDto>): Observable<IngredientItem> {
+    return this.handleRequest<IngredientItem>("PUT", `ingredients/${uuid}`, ingredient);
   }
 
   deleteIngredient(ingredientUuid: string): void {
     alert("not implemented yet");
+  }
+
+  adjustIngredientStock(uuid: string, stockAdjustment: AdjustStockRequestDto): Observable<string> {
+    return this.handleRequest<string>("PATCH", `ingredients/${uuid}/adjust-ingredient-stock`, stockAdjustment);
   }
 }

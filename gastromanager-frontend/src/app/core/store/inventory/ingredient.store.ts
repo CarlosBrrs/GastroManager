@@ -1,154 +1,99 @@
 import {patchState, signalStore, withComputed, withHooks, withMethods, withState} from "@ngrx/signals";
 import {IngredientItem} from "./ingredient.model";
-import {computed, effect, inject} from "@angular/core";
+import {computed, inject} from "@angular/core";
 import {InventoryService} from "../../services/inventory/inventory.service";
-import {catchError, concatMap, of} from "rxjs";
+import {concatMap, Observable, tap} from "rxjs";
 import {IngredientRequestDto} from "../../model/interfaces/IngredientRequestDto";
 import {StoreEventService} from "../../services/store-event/store-event.service";
+import {BaseStore} from "../base-store";
+import {AdjustStockRequestDto} from "../../../pages/inventory/inventory-table/inventory-table.component";
 
 type IngredientFilter = 'all' | 'cat1' | 'cat2';
 
 type IngredientState = {
-  ingredients: IngredientItem[]
-  category: IngredientFilter
+  ingredients: IngredientItem[];
+  category: IngredientFilter;
+  loading: boolean;
+  error: string | null;
 }
 
 const initialState: IngredientState = {
   ingredients: [],
-  category: 'all'
+  category: 'all',
+  loading: false,
+  error: null,
 }
 
 export const IngredientStore = signalStore(
   {providedIn: "root"},
   withState(initialState),
 
-  withMethods((store, inventoryService = inject(InventoryService), eventService = inject(StoreEventService)) => ({
-    addIngredient: (ingredient: IngredientRequestDto) => {
-      inventoryService.addIngredient(ingredient).pipe(
-        concatMap((response) => {
-          eventService.emitSuccess(`Ingredient added successfully`, response.message);
-          return inventoryService.getAllIngredientsTest()
-        }),
-        catchError((error) => {
-          console.log(error)
-          eventService.emitError("Error adding ingredient", error.error.message);
-          return of({
-            data: store.ingredients()
-          });
-        })
-      ).subscribe({
-        next: (response) => {
-          patchState(store, {ingredients: response?.data || []}); // Actualiza la lista de ingredientes
-          console.log("Lista de ingredientes obtenida:", response);
-        },
-        error: (error) => {
-          eventService.emitError("Error adding ingredient", error.error.message);
-          console.error("Error al agregar o refrescar los ingredientes:", error);
-        },
-        complete: () => {
-          console.log("completed add ingredient in store")
-        }
-      });
-    },
-    editIngredient: (uuid: string, ingredient: Partial<IngredientRequestDto>) => {
-      inventoryService.updateIngredient(uuid, ingredient)
-        .pipe(
-          concatMap((response) => {
-            eventService.emitSuccess(`Ingredient updated successfully`, response.message);
-            return inventoryService.getAllIngredientsTest()
-          }),
-          catchError((error) => {
-            console.log(error)
-            eventService.emitError("Error updating ingredient", error.error.message);
-            return of({
-              data: store.ingredients()
-            });
-          })
-        ).subscribe({
-        next: (response) => {
-          patchState(store, {ingredients: response?.data || []}); // Actualiza la lista de ingredientes
-          console.log("Lista de ingredientes actualizada:", response);
-        },
-        error: error => {
-          eventService.emitError("Error updating ingredient", error.error.message);
-          console.error("Error al actualizar los ingredientes:", error);
-        },
-        complete: () => {
-          console.log("completed update ingredient in store")
-        }
-      })
-    },
-    deleteIngredient: (ingredientUuid: string) => {
-    },
-    /*getIngredients: () => {
-      inventoryService.getAllIngredientsTest()
-        .pipe(
-          finalize(() => {
-            // to set the state of the store, finalize will get triggered always after the rest of the subscribe props
-            //  this.loading.set(false)
-            console.log("completed");
-          }))
-        .subscribe({
-          next: (response) => {
-            // this.ingredients.set(response.data);
-            // this.loading.set(false)
-            patchState(store, {ingredients: response?.data || []}); // Actualiza la lista de ingredientes
-            console.log("Lista de ingredientes actualizada:", response);
-            eventService.emitSuccess(`Ingredients obtenidos agregado`);
+  withMethods((store, inventoryService = inject(InventoryService), eventService = inject(StoreEventService)) => {
+    const baseStore = new BaseStore(store, eventService);
+    return {
+      addIngredient: (ingredient: IngredientRequestDto): Observable<IngredientItem[]> => {
+        return baseStore.performOperation<IngredientItem[]>(
+          inventoryService.addIngredient(ingredient).pipe(
+            tap(uuid => console.log("UUID del nuevo ingrediente:", uuid)),
+            concatMap(() => inventoryService.getAllIngredients()),
+          ),
+          (ingredientItems) => {
+            console.log("Nuevos ingredients recuperados:", ingredientItems.toString());
+            patchState(store, {ingredients: ingredientItems})
           },
-          error: error => {
-            /!*messageService.add({
-              severity: 'error',
-              summary: 'Error loading ingredients',
-              detail: error.error.message
-            });*!/
-            console.log("error loading ingredients", error)
-            // this.error.set('Error loading ingredients');
+          "Ingrediente agregado con éxito"
+        );
+      },
+      editIngredient: (uuid: string, ingredient: IngredientRequestDto): Observable<IngredientItem[]> => {
+        return baseStore.performOperation<IngredientItem[]>(
+          inventoryService.updateIngredient(uuid, ingredient).pipe(
+            tap(updatedIngredient => console.log("Ingrediente editado:", updatedIngredient)),
+            concatMap(() => inventoryService.getAllIngredients()),
+          ),
+          (ingredientItems) => {
+            console.log("Lista de ingredientes actualizada:", ingredientItems);
+            patchState(store, {ingredients: ingredientItems});
           },
-          complete: () => {
-            console.log("completed successfully")
-          }
-        });
-    },*/
-    changeCategory: (category: IngredientFilter) => {
-      patchState(store, {category});
+          "Ingrediente editado con éxito"
+        );
+      },
+      adjustStock: (uuid: string, stockAdjustment: AdjustStockRequestDto): Observable<IngredientItem[]> => {
+        return baseStore.performOperation<IngredientItem[]>(
+          inventoryService.adjustIngredientStock(uuid, stockAdjustment).pipe(
+            tap(uuid => console.log("UUID del ingrediente actualizado:", uuid)),
+            concatMap(() => inventoryService.getAllIngredients()),
+          ),
+          (ingredientItems) => {
+            console.log("Nuevos ingredients recuperados:", ingredientItems.toString());
+            patchState(store, {ingredients: ingredientItems})
+          },
+          "Stock del ingrediente actualizado con éxito"
+        );
+      },
+      loadIngredients: (): Observable<IngredientItem[]> => {
+        return baseStore.performOperation<IngredientItem[]>(
+          inventoryService.getAllIngredients(),
+          (response) => patchState(store, {ingredients: response}),
+          "Ingredientes cargados con éxito"
+        );
+      }
     }
-  })),
+  }),
   withComputed(({ingredients, category}) => ({
     filteredIngredients: computed(() => {
       switch (category()) {
         case 'cat1':
-          return ingredients().filter(ingredient => {
-            return ingredient.category === 'cat1';
-          });
+          return ingredients().filter(ingredient => ingredient.category === 'cat1');
         default:
           return ingredients();
       }
     })
   })),
-  // can be used to implement data loading from localstorage or api with onInit and effect
+
   withHooks({
-    onInit(store, inventoryService = inject(InventoryService), eventService = inject(StoreEventService)) {
-      console.log("loading store")
-      inventoryService.getAllIngredientsTest()
-        .pipe(catchError((error) => {
-          console.log("Error fetching data", error);
-          return of(undefined);
-        }))
-        .subscribe((response) => {
-            patchState(store, {ingredients: response?.data});
-            console.log("Ingredients retrieved successfully ", response);
-          }
-        )
-      effect(() => {
-        console.log("loading hook oninit in store")
-      });
-    },
-    onDestroy(store) {
-      effect(() => {
-        console.log("loading hook ondestroy in store")
-      })
-    },
+    onInit(store) {
+      store.loadIngredients();
+    }
   })
 );
 

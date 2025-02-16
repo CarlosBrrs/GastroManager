@@ -35,7 +35,7 @@
     loadingIcon="pi pi-spin pi-spinner"
     [showCurrentPageReport]="true"
     [tableStyle]="{ 'min-width': '74rem' }"
-    [value]="productItems()"
+    [value]="data"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
     dataKey="uuid"
     selectionMode="single"
@@ -107,7 +107,7 @@
     </ng-template>
     <ng-template pTemplate="summary">
       <div class="flex align-items-center justify-content-between">
-        In total there are {{ productItems() ? productItems().length : 0 }} products.
+        In total there are {{ data ? data.length : 0 }} products.
       </div>
     </ng-template>
   </p-table>
@@ -120,11 +120,12 @@
         <p><strong>Name:</strong> {{ selectedProductItem.name }}</p>
         <p><strong>Unit:</strong> {{ selectedProductItem.description }}</p>
         <p><strong>Price:</strong> {{ selectedProductItem.price | currency: 'CAD':'symbol-narrow': '1.2-5' }}</p>
-        <p><strong>Used ingredients:</strong> {{ selectedProductItem.ingredients | json }}</p>
-        <!--        <p-button label="Set new Stock" [loading]="loading"
-                                                                                                           (onClick)="displayInputNewStock()" ></p-button>-->
-        <!--        <p><strong>Created by:</strong> {{ selectedIngredient.createdBy }}</p>-->
-
+        <p><strong>Used ingredients:</strong></p>
+        <ul>
+          @for (ingredient of selectedProductItem.ingredients; track ingredient.ingredientUuid) {
+            <li>{{ ingredient.name }} - {{ ingredient.quantity }} {{ingredient.unit}}</li>
+          }
+        </ul>
       </div>
     } @else {
       <div>

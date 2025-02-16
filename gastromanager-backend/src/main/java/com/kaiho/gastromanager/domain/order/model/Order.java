@@ -20,7 +20,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Order {
     private UUID uuid;
-    private String orderCode;
+    private String code;
     private User user;
     private Restaurant restaurant;
     private String customerNotes;

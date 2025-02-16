@@ -1,0 +1,137 @@
+<form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+  <!-- Campo: Name -->
+  <div>
+    <input id="name" type="text" placeholder="Name" pInputText class="w-full md:w-30rem mb-5 p-2"
+           formControlName="name">
+    @if (registrationForm.get('name')?.invalid && registrationForm.get('name')?.touched) {
+      <div>
+        @if (registrationForm.get('name')?.errors?.['required']) {
+          <small>Name is required.</small>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- Campo: Lastname -->
+  <div>
+    <input id="lastname" type="text" placeholder="Last Name" pInputText class="w-full md:w-30rem mb-5 p-2"
+           formControlName="lastname">
+    @if (registrationForm.get('lastname')?.invalid && registrationForm.get('lastname')?.touched) {
+      <div>
+        @if (registrationForm.get('lastname')?.errors?.['required']) {
+          <small>Last name is required.</small>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- Campo: Username -->
+  <div>
+    <input id="username" type="text" placeholder="Username" pInputText class="w-full md:w-30rem mb-5 p-2"
+           formControlName="username">
+    @if (registrationForm.get('username')?.invalid && registrationForm.get('username')?.touched) {
+      <div>
+        @if (registrationForm.get('username')?.errors?.['required']) {
+          <small>Username is required.</small>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- Campo: Password -->
+  <div>
+    <p-password id="password" [feedback]="false" formControlName="password" placeholder="Password"
+                [toggleMask]="true" styleClass="mb-5" inputStyleClass="w-full p-2 md:w-30rem"></p-password>
+
+    @if (registrationForm.get('password')?.invalid && registrationForm.get('password')?.touched) {
+      <div>
+        @if (registrationForm.get('password')?.errors?.['required']) {
+          <small>Password is required.</small>
+        }
+        @if (registrationForm.get('password')?.errors?.['minlength']) {
+          <small>Password must be at least {{ registrationForm.get('password')?.errors?.['minlength'].requiredLength }}
+            characters.</small>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- Grupo: Datos de contacto -->
+  <div formGroupName="contact">
+    <h3>Contact Information</h3>
+
+    <!-- Campo: Email -->
+    <div>
+      <input id="email" type="text" placeholder="Email" pInputText class="w-full md:w-30rem mb-5 p-2"
+             formControlName="email">
+
+      @if (registrationForm.get('contact.email')?.invalid && registrationForm.get('contact.email')?.touched) {
+        <div>
+          @if (registrationForm.get('contact.email')?.errors?.['required']) {
+            <small>Email is required.</small>
+          }
+          @if (registrationForm.get('contact.email')?.errors?.['email']) {
+            <small>Invalid email format.</small>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Campo: Website -->
+    <div>
+      <input id="website" type="text" placeholder="Website" pInputText class="w-full md:w-30rem mb-5 p-2"
+             formControlName="website">
+
+    </div>
+
+    <!-- Campo: Phone -->
+    <div>
+      <input id="phone" type="tel" placeholder="Phone" pInputText class="w-full md:w-30rem mb-5 p-2"
+             formControlName="phone">
+    </div>
+  </div>
+
+  <!-- Grupo: Subscription -->
+  <div formGroupName="subscription">
+    <h3>Subscription Information</h3>
+
+    <!-- Campo: Payment Token -->
+    <div>
+      <label for="paymentToken">Payment Token:</label>
+      <input id="paymentToken" type="text" formControlName="paymentToken"/>
+      <!-- Botón para simular el pago y generar el token dummy -->
+      <button type="button" (click)="simulatePayment()">Simulate Payment</button>
+    </div>
+
+    <!-- Campo: Plan -->
+    <div>
+      <label for="plan">Plan:</label>
+      <select id="plan" formControlName="plan">
+        <option value="">Select a plan</option>
+        @for (plan of subscriptionPlanStore.subscriptionPlans(); track plan.uuid) {
+          <option [value]="plan.name">
+            {{ plan.name }}
+          </option>
+        }
+
+      </select>
+      @if (registrationForm.get('subscription.plan')?.invalid && registrationForm.get('subscription.plan')?.touched) {
+        <div>
+          @if (registrationForm.get('subscription.plan')?.errors?.['required']) {
+            <small>Plan is required.</small>
+          }
+        </div>
+      }
+    </div>
+  </div>
+  <button type="submit" [disabled]="registrationForm.invalid || loading">
+    Register
+    @if (loading) {
+      <i class="pi pi-spin pi-spinner" style="font-size: 1rem"></i>
+    }
+
+
+  </button>
+
+</form>
+

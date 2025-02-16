@@ -9,7 +9,5 @@ public interface VerificationTokenServicePort {
     void deleteToken(VerificationToken verificationToken);
 
 
-    void createVerificationToken(User createdUser);
-
-    boolean isVerificationPending(User user);
+    VerificationToken createVerificationToken(User createdUser);
 }

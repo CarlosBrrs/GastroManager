@@ -1,4 +1,4 @@
-import {Component, OnInit, signal} from '@angular/core';
+import {Component, effect, inject, OnDestroy, OnInit, signal} from '@angular/core';
 import {SplitterModule} from "primeng/splitter";
 import {TabViewModule} from "primeng/tabview";
 import {AvatarModule} from "primeng/avatar";
@@ -19,6 +19,9 @@ import {ToastModule} from "primeng/toast";
 import {ConfirmDialogModule} from "primeng/confirmdialog";
 import {Router} from "@angular/router";
 import {OrderService} from "../../../core/services/order/order.service";
+import {ProductItemStore} from "../../../core/store/product-item/product-item.store";
+import {OrderStore} from "../../../core/store/order/order.store";
+import {StoreEventService} from "../../../core/services/store-event/store-event.service";
 
 @Component({
   selector: 'gm-create-order',
@@ -44,22 +47,54 @@ import {OrderService} from "../../../core/services/order/order.service";
   templateUrl: './create-order.component.html',
   styleUrl: './create-order.component.scss'
 })
-export class CreateOrderComponent implements OnInit {
-  productItems = signal<ProductItemResponseDto[]>([])
-  loading = signal<boolean>(false);
-  error = signal<string | null>(null);
-  private destroy$ = new Subject<void>();
+export class CreateOrderComponent implements OnInit, OnDestroy {
   orderForm: FormGroup;
+  productItemStore = inject(ProductItemStore)
+  orderStore = inject(OrderStore)
+  private readonly destroy$ = new Subject<void>();
 
-  constructor(private orderService: OrderService, private router: Router, private fb: FormBuilder, private confirmationService: ConfirmationService, private productItemService: ProductItemService, private messageService: MessageService) {
+  constructor(private readonly storeEventService: StoreEventService,private readonly router: Router, private readonly fb: FormBuilder, private readonly confirmationService: ConfirmationService, private messageService: MessageService) {
     this.orderForm = this.fb.group({
       customerNotes: new FormControl<string>(""),
       orderItems: this.fb.array<OrderItem>([]),
     });
+    // Efecto para manejar eventos de éxito
+    effect(() => {
+      const successMessage = this.storeEventService.successSignal();
+      const successHeaderMessage = this.storeEventService.successHeaderSignal();
+      if (successMessage) {
+        this.messageService.add({
+          severity: 'success',
+          summary: successHeaderMessage,
+          detail: successMessage
+        });
+        // Opcional: limpiar el mensaje después de mostrarlo
+        this.storeEventService.successSignal.set(null);
+        this.storeEventService.successHeaderSignal.set(undefined);
+      }
+    }, {allowSignalWrites: true});
+
+    // Efecto para manejar eventos de error
+    effect(() => {
+      const errorMessage = this.storeEventService.errorSignal();
+      const errorHeaderMessage = this.storeEventService.errorHeaderSignal();
+      if (errorMessage) {
+        this.messageService.add({
+          severity: 'error',
+          summary: errorHeaderMessage,
+          detail: errorMessage
+        });
+        // Opcional: limpiar el mensaje después de mostrarlo
+        this.storeEventService.errorSignal.set(null);
+        this.storeEventService.errorHeaderSignal.set(undefined);
+      }
+    }, {allowSignalWrites: true});
   }
 
   ngOnInit(): void {
-    this.loadProductItems();
+    this.productItemStore.loadProductItems().pipe(
+      takeUntil(this.destroy$)
+    ).subscribe();
   }
 
   selectedProducts: any[] = [];
@@ -121,38 +156,12 @@ export class CreateOrderComponent implements OnInit {
     return this.getSubtotal() + this.getTax();
   }
 
-  private loadProductItems() {
-    this.loading.set(true)
-    this.productItemService.getAllProductItems()
-      .pipe(
-        takeUntil(this.destroy$),
-        finalize(() => this.loading.set(false)))
-      .subscribe({
-        next: response => {
-          this.productItems.set(response.data);
-          this.loading.set(false)
-        },
-        error: error => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error loading ingredients',
-            detail: error.error.message
-          });
-          console.log("error loading ingredients", error)
-          this.error.set('Error loading ingredients');
-        },
-        complete: () => {
-          console.log("completed successfully")
-        }
-      })
-  }
-
-  categories(): any[] {
-    return [...new Set(this.productItems().map(product => product.category))];
-  }
 
   onSubmit() {
-    this.orderService.createOrder(this.orderForm.value).subscribe({
+    this.orderStore.createOrder(this.orderForm.value).subscribe(() => {
+      this.router.navigate(['orders'])
+    });
+    /*this.orderService.createOrder(this.orderForm.value).subscribe({
         next: response => {
           this.messageService.add({severity: 'success', summary: 'Confirmed', detail: 'Order placed successfully'});
           this.router.navigate(['orders'])
@@ -160,17 +169,13 @@ export class CreateOrderComponent implements OnInit {
         error: error => {
           this.messageService.add({severity: 'error', summary: 'Error placing order', detail: error.error.message});
           console.log("error placing order", error)
-          this.error.set('Error placing order');
+
         },
         complete: () => {
           console.log("completed handle create in create-order component")
         }
       }
-    )
-  }
-
-  getProductsByCategory(category: string): ProductItem[] {
-    return this.productItems().filter(product => product.category === category);
+    )*/
   }
 
   onQuantityChange(index: number, newValue: InputNumberInputEvent) {
@@ -221,5 +226,10 @@ export class CreateOrderComponent implements OnInit {
         });
       }
     });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

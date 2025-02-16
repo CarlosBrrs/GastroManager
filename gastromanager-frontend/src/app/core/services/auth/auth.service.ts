@@ -6,6 +6,7 @@ import {Router} from "@angular/router";
 import {jwtDecode} from 'jwt-decode';
 import {BaseHttpService} from "../basehttp/base-http.service";
 import {DecodedToken} from "../../model/interfaces/DecodedToken";
+import {SignupRequestDto} from "../../../pages/register/register.component";
 
 interface RestaurantDto {
   name: string;
@@ -51,7 +52,7 @@ export class AuthService extends BaseHttpService {
           // TODO: LA ESTRUCTURA VA A VARIAR SI ES OWNER O MANAGER, AJUSTAR
           const restaurantUuid = response.data.restaurants?.[0]?.uuid ?? response.data.restaurantUuid ?? "";
           console.log(token)
-          console.log(restaurantUuid)
+          console.log("restaurantuuid", restaurantUuid)
           const decodedToken: DecodedToken = jwtDecode<DecodedToken>(token);
           this.roles = decodedToken.roles;
           this.setTokenInSystem(token);
@@ -60,6 +61,14 @@ export class AuthService extends BaseHttpService {
         }
       })
     );
+  }
+
+  signup(signupRequestDto: SignupRequestDto) {
+    return this.handleRequest<string>("POST", "auth/sign-up", signupRequestDto);
+  }
+
+  verifyAccount(token: string) {
+    return this.handleRequest<string>("GET", `auth/verify-account?token=${token}`);
   }
 
   getUserUuid(): string {
@@ -148,4 +157,6 @@ export class AuthService extends BaseHttpService {
   private getRestaurantUuidFromSystem(): string | null {
     return localStorage.getItem(this.restaurantUuidKey);
   }
+
+
 }

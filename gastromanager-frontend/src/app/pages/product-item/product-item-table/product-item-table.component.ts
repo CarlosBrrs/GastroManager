@@ -1,10 +1,10 @@
-import {Component, computed, EventEmitter, Input, Output, signal, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
 import {Button} from "primeng/button";
 import {CurrencyPipe, DatePipe, JsonPipe} from "@angular/common";
 import {DialogModule} from "primeng/dialog";
 import {InputTextModule} from "primeng/inputtext";
 import {InventoryFormComponent} from "../../inventory/inventory-form/inventory-form.component";
-import {ConfirmationService, MessageService, PrimeTemplate} from "primeng/api";
+import {ConfirmationService, PrimeTemplate} from "primeng/api";
 import {Table, TableModule, TableRowSelectEvent} from "primeng/table";
 import {ToolbarModule} from "primeng/toolbar";
 import {ProductItemResponseDto} from "../../../core/model/interfaces/ProductItemResponseDto";
@@ -42,27 +42,19 @@ export class ProductItemTableComponent {
 
   @Input() loading = false;
   @ViewChild('dt') table!: Table;
+  filterValue: string = '';
   visibleModal: boolean = false;
   maximizeModal: boolean = false;
-  selectedProductItem?: ProductItemResponseDto;
+  selectedProductItem?: ProductItem;
   @Output() edit = new EventEmitter<any>();
   @Output() delete = new EventEmitter<number>();
   @Output() addNew = new EventEmitter<any>();
   @Output() productStatus = new EventEmitter<boolean>();
-  private _productItemList = signal<ProductItem[]>([]);
-  productItems = computed(() => {
-    return this._productItemList();
-  });
   sidebarVisible: boolean = false;
 
-  @Input()
-  set data(value: ProductItem[]) {
-    this._productItemList.set(value);
-  }
+  @Input() data: ProductItem[] = [];
 
-  constructor(
-    private confirmationService: ConfirmationService, // Inyectamos ConfirmationService
-  ) {
+  constructor(private readonly confirmationService: ConfirmationService) {
   }
 
   openNew() {
@@ -93,6 +85,8 @@ export class ProductItemTableComponent {
   // work with defined models and interfaces
   onFormSubmit(productItem: any) {
     if (this.selectedProductItem) {
+      console.log(productItem)
+      console.log(this.selectedProductItem.uuid)
       this.edit.emit({payload: productItem, uuid: this.selectedProductItem.uuid});
     } else {
       this.addNew.emit(productItem);
@@ -127,7 +121,7 @@ export class ProductItemTableComponent {
 
   onToggleEnable(uuid: string, isEnabled: boolean): void {
     // Aquí actualizamos el backend con el nuevo estado
-    alert(`Cambio de estado emitido para el producto con UUID ${uuid}, nuevo estado: ${isEnabled ? 'habilitado' : 'deshabilitado'}`);
+    // alert(`Cambio de estado emitido para el producto con UUID ${uuid}, nuevo estado: ${isEnabled ? 'habilitado' : 'deshabilitado'}`);
 
     /* this.productService.updateProductStatus(uuid, isEnabled).subscribe({
       next: (response) => {
@@ -149,8 +143,6 @@ export class ProductItemTableComponent {
   }
 
   onRowSelect($event: TableRowSelectEvent) {
-    console.log("i am heere")
-    console.dir($event) //selected
     this.selectedProductItem = $event.data;
     this.openSidebar()
   }
@@ -162,11 +154,20 @@ export class ProductItemTableComponent {
   // Cerrar el sidebar
   closeSidebar() {
     this.sidebarVisible = false;
-    this.selectedProductItem = undefined;  // Desseleccionamos el ingrediente
-    this.table.clear();  // Limpiamos la selección en la tabla
+    this.selectedProductItem = undefined;
+    if (this.filterValue) {
+      setTimeout(() => {
+        this.onGlobalFilter(this.table, { target: { value: this.filterValue } } as unknown as Event);
+      }, 0);
+    }
   }
 
   clearText() {
-    alert("clear text")
+    this.filterValue = '';
+    const inputElement = document.querySelector('.p-input-icon-right input') as HTMLInputElement;
+    if (inputElement) {
+      inputElement.value = this.filterValue;
+    }
+    this.onGlobalFilter(this.table, { target: { value: this.filterValue } } as unknown as Event);
   }
 }

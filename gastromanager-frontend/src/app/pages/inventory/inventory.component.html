@@ -3,7 +3,8 @@
     <gm-inventory-table (addNew)="handleAdd($event)"
                         (delete)="handleDelete($event)"
                         (edit)="handleEdit($event)"
-                        [data]="ingredients()">>
+                        (stockAdjustment)="handleAdjustStock($event)"
+                        [data]="ingredientStore.ingredients()">>
     </gm-inventory-table>
   </div>
 </div>

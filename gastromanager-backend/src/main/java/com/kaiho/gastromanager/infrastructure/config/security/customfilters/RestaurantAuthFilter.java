@@ -26,7 +26,7 @@ import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.B
 @Component
 @RequiredArgsConstructor
 public class RestaurantAuthFilter extends OncePerRequestFilter {
-    private static final List<String> EXCLUDED_PATHS = List.of("/api/v1/auth/login", "/api/v1/auth/sign-up", BASE_URL + "/auth/verify");
+    private static final List<String> EXCLUDED_PATHS = List.of("/api/v1/subscription-plans", "/api/v1/users", "/api/v1/auth/login", "/api/v1/auth/sign-up", BASE_URL + "/auth/verify-account");
     private static final String RESTAURANT_UUID_HEADER = "X-Restaurant-Uuid";
     private final RestaurantServicePort restaurantServicePort;
     private final UserServicePort userServicePort;
