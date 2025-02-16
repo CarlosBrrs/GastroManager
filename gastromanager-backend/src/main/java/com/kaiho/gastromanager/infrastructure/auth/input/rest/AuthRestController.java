@@ -32,7 +32,7 @@ public class AuthRestController {
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<ApiGenericResponse<UUID>> signup(@RequestBody SignupRequestDto signupRequestDto) {
+    public ResponseEntity<ApiGenericResponse<UUID>> signup(@RequestBody SignupRequestDto signupRequestDto) throws MessagingException {
         ApiGenericResponse<UUID> response = authHandler.signup(signupRequestDto);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
