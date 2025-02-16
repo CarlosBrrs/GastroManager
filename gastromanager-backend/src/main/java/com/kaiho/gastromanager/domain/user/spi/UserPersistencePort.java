@@ -21,4 +21,6 @@ public interface UserPersistencePort {
     boolean isUserAlreadyRegistered(User user);
 
     User updateUser(User updatedUser);
+
+    Optional<User> findUserByUsernameOrEmail(String username, String email);
 }

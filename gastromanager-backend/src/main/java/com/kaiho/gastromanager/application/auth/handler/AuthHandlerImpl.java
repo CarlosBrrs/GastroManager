@@ -7,6 +7,7 @@ import com.kaiho.gastromanager.domain.auth.api.AuthServicePort;
 import com.kaiho.gastromanager.domain.auth.model.Login;
 import com.kaiho.gastromanager.domain.auth.model.Signup;
 import com.kaiho.gastromanager.infrastructure.common.model.ApiGenericResponse;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -30,14 +31,14 @@ public class AuthHandlerImpl implements AuthHandler {
     }
 
     @Override
-    public ApiGenericResponse<UUID> signup(SignupRequestDto signupRequestDto) {
+    public ApiGenericResponse<UUID> signup(SignupRequestDto signupRequestDto) throws MessagingException {
         Signup signup = authMapper.toDomain(signupRequestDto);
-        authServicePort.signup(signup);
-        return buildSuccessResponse("User registered, please check your email to verify your account. You have 5 mins", null);
+        UUID userUuid = authServicePort.signup(signup);
+        return buildSuccessResponse("User registered, please check your email to verify your account. You have 5 mins", userUuid);
     }
 
     @Override
-    public ApiGenericResponse<UUID> verifyAccount(String token) {
+    public ApiGenericResponse<UUID> verifyAccount(String token) throws MessagingException {
         UUID verifiedUserUuid = authServicePort.verifyAccount(token);
         return buildSuccessResponse("User verified successfully, you can login now", verifiedUserUuid);
     }

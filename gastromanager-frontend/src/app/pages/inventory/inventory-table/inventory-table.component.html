@@ -1,5 +1,5 @@
 <div class="card">
-  <h2 class="mb-4">Manage Iventory</h2>
+  <h2 class="mb-4">Manage Inventory</h2>
 
     <p-toolbar styleClass="mb-4">
       <div class="flex align-items-center w-full justify-content-between">
@@ -36,7 +36,7 @@
       loadingIcon="pi pi-spin pi-spinner"
       [showCurrentPageReport]="true"
       [tableStyle]="{ 'min-width': '74rem' }"
-      [value]="ingredients()"
+      [value]="data"
       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
       dataKey="uuid"
       selectionMode="single"
@@ -104,7 +104,7 @@
       </ng-template>
       <ng-template pTemplate="summary">
         <div class="flex align-items-center justify-content-between">
-          In total there are {{ ingredients() ? ingredients().length : 0 }} products.
+          In total there are {{ data ? data.length : 0 }} products.
         </div>
       </ng-template>
     </p-table>
@@ -124,6 +124,17 @@
           <p><strong>Created date:</strong> {{ selectedIngredient.createdDate | date }}</p>
           <p><strong>Supplier:</strong> {{ selectedIngredient.supplier }}</p>
           <p><strong>Minimum stock quantity:</strong> {{ selectedIngredient.minimumStockQuantity }}</p>
+          @if (showStockForm) {
+            <form [formGroup]="stockForm" (ngSubmit)="submitForm()">
+              <label for="newStock">New Stock:</label>
+              <input id="newStock" type="number" formControlName="newStock" placeholder="Enter new stock" required />
+
+              <label for="reason">Reason:</label>
+              <input id="reason" type="text" formControlName="reason" placeholder="Reason for update" required />
+
+              <button type="submit" [disabled]="stockForm.invalid">Confirm</button>
+            </form>
+          }
         </div>
       } @else {
         <div>

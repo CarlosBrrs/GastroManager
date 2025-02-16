@@ -31,11 +31,11 @@ public class VerificationTokenEntityAdapter implements VerificationTokenPersiste
     }
 
     @Override
-    public void createVerificationToken(VerificationToken verificationToken) {
+    public VerificationToken createVerificationToken(VerificationToken verificationToken) {
         VerificationTokenEntity verificationTokenEntity = verificationTokenEntityMapper.toEntity(verificationToken);
         UserEntity userEntity = userEntityRepository.findById(verificationToken.getUser().getUuid()).orElseThrow(() -> new UserDoesNotExistException(verificationToken.getUser().getUuid()));
         userEntity.assignVerificationToken(verificationTokenEntity);
-        verificationTokenEntityMapper.toDomain(verificationTokenEntityRepository.save(verificationTokenEntity));
+        return verificationTokenEntityMapper.toDomain(verificationTokenEntityRepository.save(verificationTokenEntity));
 
     }
 
@@ -47,7 +47,9 @@ public class VerificationTokenEntityAdapter implements VerificationTokenPersiste
     @Override
     public void deleteToken(VerificationToken verificationToken) {
         VerificationTokenEntity verificationTokenEntity = verificationTokenEntityRepository.findById(verificationToken.getUuid()).orElseThrow(() -> new VerificationTokenDoesNotExistException(verificationToken.getToken().toString()));
-        verificationTokenEntity.getUser().removeVerificationToken();
+        UserEntity userEntity = verificationTokenEntity.getUser();
+        userEntity.removeVerificationToken();
+        userEntityRepository.save(userEntity);
         verificationTokenEntityRepository.deleteById(verificationTokenEntity.getUuid());
     }
 
@@ -58,6 +60,12 @@ public class VerificationTokenEntityAdapter implements VerificationTokenPersiste
 
         // Si el token está presente y no ha expirado, consideramos que la verificación está pendiente
         return tokenEntityOptional.map(token -> !token.getExpiryDate().isBefore(Instant.now())).orElse(false);
+    }
+
+    @Override
+    public Optional<VerificationToken> findByUser(User user) {
+        Optional<VerificationTokenEntity> tokenEntityOptional = verificationTokenEntityRepository.findByUser(userEntityRepository.findByUsername(user.getUsername()).orElseThrow(() -> new UserDoesNotExistException(user.getUuid())));
+        return tokenEntityOptional.map(verificationTokenEntityMapper::toDomain);
     }
 
 

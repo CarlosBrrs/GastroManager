@@ -2,7 +2,7 @@ package com.kaiho.gastromanager.application.order.mapper;
 
 import com.kaiho.gastromanager.application.order.dto.request.OrderRequestDto;
 import com.kaiho.gastromanager.application.order.dto.response.OrderResponseDto;
-import com.kaiho.gastromanager.application.orderitem.dto.response.OrderItemResponse;
+import com.kaiho.gastromanager.application.orderitem.dto.response.OrderItemResponseDto;
 import com.kaiho.gastromanager.application.orderitem.mapper.OrderItemMapper;
 import com.kaiho.gastromanager.domain.order.model.Order;
 import com.kaiho.gastromanager.domain.order.model.OrderStatus;
@@ -30,9 +30,12 @@ public class OrderMapper {
         if (order == null) {
             return null;
         }
-        List<OrderItemResponse> list = order.getOrderItems().stream().map(orderItemMapper::toResponse).toList();
+        List<OrderItemResponseDto> list = order.getOrderItems().stream().map(orderItemMapper::toResponse).toList();
         return OrderResponseDto.builder()
                 .uuid(order.getUuid())
+                .code(order.getCode())
+                .updatedDate(order.getUpdatedDate())
+                .user(order.getUser().getName())
                 .userUuid(order.getUser().getUuid())
                 .totalPrice(order.getTotalAmount())
                 .status(order.getStatus())

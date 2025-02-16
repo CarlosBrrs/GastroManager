@@ -41,7 +41,7 @@ export class LayoutComponent implements OnInit {
   restaurants: Array<{ name: string }> = mockRestaurants; // Usar datos simulados
   assignedRestaurant: { name: string } = mockAssignedRestaurant; // Usar datos simulados
 
-  constructor(private authService: AuthService, private userService: UserService) {
+  constructor(private readonly authService: AuthService, private readonly userService: UserService) {
     this.isLoggedIn = this.authService.isLoggedIn;
     effect(() => {
       if (this.isLoggedIn()) {

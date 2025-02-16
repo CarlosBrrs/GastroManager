@@ -1,4 +1,5 @@
 export type OrderItem = {
-  productUuid: string;
+  productItemUuid: string;
+  productItemName: string;
   quantity: number;
 }

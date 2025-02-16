@@ -4,7 +4,7 @@
       (addNew)="handleAdd($event)"
       (delete)="handleDelete($event)"
       (edit)="handleEdit($event)"
-      [data]="productItems()"
+      [data]="productItemStore.productItems()"
     >
     </gm-product-item-table>
   </div>

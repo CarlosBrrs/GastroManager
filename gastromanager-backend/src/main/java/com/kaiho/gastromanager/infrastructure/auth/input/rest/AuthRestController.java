@@ -4,6 +4,7 @@ import com.kaiho.gastromanager.application.auth.dto.request.LoginRequestDto;
 import com.kaiho.gastromanager.application.auth.dto.request.SignupRequestDto;
 import com.kaiho.gastromanager.application.auth.handler.AuthHandler;
 import com.kaiho.gastromanager.infrastructure.common.model.ApiGenericResponse;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("${api.endpoint.base-url}/auth")
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthRestController {
 
@@ -36,8 +37,8 @@ public class AuthRestController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/verify")
-    public ResponseEntity<ApiGenericResponse<UUID>> verifyAccount(@RequestParam String token) {
+    @GetMapping("/verify-account")
+    public ResponseEntity<ApiGenericResponse<UUID>> verifyAccount(@RequestParam String token) throws MessagingException {
         ApiGenericResponse<UUID> response = authHandler.verifyAccount(token);
 
         return new ResponseEntity<>(response, HttpStatus.OK);

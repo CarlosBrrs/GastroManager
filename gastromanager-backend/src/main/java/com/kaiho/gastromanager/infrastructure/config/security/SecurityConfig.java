@@ -53,9 +53,10 @@ import static org.springframework.http.HttpMethod.PUT;
 public class SecurityConfig {
 
     private final String[] WHITE_LIST_URL = {
-            BASE_URL + "/auth/login",
-            BASE_URL + "/auth/sign-up",
-            BASE_URL + "/auth/verify",
+            "/auth/login",
+            "/auth/sign-up",
+            "/auth/verify-account",
+            "/subscription-plans/**",
             "/swagger-ui/**",
             "/v3/api-docs*/**"
     };
@@ -73,41 +74,42 @@ public class SecurityConfig {
                         .requestMatchers(WHITE_LIST_URL).permitAll()
 
                         // ingredients controller
-                        .requestMatchers(POST, BASE_URL + INGREDIENTS_CONTROLLER).hasAnyRole(SUPERUSER, OWNER, MANAGER, CHEF)
-                        .requestMatchers(GET, BASE_URL + INGREDIENTS_CONTROLLER).authenticated() // ALL ROLES can access
-                        .requestMatchers(GET, BASE_URL + INGREDIENTS_CONTROLLER + INGREDIENT_UUID_PARAMETER).authenticated() // ALL ROLES can access
-                        .requestMatchers(PUT, BASE_URL + INGREDIENTS_CONTROLLER + INGREDIENT_UUID_PARAMETER).hasAnyRole(SUPERUSER, OWNER, MANAGER, CHEF)
-                        .requestMatchers(PATCH, BASE_URL + INGREDIENTS_CONTROLLER + INGREDIENT_UUID_PARAMETER + "/deactivate").hasAnyRole(SUPERUSER, OWNER, MANAGER, CHEF)
-                        .requestMatchers(PATCH, BASE_URL + INGREDIENTS_CONTROLLER + INGREDIENT_UUID_PARAMETER + "/activate").hasAnyRole(SUPERUSER, OWNER, MANAGER, CHEF)
-                        .requestMatchers(DELETE, BASE_URL + INGREDIENTS_CONTROLLER + INGREDIENT_UUID_PARAMETER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
-                        .requestMatchers(PATCH, BASE_URL + INGREDIENTS_CONTROLLER + INGREDIENT_UUID_PARAMETER + "/adjust-ingredient-stock").hasAnyRole(SUPERUSER, OWNER, MANAGER)
+                        .requestMatchers(POST, INGREDIENTS_CONTROLLER).hasAnyRole(SUPERUSER, OWNER, MANAGER, CHEF)
+                        .requestMatchers(GET, INGREDIENTS_CONTROLLER).authenticated() // ALL ROLES can access
+                        .requestMatchers(GET, INGREDIENTS_CONTROLLER + INGREDIENT_UUID_PARAMETER).authenticated() // ALL ROLES can access
+                        .requestMatchers(PUT, INGREDIENTS_CONTROLLER + INGREDIENT_UUID_PARAMETER).hasAnyRole(SUPERUSER, OWNER, MANAGER, CHEF)
+                        .requestMatchers(PATCH, INGREDIENTS_CONTROLLER + INGREDIENT_UUID_PARAMETER + "/deactivate").hasAnyRole(SUPERUSER, OWNER, MANAGER, CHEF)
+                        .requestMatchers(PATCH, INGREDIENTS_CONTROLLER + INGREDIENT_UUID_PARAMETER + "/activate").hasAnyRole(SUPERUSER, OWNER, MANAGER, CHEF)
+                        .requestMatchers(DELETE, INGREDIENTS_CONTROLLER + INGREDIENT_UUID_PARAMETER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
+                        .requestMatchers(PATCH, INGREDIENTS_CONTROLLER + INGREDIENT_UUID_PARAMETER + "/adjust-ingredient-stock").hasAnyRole(SUPERUSER, OWNER, MANAGER)
+
                         // users controller
-                        .requestMatchers(POST, BASE_URL + USERS_CONTROLLER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
-                        .requestMatchers(GET, BASE_URL + USERS_CONTROLLER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
-                        .requestMatchers(GET, BASE_URL + USERS_CONTROLLER + USER_UUID_PARAMETER).authenticated()
-                        .requestMatchers(PUT, BASE_URL + USERS_CONTROLLER + USER_UUID_PARAMETER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
-                        .requestMatchers(PATCH, BASE_URL + USERS_CONTROLLER + USER_UUID_PARAMETER + "/deactivate").hasAnyRole(SUPERUSER, OWNER)
-                        .requestMatchers(PATCH, BASE_URL + USERS_CONTROLLER + USER_UUID_PARAMETER + "/activate").hasAnyRole(SUPERUSER, OWNER)
-                        .requestMatchers(PUT, BASE_URL + USERS_CONTROLLER + USER_UUID_PARAMETER + ROLES_CONTROLLER).hasAnyRole(SUPERUSER, OWNER)
-                        .requestMatchers(DELETE, BASE_URL + USERS_CONTROLLER + USER_UUID_PARAMETER + ROLES_CONTROLLER + ROLE_UUID_PARAMETER).hasAnyRole(SUPERUSER, OWNER)
+                        .requestMatchers(POST, USERS_CONTROLLER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
+                        .requestMatchers(GET, USERS_CONTROLLER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
+                        .requestMatchers(GET, USERS_CONTROLLER + USER_UUID_PARAMETER).authenticated()
+                        .requestMatchers(PUT, USERS_CONTROLLER + USER_UUID_PARAMETER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
+                        .requestMatchers(PATCH, USERS_CONTROLLER + USER_UUID_PARAMETER + "/deactivate").hasAnyRole(SUPERUSER, OWNER)
+                        .requestMatchers(PATCH, USERS_CONTROLLER + USER_UUID_PARAMETER + "/activate").hasAnyRole(SUPERUSER, OWNER)
+                        .requestMatchers(PUT, USERS_CONTROLLER + USER_UUID_PARAMETER + ROLES_CONTROLLER).hasAnyRole(SUPERUSER, OWNER)
+                        .requestMatchers(DELETE, USERS_CONTROLLER + USER_UUID_PARAMETER + ROLES_CONTROLLER + ROLE_UUID_PARAMETER).hasAnyRole(SUPERUSER, OWNER)
 
                         // roles controller
-                        .requestMatchers(GET, BASE_URL + ROLES_CONTROLLER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
-                        .requestMatchers(GET, BASE_URL + ROLES_CONTROLLER + ROLE_UUID_PARAMETER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
+                        .requestMatchers(GET, ROLES_CONTROLLER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
+                        .requestMatchers(GET, ROLES_CONTROLLER + ROLE_UUID_PARAMETER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
 
                         // product items controller
-                        .requestMatchers(GET, BASE_URL + PRODUCT_ITEMS_CONTROLLER).authenticated()
-                        .requestMatchers(GET, BASE_URL + PRODUCT_ITEMS_CONTROLLER + PRODUCT_ITEM_UUID_PARAMETER).authenticated()
-                        .requestMatchers(POST, BASE_URL + PRODUCT_ITEMS_CONTROLLER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
-                        .requestMatchers(PUT, BASE_URL + PRODUCT_ITEMS_CONTROLLER + PRODUCT_ITEM_UUID_PARAMETER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
+                        .requestMatchers(GET, PRODUCT_ITEMS_CONTROLLER).authenticated()
+                        .requestMatchers(GET, PRODUCT_ITEMS_CONTROLLER + PRODUCT_ITEM_UUID_PARAMETER).authenticated()
+                        .requestMatchers(POST, PRODUCT_ITEMS_CONTROLLER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
+                        .requestMatchers(PUT, PRODUCT_ITEMS_CONTROLLER + PRODUCT_ITEM_UUID_PARAMETER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
 
                         // orders controller
-                        .requestMatchers(POST, BASE_URL + ORDERS_CONTROLLER).hasAnyRole(SUPERUSER, OWNER, MANAGER, WAITER)
-                        .requestMatchers(GET, BASE_URL + ORDERS_CONTROLLER).authenticated()
-                        .requestMatchers(GET, BASE_URL + ORDERS_CONTROLLER + ORDER_UUID_PARAMETER).authenticated()
-                        .requestMatchers(PUT, BASE_URL + ORDERS_CONTROLLER + ORDER_UUID_PARAMETER).hasAnyRole(SUPERUSER, OWNER, MANAGER, WAITER)
-                        .requestMatchers(PATCH, BASE_URL + ORDERS_CONTROLLER + ORDER_UUID_PARAMETER + "/status").hasAnyRole(SUPERUSER, OWNER, MANAGER, WAITER, CHEF, KITCHEN_STAFF)
-                        .requestMatchers(DELETE, BASE_URL + ORDERS_CONTROLLER + ORDER_UUID_PARAMETER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
+                        .requestMatchers(POST, ORDERS_CONTROLLER).hasAnyRole(SUPERUSER, OWNER, MANAGER, WAITER)
+                        .requestMatchers(GET, ORDERS_CONTROLLER).authenticated()
+                        .requestMatchers(GET, ORDERS_CONTROLLER + ORDER_UUID_PARAMETER).authenticated()
+                        .requestMatchers(PUT, ORDERS_CONTROLLER + ORDER_UUID_PARAMETER).hasAnyRole(SUPERUSER, OWNER, MANAGER, WAITER)
+                        .requestMatchers(PATCH, ORDERS_CONTROLLER + ORDER_UUID_PARAMETER + "/status").hasAnyRole(SUPERUSER, OWNER, MANAGER, WAITER, CHEF, KITCHEN_STAFF)
+                        .requestMatchers(DELETE, ORDERS_CONTROLLER + ORDER_UUID_PARAMETER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
 
                         // restaurants controller
                         .requestMatchers(GET, BASE_URL + RESTAURANTS_CONTROLLER).hasAnyRole(SUPERUSER)

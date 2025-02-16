@@ -34,7 +34,7 @@ export class InventoryFormComponent implements OnInit {
     {symbol: 'units', name: 'UNITS'}];
 
 
-  constructor(private fb: FormBuilder) {
+  constructor(private readonly fb: FormBuilder) {
     this.ingredientForm = this.fb.group({
       name: new FormControl<string>("", [Validators.required]),
       availableStock: new FormControl<number>(0, [Validators.required]),
@@ -57,7 +57,6 @@ export class InventoryFormComponent implements OnInit {
 
   onSubmit(): void {
     this.mapUnitFromSymbolToEnum(this.ingredientForm.value)
-    console.log(this.ingredientForm.value)
     this.formSubmit.emit(this.ingredientForm.value);
   }
 

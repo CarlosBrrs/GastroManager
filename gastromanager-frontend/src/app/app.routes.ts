@@ -13,6 +13,9 @@ export const routes: Routes = [
     path: '',
     component: LayoutComponent,
     children: [
+      {path: 'register', loadComponent: () => import('./pages/register/register.component').then(m => m.RegisterComponent)},
+      {path: 'verify-pending', loadComponent: () => import('./pages/verify-pending/verify-pending.component').then(m => m.VerifyPendingComponent)},
+      {path: 'verify-account', loadComponent: () => import('./pages/verify-account/verify-account.component').then(m => m.VerifyAccountComponent)},
       {path: 'login', loadComponent: () => import('./pages/login/login.component').then(m => m.LoginComponent)},
       {
         path: 'home',

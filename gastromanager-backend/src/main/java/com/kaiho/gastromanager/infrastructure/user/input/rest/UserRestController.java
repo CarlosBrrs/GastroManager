@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("${api.endpoint.base-url}/users")
+@RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserRestController {
 

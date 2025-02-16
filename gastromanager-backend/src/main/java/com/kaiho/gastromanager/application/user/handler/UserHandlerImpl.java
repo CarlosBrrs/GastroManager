@@ -6,13 +6,11 @@ import com.kaiho.gastromanager.application.user.mapper.UserMapper;
 import com.kaiho.gastromanager.domain.restaurant.api.RestaurantServicePort;
 import com.kaiho.gastromanager.domain.user.api.RoleServicePort;
 import com.kaiho.gastromanager.domain.user.api.UserServicePort;
-import com.kaiho.gastromanager.domain.user.model.Role;
 import com.kaiho.gastromanager.domain.user.model.User;
 import com.kaiho.gastromanager.infrastructure.common.model.ApiGenericResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.Set;
 import java.util.UUID;
 
 import static com.kaiho.gastromanager.infrastructure.common.model.ApiGenericResponse.buildSuccessResponse;
@@ -29,8 +27,6 @@ public class UserHandlerImpl implements UserHandler {
 
     @Override
     public ApiGenericResponse<UserResponseDto> createUser(UserRequestDto userRequestDto) {
-
-
 
 
         // TODO: CHANGE THIS DOMAIN TO ENCAPSULATE THOSE ATTRIBUTES

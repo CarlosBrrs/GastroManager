@@ -10,7 +10,6 @@ import com.kaiho.gastromanager.domain.order.model.Order;
 import com.kaiho.gastromanager.domain.order.spi.OrderPersistencePort;
 import com.kaiho.gastromanager.domain.orderitem.model.OrderItem;
 import com.kaiho.gastromanager.domain.pricing.api.PricingServicePort;
-import com.kaiho.gastromanager.domain.productitem.exception.ProductItemDoesNotExistException;
 import com.kaiho.gastromanager.domain.productitem.model.ProductItem;
 import com.kaiho.gastromanager.domain.productitemingredient.model.ProductItemIngredient;
 import com.kaiho.gastromanager.infrastructure.config.generator.OrderCodeGenerator;
@@ -70,7 +69,7 @@ public class OrderUseCase implements OrderServicePort {
         List<OrderItem> orderItemsWithPrices = addPricesToOrderItems(order.getOrderItems(), productItemPriceMap);
         String orderCode = generateFiveLengthUniqueCode();
 
-        order.setOrderCode(orderCode);
+        order.setCode(orderCode);
         order.setTotalAmount(totalAmount);
         order.setOrderItems(orderItemsWithPrices);
 
@@ -109,6 +108,7 @@ public class OrderUseCase implements OrderServicePort {
         return orderPersistencePort.findOrderByUuid(orderUuid, restaurantUuid)
                 .orElseThrow(() -> new OrderDoesNotExistException(orderUuid));
     }
+
     //TODO: Modify the list and return void
     private List<OrderItem> addPricesToOrderItems(List<OrderItem> orderItems, Map<UUID, Double> productItemPriceMap) {
         List<OrderItem> orderItemsWithPrices = new ArrayList<>();

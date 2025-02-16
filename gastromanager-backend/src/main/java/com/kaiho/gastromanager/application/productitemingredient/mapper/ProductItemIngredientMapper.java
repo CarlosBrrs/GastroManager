@@ -34,6 +34,8 @@ public class ProductItemIngredientMapper {
         }
         return ProductItemIngredientResponseDto.builder()
                 .ingredientUuid(productItemIngredient.getIngredient().getUuid())
+                .unit(productItemIngredient.getIngredient().getUnit().getSymbol())
+                .name(productItemIngredient.getIngredient().getName())
                 .quantity(productItemIngredient.getQuantity())
                 .build();
     }

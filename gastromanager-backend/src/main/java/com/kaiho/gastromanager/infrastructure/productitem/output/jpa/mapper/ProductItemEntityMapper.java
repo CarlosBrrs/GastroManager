@@ -4,7 +4,6 @@ import com.kaiho.gastromanager.domain.productitem.model.ProductItem;
 import com.kaiho.gastromanager.domain.productitemingredient.model.ProductItemIngredient;
 import com.kaiho.gastromanager.domain.restaurant.exception.RestaurantDoesNotExistException;
 import com.kaiho.gastromanager.domain.restaurant.model.Restaurant;
-import com.kaiho.gastromanager.infrastructure.ingredient.output.jpa.mapper.IngredientEntityMapper;
 import com.kaiho.gastromanager.infrastructure.productitem.output.jpa.entity.ProductItemEntity;
 import com.kaiho.gastromanager.infrastructure.productitemingredient.output.jpa.mapper.ProductItemIngredientEntityMapper;
 import com.kaiho.gastromanager.infrastructure.restaurant.output.jpa.entity.RestaurantEntity;
@@ -21,7 +20,6 @@ import java.util.List;
 public class ProductItemEntityMapper {
 
     private final RestaurantEntityMapper restaurantEntityMapper;
-    private final IngredientEntityMapper ingredientEntityMapper;
     private final RestaurantEntityRepository restaurantEntityRepository;
     private final ProductItemIngredientEntityMapper productItemIngredientEntityMapper;
 

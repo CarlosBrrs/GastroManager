@@ -1,6 +1,6 @@
-import {Component, computed, EventEmitter, Input, Output, signal} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {ConfirmDialogModule} from "primeng/confirmdialog";
-import {CurrencyPipe} from "@angular/common";
+import {CurrencyPipe, DatePipe} from "@angular/common";
 import {DialogModule} from "primeng/dialog";
 import {InputTextModule} from "primeng/inputtext";
 import {ConfirmationService, PrimeTemplate} from "primeng/api";
@@ -9,6 +9,7 @@ import {Table, TableModule} from "primeng/table";
 import {ToolbarModule} from "primeng/toolbar";
 import {Router} from "@angular/router";
 import {TagModule} from "primeng/tag";
+import {Order} from "../../../core/store/order/order.model";
 
 @Component({
   selector: 'gm-order-table',
@@ -22,7 +23,8 @@ import {TagModule} from "primeng/tag";
     ProductItemFormComponent,
     TableModule,
     ToolbarModule,
-    TagModule
+    TagModule,
+    DatePipe
   ],
   templateUrl: './order-table.component.html',
   styleUrl: './order-table.component.scss'
@@ -32,19 +34,12 @@ export class OrderTableComponent {
   @Output() addNew = new EventEmitter();
   @Output() delete = new EventEmitter();
   @Output() edit = new EventEmitter();
-  private _orders = signal<any[]>([]);
-  orders = computed(() => {
-    return this._orders();
-  })
 
-  @Input()
-  set data(value: any[]) {
-    this._orders.set(value);
-  }
+  @Input() data: Order[] = [];
 
   selectedOrder: any;
 
-  constructor(private router: Router, private confirmationService: ConfirmationService,) {
+  constructor(private readonly router: Router, private readonly confirmationService: ConfirmationService,) {
   }
 
   newOrder() {

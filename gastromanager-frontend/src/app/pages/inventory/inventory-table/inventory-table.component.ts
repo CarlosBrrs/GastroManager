@@ -1,4 +1,4 @@
-import {Component, computed, EventEmitter, Input, Output, signal, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
 import {Table, TableModule, TableRowSelectEvent} from "primeng/table";
 import {IngredientResponseDto} from "../../../core/model/interfaces/IngredientResponseDto";
 import {CurrencyPipe, DatePipe} from "@angular/common";
@@ -13,6 +13,12 @@ import {Ripple} from "primeng/ripple";
 import {IngredientRequestDto} from "../../../core/model/interfaces/IngredientRequestDto";
 import {SidebarModule} from "primeng/sidebar";
 import {IngredientItem} from "../../../core/store/inventory/ingredient.model";
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+
+export interface AdjustStockRequestDto {
+  newStock: number,
+  reason: string
+}
 
 @Component({
   selector: 'gm-inventory-table',
@@ -29,7 +35,8 @@ import {IngredientItem} from "../../../core/store/inventory/ingredient.model";
     InventoryFormComponent,
     Ripple,
     SidebarModule,
-    DatePipe
+    DatePipe,
+    ReactiveFormsModule
   ],
   templateUrl: './inventory-table.component.html',
   styleUrl: './inventory-table.component.scss'
@@ -38,24 +45,25 @@ export class InventoryTableComponent {
 
   @Input() loading = false;
   @ViewChild('dt') table!: Table;
+  filterValue: string = '';
 
   isModalMaximized: boolean = false;
   isModalVisible: boolean = false;
+  stockForm: FormGroup;
+  @Output() stockAdjustment = new EventEmitter<{ payload: AdjustStockRequestDto, uuid: string }>();
+  showStockForm = false;
   selectedIngredient?: IngredientResponseDto;
   @Output() edit = new EventEmitter<{ payload: IngredientRequestDto, uuid: string }>();
   @Output() delete = new EventEmitter<string>();
   @Output() addNew = new EventEmitter<IngredientRequestDto>();
-  private ingredientList = signal<IngredientItem[]>([]);
-  ingredients = computed(() => {
-    return this.ingredientList();
-  });
 
-  // to receive the data from parent
-  @Input()
-  set data(value: IngredientItem[]) {
-    this.ingredientList.set(value);
+  @Input() data: IngredientItem[] = [];
+  constructor(private readonly fb: FormBuilder) {
+    this.stockForm = this.fb.group({
+      newStock: [null, [Validators.required, Validators.min(0)]],
+      reason: ['', Validators.required]
+    });
   }
-
   openNew() {
     this.selectedIngredient = undefined;
     this.isModalVisible = true;
@@ -77,7 +85,9 @@ export class InventoryTableComponent {
   }
 
   onGlobalFilter(dt: Table, event: Event) {
-    dt.filterGlobal((event.target as HTMLInputElement).value, 'contains');
+    const inputValue = (event.target as HTMLInputElement).value;
+    this.filterValue = inputValue;
+    dt.filterGlobal(inputValue, 'contains');
   }
 
   // TODO: CAMBIAR TIPO y separar el uuid del ingredient, ambos parametros estan llevando el uuid
@@ -85,12 +95,13 @@ export class InventoryTableComponent {
   onFormSubmit(ingredient: IngredientRequestDto) {
     if (this.selectedIngredient) {
       const ingredientData = {...ingredient};
-      delete ingredientData.availableStock;  // Quitar availableStock solo en edición
+      delete ingredientData.availableStock;
       this.edit.emit({payload: ingredientData, uuid: this.selectedIngredient.uuid});
     } else {
       this.addNew.emit(ingredient);
     }
     this.hideDialog();
+    this.clearText()
   }
 
   isMaximized(event: any): boolean {
@@ -99,7 +110,6 @@ export class InventoryTableComponent {
   }
 
   onRowSelect($event: TableRowSelectEvent) {
-    console.dir($event) //selected
     this.selectedIngredient = $event.data;
     this.openSidebar()
   }
@@ -108,21 +118,42 @@ export class InventoryTableComponent {
 
   // Abrir el sidebar
   openSidebar() {
+    this.stockForm.reset({
+      newStock: '',
+      reason: ''
+    });
+    this.showStockForm = false;
     this.sidebarVisible = true;
   }
 
-  // Cerrar el sidebar
   closeSidebar() {
     this.sidebarVisible = false;
-    this.selectedIngredient = undefined;  // Desseleccionamos el ingrediente
-    this.table.clear();  // Limpiamos la selección en la tabla
+    this.selectedIngredient = undefined;
+    if (this.filterValue) {
+      setTimeout(() => {
+        this.onGlobalFilter(this.table, { target: { value: this.filterValue } } as unknown as Event);
+      }, 0);
+    }
   }
 
   displayInputNewStock() {
-
+    this.showStockForm = !this.showStockForm;
   }
 
   clearText() {
-    alert("to clear text")
+    this.filterValue = '';
+    const inputElement = document.querySelector('.p-input-icon-right input') as HTMLInputElement;
+    if (inputElement) {
+      inputElement.value = this.filterValue;
+    }
+    this.onGlobalFilter(this.table, { target: { value: this.filterValue } } as unknown as Event);
+  }
+
+  submitForm() {
+    if (!this.selectedIngredient) return;
+
+    this.stockAdjustment.emit({payload: this.stockForm.value, uuid: this.selectedIngredient.uuid});
+    this.showStockForm = false;
+    this.closeSidebar()
   }
 }

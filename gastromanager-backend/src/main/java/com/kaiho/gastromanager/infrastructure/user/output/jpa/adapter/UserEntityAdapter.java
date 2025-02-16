@@ -117,4 +117,9 @@ public class UserEntityAdapter implements UserPersistencePort {
         UserEntity savedUser = userEntityRepository.save(existingUserEntity);
         return userEntityMapper.toDomain(savedUser);
     }
+
+    @Override
+    public Optional<User> findUserByUsernameOrEmail(String username, String email) {
+        return userEntityRepository.findByUsernameOrEmail(username, email).map(userEntityMapper::toDomain);
+    }
 }

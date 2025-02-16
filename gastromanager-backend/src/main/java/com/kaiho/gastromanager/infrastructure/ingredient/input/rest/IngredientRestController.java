@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("${api.endpoint.base-url}/ingredients")
+@RequestMapping("/ingredients")
 @AllArgsConstructor
 public class IngredientRestController {
 

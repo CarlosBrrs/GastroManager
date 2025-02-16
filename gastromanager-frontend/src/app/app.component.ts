@@ -3,7 +3,6 @@ import {RouterOutlet} from '@angular/router';
 import {LoginComponent} from "./pages/login/login.component";
 import {ConfirmationService, MessageService, PrimeNGConfig} from "primeng/api";
 import {ToastModule} from "primeng/toast";
-import {environment} from "../environments/environment";
 
 @Component({
   selector: 'gm-root',
@@ -18,7 +17,7 @@ import {environment} from "../environments/environment";
 })
 export class AppComponent implements OnInit {
 
-  constructor(private primengConfig: PrimeNGConfig) {
+  constructor(private readonly primengConfig: PrimeNGConfig) {
   }
 
   ngOnInit(): void {

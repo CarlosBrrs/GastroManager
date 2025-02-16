@@ -7,6 +7,7 @@ import com.kaiho.gastromanager.domain.auth.spi.VerificationTokenPersistencePort;
 import com.kaiho.gastromanager.domain.user.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -36,19 +37,15 @@ public class VerificationTokenUseCase implements VerificationTokenServicePort {
         return token;
     }
 
-    public void createVerificationToken(User user) {
-        UUID token = this.generateValidVerificationToken();
+    @Transactional
+    public VerificationToken createVerificationToken(User user) {
+        UUID token = generateValidVerificationToken();
         VerificationToken verificationToken = VerificationToken.builder()
                 .token(token)
                 .user(user)
                 .expiryDate(Instant.now().plusSeconds(300))
                 .build();
-        verificationTokenPersistencePort.createVerificationToken(verificationToken);
+        return verificationTokenPersistencePort.createVerificationToken(verificationToken);
     }
 
-    @Override
-    public boolean isVerificationPending(User user) {
-        return verificationTokenPersistencePort.isVerificationPending(user);
-
-    }
 }

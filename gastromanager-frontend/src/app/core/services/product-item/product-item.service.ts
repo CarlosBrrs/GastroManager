@@ -4,25 +4,19 @@ import {Observable, tap} from "rxjs";
 import {ApiGenericResponse} from "../../model/interfaces/ApiGenericResponse";
 import {ProductItemResponseDto} from "../../model/interfaces/ProductItemResponseDto";
 import {ProductItem} from "../../store/product-item/product-item.model";
+import {ProductItemRequestDto} from "../../model/interfaces/ProductItemRequestDto";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductItemService extends BaseHttpService {
 
-
-  getAllProductItemsTest(): Observable<ApiGenericResponse<ProductItem[]>> {
-    return this.http.get<ApiGenericResponse<ProductItem[]>>(`${this.apiUrl}/product-items`, {headers: {'Accept': 'application/json'}})
-      .pipe(
-        tap(response => {
-          if (response.flag) {
-            console.log('Productos obtenidos:', response.data);
-          }
-        })
-      );
+  getAllProductItems(): Observable<ProductItem[]> {
+    return this.handleRequest<ProductItem[]>("GET", "product-items");
   }
 
-  getAllProductItems(): Observable<ApiGenericResponse<ProductItemResponseDto[]>> {
+
+  getAllProductItemsToDelete(): Observable<ApiGenericResponse<ProductItemResponseDto[]>> {
     return this.http.get<ApiGenericResponse<ProductItemResponseDto[]>>(`${this.apiUrl}/product-items`, {headers: {'Accept': 'application/json'}}).pipe(
       tap(response => {
         if (response.flag) {
@@ -32,34 +26,12 @@ export class ProductItemService extends BaseHttpService {
     );
   }
 
-  addProductItem(productItem: any): Observable<ApiGenericResponse<string>> {
-    return this.http.post<ApiGenericResponse<string>>(`${this.apiUrl}/product-items`, productItem, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      }
-    }).pipe(
-      tap(response => {
-        if (response.flag) {
-          console.log('Producto añadido con UUID:', response.data);
-        }
-      })
-    )
+  addProductItem(productItem: ProductItemRequestDto): Observable<string> {
+    return this.handleRequest<string>("POST", "product-items", productItem);
   }
 
-  updateProductItem(uuid: string, payload: any): Observable<ApiGenericResponse<any>> {
-    return this.http.put<ApiGenericResponse<string>>(`${this.apiUrl}/product-items/${uuid}`, payload, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      }
-    }).pipe(
-      tap(response => {
-        if (response.flag) {
-          console.log('Producto actualizado:', response.data);
-        }
-      })
-    )
+  updateProductItem(uuid: string, payload: ProductItemRequestDto): Observable<ProductItem> {
+    return this.handleRequest<ProductItem>("PUT", `product-items/${uuid}`, payload);
   }
 
   deleteProductItem(productItemUuid: string): void {

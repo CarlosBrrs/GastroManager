@@ -1,7 +1,12 @@
 package com.kaiho.gastromanager.infrastructure.productitem.output.jpa.adapter;
 
+import com.kaiho.gastromanager.domain.ingredient.exception.IngredientDoesNotExistException;
+import com.kaiho.gastromanager.domain.productitem.exception.ProductItemDoesNotExistException;
 import com.kaiho.gastromanager.domain.productitem.model.ProductItem;
 import com.kaiho.gastromanager.domain.productitem.spi.ProductItemPersistencePort;
+import com.kaiho.gastromanager.domain.productitemingredient.model.ProductItemIngredient;
+import com.kaiho.gastromanager.infrastructure.ingredient.output.jpa.entity.IngredientEntity;
+import com.kaiho.gastromanager.infrastructure.ingredient.output.jpa.repository.IngredientEntityRepository;
 import com.kaiho.gastromanager.infrastructure.productitem.output.jpa.entity.ProductItemEntity;
 import com.kaiho.gastromanager.infrastructure.productitem.output.jpa.mapper.ProductItemEntityMapper;
 import com.kaiho.gastromanager.infrastructure.productitem.output.jpa.repository.ProductItemRepository;
@@ -10,9 +15,13 @@ import com.kaiho.gastromanager.infrastructure.productitemingredient.output.jpa.m
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Repository
@@ -21,6 +30,7 @@ public class ProductItemEntityAdapter implements ProductItemPersistencePort {
     private final ProductItemRepository productItemEntityRepository;
     private final ProductItemEntityMapper productItemEntityMapper;
     private final ProductItemIngredientEntityMapper productItemIngredientEntityMapper;
+    private final IngredientEntityRepository ingredientEntityRepository;
 
     @Override
     public List<ProductItem> findAllProductItems() {
@@ -52,51 +62,54 @@ public class ProductItemEntityAdapter implements ProductItemPersistencePort {
 
     @Override
     public ProductItem updateProductItem(UUID uuid, ProductItem updatedProductItem) {
-        return null;
+        ProductItemEntity existingEntity = productItemEntityRepository.findById(uuid)
+                .orElseThrow(() -> new ProductItemDoesNotExistException(uuid));
+
+        existingEntity.setName(updatedProductItem.getName());
+        existingEntity.setDescription(updatedProductItem.getDescription());
+        existingEntity.setCategory(updatedProductItem.getCategory());
+        existingEntity.setPrice(updatedProductItem.getPrice());
+
+        // 🔥 Manejo correcto de los ingredientes
+        updateIngredients(existingEntity, updatedProductItem.getIngredients());
+
+        ProductItemEntity saved = productItemEntityRepository.save(existingEntity);
+        return productItemEntityMapper.toDomain(saved);
     }
-/*
 
-    @Override
-    public ProductItem updateProductItem(UUID uuid, ProductItem updatedProductItem, UUID restaurantUuid) {
 
-        ProductItemEntity existingProductItem = productItemRepository.findById(uuid).orElseThrow(
-                () -> new ProductItemDoesNotExistException(uuid)
-        );
+    private void updateIngredients(ProductItemEntity existingEntity, List<ProductItemIngredient> updatedIngredients) {
+        List<ProductItemIngredientEntity> currentIngredients = existingEntity.getIngredients();
 
-        existingProductItem.setName(updatedProductItem.name());
-        existingProductItem.setDescription(updatedProductItem.description());
-        existingProductItem.setPrice(updatedProductItem.price());
-        existingProductItem.setCategory(updatedProductItem.category());
+        Map<UUID, ProductItemIngredient> updatedMap = updatedIngredients.stream()
+                .collect(Collectors.toMap(pii -> pii.getIngredient().getUuid(), Function.identity()));
 
-        List<ProductItemIngredientEntity> existingIngredients = existingProductItem.getIngredients();
 
-        for (ProductItemIngredient newIngredient : updatedProductItem.ingredients()) {
-            Optional<ProductItemIngredientEntity> existingIngredientOpt = existingIngredients.stream()
-                    .filter(ing -> ing.getIngredient().getUuid().equals(newIngredient.ingredientUuid()))
-                    .findFirst();
+        Iterator<ProductItemIngredientEntity> iterator = currentIngredients.iterator();
+        while (iterator.hasNext()) {
+            ProductItemIngredientEntity existingIngredient = iterator.next();
+            UUID ingredientUuid = existingIngredient.getIngredient().getUuid();
 
-            if (existingIngredientOpt.isPresent()) {
-                ProductItemIngredientEntity existingIngredient = existingIngredientOpt.get();
-                existingIngredient.setQuantity(newIngredient.quantity());
+            if (updatedMap.containsKey(ingredientUuid)) {
+                existingIngredient.setQuantity(updatedMap.get(ingredientUuid).getQuantity());
+                updatedMap.remove(ingredientUuid);
             } else {
-                Ingredient ingredient = ingredientServicePort.getIngredientById(newIngredient.ingredientUuid());
-
-                IngredientEntity ingredientEntity = ingredientEntityMapper.toEntity(ingredient);
-                ProductItemIngredientEntity newIngredientEntity = productItemIngredientEntityMapper.toEntity(newIngredient, ingredientEntity);
-                existingProductItem.addIngredient(newIngredientEntity);
+                iterator.remove();
             }
-
         }
+        for (ProductItemIngredient newIngredient : updatedMap.values()) {
 
-        existingIngredients.removeIf(existingIngredient ->
-                updatedProductItem.ingredients().stream().noneMatch(newIng ->
-                        newIng.ingredientUuid().equals(existingIngredient.getIngredient().getUuid()))
-        );
+            IngredientEntity ingredient = ingredientEntityRepository.findById(newIngredient.getIngredient().getUuid())
+                    .orElseThrow(() -> new IngredientDoesNotExistException(newIngredient.getIngredient().getUuid().toString()));
 
-        return productItemEntityMapper.toDomain(productItemRepository.save(existingProductItem));
+            ProductItemIngredientEntity newEntity = ProductItemIngredientEntity.builder()
+                    .ingredient(ingredient)
+                    .quantity(newIngredient.getQuantity()).build();
 
+            existingEntity.addProductItemIngredient(newEntity);
+        }
     }
-*/
+
 
     @Override
     public boolean existsByName(String name, UUID restaurantUuid) {

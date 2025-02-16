@@ -4,10 +4,8 @@ import com.kaiho.gastromanager.application.order.dto.request.ChangeOrderStatusRe
 import com.kaiho.gastromanager.application.order.dto.request.OrderRequestDto;
 import com.kaiho.gastromanager.application.order.dto.response.OrderResponseDto;
 import com.kaiho.gastromanager.application.order.mapper.OrderMapper;
-import com.kaiho.gastromanager.application.productitem.dto.response.ProductItemResponseDto;
 import com.kaiho.gastromanager.domain.order.api.OrderServicePort;
 import com.kaiho.gastromanager.domain.order.model.Order;
-import com.kaiho.gastromanager.domain.productitem.model.ProductItem;
 import com.kaiho.gastromanager.infrastructure.common.model.ApiGenericResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

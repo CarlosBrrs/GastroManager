@@ -29,7 +29,8 @@ public class OrderEntityMapper {
         User user = userEntityMapper.toDomain(orderEntity.getUser());
         return Order.builder()
                 .uuid(orderEntity.getUuid())
-                .orderCode(orderEntity.getCode())
+                .code(orderEntity.getCode())
+                .updatedDate(orderEntity.getUpdatedDate())
                 .user(user)
                 .customerNotes(orderEntity.getCustomerNotes())
                 .totalAmount(orderEntity.getTotalPrice())
@@ -50,7 +51,7 @@ public class OrderEntityMapper {
                 .map(orderItemEntityMapper::toEntity)
                 .toList();
         OrderEntity build = OrderEntity.builder()
-                .code(order.getOrderCode())
+                .code(order.getCode())
                 .totalPrice(order.getTotalAmount())
                 .status(order.getStatus())
                 .orderItems(new ArrayList<>())

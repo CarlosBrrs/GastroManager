@@ -9,11 +9,13 @@ import java.util.UUID;
 public interface VerificationTokenPersistencePort {
     boolean tokenExists(UUID token);
 
-    void createVerificationToken(VerificationToken verificationToken);
+    VerificationToken createVerificationToken(VerificationToken verificationToken);
 
     Optional<VerificationToken> findByToken(UUID token);
 
     void deleteToken(VerificationToken uuid);
 
     boolean isVerificationPending(User user);
+
+    Optional<VerificationToken> findByUser(User user);
 }

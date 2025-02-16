@@ -1,7 +1,7 @@
 package com.kaiho.gastromanager.application.orderitem.mapper;
 
 import com.kaiho.gastromanager.application.orderitem.dto.request.OrderItemRequestDto;
-import com.kaiho.gastromanager.application.orderitem.dto.response.OrderItemResponse;
+import com.kaiho.gastromanager.application.orderitem.dto.response.OrderItemResponseDto;
 import com.kaiho.gastromanager.domain.orderitem.model.OrderItem;
 import com.kaiho.gastromanager.domain.productitem.api.ProductItemServicePort;
 import com.kaiho.gastromanager.domain.productitem.model.ProductItem;
@@ -27,12 +27,13 @@ public class OrderItemMapper {
                 .build();
     }
 
-    public OrderItemResponse toResponse(OrderItem orderItem) {
+    public OrderItemResponseDto toResponse(OrderItem orderItem) {
         if (orderItem == null) {
             return null;
         }
-        return OrderItemResponse.builder()
+        return OrderItemResponseDto.builder()
                 .productItemUuid(orderItem.getProductItem().getUuid())
+                .productItemName(orderItem.getProductItem().getName())
                 .quantity(orderItem.getQuantity())
                 .unitPrice(orderItem.getUnitPrice())
                 .build();

@@ -1,12 +1,5 @@
 package com.kaiho.gastromanager.infrastructure.config.db;
 
-import com.kaiho.gastromanager.domain.restaurant.spi.RestaurantPersistencePort;
-import com.kaiho.gastromanager.domain.user.model.RoleType;
-import com.kaiho.gastromanager.domain.user.spi.RolePersistencePort;
-import com.kaiho.gastromanager.domain.user.spi.UserPersistencePort;
-import com.kaiho.gastromanager.infrastructure.ingredient.output.jpa.repository.IngredientEntityRepository;
-import com.kaiho.gastromanager.infrastructure.productitem.output.jpa.repository.ProductItemRepository;
-import com.kaiho.gastromanager.infrastructure.restaurant.output.jpa.repository.RestaurantEntityRepository;
 import com.kaiho.gastromanager.infrastructure.user.output.jpa.entity.RoleEntity;
 import com.kaiho.gastromanager.infrastructure.user.output.jpa.entity.UserEntity;
 import com.kaiho.gastromanager.infrastructure.user.output.jpa.repository.RoleEntityRepository;

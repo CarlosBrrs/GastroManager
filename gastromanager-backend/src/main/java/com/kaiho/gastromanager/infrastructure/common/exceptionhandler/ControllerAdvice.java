@@ -7,7 +7,6 @@ import com.kaiho.gastromanager.infrastructure.common.model.ApiGenericResponse;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,7 +16,6 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import static com.kaiho.gastromanager.infrastructure.common.model.ApiGenericResponse.buildErrorResponse;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CONFLICT;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
@@ -75,11 +73,12 @@ public class ControllerAdvice {
         return new ResponseEntity<>(response, NOT_FOUND);
     }
 
-    @ExceptionHandler(InsufficientAuthenticationException.class)
+/*    @ExceptionHandler(InsufficientAuthenticationException.class)
     public ResponseEntity<ApiGenericResponse<Object>> handleInsufficientAuthenticationException(InsufficientAuthenticationException ex) {
         ApiGenericResponse<Object> response = buildErrorResponse(ex.getMessage() + ". You are not allowed to perform this action");
+        ex.printStackTrace();
         return new ResponseEntity<>(response, FORBIDDEN);
-    }
+    }*/
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiGenericResponse<Object>> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
@@ -90,6 +89,7 @@ public class ControllerAdvice {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiGenericResponse<Object>> handleAllExceptions(Exception ex) {
         ApiGenericResponse<Object> response = buildErrorResponse(ex.getMessage() + ". Consider using a custom exception handler");
+        ex.printStackTrace();
         return new ResponseEntity<>(response, INTERNAL_SERVER_ERROR);
     }
 }
