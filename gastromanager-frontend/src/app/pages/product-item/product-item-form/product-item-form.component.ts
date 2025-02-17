@@ -118,17 +118,26 @@ export class ProductItemFormComponent implements OnInit {
     const quantity1 = quantity.value as unknown as number;
     quantitiesGroup.get(uuid)?.setValue(quantity1);
     this.costOfProduction = this.calculateCostAndPrice()
+    console.log(quantitiesGroup.controls)
   }
 
   private setIngredientQuantitiesControls(selectedUuids: string[], initialItem?: any): void {
     const quantitiesGroup = this.productItemForm.get('ingredientQuantities') as FormGroup;
 
-    Object.keys(quantitiesGroup.controls).forEach(controlName => {
-      quantitiesGroup.removeControl(controlName);
+    const currentControls = Object.keys(quantitiesGroup.controls);
+    currentControls.forEach(controlName => {
+      if (!selectedUuids.includes(controlName)) {
+        quantitiesGroup.removeControl(controlName);
+      }
     });
+
     selectedUuids.forEach(uuid => {
-      const initialQuantity = initialItem?.ingredients?.find((ing: any) => ing.ingredientUuid === uuid)?.quantity
-      quantitiesGroup.addControl(uuid, this.fb.control(initialQuantity, [Validators.required]));
+      if (!quantitiesGroup.get(uuid)) {
+        const initialQuantity = initialItem?.ingredients?.find((ing: any) => ing.ingredientUuid === uuid)?.quantity ?? null;
+
+
+        quantitiesGroup.addControl(uuid, this.fb.control(initialQuantity, [Validators.required]));
+      }
     });
 
     this.costOfProduction = this.calculateCostAndPrice();
