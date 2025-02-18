@@ -32,7 +32,7 @@ public class IngredientUseCase implements IngredientServicePort {
     private final InventoryMovementServicePort inventoryMovementServicePort;
     private final RestaurantServicePort restaurantServicePort;
 
-    private static void validateStockQuantities(int minimumStockQuantity, int availableStock) {
+    private static void validateStockQuantities(int minimumStockQuantity, double availableStock) {
         if (minimumStockQuantity >= availableStock) {
             throw new UnacceptableStockQuantitiesException();
         }
@@ -90,7 +90,7 @@ public class IngredientUseCase implements IngredientServicePort {
         UUID updatedIngredientUuid = ingredientPersistencePort.updateIngredientStock(ingredientUuid, newStock);
 
         // Registrar la diferencia de stock en caso de que haya un cambio en el inventario
-        int stockDifference = newStock - ingredientToUpdate.getAvailableStock();
+        double stockDifference = newStock - ingredientToUpdate.getAvailableStock();
 //        String reason = stockDifference > 0 ? "Adjust of stock for increment" : "Adjust of stock for reduction";
         inventoryMovementServicePort.recordInventoryMovement(updatedIngredientUuid, stockDifference, reason, ingredientToUpdate.getRestaurant());
         return updatedIngredientUuid;
@@ -103,17 +103,16 @@ public class IngredientUseCase implements IngredientServicePort {
     }
 
     @Override
-    public void batchAdjustStock(Map<UUID, Integer> stockAdjustments, String reason) {
-        // Obtener los ingredientes afectados
+    public void batchAdjustStock(Map<UUID, Double> stockAdjustments, String reason) {
+
         Set<UUID> ingredientUuids = stockAdjustments.keySet();
         List<Ingredient> ingredients = ingredientPersistencePort.findIngredientsByUuids(ingredientUuids);
 
-        Map<UUID, Integer> newAvailableStocks = new HashMap<>();
+        Map<UUID, Double> newAvailableStocks = new HashMap<>();
 
-        // Actualizar el stock de cada ingrediente
         for (Ingredient ingredient : ingredients) {
-            Integer adjustment = stockAdjustments.get(ingredient.getUuid());
-            int newStock = (ingredient.getAvailableStock() - adjustment);
+            Double adjustment = stockAdjustments.get(ingredient.getUuid());
+            double newStock = (ingredient.getAvailableStock() - adjustment);
 
             if (newStock < 0) {
                 throw new InsufficientStockException(ingredient.getName(), adjustment, ingredient.getAvailableStock());
@@ -121,15 +120,13 @@ public class IngredientUseCase implements IngredientServicePort {
             newAvailableStocks.put(ingredient.getUuid(), newStock);
         }
 
-        // Persistir los cambios en lote
         ingredientPersistencePort.updateIngredientsStock(newAvailableStocks);
 
         Restaurant restaurant = restaurantServicePort.getRestaurantById(getCurrentRestaurant());
-        // (Opcional) Registrar el motivo del ajuste, si se requiere un log o auditoría
-        for (Map.Entry<UUID, Integer> newAvailableStock : newAvailableStocks.entrySet()) {
+        for (Map.Entry<UUID, Double> newAvailableStock : newAvailableStocks.entrySet()) {
             inventoryMovementServicePort.recordInventoryMovement(newAvailableStock.getKey(), -stockAdjustments.get(newAvailableStock.getKey()), reason, restaurant);
         }
-//        ingredientPersistencePort.logStockAdjustment(ingredientUuids, reason);
+
     }
 
     @Override

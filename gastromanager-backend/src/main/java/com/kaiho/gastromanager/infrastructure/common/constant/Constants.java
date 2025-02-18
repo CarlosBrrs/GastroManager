@@ -12,6 +12,7 @@ public abstract class Constants {
 
     public static final String BASE_URL = "/api/v1";
     public static final String INGREDIENTS_CONTROLLER = "/ingredients";
+    public static final String CONFIGS_URL = "/configs";
     public static final String USERS_CONTROLLER = "/users";
     public static final String ROLES_CONTROLLER = "/roles";
     public static final String PRODUCT_ITEMS_CONTROLLER = "/product-items";

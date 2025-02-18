@@ -1,6 +1,7 @@
 package com.kaiho.gastromanager.domain.restaurant.spi;
 
 import com.kaiho.gastromanager.domain.restaurant.model.Restaurant;
+import com.kaiho.gastromanager.domain.restaurant.model.RestaurantConfig;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,4 +19,7 @@ public interface RestaurantPersistencePort {
 
     Optional<Restaurant> getRestaurantByName(String restaurantName);
 
+    RestaurantConfig createRestaurantConfig(RestaurantConfig restaurantConfig);
+
+    RestaurantConfig getRestaurantConfigByRestaurantUuid(UUID currentRestaurant);
 }

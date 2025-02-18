@@ -21,7 +21,7 @@ public interface IngredientServicePort {
 
     List<Ingredient> getIngredientsByUuid(Set<UUID> uuids);
 
-    void batchAdjustStock(Map<UUID, Integer> stockAdjustments, String orderPlacement);
+    void batchAdjustStock(Map<UUID, Double> stockAdjustments, String orderPlacement);
 
     Restaurant getRestaurantByIngredientUuid(UUID ingredientUuid);
 }

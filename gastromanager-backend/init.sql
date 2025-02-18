@@ -77,7 +77,7 @@ CREATE TABLE ingredients
 (
     uuid                   UUID PRIMARY KEY,
     name                   VARCHAR(255)     NOT NULL,
-    available_stock        INT              NOT NULL,
+    available_stock        DOUBLE PRECISION NOT NULL,
     unit                   VARCHAR(20)      NOT NULL CHECK (unit IN ('GRAMS', 'UNITS', 'MILLILITRES')),
     supplier               VARCHAR(255)     NOT NULL,
     price_per_unit         DOUBLE PRECISION NOT NULL,
@@ -197,7 +197,22 @@ CREATE TABLE orders
     FOREIGN KEY (user_uuid) REFERENCES _users (uuid) ON DELETE CASCADE,
     FOREIGN KEY (restaurant_uuid) REFERENCES restaurants (uuid) ON DELETE CASCADE
 );
+/*DROP TABLE IF EXISTS invoices;
 
+CREATE TABLE invoices
+(
+    uuid            UUID PRIMARY KEY,
+    order_uuid      UUID             NOT NULL,
+    restaurant_uuid UUID             NOT NULL,
+    invoice_amount  DOUBLE PRECISION NOT NULL,
+    status          VARCHAR(20)      NOT NULL
+        CHECK (status IN ('PENDING', 'PAID', 'CANCELED')),
+    created_at      TIMESTAMP        NOT NULL DEFAULT NOW(),
+    due_date        TIMESTAMP        NULL,
+    FOREIGN KEY (order_uuid) REFERENCES orders (uuid) ON DELETE CASCADE
+);
+
+*/
 DROP TABLE IF EXISTS payments CASCADE;
 
 CREATE TABLE payments
@@ -240,12 +255,12 @@ DROP TABLE IF EXISTS inventory_movements;
 CREATE TABLE inventory_movements
 (
     uuid            UUID PRIMARY KEY,
-    ingredient_uuid UUID         NOT NULL,
-    restaurant_uuid UUID         NOT NULL,
-    change_quantity INT          NOT NULL,
-    reason          VARCHAR(255) NOT NULL,
-    created_date    TIMESTAMP    NOT NULL,
-    created_by      VARCHAR(50)  NOT NULL,
+    ingredient_uuid UUID             NOT NULL,
+    restaurant_uuid UUID             NOT NULL,
+    change_quantity DOUBLE PRECISION NOT NULL,
+    reason          VARCHAR(255)     NOT NULL,
+    created_date    TIMESTAMP        NOT NULL,
+    created_by      VARCHAR(50)      NOT NULL,
 
     FOREIGN KEY (ingredient_uuid) REFERENCES ingredients (uuid) ON DELETE CASCADE,
     FOREIGN KEY (restaurant_uuid) REFERENCES restaurants (uuid) ON DELETE CASCADE
@@ -298,14 +313,14 @@ VALUES ('5e2cb774-bcf0-4e26-aedf-622eb6f35501', 'Basic', '3 restaurantes, 10 emp
        ('61184460-4c95-476e-94ce-23f676ee94f4', 'Enterprise', 'Ilimitado + Soporte premium', 199.99);
 
 INSERT INTO plan_features (uuid, plan_uuid, feature_type, feature_value)
-VALUES (uuid_generate_v4(),'5e2cb774-bcf0-4e26-aedf-622eb6f35501', 'max_restaurants', '3'),
-       (uuid_generate_v4(),'5e2cb774-bcf0-4e26-aedf-622eb6f35501', 'max_employees', '10'),
-       (uuid_generate_v4(),'58347f11-d555-4b73-95a1-6344b26aee51', 'max_restaurants', '10'),
-       (uuid_generate_v4(),'58347f11-d555-4b73-95a1-6344b26aee51', 'max_employees', '50'),
-       (uuid_generate_v4(),'58347f11-d555-4b73-95a1-6344b26aee51', 'advanced_features', 'true'),
-       (uuid_generate_v4(),'61184460-4c95-476e-94ce-23f676ee94f4', 'max_restaurants', 'unlimited'),
-       (uuid_generate_v4(),'61184460-4c95-476e-94ce-23f676ee94f4', 'max_employees', 'unlimited'),
-       (uuid_generate_v4(),'61184460-4c95-476e-94ce-23f676ee94f4', 'priority_support', 'true');
+VALUES (uuid_generate_v4(), '5e2cb774-bcf0-4e26-aedf-622eb6f35501', 'max_restaurants', '3'),
+       (uuid_generate_v4(), '5e2cb774-bcf0-4e26-aedf-622eb6f35501', 'max_employees', '10'),
+       (uuid_generate_v4(), '58347f11-d555-4b73-95a1-6344b26aee51', 'max_restaurants', '10'),
+       (uuid_generate_v4(), '58347f11-d555-4b73-95a1-6344b26aee51', 'max_employees', '50'),
+       (uuid_generate_v4(), '58347f11-d555-4b73-95a1-6344b26aee51', 'advanced_features', 'true'),
+       (uuid_generate_v4(), '61184460-4c95-476e-94ce-23f676ee94f4', 'max_restaurants', 'unlimited'),
+       (uuid_generate_v4(), '61184460-4c95-476e-94ce-23f676ee94f4', 'max_employees', 'unlimited'),
+       (uuid_generate_v4(), '61184460-4c95-476e-94ce-23f676ee94f4', 'priority_support', 'true');
 --product items
 /*INSERT INTO product_items (uuid, name, description, price, category, is_enabled, created_date, created_by, updated_date,
                            updated_by)

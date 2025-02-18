@@ -67,7 +67,7 @@ public class UserEntity extends Auditable implements Serializable {
     private RestaurantEntity restaurant;
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
-    private List<RestaurantEntity> restaurants = new ArrayList<>(); // Relación con los restaurantes del owner
+    private List<RestaurantEntity> restaurants = new ArrayList<>();
 
     public void addOrder(OrderEntity order) {
         orders.add(order);

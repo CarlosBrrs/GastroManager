@@ -23,6 +23,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.BASE_URL;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.CHEF;
+import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.CONFIGS_URL;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.INGREDIENTS_CONTROLLER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.INGREDIENT_UUID_PARAMETER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.INVENTORY_MOVEMENT_CONTROLLER;
@@ -83,6 +84,10 @@ public class SecurityConfig {
                         .requestMatchers(DELETE, INGREDIENTS_CONTROLLER + INGREDIENT_UUID_PARAMETER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
                         .requestMatchers(PATCH, INGREDIENTS_CONTROLLER + INGREDIENT_UUID_PARAMETER + "/adjust-ingredient-stock").hasAnyRole(SUPERUSER, OWNER, MANAGER)
 
+                        // restaurant configs
+                        .requestMatchers(POST, RESTAURANTS_CONTROLLER + CONFIGS_URL).hasAnyRole(SUPERUSER, OWNER)
+                        .requestMatchers(GET, RESTAURANTS_CONTROLLER + CONFIGS_URL).authenticated()
+
                         // users controller
                         .requestMatchers(POST, USERS_CONTROLLER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
                         .requestMatchers(GET, USERS_CONTROLLER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
@@ -115,7 +120,7 @@ public class SecurityConfig {
                         .requestMatchers(GET, BASE_URL + RESTAURANTS_CONTROLLER).hasAnyRole(SUPERUSER)
                         .requestMatchers(GET, BASE_URL + RESTAURANTS_CONTROLLER + RESTAURANT_UUID_PARAMETER).hasAnyRole(SUPERUSER)
                         .requestMatchers(PUT, BASE_URL + RESTAURANTS_CONTROLLER + RESTAURANT_UUID_PARAMETER).hasAnyRole(SUPERUSER)
-                        .requestMatchers(POST, BASE_URL + RESTAURANTS_CONTROLLER).hasAnyRole(SUPERUSER)
+                        .requestMatchers(POST, RESTAURANTS_CONTROLLER).hasAnyRole(SUPERUSER, OWNER)
                         .requestMatchers(PATCH, BASE_URL + RESTAURANTS_CONTROLLER + RESTAURANT_UUID_PARAMETER).hasAnyRole(SUPERUSER)
                         .requestMatchers(DELETE, BASE_URL + RESTAURANTS_CONTROLLER + RESTAURANT_UUID_PARAMETER).hasAnyRole(SUPERUSER)
 

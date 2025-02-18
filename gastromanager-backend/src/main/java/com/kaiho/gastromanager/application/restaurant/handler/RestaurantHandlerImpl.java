@@ -1,10 +1,13 @@
 package com.kaiho.gastromanager.application.restaurant.handler;
 
+import com.kaiho.gastromanager.application.restaurant.dto.request.RestaurantConfigRequestDto;
 import com.kaiho.gastromanager.application.restaurant.dto.request.RestaurantRequestDto;
+import com.kaiho.gastromanager.application.restaurant.dto.response.RestaurantConfigResponseDto;
 import com.kaiho.gastromanager.application.restaurant.dto.response.RestaurantResponseDto;
 import com.kaiho.gastromanager.application.restaurant.mapper.RestaurantMapper;
 import com.kaiho.gastromanager.domain.restaurant.api.RestaurantServicePort;
 import com.kaiho.gastromanager.domain.restaurant.model.Restaurant;
+import com.kaiho.gastromanager.domain.restaurant.model.RestaurantConfig;
 import com.kaiho.gastromanager.infrastructure.common.model.ApiGenericResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -48,5 +51,19 @@ public class RestaurantHandlerImpl implements RestaurantHandler {
         Restaurant updateRestaurant = restaurantServicePort.updateRestaurant(uuid, restaurant);
         RestaurantResponseDto response = restaurantMapper.toResponse(updateRestaurant);
         return buildSuccessResponse("Ingredient updated successfully", response);
+    }
+
+    @Override
+    public ApiGenericResponse<RestaurantConfigResponseDto> createRestaurantConfig(RestaurantConfigRequestDto restaurantConfigRequestDto) {
+        RestaurantConfig restaurantConfig = restaurantMapper.toDomain(restaurantConfigRequestDto);
+        RestaurantConfig configResponse = restaurantServicePort.createRestaurantConfig(restaurantConfig);
+        RestaurantConfigResponseDto response = restaurantMapper.toResponse(configResponse);
+        return buildSuccessResponse("Config for restaurant created successfully", response);
+    }
+
+    @Override
+    public ApiGenericResponse<RestaurantConfigResponseDto> getRestaurantConfig() {
+        RestaurantConfigResponseDto response = restaurantMapper.toResponse(restaurantServicePort.getRestaurantConfig());
+        return buildSuccessResponse("Config for restaurant retrieved successfully", response);
     }
 }

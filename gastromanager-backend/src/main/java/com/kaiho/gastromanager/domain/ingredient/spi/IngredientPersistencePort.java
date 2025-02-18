@@ -25,7 +25,7 @@ public interface IngredientPersistencePort {
 
     List<Ingredient> findIngredientsByUuids(Set<UUID> uuids);
 
-    void updateIngredientsStock(Map<UUID, Integer> newAvailableStocks);
+    void updateIngredientsStock(Map<UUID, Double> newAvailableStocks);
 
     Optional<Restaurant> getRestaurantByIngredientUuid(UUID ingredientUuid);
 }

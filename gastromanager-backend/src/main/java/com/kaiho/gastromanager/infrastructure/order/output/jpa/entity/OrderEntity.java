@@ -49,7 +49,7 @@ public class OrderEntity extends Auditable implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "restaurant_uuid", referencedColumnName = "uuid")
-    private RestaurantEntity restaurant; // Relación con el restaurante que creó la orden
+    private RestaurantEntity restaurant;
 
     public void addOrderItem(OrderItemEntity orderItemEntity) {
         orderItems.add(orderItemEntity);

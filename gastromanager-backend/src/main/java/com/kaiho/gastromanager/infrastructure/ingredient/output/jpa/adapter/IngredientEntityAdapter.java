@@ -52,8 +52,6 @@ public class IngredientEntityAdapter implements IngredientPersistencePort {
 
     @Override
     public UUID addIngredient(Ingredient ingredient) {
-        RestaurantEntity restaurantEntity = restaurantEntityRepository.findById(ingredient.getRestaurant().getUuid())
-                .orElseThrow(() -> new RestaurantDoesNotExistException(ingredient.getRestaurant().getUuid().toString()));
         IngredientEntity entity = ingredientEntityMapper.toEntity(ingredient);
         IngredientEntity saved = ingredientEntityRepository.save(entity);
         return saved.getUuid();
@@ -86,7 +84,7 @@ public class IngredientEntityAdapter implements IngredientPersistencePort {
     }
 
     @Override
-    public void updateIngredientsStock(Map<UUID, Integer> newAvailableStocks) {
+    public void updateIngredientsStock(Map<UUID, Double> newAvailableStocks) {
         newAvailableStocks.forEach(ingredientEntityRepository::updateStockByUuid);
     }
 
