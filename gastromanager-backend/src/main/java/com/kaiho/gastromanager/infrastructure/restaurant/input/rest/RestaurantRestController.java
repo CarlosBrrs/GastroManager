@@ -1,6 +1,8 @@
 package com.kaiho.gastromanager.infrastructure.restaurant.input.rest;
 
+import com.kaiho.gastromanager.application.restaurant.dto.request.RestaurantConfigRequestDto;
 import com.kaiho.gastromanager.application.restaurant.dto.request.RestaurantRequestDto;
+import com.kaiho.gastromanager.application.restaurant.dto.response.RestaurantConfigResponseDto;
 import com.kaiho.gastromanager.application.restaurant.dto.response.RestaurantResponseDto;
 import com.kaiho.gastromanager.application.restaurant.handler.RestaurantHandler;
 import com.kaiho.gastromanager.domain.user.model.User;
@@ -23,7 +25,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/restaurants")
 @AllArgsConstructor
-//@RestaurantDomainRestController
 public class RestaurantRestController {
 
     private final RestaurantHandler restaurantHandler;
@@ -50,6 +51,18 @@ public class RestaurantRestController {
             @PathVariable UUID restaurantUuid, @RequestBody RestaurantRequestDto restaurantRequestDto, @AuthenticationPrincipal User user) {
         ApiGenericResponse<RestaurantResponseDto> handlerResponse = restaurantHandler.updateRestaurant(restaurantUuid, restaurantRequestDto, user.getUuid());
         return new ResponseEntity<>(handlerResponse, HttpStatus.OK);
+    }
+
+    @PostMapping("/configs")
+    public ResponseEntity<ApiGenericResponse<RestaurantConfigResponseDto>> createRestaurantConfig(@RequestBody RestaurantConfigRequestDto restaurantRequestDto) {
+        ApiGenericResponse<RestaurantConfigResponseDto> restaurantConfig = restaurantHandler.createRestaurantConfig(restaurantRequestDto);
+        return new ResponseEntity<>(restaurantConfig, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/configs")
+    public ResponseEntity<ApiGenericResponse<RestaurantConfigResponseDto>> getRestaurantConfig() {
+        ApiGenericResponse<RestaurantConfigResponseDto> restaurantConfig = restaurantHandler.getRestaurantConfig();
+        return new ResponseEntity<>(restaurantConfig, HttpStatus.OK);
     }
 
 }

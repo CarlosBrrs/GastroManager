@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, inject, Input, OnInit, Output} from '@angular/core';
 import {ButtonDirective} from "primeng/button";
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {InputNumberInputEvent, InputNumberModule} from "primeng/inputnumber";
@@ -11,6 +11,7 @@ import {Category} from "../../../core/model/enums/Category";
 import {DropdownModule} from "primeng/dropdown";
 import {forkJoin, of} from "rxjs";
 import {JsonPipe} from "@angular/common";
+import {IngredientStore} from "../../../core/store/inventory/ingredient.store";
 
 @Component({
   selector: 'gm-product-item-form',
@@ -38,6 +39,7 @@ export class ProductItemFormComponent implements OnInit {
   selectedIngredients: any[] = [];
   availableIngredients: any[] = [];
   costOfProduction: number = 0;
+  ingredientStore = inject(IngredientStore)
 
   categories: { label: string; value: Category }[] = [];
   suggestedPrice: number = 0;
@@ -56,12 +58,12 @@ export class ProductItemFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.categories = Object.entries(Category).map(([key, value]) => ({
-      label: value,           // Mostrar en el frontend
-      value: key as Category  // Usar el valor del enum para el form
+      label: value,
+      value: key as Category
     }));
 
     forkJoin({
-      ingredients: this.inventoryService.getAllIngredients(),
+      ingredients: this.ingredientStore.loadIngredients(),
       initialItem: this.initialProductItem ? of(this.initialProductItem) : of(null)
     }).subscribe({
         next: ({ingredients, initialItem}) => {
@@ -78,9 +80,8 @@ export class ProductItemFormComponent implements OnInit {
             const selectedUuids = initialItem.ingredients.map((ing: any) => ing.ingredientUuid);
             this.productItemForm.get('ingredients')?.setValue(selectedUuids);
 
-            // Configuramos los controles de cantidades con la función centralizada
             this.setIngredientQuantitiesControls(selectedUuids, initialItem);
-            // Actualizamos selectedIngredients con los ingredientes completos para mostrarlos preseleccionados
+
             this.selectedIngredients = selectedUuids.map((uuid: string) =>
               this.availableIngredients.find(ing => ing.uuid === uuid)
             );
@@ -106,7 +107,6 @@ export class ProductItemFormComponent implements OnInit {
     this.formSubmit.emit(formValue);
   }
 
-  //send the uuids
   onIngredientSelect(selectedUuids: string[]): void {
     this.setIngredientQuantitiesControls(selectedUuids, this.initialProductItem);
     this.selectedIngredients = selectedUuids.map(uuid => this.availableIngredients.find(ing => ing.uuid === uuid));
@@ -117,8 +117,7 @@ export class ProductItemFormComponent implements OnInit {
     const quantitiesGroup = this.productItemForm.get('ingredientQuantities') as FormGroup;
     const quantity1 = quantity.value as unknown as number;
     quantitiesGroup.get(uuid)?.setValue(quantity1);
-    this.costOfProduction = this.calculateCostAndPrice()
-    console.log(quantitiesGroup.controls)
+    this.costOfProduction = this.calculateCostAndPrice();
   }
 
   private setIngredientQuantitiesControls(selectedUuids: string[], initialItem?: any): void {
@@ -151,8 +150,8 @@ export class ProductItemFormComponent implements OnInit {
       totalCost += ingredientCost;
     });
 
-    const profitMargin = this.productItemForm.get('profitMargin')?.value || 30;  // Obtener porcentaje de ganancia
-    const suggestedPrice = totalCost * (1 + profitMargin / 100);  // Precio sugerido con ganancia
+    const profitMargin = this.productItemForm.get('profitMargin')?.value || 30;
+    const suggestedPrice = totalCost * (1 + profitMargin / 100);
     this.suggestedPrice = suggestedPrice;
 
     // También podrías actualizar el precio en el formulario si lo deseas:

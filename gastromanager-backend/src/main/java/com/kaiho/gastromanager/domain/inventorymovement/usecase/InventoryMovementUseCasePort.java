@@ -19,7 +19,7 @@ public class InventoryMovementUseCasePort implements InventoryMovementServicePor
     private final InventoryMovementPersistencePort inventoryMovementPersistencePort;
 
     @Override
-    public void recordInventoryMovement(UUID ingredientUuid, int changeQuantity, String reason, Restaurant restaurant) {
+    public void recordInventoryMovement(UUID ingredientUuid, double changeQuantity, String reason, Restaurant restaurant) {
 
         InventoryMovement movement = InventoryMovement.builder()
                 .ingredientUuid(ingredientUuid)

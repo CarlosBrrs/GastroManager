@@ -9,7 +9,7 @@ import java.util.UUID;
 public record IngredientResponseDto(
         UUID uuid,
         String name,
-        int availableStock,
+        double availableStock,
         String unit,
         double pricePerUnit,
         String supplier,

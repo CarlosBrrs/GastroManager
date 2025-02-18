@@ -40,11 +40,6 @@ public class OrderUseCase implements OrderServicePort {
     @Override
     @Transactional
     public UUID createOrder(Order order) {
-/*
-        RestaurantConfig config = restaurantPersistencePort.getRestaurantConfig(resturantUuid).orElseThrow(() -> new IllegalArgumentException("Configuración no encontrada para el restaurante"));
-
-// Seleccionar la estrategia de colocación
-        OrderPlacementStrategy strategy = placementStrategyFactory.getStrategy(config);*/
 
         // TODO: No se va a necesitar porque se va a validar el request que la lista sea > 0
         if (order.getOrderItems().isEmpty()) {
@@ -126,15 +121,15 @@ public class OrderUseCase implements OrderServicePort {
     private void validateIngredientsStock(List<OrderItem> orderItems) {
 
         // Obtener cantidades necesarias por ingrediente en la orden
-        Map<UUID, Integer> requiredIngredientQuantities = calculateRequiredIngredients(orderItems);
+        Map<UUID, Double> requiredIngredientQuantities = calculateRequiredIngredients(orderItems);
 
         // Consultar todos los ingredientes necesarios de una vez
         List<Ingredient> ingredients = ingredientServicePort.getIngredientsByUuid(requiredIngredientQuantities.keySet());
 
         // Para cada registro del mapa de ingredientes
-        for (Map.Entry<UUID, Integer> entry : requiredIngredientQuantities.entrySet()) {
+        for (Map.Entry<UUID, Double> entry : requiredIngredientQuantities.entrySet()) {
             UUID ingredientUuid = entry.getKey();
-            int requiredQuantity = entry.getValue();
+            double requiredQuantity = entry.getValue();
 
             Ingredient ingredient = ingredients.stream().filter(ing -> ing.getUuid().equals(ingredientUuid)).findFirst().orElseThrow(() -> new IngredientDoesNotExistException(ingredientUuid.toString()));
             // Si tengo menos stock del que quiero usar para la orden lanzar excepcion
@@ -144,22 +139,22 @@ public class OrderUseCase implements OrderServicePort {
         }
     }
 
-    private Map<UUID, Integer> calculateRequiredIngredients(List<OrderItem> orderItems) {
+    private Map<UUID, Double> calculateRequiredIngredients(List<OrderItem> orderItems) {
 
         List<ProductItemIngredient> productItemIngredients = orderItems.stream()
                 .flatMap(orderItem -> orderItem.getProductItem().getIngredients().stream()
                         .peek(productItemIngredient -> productItemIngredient.setProductItem(orderItem.getProductItem()))
                 ).toList();
 
-        Map<UUID, Integer> requiredQuantities = new HashMap<>();
+        Map<UUID, Double> requiredQuantities = new HashMap<>();
         for (OrderItem orderItem : orderItems) {
             List<ProductItemIngredient> relatedIngredients = productItemIngredients.stream()
                     .filter(ingredient -> ingredient.getProductItem().getUuid().equals(orderItem.getProductItem().getUuid()))
                     .toList();
 
             for (ProductItemIngredient productItemIngredient : relatedIngredients) {
-                int usedQuantity = (int) (orderItem.getQuantity() * productItemIngredient.getQuantity());
-                requiredQuantities.merge(productItemIngredient.getIngredient().getUuid(), usedQuantity, Integer::sum);
+                double usedQuantity = (orderItem.getQuantity() * productItemIngredient.getQuantity());
+                requiredQuantities.merge(productItemIngredient.getIngredient().getUuid(), usedQuantity, Double::sum);
             }
         }
 
@@ -176,7 +171,7 @@ public class OrderUseCase implements OrderServicePort {
 
     private void decreaseIngredientsStockOrder(List<OrderItem> orderItems, String orderCode) {
 
-        Map<UUID, Integer> stockAdjustments = calculateRequiredIngredients(orderItems);
+        Map<UUID, Double> stockAdjustments = calculateRequiredIngredients(orderItems);
 
         ingredientServicePort.batchAdjustStock(stockAdjustments, "Order placement for code " + orderCode);
     }

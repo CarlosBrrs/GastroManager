@@ -18,7 +18,7 @@ import java.util.UUID;
 public class Ingredient {
     private final UUID uuid;
     private String name;
-    private int availableStock;
+    private double availableStock;
     private Unit unit;
     private double pricePerUnit;
     private String supplier;

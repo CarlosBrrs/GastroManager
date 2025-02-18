@@ -3,11 +3,13 @@ package com.kaiho.gastromanager.infrastructure.restaurant.output.jpa.entity;
 import com.kaiho.gastromanager.infrastructure.common.model.Auditable;
 import com.kaiho.gastromanager.infrastructure.order.output.jpa.entity.OrderEntity;
 import com.kaiho.gastromanager.infrastructure.user.output.jpa.entity.UserEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,6 +36,9 @@ public class RestaurantEntity extends Auditable implements Serializable {
     @OneToMany(mappedBy = "restaurant", fetch = FetchType.EAGER)
     private List<UserEntity> employees;
 
+    @OneToOne(mappedBy = "restaurant", cascade = CascadeType.ALL)
+    private RestaurantConfigEntity restaurantConfig;
+
     @OneToMany(mappedBy = "restaurant", fetch = FetchType.EAGER)
     private List<OrderEntity> orders;
 
@@ -54,5 +59,10 @@ public class RestaurantEntity extends Auditable implements Serializable {
     public void addOrder(OrderEntity orderEntity) {
         this.orders.add(orderEntity);
         orderEntity.setRestaurant(this);
+    }
+
+    public void setConfigs(RestaurantConfigEntity configs) {
+        this.restaurantConfig = configs;
+        configs.setRestaurant(this);
     }
 }

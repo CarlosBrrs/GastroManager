@@ -6,5 +6,5 @@ import lombok.Builder;
 import java.util.UUID;
 
 @Builder
-public record InventoryMovement(UUID ingredientUuid, int changeQuantity, String reason, Restaurant restaurant) {
+public record InventoryMovement(UUID ingredientUuid, double changeQuantity, String reason, Restaurant restaurant) {
 }

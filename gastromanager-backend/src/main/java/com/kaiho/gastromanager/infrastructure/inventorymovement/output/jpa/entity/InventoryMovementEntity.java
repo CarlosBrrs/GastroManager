@@ -40,7 +40,7 @@ public class InventoryMovementEntity {
     private UUID uuid;
 
     private String reason;
-    private int changeQuantity;
+    private double changeQuantity;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "ingredient_uuid", nullable = false)
     private IngredientEntity ingredient;

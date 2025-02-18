@@ -4,16 +4,21 @@ import com.kaiho.gastromanager.domain.restaurant.api.RestaurantServicePort;
 import com.kaiho.gastromanager.domain.restaurant.exception.RestaurantAlreadyExistsException;
 import com.kaiho.gastromanager.domain.restaurant.exception.RestaurantDoesNotExistException;
 import com.kaiho.gastromanager.domain.restaurant.model.Restaurant;
+import com.kaiho.gastromanager.domain.restaurant.model.RestaurantConfig;
 import com.kaiho.gastromanager.domain.restaurant.spi.RestaurantPersistencePort;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 
+import static com.kaiho.gastromanager.infrastructure.config.context.RestaurantContext.getCurrentRestaurant;
+
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RestaurantUseCase implements RestaurantServicePort {
 
     private final RestaurantPersistencePort restaurantPersistencePort;
@@ -47,5 +52,20 @@ public class RestaurantUseCase implements RestaurantServicePort {
     @Override
     public Restaurant updateRestaurant(UUID uuid, Restaurant restaurant) {
         return null;
+    }
+
+    @Override
+    public RestaurantConfig createRestaurantConfig(RestaurantConfig restaurantConfig) {
+        validateRestaurantConfigCreation(restaurantConfig);
+        return restaurantPersistencePort.createRestaurantConfig(restaurantConfig);
+    }
+
+    @Override
+    public RestaurantConfig getRestaurantConfig() {
+        return restaurantPersistencePort.getRestaurantConfigByRestaurantUuid(getCurrentRestaurant());
+    }
+
+    private void validateRestaurantConfigCreation(RestaurantConfig restaurantConfig) {
+        log.info("Here to validate info for " + restaurantConfig);
     }
 }

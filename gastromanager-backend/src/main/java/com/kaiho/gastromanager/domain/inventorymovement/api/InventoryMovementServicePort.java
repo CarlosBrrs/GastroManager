@@ -6,6 +6,6 @@ import java.util.UUID;
 
 public interface InventoryMovementServicePort {
 
-    void recordInventoryMovement(UUID ingredientUuid, int changeQuantity, String reason, Restaurant uuid);
+    void recordInventoryMovement(UUID ingredientUuid, double changeQuantity, String reason, Restaurant uuid);
 
 }

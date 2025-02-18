@@ -44,7 +44,7 @@ public class IngredientEntity extends Auditable implements Serializable {
     @Column(nullable = false)
     private String name;
 
-    private int availableStock;
+    private double availableStock;
 
     @Enumerated(EnumType.STRING)
     private Unit unit;

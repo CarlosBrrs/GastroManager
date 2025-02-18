@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -13,5 +15,7 @@ import lombok.Setter;
 @Setter
 public class RestaurantConfig {
 
+    private UUID uuid;
     private boolean isPaymentRequiredBeforePlacement;
+    private Restaurant restaurant;
 }
