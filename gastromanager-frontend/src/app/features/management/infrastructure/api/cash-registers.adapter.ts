@@ -6,6 +6,7 @@ import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {ApiGenericResponse} from "../../../../core/model/interfaces/ApiGenericResponse";
 import {map} from "rxjs/operators";
 import {mapToCashRegister} from "../../application/mappers/cash-register.mapper";
+import {environment} from "../../../../../environments/environment.dev";
 
 // DTOs para la respuesta del backend
 export interface CashRegisterResponseDto {
@@ -29,7 +30,7 @@ export interface CashRegisterCurrentSessionResponseDto {
 export class CashRegistersAdapter implements CashRegistersRepository {
 
   private readonly http: HttpClient = inject(HttpClient);
-  private readonly baseUrl: string = 'http://localhost:8080/api/v1';
+  private readonly baseUrl: string = environment.API_URL;
 
   getAllCashRegisters(): Observable<CashRegister[]> {
     console.log('🔄 [CashRegistersAdapter] Calling getAllCashRegisters');

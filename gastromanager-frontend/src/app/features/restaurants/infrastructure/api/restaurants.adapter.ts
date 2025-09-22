@@ -8,6 +8,7 @@ import {Restaurant} from "../../domain/models/restaurant.interface";
 import {RestaurantDetailResponseDto} from "../../domain/models/restaurant-detail-response-dto.interface";
 import {mapToRestaurantDetail} from "../../application/mappers/restaurant.mapper";
 import {UserRestaurantResponseDto} from "../../domain/models/user-restaurant-response-dto.interface";
+import {environment} from "../../../../../environments/environment.dev";
 
 
 @Injectable({
@@ -16,7 +17,7 @@ import {UserRestaurantResponseDto} from "../../domain/models/user-restaurant-res
 export class RestaurantsAdapter implements RestaurantsRepository {
 
   private readonly http: HttpClient = inject(HttpClient);
-  private readonly baseUrl: string = 'http://localhost:8080/api/v1';
+  private readonly baseUrl: string = environment.API_URL;
 
 
   getRestaurantDetails(uuid: string): Observable<Restaurant> {

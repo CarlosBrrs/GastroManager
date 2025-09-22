@@ -10,6 +10,7 @@ import {OrderSummaryResponseDto} from "../../domain/models/order-summary-respons
 import {OrderDetailResponseDto} from "../../domain/models/order-detail-response-dto.interface";
 import {mapOrderDetailToOrder, mapToOrder, mapToOrderCreateRequestDto} from "../../application/mappers/order.mapper";
 import {OrderCreateRequestDto} from "../../domain/models/order-create-request-dto.interface";
+import {environment} from "../../../../../environments/environment.dev";
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,7 @@ import {OrderCreateRequestDto} from "../../domain/models/order-create-request-dt
 export class OrdersAdapter implements OrdersRepository {
 
   private readonly http: HttpClient = inject(HttpClient);
-  private readonly baseUrl: string = 'http://localhost:8080/api/v1';
+  private readonly baseUrl: string = environment.API_URL;
 
 
   getAllOrders(params: { page: number; size: number; }): Observable<Page<Order>> {

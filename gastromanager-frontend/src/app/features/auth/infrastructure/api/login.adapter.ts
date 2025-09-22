@@ -6,6 +6,7 @@ import {Login} from '../../domain/models/login.model';
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {ApiGenericResponse} from "../../../../core/model/interfaces/ApiGenericResponse";
 import {map} from "rxjs/operators";
+import {environment} from "../../../../../environments/environment.dev";
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ import {map} from "rxjs/operators";
 export class LoginAdapter implements AuthRepository {
 
   private readonly http: HttpClient = inject(HttpClient);
-  private readonly baseUrl: string = 'http://localhost:8080/api/v1';
+  private readonly baseUrl: string = environment.API_URL;
 
   login(credentials: Login): Observable<LoginResponse> {
     return this.http.post<ApiGenericResponse<LoginResponse>>(`${this.baseUrl}/auth/login`, credentials).pipe(
