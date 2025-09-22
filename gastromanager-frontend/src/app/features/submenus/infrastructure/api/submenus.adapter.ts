@@ -11,6 +11,7 @@ import {mapToSubmenu, mapToSubmenuRequestDto} from "../../application/mappers/su
 import {MenuRequestDto} from "../../../menus/domain/models/menu-request-dto.interface";
 import {mapToMenuRequestDto} from "../../../menus/application/mappers/menu.mapper";
 import {SubmenuRequestDto} from "../../domain/models/submenu-request-dto.interface";
+import {environment} from "../../../../../environments/environment.dev";
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,7 @@ export class SubmenusAdapter implements SubmenusRepository {
 
 
   private readonly http: HttpClient = inject(HttpClient);
-  private readonly baseUrl: string = 'http://localhost:8080/api/v1';
+  private readonly baseUrl: string = environment.API_URL;
 
   getAllSubmenus(params: { search: string; menuUuid: string; page: number; size: number; }): Observable<Page<Submenu>> {
     const requestParams = new HttpParams()

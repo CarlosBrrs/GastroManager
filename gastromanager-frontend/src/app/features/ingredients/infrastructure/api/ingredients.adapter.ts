@@ -15,6 +15,7 @@ import {
 import {Ingredient} from "../../domain/models/ingredient.interface";
 import {IngredientRequestDto} from "../../domain/models/ingredient-request-dto.interface";
 import {IngredientDetailResponseDto} from "../../domain/models/ingredient-detail-response-dto.interface";
+import {environment} from "../../../../../environments/environment.dev";
 
 
 @Injectable({
@@ -23,7 +24,7 @@ import {IngredientDetailResponseDto} from "../../domain/models/ingredient-detail
 export class IngredientsAdapter implements IngredientsRepository {
 
   private readonly http: HttpClient = inject(HttpClient);
-  private readonly baseUrl: string = 'http://localhost:8080/api/v1';
+  private readonly baseUrl: string = environment.API_URL;
 
   getAllIngredients(params: { page: number, size: number }): Observable<Page<Ingredient>> {
     const requestParams = new HttpParams()

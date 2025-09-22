@@ -11,6 +11,7 @@ import {ProductRequestDto} from "../../domain/models/product-request-dto.interfa
 import {ProductSummaryResponseDto} from "../../domain/models/product-summary-response-dto.interface";
 import {ProductGroupByResponseDto} from "../../domain/models/product-group-by-response-dto.interface";
 import {ProductsByCategory} from "../../domain/models/products-by-category.interface";
+import {environment} from "../../../../../environments/environment.dev";
 
 
 @Injectable({
@@ -19,7 +20,7 @@ import {ProductsByCategory} from "../../domain/models/products-by-category.inter
 export class ProductsAdapter implements ProductsRepository {
 
   private readonly http: HttpClient = inject(HttpClient);
-  private readonly baseUrl: string = 'http://localhost:8080/api/v1';
+  private readonly baseUrl: string = environment.API_URL;
 
   getAllProducts(params: { page: number, size: number }): Observable<Page<Product>> {
     const requestParams = new HttpParams()

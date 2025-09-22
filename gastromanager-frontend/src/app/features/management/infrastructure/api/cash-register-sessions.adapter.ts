@@ -7,6 +7,7 @@ import {CashRegisterSessionsRepository} from '../../domain/ports/cash-register-s
 import {ApiGenericResponse} from '../../../../core/model/interfaces/ApiGenericResponse';
 import {CashRegisterSessionResponseDto, OpenSessionRequestDto, SessionSummaryResponseDto, CloseSessionRequestDto} from './dtos/cash-register-session.dto';
 import {mapToCashRegisterSession, mapToSessionSummary} from '../../application/mappers/cash-register-session.mapper';
+import {environment} from "../../../../../environments/environment.dev";
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ import {mapToCashRegisterSession, mapToSessionSummary} from '../../application/m
 export class CashRegisterSessionsAdapter implements CashRegisterSessionsRepository {
 
   private readonly http: HttpClient = inject(HttpClient);
-  private readonly baseUrl: string = 'http://localhost:8080/api/v1';
+  private readonly baseUrl: string = environment.API_URL;
 
   openSession(openData: OpenSessionData): Observable<CashRegisterSession> {
     console.log('🔗 [CashRegisterSessionsAdapter] Opening session:', openData);

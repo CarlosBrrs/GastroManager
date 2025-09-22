@@ -15,6 +15,7 @@ import {
 import {MenuRequestDto} from "../../domain/models/menu-request-dto.interface";
 import {Menu} from "../../domain/models/menu.interface";
 import {MenuDetailResponseDto} from "../../domain/models/menu-detail-response-dto.interface";
+import {environment} from "../../../../../environments/environment.dev";
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +23,7 @@ import {MenuDetailResponseDto} from "../../domain/models/menu-detail-response-dt
 export class MenusAdapter implements MenusRepository {
 
   private readonly http: HttpClient = inject(HttpClient);
-  private readonly baseUrl: string = 'http://localhost:8080/api/v1';
+  private readonly baseUrl: string = environment.API_URL;
 
 
   getAllMenus(params: { page: number; size: number; }): Observable<Page<Menu>> {
