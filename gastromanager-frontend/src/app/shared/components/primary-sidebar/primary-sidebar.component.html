@@ -1,0 +1,15 @@
+<nav class="sidebar">
+  <img ngSrc="/assets/images/gm-logo.svg" height="70" width="70" alt="gm-logo"/>
+  <ul>
+    @for (item of links; track $index) {
+      <li>
+        <a [routerLink]="item.route" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+          {{ item.label }}
+        </a>
+      </li>
+    }
+    <li><a href="#">Pedidos</a></li>
+    <li><a href="#">Usuarios</a></li>
+    <li><a href="#">Informes</a></li>
+  </ul>
+</nav>

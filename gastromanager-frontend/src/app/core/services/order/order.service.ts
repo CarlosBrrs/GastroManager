@@ -1,35 +1,32 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {BaseHttpService} from "../basehttp/base-http.service";
-import {IngredientRequestDto} from "../../model/interfaces/IngredientRequestDto";
-import {Observable, tap} from "rxjs";
-import {ApiGenericResponse} from "../../model/interfaces/ApiGenericResponse";
+import {Observable} from "rxjs";
 import {OrderRequestDto} from "../../../services/models/order-request-dto";
-import {IngredientResponseDto} from "../../model/interfaces/IngredientResponseDto";
-import {ProductItem} from "../../store/product-item/product-item.model";
-import {Order} from "../../store/order/order.model";
+import {Order, UninvoicedOrderItem} from "../../store/orders/order.model";
+import {InvoiceRequestDto} from "../../model/interfaces/InvoiceRequestDto";
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrderService extends BaseHttpService {
 
-  createOrder(order: OrderRequestDto): Observable<ApiGenericResponse<string>> {
-    return this.http.post<ApiGenericResponse<string>>(`${this.apiUrl}/orders`, order, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      }
-    }).pipe(
-      tap(response => {
-        if (response.flag) {
-          console.log('Orden colocada con UUID:', response.data);
-        }
-      })
-    )
-
+  createOrder(order: OrderRequestDto): Observable<string> {
+    return this.handleRequest<string>("POST", "orders", order);
   }
 
   getAllOrders() {
     return this.handleRequest<Order[]>("GET", "orders");
+  }
+
+  getOrderByUuid(orderUuid: string): Observable<Order> {
+    return this.handleRequest<Order>("GET", `orders/${orderUuid}`);
+  }
+
+  generateInvoices(orderUuid: string, invoices: InvoiceRequestDto) {
+    return this.handleRequest<string[]>("POST", `orders/${orderUuid}/invoices`, invoices);
+  }
+
+  getUninvoicedOrderItems(orderUuid: string) {
+    return this.handleRequest<UninvoicedOrderItem[]>("GET", `orders/${orderUuid}/uninvoiced-items`);
   }
 }

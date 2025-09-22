@@ -38,7 +38,7 @@ export const IngredientStore = signalStore(
             concatMap(() => inventoryService.getAllIngredients()),
           ),
           (ingredientItems) => {
-            console.log("Nuevos ingredients recuperados:", ingredientItems.toString());
+            console.log("Nuevos ingredients-page recuperados:", ingredientItems.toString());
             patchState(store, {ingredients: ingredientItems})
           },
           "Ingrediente agregado con éxito"
@@ -64,7 +64,7 @@ export const IngredientStore = signalStore(
             concatMap(() => inventoryService.getAllIngredients()),
           ),
           (ingredientItems) => {
-            console.log("Nuevos ingredients recuperados:", ingredientItems.toString());
+            console.log("Nuevos ingredients-page recuperados:", ingredientItems.toString());
             patchState(store, {ingredients: ingredientItems})
           },
           "Stock del ingrediente actualizado con éxito"

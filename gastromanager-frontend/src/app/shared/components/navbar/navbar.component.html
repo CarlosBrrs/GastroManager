@@ -1,0 +1,22 @@
+<div class="container">
+  <div class="mobile">
+    <img ngSrc="assets/images/gm-logo.svg" height="70" width="70" alt="gm-logo" />
+    <button (click)="togglePrimary()">
+      ☰
+    </button>
+  </div>
+  <div class="desktop">
+    Bienvenido {{ user()?.name }} {{ user()?.lastname }}
+    ---
+
+    <select (change)="changeSelectedRestaurant($event)">
+      <!--  on select cambiar el valor de la variable restaurant en el interceptor-->
+      @for (restaurant of allowedRestaurants(); track restaurant.uuid) {
+        <option [value]="restaurant.uuid"> {{ restaurant.name }}</option>
+      }
+    </select>
+    ---
+    <button (click)="logout()">Logout</button>
+  </div>
+
+</div>

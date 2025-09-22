@@ -1,0 +1,16 @@
+/* Estilos opcionales para mejor presentación */
+:host ::ng-deep {
+  .p-datatable {
+    margin: 1rem 0;
+  }
+
+  .p-datatable-footer {
+    font-weight: bold;
+  }
+
+  .p-picklist {
+    .p-picklist-list {
+      min-height: 15rem;
+    }
+  }
+}

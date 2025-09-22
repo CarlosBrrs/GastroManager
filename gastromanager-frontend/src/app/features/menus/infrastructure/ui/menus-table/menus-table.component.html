@@ -1,0 +1,15 @@
+<div class="container">
+  <gm-tree-table
+    [data]="processedData"
+    [columns]="displayColumns"
+    [totalRecords]="totalRecords"
+    [loading]="loading"
+    [actions]="actions"
+    [selectedMenu]="selectedMenu"
+    [submenus]="submenus"
+    (onSelectedMenu)="onSelectedMenu($event)"
+    (onSubmenuEdit)="editSubmenu($event)"
+    (onSubmenuAdd)="addSubmenu($event)"
+  >
+  </gm-tree-table>
+</div>

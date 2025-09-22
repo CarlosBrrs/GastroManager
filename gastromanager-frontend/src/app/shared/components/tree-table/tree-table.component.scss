@@ -1,0 +1,44 @@
+/* src/app/shared/components/tree-table/tree-table.component.css */
+.menu-layout {
+  display: flex;
+  gap: 0.5rem;
+}
+.menu-list, .submenu-list {
+  flex: 1;
+  background: var(--surface-100);
+  padding: 1rem;
+  border-radius: 8px;
+}
+.menu-list ul, .submenu-list ul {
+  list-style: none;
+  padding: 0;
+}
+.menu-list li.selected {
+  background: #e0e0e0;
+}
+.menu-list li, .submenu-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.menu-list span, .submenu-list span {
+  flex: 1;
+  cursor: pointer;
+}
+/*
+.simple-table, .nested-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.simple-table th, .simple-table td,
+.nested-table th, .nested-table td {
+  border: 1px solid #ccc;
+  padding: 0.5rem;
+}
+
+.submenu-row {
+  background: var(--surface-200);
+}
+*/

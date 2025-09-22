@@ -1,0 +1,100 @@
+<div class="cash-registers-page">
+  <div class="container-fluid">
+    <!-- Header de la página -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h2 class="page-title">Cajas Registradoras</h2>
+        <p class="page-subtitle text-muted">Gestión y monitoreo de cajas registradoras</p>
+      </div>
+      <div>
+        <button class="btn btn-primary" (click)="onCreateCashRegister()">
+          <i class="fas fa-plus me-2"></i>Nueva Caja Registradora
+        </button>
+      </div>
+    </div>
+
+    <!-- Resumen de estado compacto -->
+    <div class="row mb-3">
+      <div class="col-12">
+        <div class="stats-compact-bar">
+          <div class="stats-compact-item">
+            <i class="fas fa-cash-register text-success me-2"></i>
+            <span class="stats-text">Activas: <strong>{{ activeCashRegisters() }}</strong></span>
+          </div>
+          <div class="stats-separator">|</div>
+          <div class="stats-compact-item">
+            <i class="fas fa-lock text-secondary me-2"></i>
+            <span class="stats-text">Cerradas: <strong>{{ closedCashRegisters() }}</strong></span>
+          </div>
+          <div class="stats-separator">|</div>
+          <div class="stats-compact-item">
+            <i class="fas fa-dollar-sign text-info me-2"></i>
+            <span class="stats-text">Total Inicial: <strong>{{ totalInitialAmount() | currency:'COP':'symbol':'1.0-0' }}</strong></span>
+          </div>
+          <div class="stats-separator">|</div>
+          <div class="stats-compact-item">
+            <i class="fas fa-calculator text-warning me-2"></i>
+            <span class="stats-text">Cajas: <strong>{{ totalCashRegisters() }}</strong></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading state -->
+    @if (loading()) {
+      <div class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Cargando...</span>
+        </div>
+        <p class="mt-2 text-muted">Cargando cajas registradoras...</p>
+      </div>
+    }
+
+    <!-- Error state -->
+    @if (error()) {
+      <div class="alert alert-danger" role="alert">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        {{ error() }}
+      </div>
+    }
+
+    <!-- Session Error state -->
+    @if (sessionError()) {
+      <div class="alert alert-danger alert-dismissible" role="alert">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        <strong>Error en sesión:</strong> {{ sessionError() }}
+        <button type="button" class="btn-close" (click)="clearSessionError()" aria-label="Cerrar"></button>
+      </div>
+    }
+
+    <!-- Lista de cajas registradoras compacta -->
+    @if (!loading() && !error()) {
+      <div class="cash-registers-grid">
+        @for (cashRegister of cashRegisters(); track cashRegister.uuid) {
+          <gm-cash-register-card
+            [cashRegister]="cashRegister"
+            [sessionSummary]="getSessionSummaryForCashRegister(cashRegister.uuid)"
+            (openCashRegister)="onOpenCashRegister($event)"
+            (closeCashRegister)="onCloseCashRegister($event)"
+            (viewDetails)="onViewCashRegisterDetails($event)"
+            (viewTransactions)="onViewTransactions($event)"
+            (requestSessionSummary)="onRequestSessionSummary($event)"
+          >
+          </gm-cash-register-card>
+        }
+
+        <!-- Mensaje cuando no hay cajas registradoras -->
+        @if (cashRegisters().length === 0) {
+          <div class="text-center py-5">
+            <i class="fas fa-cash-register fa-5x text-muted mb-3"></i>
+            <h4 class="text-muted">No hay cajas registradoras configuradas</h4>
+            <p class="text-muted mb-4">Comienza creando tu primera caja registradora</p>
+            <button class="btn btn-primary" (click)="onCreateCashRegister()">
+              <i class="fas fa-plus me-2"></i>Crear Primera Caja Registradora
+            </button>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

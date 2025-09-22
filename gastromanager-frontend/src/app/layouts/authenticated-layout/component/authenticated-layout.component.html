@@ -1,0 +1,40 @@
+<div class="screen" [style]="{'width': '100vw', 'height': '100vh'}">
+  <!-- Primary Sidebar -->
+  <nav class="primary-sidebar" [class.active]="isPrimaryOpen()">
+    <gm-primary-sidebar></gm-primary-sidebar>
+    <!-- Botón de toggle para secondary dentro del primary -->
+    @if (isPrimaryOpen()) {
+      <button class="toggle-btn secondary-toggle" (click)="toggleSecondary()">
+        ☰
+      </button>
+    }
+  </nav>
+
+  <!-- Main Layout -->
+  <div class="main-layout">
+    <!-- Top Bar -->
+    <header class="top-bar">
+           <gm-navbar></gm-navbar>
+    </header>
+
+    <!-- Content Area -->
+    <div class="content-area">
+      <!-- Secondary Sidebar -->
+      @if (showSecondarySidebar()) {
+      <aside class="secondary-sidebar" [class.active]="isSecondaryOpen()" [class.submenu]="!isPrimaryOpen()">
+        <gm-secondary-sidebar></gm-secondary-sidebar>
+      </aside>
+      }
+
+      <!-- Main Content -->
+      <main class="main-page-content">
+        <nav class="content-header">
+          <gm-content-header></gm-content-header>
+        </nav>
+        <div class="main-content">
+          <router-outlet></router-outlet>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>

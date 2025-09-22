@@ -10,11 +10,13 @@
     "test": "ng test",
     "analyze": "ng build --stats-json && esbuild-visualizer --open=true --metadata dist/gastromanager-frontend/stats.json",
     "api-gen": "ng-openapi-gen --input ./src/openapi/openapi.json --output ./src/app/services",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "create:domain": "node create-domain-structure.js"
   },
   "private": true,
   "dependencies": {
     "@angular/animations": "^18.2.0",
+    "@angular/cdk": "^18.0.1",
     "@angular/common": "^18.2.0",
     "@angular/compiler": "^18.2.0",
     "@angular/core": "^18.2.0",
@@ -27,6 +29,7 @@
     "@fortawesome/free-brands-svg-icons": "^6.5.2",
     "@fortawesome/free-regular-svg-icons": "^6.5.2",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
+    "@ngrx/operators": "^19.1.0",
     "@ngrx/signals": "^18.1.1",
     "gastromanager-frontend": "file:",
     "jwt-decode": "^4.0.0",

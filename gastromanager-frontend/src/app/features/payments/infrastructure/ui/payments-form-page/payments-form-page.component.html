@@ -1,0 +1,56 @@
+<div class="payments-page-container">
+  <div class="container">
+    <h2>Procesamiento de Pago</h2>
+
+    @if (loading()) {
+      <div class="loading-container">
+        <div class="text-center">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando detalles de la orden...</span>
+          </div>
+          <p class="mt-3">Cargando detalles de la orden...</p>
+        </div>
+      </div>
+    }
+
+    @if (error() && !loading()) {
+      <div class="alert alert-danger" role="alert">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        {{ error() }}
+      </div>
+    }
+
+    <!-- Error state para procesamiento de pago -->
+    @if (paymentError() && !paymentLoading()) {
+      <div class="alert alert-danger" role="alert">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        <strong>Error en el pago:</strong> {{ paymentError() }}
+      </div>
+    }
+
+    <!-- Success state para pago procesado -->
+    @if (lastPaymentResponseUuid() && !paymentLoading()) {
+      <div class="alert alert-success" role="alert">
+        <i class="fas fa-check-circle me-2"></i>
+        <strong>¡Pago procesado exitosamente!</strong>
+        ID de transacción: {{ lastPaymentResponseUuid() }}
+      </div>
+    }
+
+    @if (!loading() && !error() && currentOrder()) {
+      <gm-payment-form
+        [orderUuid]="currentOrder()!.uuid"
+        [totalAmount]="currentOrder()!.totalAmount"
+        [totalPaid]="currentOrder()!.totalPaid"
+        [remainingToPay]="currentOrder()!.remainingToPay"
+        [customerName]="currentOrder()!.customerName"
+        [tableNumber]="currentOrder()!.tableNumber"
+        [orderCode]="currentOrder()!.code"
+        [orderItems]="currentOrder()!.orderItems"
+        [paymentLoading]="paymentLoading()"
+        (paymentSubmit)="onProcessPayment($event)">
+      </gm-payment-form>
+    }
+
+  </div>
+</div>

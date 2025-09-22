@@ -1,0 +1,91 @@
+@if (error()) {
+  <div class="error-message general-error">
+    {{ error() }}
+  </div>
+}
+
+
+<form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+  <div>
+    <label for="name">Nombre:</label>
+    <input id="name" formControlName="name" type="text"/>
+    @if (productForm.get('name')?.invalid && productForm.get('name')?.touched) {
+      <div class="error">
+        Nombre es requerido y debe tener al menos 3 caracteres.
+      </div>
+    }
+  </div>
+
+  <div>
+    <label for="description">Descripcion:</label>
+    <input id="description" formControlName="description" type="text"/>
+    @if (productForm.get('description')?.invalid && productForm.get('description')?.touched) {
+      <div
+        class="error">
+        Descripcion es requerida y debe tener al menos 3 caracteres.
+      </div>
+    }
+  </div>
+
+  <div>
+    <label for="category">Categoria:</label>
+    <input id="category" formControlName="category" type="text"/>
+    @if (productForm.get('category')?.invalid && productForm.get('category')?.touched) {
+      <div
+        class="error">
+        Categoria es requerida y debe tener al menos 3 caracteres.
+      </div>
+    }
+  </div>
+
+  <div>
+    <label for="purchasePrice">Precio de compra:</label>
+    <div class="currency-input">
+      <span class="currency-symbol">$</span>
+      <input
+        id="purchasePrice"
+        formControlName="purchasePrice"
+        type="number"
+        min="0"
+        step="0.01"
+        placeholder="0.00"/>
+    </div>
+    @if (productForm.get('purchasePrice')?.invalid && productForm.get('purchasePrice')?.touched) {
+      <div class="error">
+        Error en precio de compra
+      </div>
+    }
+  </div>
+
+  <div>
+    <label for="salePrice">Precio de venta:</label>
+    <div class="currency-input">
+      <span class="currency-symbol">$</span>
+      <input
+        id="salePrice"
+        formControlName="salePrice"
+        type="number"
+        min="0"
+        step="0.01"
+        placeholder="0.00"/>
+    </div>
+    @if (productForm.get('salePrice')?.invalid && productForm.get('salePrice')?.touched) {
+      <div class="error">
+        Error en precio de venta
+      </div>
+    }
+  </div>
+
+
+  <button type="submit"
+          [disabled]="!productForm.valid || loading()">
+    @if (loading()) {
+      <p-progressSpinner
+        styleClass="w-4rem h-4rem"
+        strokeWidth="3"
+        animationDuration="1s"/>
+    } @else {
+      Crear producto
+    }
+  </button>
+</form>

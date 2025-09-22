@@ -1,0 +1,13 @@
+<div class="container">
+  <gm-table
+    [data]="processedData"
+    [columns]="displayColumns"
+    [totalRecords]="totalRecords"
+    [loading]="loading"
+    [actions]="actions"
+    [selectedItem]="selectedOrder"
+    (onRowSelect)="onSelectedOrder($event)"
+    (changePage)="dataToProcess($event)"
+  >
+  </gm-table>
+</div>

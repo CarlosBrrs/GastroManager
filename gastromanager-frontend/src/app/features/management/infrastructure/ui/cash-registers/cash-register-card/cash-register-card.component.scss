@@ -1,0 +1,811 @@
+.cash-register-card {
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  width: 280px;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  color: #212529;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 12px 12px 0 0;
+    padding: 0.75rem;
+
+    .card-title {
+      font-weight: 600;
+      font-size: 1rem;
+      margin: 0;
+      color: white;
+    }
+
+    .badge {
+      font-size: 0.7rem;
+      padding: 0.3rem 0.6rem;
+      border-radius: 15px;
+
+      &.bg-success {
+        background-color: #28a745 !important;
+        color: white !important;
+      }
+
+      &.bg-secondary {
+        background-color: #6c757d !important;
+        color: white !important;
+      }
+
+      &.bg-warning {
+        background-color: #ffc107 !important;
+        color: #212529 !important;
+      }
+    }
+
+    small {
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+      display: block;
+      color: rgba(255, 255, 255, 0.85);
+    }
+  }
+
+  .card-body {
+    padding: 0.75rem;
+    flex-grow: 1;
+    background-color: #fff;
+    color: #212529;
+
+    .session-compact {
+      .session-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.4rem;
+        font-size: 0.85rem;
+
+        .label {
+          color: #6c757d;
+          font-weight: 500;
+        }
+
+        .value {
+          font-weight: 600;
+          text-align: right;
+          color: #212529;
+
+          &.text-success {
+            color: #28a745 !important;
+          }
+        }
+      }
+
+      .session-time {
+        text-align: center;
+        margin-top: 0.5rem;
+
+        small {
+          font-size: 0.75rem;
+          color: #6c757d;
+        }
+      }
+    }
+
+    .no-session {
+      text-align: center;
+      padding: 1rem 0;
+      color: #6c757d;
+
+      i {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        display: block;
+        color: #adb5bd;
+      }
+
+      span {
+        font-size: 0.85rem;
+        color: #6c757d;
+      }
+    }
+  }
+
+  .card-footer {
+    background-color: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+    border-radius: 0 0 12px 12px;
+    padding: 0.5rem;
+
+    .btn-group {
+      display: flex;
+      width: 100%;
+      gap: 0.25rem;
+
+      .btn {
+        flex: 1;
+        padding: 0.4rem 0.6rem;
+        border-radius: 6px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        font-size: 0.8rem;
+
+        &:hover {
+          transform: translateY(-1px);
+        }
+
+        i {
+          font-size: 0.9rem;
+        }
+      }
+    }
+  }
+
+  // Estilos para la funcionalidad expandible
+  &.expanded {
+    width: 100%;
+    max-width: 600px;
+    transform: scale(1.02);
+    z-index: 10;
+    position: relative;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  }
+
+  .expanded-section {
+    background-color: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+    animation: expandIn 0.3s ease-out;
+
+    .expanded-content {
+      padding: 1rem;
+
+      h6 {
+        color: #495057;
+        margin-bottom: 0.75rem;
+        border-bottom: 1px solid #e9ecef;
+        padding-bottom: 0.25rem;
+        font-size: 0.9rem;
+      }
+
+      .cash-register-details {
+        background: white;
+        border-radius: 6px;
+        padding: 0.75rem;
+        margin-bottom: 0.75rem;
+        border: 1px solid #e9ecef;
+
+        .detail-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0.25rem 0;
+          border-bottom: 1px solid #f1f3f4;
+          font-size: 0.85rem;
+
+          &:last-child {
+            border-bottom: none;
+          }
+
+          .detail-label {
+            font-weight: 500;
+            color: #6c757d;
+            font-size: 0.8rem;
+          }
+
+          .detail-value {
+            font-weight: 600;
+            color: #212529;
+            text-align: right;
+            font-size: 0.8rem;
+          }
+        }
+      }
+
+      .alert {
+        border-radius: 6px;
+        border: none;
+        padding: 0.75rem;
+        margin-bottom: 0.75rem;
+        font-size: 0.85rem;
+
+        &.alert-info {
+          background-color: #e7f3ff;
+          color: #0c5460;
+
+          .alert-heading {
+            color: #0c5460;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+          }
+        }
+
+        &.alert-warning {
+          background-color: #fff3cd;
+          color: #856404;
+
+          .alert-heading {
+            color: #856404;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+          }
+        }
+
+        .row {
+          .col-6 {
+            small {
+              font-size: 0.7rem;
+            }
+            div {
+              font-size: 0.8rem;
+            }
+          }
+        }
+      }
+
+      .confirmation-message {
+        margin-bottom: 0.75rem;
+
+        .bg-light {
+          background-color: #e9ecef !important;
+          border: 1px dashed #adb5bd;
+          padding: 0.75rem;
+
+          p {
+            color: #495057;
+            font-size: 0.85rem;
+            margin-bottom: 0;
+          }
+        }
+      }
+
+      .expanded-actions {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+        margin-top: 0.75rem;
+
+        .btn {
+          min-width: 100px;
+          padding: 0.5rem 1rem;
+          font-weight: 600;
+          border-radius: 6px;
+          transition: all 0.2s ease;
+          font-size: 0.85rem;
+
+          &:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+          }
+
+          &.btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+            color: white;
+
+            &:hover {
+              background-color: #5a6268;
+              border-color: #545b62;
+            }
+          }
+
+          &.btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+            color: white;
+
+            &:hover {
+              background-color: #218838;
+              border-color: #1e7e34;
+            }
+          }
+        }
+      }
+
+      // Estilos específicos para el formulario
+      .open-cash-form {
+        background: white;
+        border-radius: 8px;
+        padding: 1rem;
+        border: 1px solid #e9ecef;
+
+        .form-label {
+          font-size: 0.85rem;
+          margin-bottom: 0.5rem;
+          color: #495057;
+
+          i {
+            font-size: 0.8rem;
+          }
+        }
+
+        .form-control {
+          font-size: 0.85rem;
+          border-radius: 6px;
+          border: 1px solid #ced4da;
+          transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+          &:focus {
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+          }
+
+          &.is-invalid {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+          }
+        }
+
+        .input-group-text {
+          font-size: 0.85rem;
+          background-color: #f8f9fa;
+          border: 1px solid #ced4da;
+          color: #6c757d;
+        }
+
+        .form-text {
+          font-size: 0.75rem;
+          margin-top: 0.25rem;
+        }
+
+        .invalid-feedback {
+          font-size: 0.75rem;
+          margin-top: 0.25rem;
+        }
+
+        .form-summary {
+          border: 1px solid #dee2e6;
+          background-color: #f8f9fa !important;
+
+          h6 {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+          }
+
+          .row .col-6 {
+            small {
+              font-size: 0.75rem;
+            }
+            div {
+              font-size: 0.85rem;
+            }
+          }
+        }
+      }
+    }
+
+    .session-summary {
+      .summary-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.25rem 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        .label {
+          font-size: 0.875rem;
+          color: var(--bs-secondary);
+          font-weight: 500;
+        }
+
+        .value {
+          font-size: 0.875rem;
+          color: var(--bs-body-color);
+        }
+      }
+
+      .payment-method-item {
+        background: rgba(255, 255, 255, 0.7);
+        padding: 0.75rem;
+        border-radius: 0.375rem;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        transition: all 0.2s ease;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.9);
+          transform: translateY(-1px);
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .method-name {
+          font-size: 0.875rem;
+          font-weight: 500;
+          color: var(--bs-dark);
+        }
+
+        .method-amount {
+          font-size: 0.875rem;
+          color: var(--bs-success);
+        }
+
+        small {
+          font-size: 0.75rem;
+        }
+      }
+    }
+
+    .close-cash-form {
+      .form-label {
+        font-size: 0.875rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .form-control {
+        border-radius: 0.375rem;
+        border: 1px solid var(--bs-border-color);
+        transition: all 0.2s ease;
+
+        &:focus {
+          border-color: var(--bs-primary);
+          box-shadow: 0 0 0 0.2rem rgba(var(--bs-primary-rgb), 0.25);
+        }
+
+        &.is-invalid {
+          border-color: var(--bs-danger);
+        }
+      }
+
+      .input-group-text {
+        background-color: var(--bs-light);
+        border: 1px solid var(--bs-border-color);
+        color: var(--bs-secondary);
+        font-weight: 500;
+      }
+
+      .form-text {
+        font-size: 0.75rem;
+        margin-top: 0.25rem;
+      }
+    }
+
+    .confirmation-message {
+      .bg-warning-subtle {
+        background-color: rgba(255, 193, 7, 0.1) !important;
+      }
+
+      .border-warning {
+        border-color: var(--bs-warning) !important;
+      }
+
+      .text-warning {
+        color: var(--bs-warning) !important;
+      }
+    }
+
+    // Nuevos estilos compactos para el cierre de caja
+    .summary-item-compact {
+      text-align: center;
+      padding: 0.25rem;
+
+      small {
+        font-size: 0.7rem;
+        display: block;
+        margin-bottom: 0.1rem;
+      }
+
+      div {
+        font-size: 0.8rem;
+        line-height: 1.2;
+      }
+    }
+
+    .payment-method-compact {
+      background: rgba(255, 255, 255, 0.8);
+      padding: 0.4rem;
+      border-radius: 0.25rem;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      margin-bottom: 0.25rem;
+
+      .method-name-compact {
+        font-size: 0.75rem;
+        font-weight: 500;
+      }
+
+      .method-amount-compact {
+        font-size: 0.75rem;
+        color: var(--bs-success);
+      }
+
+      small {
+        font-size: 0.65rem;
+        display: block;
+        margin-top: 0.1rem;
+      }
+    }
+
+    .close-cash-form-compact {
+      background: white;
+      border-radius: 0.375rem;
+      padding: 0.75rem;
+      border: 1px solid #e9ecef;
+
+      .form-label-compact {
+        font-size: 0.75rem;
+        margin-bottom: 0.25rem;
+        color: #495057;
+        font-weight: 500;
+
+        i {
+          font-size: 0.7rem;
+        }
+      }
+
+      .form-text-compact {
+        font-size: 0.65rem;
+        margin-top: 0.15rem;
+      }
+
+      .invalid-feedback-compact {
+        font-size: 0.65rem;
+        margin-top: 0.15rem;
+        color: var(--bs-danger);
+      }
+    }
+
+    .confirmation-compact {
+      .bg-warning-subtle {
+        background-color: rgba(255, 193, 7, 0.1) !important;
+      }
+
+      strong {
+        font-size: 0.8rem;
+      }
+
+      small {
+        font-size: 0.7rem;
+      }
+    }
+
+    .expanded-actions-compact {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-top: 0.5rem;
+
+      .btn {
+        font-size: 0.8rem;
+        padding: 0.375rem 0.75rem;
+        font-weight: 500;
+        border-radius: 0.25rem;
+        transition: all 0.2s ease;
+
+        &:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+      }
+    }
+
+    // Nuevos estilos ultra compactos para el cierre de caja
+    .summary-line {
+      display: flex;
+      align-items: center;
+      padding: 0.1rem 0;
+      font-size: 0.8rem;
+      line-height: 1.2;
+
+      span {
+        &.text-muted {
+          font-size: 0.75rem;
+          min-width: 60px;
+        }
+
+        &.fw-semibold,
+        &.fw-bold {
+          font-size: 0.8rem;
+        }
+      }
+    }
+
+    .payment-line {
+      display: flex;
+      align-items: center;
+      padding: 0.1rem 0;
+      font-size: 0.75rem;
+      line-height: 1.2;
+
+      .method-name-inline {
+        font-size: 0.75rem;
+        font-weight: 500;
+      }
+
+      .method-amount-inline {
+        font-size: 0.75rem;
+        color: var(--bs-success);
+      }
+
+      small {
+        font-size: 0.65rem;
+      }
+    }
+
+    // Ajustar el contenido expandido para ser ultra compacto
+    .expanded-content {
+      padding: 0.6rem;
+
+      h6 {
+        font-size: 0.85rem;
+        margin-bottom: 0.3rem;
+      }
+    }
+
+    // Ultra compacto en la sección de resumen
+    .session-summary {
+      .bg-light {
+        background-color: #f8f9fa !important;
+        margin-bottom: 0.25rem !important;
+      }
+
+      h6 {
+        margin-bottom: 0.25rem;
+      }
+    }
+
+    .close-cash-form-compact {
+      background: white;
+      border-radius: 0.375rem;
+      padding: 0.5rem;
+      border: 1px solid #e9ecef;
+
+      .form-label-compact {
+        font-size: 0.7rem;
+        margin-bottom: 0.15rem;
+        color: #495057;
+        font-weight: 500;
+
+        i {
+          font-size: 0.65rem;
+        }
+      }
+
+      .form-text-compact {
+        font-size: 0.6rem;
+        margin-top: 0.1rem;
+      }
+
+      .invalid-feedback-compact {
+        font-size: 0.6rem;
+        margin-top: 0.1rem;
+        color: var(--bs-danger);
+      }
+
+      .row {
+        margin-bottom: 0;
+      }
+
+      .col-md-6 {
+        margin-bottom: 0.25rem !important;
+      }
+    }
+
+    .confirmation-compact {
+      margin-bottom: 0.25rem !important;
+
+      .bg-warning-subtle {
+        background-color: rgba(255, 193, 7, 0.1) !important;
+      }
+
+      strong {
+        font-size: 0.75rem;
+      }
+
+      small {
+        font-size: 0.65rem;
+      }
+    }
+
+    .expanded-actions-compact {
+      display: flex;
+      gap: 0.4rem;
+      justify-content: center;
+      margin-top: 0.3rem;
+
+      .btn {
+        font-size: 0.75rem;
+        padding: 0.3rem 0.6rem;
+        font-weight: 500;
+        border-radius: 0.25rem;
+        transition: all 0.2s ease;
+
+        &:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+      }
+    }
+
+    // Nuevos estilos para métodos de pago en 2 líneas
+    .payment-method-two-lines {
+      background: rgba(255, 255, 255, 0.8);
+      padding: 0.4rem;
+      border-radius: 0.25rem;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      margin-bottom: 0.3rem;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      .method-name-two-lines {
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: var(--bs-dark);
+      }
+
+      .method-amount-two-lines {
+        font-size: 0.75rem;
+        color: var(--bs-success);
+      }
+
+      .method-transactions {
+        margin-top: 0.1rem;
+
+        small {
+          font-size: 0.65rem;
+          display: block;
+        }
+      }
+    }
+  }
+
+  // Ajustar la animación para el contenido más compacto
+  @keyframes expandIn {
+    from {
+      opacity: 0;
+      max-height: 0;
+      padding: 0;
+    }
+    to {
+      opacity: 1;
+      max-height: 350px; // Reducido nuevamente para el diseño ultra compacto
+      padding: inherit;
+    }
+  }
+
+  // Responsive mejorado para el diseño compacto
+  @media (max-width: 768px) {
+    .cash-register-card {
+      // ...existing styles...
+
+      .expanded-section {
+        .summary-item-compact {
+          text-align: left;
+          padding: 0.2rem;
+
+          div {
+            font-size: 0.75rem;
+          }
+        }
+
+        .payment-method-compact {
+          padding: 0.3rem;
+          margin-bottom: 0.2rem;
+
+          .method-name-compact,
+          .method-amount-compact {
+            font-size: 0.7rem;
+          }
+        }
+
+        .expanded-actions-compact {
+          flex-direction: column;
+          gap: 0.3rem;
+
+          .btn {
+            width: 100%;
+            font-size: 0.75rem;
+          }
+        }
+      }
+    }
+  }
+}

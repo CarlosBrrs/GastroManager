@@ -1,0 +1,214 @@
+.payment-form-simple {
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.order-info {
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+
+  p {
+    margin: 10px 0;
+    font-size: 16px;
+  }
+}
+
+.debug-info {
+  background-color: #e9ecef;
+  padding: 15px;
+  border-radius: 5px;
+
+  h4 {
+    margin-bottom: 10px;
+    color: #495057;
+  }
+
+  pre {
+    background-color: #ffffff;
+    padding: 10px;
+    border-radius: 3px;
+    border: 1px solid #dee2e6;
+    font-size: 12px;
+    overflow-x: auto;
+  }
+}
+
+.payment-form {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.payment-form-container {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+}
+
+.section-title {
+  color: #333;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.order-details-section {
+  margin-bottom: 30px;
+
+  .form-control[readonly] {
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+    color: #6c757d;
+  }
+}
+
+.order-items-section {
+  margin-bottom: 30px;
+
+  .order-items-table {
+    background-color: #ffffff;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+    overflow: hidden;
+
+    .table {
+      margin-bottom: 0;
+      color: #333; // Asegurar color del texto base
+
+      th {
+        border-top: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        padding: 12px 8px;
+        color: #495057; // Color específico para headers
+        background-color: #f8f9fa;
+      }
+
+      td {
+        padding: 10px 8px;
+        vertical-align: middle;
+        color: #333 !important; // Forzar color del texto
+        background-color: #ffffff;
+
+        &.product-name {
+          font-weight: 500;
+          color: #2c3e50 !important; // Color más oscuro para nombre de producto
+        }
+
+        &.quantity-cell {
+          color: #495057 !important; // Color específico para cantidad
+          font-weight: 600;
+        }
+
+        &.price-cell {
+          color: #28a745 !important; // Verde para precios unitarios
+          font-weight: 500;
+        }
+
+        &.total-cell {
+          color: #dc3545 !important; // Rojo para totales
+          font-weight: 700;
+        }
+      }
+
+      tbody tr {
+        background-color: #ffffff;
+
+        &:hover {
+          background-color: #f8f9fa;
+
+          td {
+            color: #333 !important; // Mantener color en hover
+          }
+        }
+      }
+
+      tfoot tr {
+        border-top: 2px solid #dee2e6;
+        background-color: #f8f9fa;
+
+        td {
+          padding: 12px 8px;
+          font-size: 1rem;
+          color: #2c3e50 !important; // Color más oscuro para el subtotal
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}
+
+.payment-details-section {
+  margin-bottom: 30px;
+}
+
+.total-display {
+  display: flex;
+  align-items: center;
+  height: 38px;
+  background-color: #e7f3ff;
+  border: 1px solid #b3d9ff;
+  border-radius: 4px;
+  padding: 0 12px;
+
+  .total-amount {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #0056b3;
+  }
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 20px;
+  border-top: 1px solid #e9ecef;
+}
+
+.form-label {
+  font-weight: 500;
+  color: #495057;
+  margin-bottom: 5px;
+}
+
+.input-group-text {
+  background-color: #f8f9fa;
+  border-color: #dee2e6;
+  font-weight: 500;
+}
+
+.btn {
+  padding: 8px 20px;
+  font-weight: 500;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+
+  &:hover:not(:disabled) {
+    background-color: #0056b3;
+    border-color: #0056b3;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  border-color: #6c757d;
+
+  &:hover {
+    background-color: #545b62;
+    border-color: #545b62;
+  }
+}

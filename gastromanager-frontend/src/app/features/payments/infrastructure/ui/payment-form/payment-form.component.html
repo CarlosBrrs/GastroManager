@@ -1,0 +1,248 @@
+<div class="payment-form">
+  <form [formGroup]="paymentForm" class="payment-form-container" (ngSubmit)="onProcessPayment()">
+
+    <!-- Detalles de la Orden (Solo lectura) -->
+    <div class="order-details-section">
+      <h3 class="section-title">Detalles de la Orden</h3>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="orderCode" class="form-label">Código de Orden</label>
+          <input
+            type="text"
+            id="orderCode"
+            class="form-control"
+            formControlName="orderCode"
+            readonly>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label for="customerName" class="form-label">Cliente</label>
+          <input
+            type="text"
+            id="customerName"
+            class="form-control"
+            formControlName="customerName"
+            readonly>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="tableNumber" class="form-label">Mesa</label>
+          <input
+            type="text"
+            id="tableNumber"
+            class="form-control"
+            formControlName="tableNumber"
+            readonly>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label for="totalAmount" class="form-label">Total de la Orden</label>
+          <div class="input-group">
+            <span class="input-group-text">$</span>
+            <input
+              type="number"
+              id="totalAmount"
+              class="form-control"
+              formControlName="totalAmount"
+              readonly>
+          </div>
+        </div>
+      </div>
+
+      <!-- Nueva fila para mostrar totales pagados y restantes -->
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="totalPaid" class="form-label">Total Pagado</label>
+          <div class="input-group">
+            <span class="input-group-text">$</span>
+            <input
+              type="number"
+              id="totalPaid"
+              class="form-control"
+              [value]="totalPaid()"
+              readonly>
+          </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label for="remainingToPay" class="form-label">Restante por Pagar</label>
+          <div class="input-group">
+            <span class="input-group-text">$</span>
+            <input
+              type="number"
+              id="remainingToPay"
+              class="form-control"
+              [value]="remainingToPay()"
+              readonly>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Breakdown de Productos Ordenados -->
+    <div class="order-items-section">
+      <h3 class="section-title">Detalle de Productos</h3>
+
+      <div class="order-items-table">
+        <div class="table-responsive">
+          <table class="table table-sm">
+            <thead class="table-light">
+              <tr>
+                <th>Producto</th>
+                <th class="text-center">Cantidad</th>
+                <th class="text-end">Precio Unit.</th>
+                <th class="text-end">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of orderItems(); track item.uuid) {
+                <tr>
+                  <td class="product-name">{{ item.productName }}</td>
+                  <td class="text-center quantity-cell">{{ item.quantity }}</td>
+                  <td class="text-end price-cell">{{ item.unitPrice | currency:'COP':'symbol':'1.0-0' }}</td>
+                  <td class="text-end total-cell">{{ item.subtotal | currency:'COP':'symbol':'1.0-0' }}</td>
+                </tr>
+              }
+            </tbody>
+            <tfoot class="table-light">
+              <tr class="fw-bold">
+                <td colspan="3" class="text-end">Subtotal:</td>
+                <td class="text-end">{{ totalAmount() | currency:'COP':'symbol':'1.0-0' }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Información del Pago -->
+    <div class="payment-details-section">
+      <h3 class="section-title">Información del Pago</h3>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="paymentMethod" class="form-label">Método de Pago *</label>
+          <select
+            id="paymentMethod"
+            class="form-select"
+            formControlName="paymentMethod"
+            [class.is-invalid]="paymentForm.get('paymentMethod')?.invalid && paymentForm.get('paymentMethod')?.touched">
+            <option value="">Seleccionar método de pago</option>
+            @for (method of paymentMethods; track method.value) {
+              <option [value]="method.value">{{ method.label }}</option>
+            }
+          </select>
+          @if (paymentForm.get('paymentMethod')?.invalid && paymentForm.get('paymentMethod')?.touched) {
+            <div class="invalid-feedback">
+              El método de pago es requerido
+            </div>
+          }
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label for="paymentAmount" class="form-label">Monto a Pagar *</label>
+          <div class="input-group">
+            <span class="input-group-text">$</span>
+            <input
+              type="number"
+              id="paymentAmount"
+              class="form-control"
+              formControlName="paymentAmount"
+              min="0"
+              step="0.01"
+              [class.is-invalid]="paymentForm.get('paymentAmount')?.invalid && paymentForm.get('paymentAmount')?.touched">
+          </div>
+          @if (paymentForm.get('paymentAmount')?.invalid && paymentForm.get('paymentAmount')?.touched) {
+            <div class="invalid-feedback">
+              El monto debe ser mayor a 0
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="tip" class="form-label">Propina (Opcional)</label>
+          <div class="input-group">
+            <span class="input-group-text">$</span>
+            <input
+              type="number"
+              id="tip"
+              class="form-control"
+              formControlName="tip"
+              min="0"
+              step="0.01"
+              placeholder="0">
+          </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Total Final</label>
+          <div class="total-display">
+            <span class="total-amount">{{ getTotalWithTip() | currency:'COP':'symbol':'1.0-0' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Campo Transaction ID - Solo para métodos de pago digitales -->
+      @if (requiresTransactionId()) {
+        <div class="row">
+          <div class="col-md-12 mb-3">
+            <label for="transactionId" class="form-label">ID de Transacción</label>
+            <input
+              type="text"
+              id="transactionId"
+              class="form-control"
+              formControlName="transactionId"
+              placeholder="Ingrese el ID de la transacción"
+              maxlength="100">
+            <div class="form-text">
+              Para pagos con tarjeta, transferencias o billeteras digitales, ingrese el ID de la transacción
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Campo Notes - Notas adicionales del pago -->
+      <div class="row">
+        <div class="col-md-12 mb-3">
+          <label for="notes" class="form-label">Notas Adicionales (Opcional)</label>
+          <textarea
+            id="notes"
+            class="form-control"
+            formControlName="notes"
+            rows="3"
+            placeholder="Ingrese cualquier nota o comentario sobre el pago..."
+            maxlength="500">
+          </textarea>
+          <div class="form-text">
+            Campo opcional para agregar comentarios sobre el pago o instrucciones especiales
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="form-actions">
+      <button type="button" class="btn btn-secondary me-2">
+        Cancelar
+      </button>
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="paymentForm.invalid || paymentLoading()">
+        @if (paymentLoading()) {
+          <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          Procesando...
+        } @else {
+          Procesar Pago
+        }
+      </button>
+    </div>
+
+  </form>
+</div>

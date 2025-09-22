@@ -7,7 +7,7 @@ import {HttpClient} from '@angular/common/http';
 import {ApiConfiguration} from './api-configuration';
 
 /**
- * Base class for services
+ * Base class for api
  */
 @Injectable()
 export class BaseService {
@@ -20,15 +20,15 @@ export class BaseService {
   private _rootUrl?: string;
 
   /**
-   * Returns the root url for all operations in this service. If not set directly in this
-   * service, will fallback to `ApiConfiguration.rootUrl`.
+   * Returns the root url for all operations in this store. If not set directly in this
+   * store, will fallback to `ApiConfiguration.rootUrl`.
    */
   get rootUrl(): string {
     return this._rootUrl || this.config.rootUrl;
   }
 
   /**
-   * Sets the root URL for API operations in this service.
+   * Sets the root URL for API operations in this store.
    */
   set rootUrl(rootUrl: string) {
     this._rootUrl = rootUrl;

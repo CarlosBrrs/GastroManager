@@ -1,0 +1,25 @@
+.currency-input {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 0;
+  max-width: 200px; // Limita el ancho máximo
+  width: fit-content; // Se ajusta al contenido
+
+  .currency-symbol {
+    background-color: #f5f5f5;
+    padding: 8px 12px;
+    border-right: 1px solid #ccc;
+    font-weight: bold;
+    color: #666;
+  }
+
+  input {
+    border: none;
+    outline: none;
+    padding: 8px 12px;
+    flex: 1;
+    min-width: 120px; // Ancho mínimo para el input
+  }
+}

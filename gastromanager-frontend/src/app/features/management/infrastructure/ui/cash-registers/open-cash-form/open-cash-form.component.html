@@ -1,0 +1,67 @@
+<div class="open-cash-form">
+  <div class="form-header">
+    <h6 class="form-title">
+      <i class="fas fa-unlock-alt me-2"></i>
+      Abrir Caja Registradora
+    </h6>
+    <small class="text-muted">{{ cashRegister().name }} - {{ cashRegister().location }}</small>
+  </div>
+
+  <div class="form-body">
+    <form [formGroup]="openCashForm" (ngSubmit)="onSubmit()">
+      <!-- Monto inicial -->
+      <div class="mb-3">
+        <label class="form-label">
+          <i class="fas fa-dollar-sign me-1"></i>
+          Monto inicial <span class="text-danger">*</span>
+        </label>
+        <div class="input-group">
+          <span class="input-group-text">$</span>
+          <input
+            type="number"
+            class="form-control"
+            formControlName="openingAmount"
+            placeholder="50,000"
+            min="0"
+            step="1000">
+          <span class="input-group-text">COP</span>
+        </div>
+        @if (openCashForm.get('openingAmount')?.invalid && openCashForm.get('openingAmount')?.touched) {
+          <div class="text-danger mt-1">
+            <small>
+              @if (openCashForm.get('openingAmount')?.errors?.['required']) {
+                El monto inicial es requerido
+              }
+              @if (openCashForm.get('openingAmount')?.errors?.['min']) {
+                El monto debe ser mayor o igual a 0
+              }
+            </small>
+          </div>
+        }
+      </div>
+
+      <!-- Notas opcionales -->
+      <div class="mb-3">
+        <label class="form-label">
+          <i class="fas fa-sticky-note me-1"></i>
+          Notas (opcional)
+        </label>
+        <textarea
+          class="form-control"
+          formControlName="notes"
+          rows="2"
+          placeholder="Notas sobre la apertura..."></textarea>
+      </div>
+
+      <!-- Botones de acción -->
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary btn-sm" (click)="onCancel()">
+          <i class="fas fa-times me-1"></i>Cancelar
+        </button>
+        <button type="submit" class="btn btn-success btn-sm" [disabled]="openCashForm.invalid">
+          <i class="fas fa-unlock-alt me-1"></i>Abrir Caja
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
