@@ -7,7 +7,6 @@ import {InventoryFormComponent} from "../../inventory/inventory-form/inventory-f
 import {ConfirmationService, PrimeTemplate} from "primeng/api";
 import {Table, TableModule, TableRowSelectEvent} from "primeng/table";
 import {ToolbarModule} from "primeng/toolbar";
-import {ProductItemResponseDto} from "../../../core/model/interfaces/ProductItemResponseDto";
 import {ProductItemFormComponent} from "../product-item-form/product-item-form.component";
 import {CheckboxChangeEvent, CheckboxModule} from "primeng/checkbox";
 import {ConfirmDialogModule} from "primeng/confirmdialog";
@@ -68,8 +67,8 @@ export class ProductItemTableComponent {
 
   hideDialog() {
     this.visibleModal = false;
-    this.selectedProductItem = undefined;  // Desseleccionamos el ingrediente
-    this.table.clear();  // Limpiamos la selección en la tabla
+    this.selectedProductItem = undefined;
+    this.table.clear();
   }
 
   editProductItem(productItem: any) {
@@ -157,7 +156,7 @@ export class ProductItemTableComponent {
     this.selectedProductItem = undefined;
     if (this.filterValue) {
       setTimeout(() => {
-        this.onGlobalFilter(this.table, { target: { value: this.filterValue } } as unknown as Event);
+        this.onGlobalFilter(this.table, {target: {value: this.filterValue}} as unknown as Event);
       }, 0);
     }
   }
@@ -168,6 +167,6 @@ export class ProductItemTableComponent {
     if (inputElement) {
       inputElement.value = this.filterValue;
     }
-    this.onGlobalFilter(this.table, { target: { value: this.filterValue } } as unknown as Event);
+    this.onGlobalFilter(this.table, {target: {value: this.filterValue}} as unknown as Event);
   }
 }

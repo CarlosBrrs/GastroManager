@@ -13,7 +13,7 @@ import {UserRestControllerService} from './services/user-rest-controller.service
 import {AuthRestControllerService} from './services/auth-rest-controller.service';
 
 /**
- * Module that provides all services and configuration.
+ * Module that provides all api and configuration.
  */
 @NgModule({
   imports: [],

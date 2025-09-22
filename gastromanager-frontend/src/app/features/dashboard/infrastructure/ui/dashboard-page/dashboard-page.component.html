@@ -1,0 +1,126 @@
+<div class="dashboard-container">
+  <!-- Header del Dashboard -->
+  <div class="dashboard-header">
+    <div class="welcome-section">
+      <img src="assets/images/gm-logo.svg" alt="GastroManager Logo" class="dashboard-logo">
+      <div class="welcome-text">
+        <h1>Dashboard</h1>
+        <p class="restaurant-name">{{ selectedRestaurant()?.name || 'Sin nombre/error' }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Métricas principales -->
+  <div class="stats-grid">
+    <div class="stat-card sales">
+      <div class="stat-icon">💰</div>
+      <div class="stat-content">
+        <h3>Ventas del Día</h3>
+        <p class="stat-value">${{ stats().dailySales }}</p>
+      </div>
+    </div>
+
+    <div class="stat-card orders">
+      <div class="stat-icon">🍽️</div>
+      <div class="stat-content">
+        <h3>Órdenes Activas</h3>
+        <p class="stat-value">{{ stats().activeOrders }}</p>
+      </div>
+    </div>
+
+    <div class="stat-card popular">
+      <div class="stat-icon">⭐</div>
+      <div class="stat-content">
+        <h3>Más Vendido</h3>
+        <p class="stat-value">{{ stats().popularProduct }}</p>
+        <span class="stat-subtitle">{{ stats().popularProductCount }} vendidos</span>
+      </div>
+    </div>
+
+    <div class="stat-card table">
+      <div class="stat-icon">🪑</div>
+      <div class="stat-content">
+        <h3>Mesa Activa</h3>
+        <p class="stat-value">{{ stats().activeTable }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Widgets principales -->
+  <div class="widgets-grid">
+    <!-- Widget de Órdenes Recientes -->
+    <div class="widget recent-orders">
+      <div class="widget-header">
+        <h2>Órdenes Recientes</h2>
+        <button class="widget-action" (click)="onCreateNewOrder()">+ Nueva Orden</button>
+      </div>
+      <div class="widget-content">
+        @for (order of recentOrders(); track order.id) {
+          <div class="order-item" (click)="onViewOrderDetails(order.id)">
+            <div class="order-info">
+              <span class="order-id">{{ order.id }}</span>
+              <span class="order-table">{{ order.table }}</span>
+            </div>
+            <div class="order-details">
+              <span class="order-total">${{ order.total }}</span>
+              <span class="order-status" [class]="'status-' + order.status">
+                {{ order.status === 'pending' ? 'Pendiente' :
+                   order.status === 'preparing' ? 'Preparando' :
+                   order.status === 'ready' ? 'Listo' : 'Entregado' }}
+              </span>
+            </div>
+            <span class="order-time">{{ order.time }}</span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Widget de Productos Populares -->
+    <div class="widget popular-products">
+      <div class="widget-header">
+        <h2>Productos Populares</h2>
+        <button class="widget-action" (click)="onViewInventory()">Ver Inventario</button>
+      </div>
+      <div class="widget-content">
+        @for (product of popularProducts(); track product.name) {
+          <div class="product-item">
+            <div class="product-info">
+              <span class="product-name">{{ product.name }}</span>
+              <span class="product-revenue">${{ product.revenue }}</span>
+            </div>
+            <div class="product-stats">
+              <span class="product-sold">{{ product.sold }} vendidos</span>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Widget de Acciones Rápidas -->
+    <div class="widget quick-actions">
+      <div class="widget-header">
+        <h2>Acciones Rápidas</h2>
+      </div>
+      <div class="widget-content">
+        <div class="actions-grid">
+          <button class="action-button" (click)="onCreateNewOrder()">
+            <span class="action-icon">🍽️</span>
+            <span>Nueva Orden</span>
+          </button>
+          <button class="action-button" (click)="onViewInventory()">
+            <span class="action-icon">📦</span>
+            <span>Inventario</span>
+          </button>
+          <button class="action-button">
+            <span class="action-icon">📊</span>
+            <span>Reportes</span>
+          </button>
+          <button class="action-button">
+            <span class="action-icon">⚙️</span>
+            <span>Configuración</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -31,4 +31,4 @@ export function addIngredient(http: HttpClient, rootUrl: string, params: AddIngr
   );
 }
 
-addIngredient.PATH = '/api/v1/ingredients';
+addIngredient.PATH = '/api/v1/ingredients-page';

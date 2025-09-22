@@ -1,0 +1,516 @@
+// =============================================================================
+// DASHBOARD PAGE - RESPONSIVE MOBILE FIRST
+// =============================================================================
+
+/* CONTAINER PRINCIPAL */
+.dashboard-container {
+  // 📱 Mobile (0px+) - Agrega aquí propiedades base
+  min-height: 100vh;
+  background: var(--surface-ground);
+  padding: 1rem;
+
+  // 📱 Tablet (576px+) - Agrega aquí cambios para tablet
+  @media (min-width: 576px) {
+    padding: 1.5rem;
+  }
+
+  // 💻 Desktop (768px+) - Agrega aquí cambios para desktop
+  @media (min-width: 768px) {
+    padding: 2rem;
+  }
+}
+
+/* HEADER DEL DASHBOARD */
+.dashboard-header {
+  // 📱 Mobile (0px+) - Agrega aquí propiedades base
+  margin-bottom: 2rem;
+
+  // 💻 Desktop (768px+) - Agrega aquí cambios para desktop
+  @media (min-width: 768px) {
+    margin-bottom: 2.5rem;
+  }
+}
+
+.welcome-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  .dashboard-logo {
+    // 📱 Mobile (0px+) - Agrega aquí propiedades base
+    width: 3rem;
+    height: 3rem;
+
+    // 💻 Desktop (768px+) - Agrega aquí cambios para desktop
+    @media (min-width: 768px) {
+      width: 4rem;
+      height: 4rem;
+    }
+  }
+
+  .welcome-text {
+    h1 {
+      color: var(--text-color);
+      margin: 0;
+      // 📱 Mobile (0px+) - Agrega aquí propiedades base
+      font-size: 1.5rem;
+      font-weight: 600;
+
+      // 💻 Desktop (768px+) - Agrega aquí cambios para desktop
+      @media (min-width: 768px) {
+        font-size: 2rem;
+      }
+    }
+
+    .restaurant-name {
+      color: var(--text-color-secondary);
+      margin: 0;
+      // 📱 Mobile (0px+) - Agrega aquí propiedades base
+      font-size: 0.9rem;
+
+      // 💻 Desktop (768px+) - Agrega aquí cambios para desktop
+      @media (min-width: 768px) {
+        font-size: 1.1rem;
+      }
+    }
+  }
+}
+
+/* GRID DE ESTADÍSTICAS */
+.stats-grid {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 2rem;
+
+  // 📱 Mobile (0px+) - 1 columna
+  grid-template-columns: 1fr;
+
+  // 📱 Tablet (576px+) - 2 columnas
+  @media (min-width: 576px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  // 💻 Desktop (768px+) - 4 columnas
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+/* TARJETAS DE ESTADÍSTICAS */
+.stat-card {
+  background: var(--surface-card);
+  border: 1px solid var(--surface-border);
+  border-radius: 8px;
+  box-shadow: var(--shadow-2);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  // 📱 Mobile (0px+) - Agrega aquí propiedades base
+  padding: 1rem;
+
+  // 📱 Tablet (576px+) - Agrega aquí cambios para tablet
+  @media (min-width: 576px) {
+    padding: 1.25rem;
+    border-radius: 10px;
+  }
+
+  // 💻 Desktop (768px+) - Agrega aquí cambios para desktop
+  @media (min-width: 768px) {
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow-3);
+  }
+
+  .stat-icon {
+    // 📱 Mobile (0px+) - Agrega aquí propiedades base
+    font-size: 1.5rem;
+
+    // 💻 Desktop (768px+) - Agrega aquí cambios para desktop
+    @media (min-width: 768px) {
+      font-size: 2rem;
+    }
+  }
+
+  .stat-content {
+    flex: 1;
+
+    h3 {
+      color: var(--text-color-secondary);
+      margin: 0 0 0.25rem 0;
+      // 📱 Mobile (0px+) - Agrega aquí propiedades base
+      font-size: 0.8rem;
+      font-weight: 500;
+
+      // 💻 Desktop (768px+) - Agrega aquí cambios para desktop
+      @media (min-width: 768px) {
+        font-size: 0.9rem;
+      }
+    }
+
+    .stat-value {
+      color: var(--text-color);
+      margin: 0;
+      // 📱 Mobile (0px+) - Agrega aquí propiedades base
+      font-size: 1.25rem;
+      font-weight: 700;
+
+      // 💻 Desktop (768px+) - Agrega aquí cambios para desktop
+      @media (min-width: 768px) {
+        font-size: 1.5rem;
+      }
+    }
+
+    .stat-subtitle {
+      color: var(--text-color-secondary);
+      // 📱 Mobile (0px+) - Agrega aquí propiedades base
+      font-size: 0.75rem;
+
+      // 💻 Desktop (768px+) - Agrega aquí cambios para desktop
+      @media (min-width: 768px) {
+        font-size: 0.8rem;
+      }
+    }
+  }
+}
+
+/* GRID DE WIDGETS */
+.widgets-grid {
+  display: grid;
+  gap: 1.5rem;
+
+  // 📱 Mobile (0px+) - 1 columna
+  grid-template-columns: 1fr;
+
+  // 💻 Desktop (768px+) - 2 columnas
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+
+  // 🖥️ Large Desktop (1200px+) - 3 columnas
+  @media (min-width: 1200px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* WIDGETS */
+.widget {
+  background: var(--surface-card);
+  border: 1px solid var(--surface-border);
+  border-radius: 8px;
+  box-shadow: var(--shadow-2);
+
+  // 📱 Mobile (0px+) - Agrega aquí propiedades base
+
+  // 📱 Tablet (576px+) - Agrega aquí cambios para tablet
+  @media (min-width: 576px) {
+    border-radius: 10px;
+  }
+
+  // 💻 Desktop (768px+) - Agrega aquí cambios para desktop
+  @media (min-width: 768px) {
+    border-radius: 12px;
+    box-shadow: var(--shadow-3);
+  }
+
+  .widget-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--surface-border);
+
+    // 📱 Mobile (0px+) - Agrega aquí propiedades base
+    padding: 1rem;
+
+    // 💻 Desktop (768px+) - Agrega aquí cambios para desktop
+    @media (min-width: 768px) {
+      padding: 1.25rem;
+    }
+
+    h2 {
+      color: var(--text-color);
+      margin: 0;
+      // 📱 Mobile (0px+) - Agrega aquí propiedades base
+      font-size: 1.1rem;
+      font-weight: 600;
+
+      // 💻 Desktop (768px+) - Agrega aquí cambios para desktop
+      @media (min-width: 768px) {
+        font-size: 1.25rem;
+      }
+    }
+
+    .widget-action {
+      background: var(--primary-color);
+      color: var(--primary-color-text);
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s ease;
+
+      // 📱 Mobile (0px+) - Agrega aquí propiedades base
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8rem;
+
+      // 💻 Desktop (768px+) - Agrega aquí cambios para desktop
+      @media (min-width: 768px) {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+        border-radius: 8px;
+      }
+
+      &:hover {
+        background: var(--primary-600);
+        transform: translateY(-1px);
+      }
+    }
+  }
+
+  .widget-content {
+    // 📱 Mobile (0px+) - Agrega aquí propiedades base
+    padding: 1rem;
+
+    // 💻 Desktop (768px+) - Agrega aquí cambios para desktop
+    @media (min-width: 768px) {
+      padding: 1.25rem;
+    }
+  }
+}
+
+/* ITEMS DE ÓRDENES */
+.order-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--surface-border);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background: var(--surface-hover);
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .order-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    .order-id {
+      color: var(--text-color);
+      font-weight: 600;
+      // 📱 Mobile (0px+) - Agrega aquí propiedades base
+      font-size: 0.9rem;
+
+      // 💻 Desktop (768px+) - Agrega aquí cambios para desktop
+      @media (min-width: 768px) {
+        font-size: 1rem;
+      }
+    }
+
+    .order-table {
+      color: var(--text-color-secondary);
+      // 📱 Mobile (0px+) - Agrega aquí propiedades base
+      font-size: 0.8rem;
+
+      // 💻 Desktop (768px+) - Agrega aquí cambios para desktop
+      @media (min-width: 768px) {
+        font-size: 0.9rem;
+      }
+    }
+  }
+
+  .order-details {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.25rem;
+
+    .order-total {
+      color: var(--text-color);
+      font-weight: 600;
+      // 📱 Mobile (0px+) - Agrega aquí propiedades base
+      font-size: 0.9rem;
+
+      // 💻 Desktop (768px+) - Agrega aquí cambios para desktop
+      @media (min-width: 768px) {
+        font-size: 1rem;
+      }
+    }
+
+    .order-status {
+      padding: 0.25rem 0.5rem;
+      border-radius: 12px;
+      font-weight: 500;
+      // 📱 Mobile (0px+) - Agrega aquí propiedades base
+      font-size: 0.7rem;
+
+      // 💻 Desktop (768px+) - Agrega aquí cambios para desktop
+      @media (min-width: 768px) {
+        font-size: 0.75rem;
+        padding: 0.3rem 0.6rem;
+      }
+
+      &.status-pending {
+        background: rgba(255, 193, 7, 0.2);
+        color: #ffc107;
+      }
+
+      &.status-preparing {
+        background: rgba(33, 150, 243, 0.2);
+        color: #2196f3;
+      }
+
+      &.status-ready {
+        background: rgba(76, 175, 80, 0.2);
+        color: #4caf50;
+      }
+
+      &.status-delivered {
+        background: rgba(158, 158, 158, 0.2);
+        color: #9e9e9e;
+      }
+    }
+  }
+
+  .order-time {
+    color: var(--text-color-secondary);
+    // 📱 Mobile (0px+) - Agrega aquí propiedades base
+    font-size: 0.8rem;
+
+    // 💻 Desktop (768px+) - Agrega aquí cambios para desktop
+    @media (min-width: 768px) {
+      font-size: 0.9rem;
+    }
+  }
+}
+
+/* ITEMS DE PRODUCTOS */
+.product-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--surface-border);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .product-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    .product-name {
+      color: var(--text-color);
+      font-weight: 500;
+      // 📱 Mobile (0px+) - Agrega aquí propiedades base
+      font-size: 0.9rem;
+
+      // 💻 Desktop (768px+) - Agrega aquí cambios para desktop
+      @media (min-width: 768px) {
+        font-size: 1rem;
+      }
+    }
+
+    .product-revenue {
+      color: var(--primary-color);
+      font-weight: 600;
+      // 📱 Mobile (0px+) - Agrega aquí propiedades base
+      font-size: 0.8rem;
+
+      // 💻 Desktop (768px+) - Agrega aquí cambios para desktop
+      @media (min-width: 768px) {
+        font-size: 0.9rem;
+      }
+    }
+  }
+
+  .product-stats {
+    .product-sold {
+      color: var(--text-color-secondary);
+      // 📱 Mobile (0px+) - Agrega aquí propiedades base
+      font-size: 0.8rem;
+
+      // 💻 Desktop (768px+) - Agrega aquí cambios para desktop
+      @media (min-width: 768px) {
+        font-size: 0.9rem;
+      }
+    }
+  }
+}
+
+/* ACCIONES RÁPIDAS */
+.actions-grid {
+  display: grid;
+  gap: 0.75rem;
+
+  // 📱 Mobile (0px+) - 2 columnas
+  grid-template-columns: repeat(2, 1fr);
+
+  // 💻 Desktop (768px+) - 4 columnas
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+}
+
+.action-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--surface-0);
+  border: 1px solid var(--surface-border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  // 📱 Mobile (0px+) - Agrega aquí propiedades base
+  padding: 1rem;
+
+  // 💻 Desktop (768px+) - Agrega aquí cambios para desktop
+  @media (min-width: 768px) {
+    padding: 1.25rem;
+    border-radius: 10px;
+  }
+
+  &:hover {
+    background: var(--surface-hover);
+    border-color: var(--primary-color);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-2);
+  }
+
+  .action-icon {
+    // 📱 Mobile (0px+) - Agrega aquí propiedades base
+    font-size: 1.5rem;
+
+    // 💻 Desktop (768px+) - Agrega aquí cambios para desktop
+    @media (min-width: 768px) {
+      font-size: 1.75rem;
+    }
+  }
+
+  span:last-child {
+    color: var(--text-color);
+    font-weight: 500;
+    text-align: center;
+    // 📱 Mobile (0px+) - Agrega aquí propiedades base
+    font-size: 0.8rem;
+
+    // 💻 Desktop (768px+) - Agrega aquí cambios para desktop
+    @media (min-width: 768px) {
+      font-size: 0.9rem;
+    }
+  }
+}
+

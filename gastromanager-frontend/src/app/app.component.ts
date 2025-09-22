@@ -3,6 +3,7 @@ import {RouterOutlet} from '@angular/router';
 import {LoginComponent} from "./pages/login/login.component";
 import {ConfirmationService, MessageService, PrimeNGConfig} from "primeng/api";
 import {ToastModule} from "primeng/toast";
+import {LoginAdapter} from "./features/auth/infrastructure/api/login.adapter";
 
 @Component({
   selector: 'gm-root',

@@ -1,0 +1,76 @@
+.page-container {
+  padding: 2rem;
+  min-height: 100vh;
+  background: var(--surface-ground, #f8f9fa);
+}
+
+.management-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--surface-border, #ddd);
+
+  h1 {
+    color: var(--text-color-primary, #ffffff);
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    color: var(--text-color-secondary, #cccccc);
+    font-size: 1.1rem;
+    margin: 0;
+  }
+}
+
+.management-content {
+  background: var(--surface-card, #ffffff);
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  .placeholder-content {
+    h2 {
+      color: var(--primary-color, #007bff);
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+    }
+
+    p {
+      color: var(--text-color, #333333);
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+
+    ul {
+      color: var(--text-color, #333333);
+      padding-left: 1.5rem;
+
+      li {
+        margin-bottom: 0.5rem;
+        line-height: 1.5;
+      }
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .page-container {
+    padding: 1rem;
+  }
+
+  .management-header {
+    h1 {
+      font-size: 1.5rem;
+    }
+
+    p {
+      font-size: 1rem;
+    }
+  }
+
+  .management-content {
+    padding: 1.5rem;
+  }
+}

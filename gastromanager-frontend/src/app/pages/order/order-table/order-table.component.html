@@ -23,11 +23,14 @@
   <p-table
     #dt
     [(selection)]="selectedOrder"
-    [globalFilterFields]="['name']"
+    [globalFilterFields]="['code']"
+    [metaKeySelection]="false"
     [paginator]="true"
     [resizableColumns]="true"
     [rowHover]="true"
-    [rows]="8"
+    [rows]="7"
+    [loading]="loading"
+    loadingIcon="pi pi-spin pi-spinner"
     [showCurrentPageReport]="true"
     sortField="updatedDate"
     [sortOrder]="-1"
@@ -35,6 +38,8 @@
     [value]="data"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
     dataKey="uuid"
+    selectionMode="single"
+    (onRowSelect)="onRowSelect($event)"
   >
     <ng-template pTemplate="header">
       <tr>
@@ -67,9 +72,12 @@
           Items ordered
           <p-sortIcon field="itemsOrdered"/>
         </th>
-        <th pResizableColumn pSortableColumn="status" scope="col" style="min-width:10rem">
-          Status
-          <p-sortIcon field="status"/>
+        <th pResizableColumn pSortableColumn="operationalStatus" scope="col" style="min-width:12rem">
+          Operational Status
+          <p-sortIcon field="operationalStatus"/>
+        </th>
+        <th pResizableColumn scope="col" style="min-width:18rem">
+          Payment & Actions
         </th>
         <!--        <th pResizableColumn scope="col" style="min-width:10rem">-->
         <!--          Enable for menu-->
@@ -78,7 +86,7 @@
       </tr>
     </ng-template>
     <ng-template let-order pTemplate="body">
-      <tr>
+      <tr [pSelectableRow]="order">
         <td>
           {{ order.code }}
         </td>
@@ -90,17 +98,17 @@
         </td>
 
         <td>
-          {{ order.totalPrice  | currency: 'CAD':'symbol-narrow': '1.2-5' }}
+          {{ order.totalPrice  | currency: 'COP':'symbol-narrow': '1.2-5' }}
         </td>
         <td>
           <ul>
-            @for(orderItem of order.orderItems; track $index) {
-              <li>{{orderItem.productItemName}} x {{orderItem.quantity}}</li>
+            @for (orderItem of order.orderItems; track $index) {
+              <li>{{ orderItem.productItemName }} x {{ orderItem.quantity }}</li>
             }
           </ul>
         </td>
         <td>
-          <p-tag [value]="order.status" />
+          <p-tag [value]="order.operationalStatus"/>
 
         </td>
         <!--        <td>
@@ -109,6 +117,30 @@
                     [(ngModel)]="productItem.isEnabled"
                     (onChange)="onToggleEnableConfirm(productItem, $event)"
                     [inputId]="productItem.uuid"/>-->
+
+        <td style="min-width: 18rem;">
+          <div class="flex flex-column gap-3">
+            <!-- Estado de Pago -->
+            <!--              *ngIf="orders.invoicingStatus === 'Fully Invoiced'"-->
+            <p-tag
+              [value]="order.paymentStatus"
+              [severity]="getPaymentStatusColor(order.paymentStatus)"
+            />
+            <!-- Acciones de Pago -->
+            <div class="flex flex-column gap-2">
+              <!--                *ngIf="orders.invoicingStatus === 'Fully Invoiced' && orders.paymentStatus !== 'Paid'"-->
+              <p-button
+                (onClick)="openPaymentModal(order)"
+                [outlined]="true"
+                [rounded]="true"
+                [disabled]="order.invoicingStatus === 'Fully Invoiced' && order.paymentStatus !== 'Paid'"
+                icon="pi pi-credit-card"
+                label="Pay Now"
+                severity="danger"
+              />
+            </div>
+          </div>
+        </td>
         <td>
           <p-button
             (onClick)="editOrder(order)"
@@ -117,13 +149,8 @@
             class="mr-2"
             icon="pi pi-pencil"
             severity="success"/>
-<!--          <p-button
-            (onClick)="deleteProductItem(productItem.uuid)"
-            [outlined]="true"
-            [rounded]="true"
-            icon="pi pi-trash"
-            severity="danger"/>-->
         </td>
+
       </tr>
     </ng-template>
     <ng-template pTemplate="summary">
@@ -132,6 +159,248 @@
       </div>
     </ng-template>
   </p-table>
+  <p-sidebar [(visible)]="sidebarVisible" position="right" (onHide)="toggleDetailsSidebar('')" styleClass="w-30rem">
+    @if (!selectedOrder) {
+      <div class="p-4 text-center">
+        <p-progressSpinner></p-progressSpinner>
+        <p>Cargando detalles de la orden...</p>
+      </div>
+    } @else {
+      <h3>Order Details</h3>
+      <!-- Verifica si hay un ingrediente seleccionado antes de mostrar los detalles -->
+      @if (selectedOrder) {
+        <div>
+          <p><strong>Code:</strong> {{ selectedOrder.code }}</p>
+          <p><strong>Placed by:</strong> {{ selectedOrder.user }}</p>
+          <p><strong>Total amount:</strong> {{ selectedOrder.totalPrice | currency: 'COP':'symbol-narrow': '1.2-2' }}
+          </p>
+          <p><strong>Operational Status:</strong> {{ selectedOrder.operationalStatus }}</p>
+          <p><strong>Invoicing Status:</strong> {{ selectedOrder.invoicingStatus }}</p>
+
+          <h4>Facturas Generadas</h4>
+          <p-accordion [multiple]="false">
+            @for (invoice of selectedOrder.invoices; track $index) {
+              <p-accordionTab header="Factura">
+                <div>
+                  <p><strong>UUID:</strong> {{ invoice.uuid }}</p>
+                  <p><strong>Monto:</strong> {{ invoice.amount | currency: 'COP':'symbol-narrow': '1.2-2' }}</p>
+                  <p><strong>Estado:</strong> {{ invoice.status }}</p>
+                  <p><strong>Creado por:</strong> {{ invoice.createdBy }}</p>
+                  <p><strong>Fecha de Creación:</strong> {{ invoice.createdDate | date:'short' }}</p>
+                  <!-- Botones condicionales según el estado -->
+                  <div class="flex gap-2 mt-3">
+                    <!-- Si está pendiente -->
+                    @if (invoice.status === 'PENDING') {
+
+                      <button pButton type="button" label="Pagar" icon="pi pi-credit-card" class="p-button-success"
+                              (click)="payInvoice(invoice)"></button>
+                      <button pButton type="button" label="Ver Detalle" icon="pi pi-eye" class="p-button-info"
+                              (click)="viewInvoice(invoice)"></button>
+                      <button pButton type="button" label="Modificar" icon="pi pi-pencil" class="p-button-warning"
+                              (click)="editInvoice(invoice)"></button>
+                      <button pButton type="button" label="Anular" icon="pi pi-times" class="p-button-danger"
+                              (click)="cancelInvoice(invoice)"></button>
+
+                    } @else if (invoice.status === 'PAID') {
+                      <button pButton type="button" label="Ver Factura" icon="pi pi-file" class="p-button-secondary"
+                              (click)="viewInvoice(invoice)"></button>
+
+                    } @else if ((invoice.status === 'CANCELLED')) {
+                      <button pButton type="button" label="Eliminar" icon="pi pi-trash" class="p-button-danger"
+                              (click)="deleteInvoice(invoice)"></button>
+                    }
+                  </div>
+                </div>
+              </p-accordionTab>
+            }
+          </p-accordion>
+          <h4>Items pendientes</h4>
+          {{ uninvoicedItems | json }}
+          <h4>Generar nueva factura</h4>
+          <p-button
+            (onClick)="openInvoiceModal(selectedOrder)"
+            [outlined]="true"
+            [rounded]="true"
+            [disabled]="selectedOrder.operationalStatus === 'Entregado' && selectedOrder.invoicingStatus !== 'Fully Invoiced'"
+            icon="pi pi-barcode"
+            label="Generate"
+            severity="info"
+          />
+        </div>
+      }
+      <ng-template #noOrderSelected>
+        <p>No hay una orden seleccionada.</p>
+      </ng-template>
+    }
+  </p-sidebar>
+
+  <!-- Modal para generar factura -->
+  <p-dialog
+    [(visible)]="invoiceModalVisible"
+    [modal]="true"
+    [style]="{ width: '60vw' }"
+    header="Generate Invoice"
+    (onHide)="closeInvoiceModal()">
+    <form [formGroup]="invoiceForm" (submit)="generateInvoice()">
+      <div class="mb-3">
+        <label for="customerName">Customer Name:</label>
+        <input type="text" pInputText formControlName="customerName" id="customerName"/>
+      </div>
+      <div class="mb-3">
+        <label for="customerName">Customer Phone:</label>
+        <input type="text" pInputText formControlName="customerPhone" id="customerPhone"/>
+      </div>
+      <div class="mb-3">
+        <label for="customerName">Customer Email:</label>
+        <input type="text" pInputText formControlName="customerEmail" id="customerEmail"/>
+      </div>
+
+      <!-- Picklist para seleccionar items -->
+      <div class="mb-3">
+        <label>Select Items for Invoice:</label>
+        <p-pickList
+          [source]="uninvoicedItems"
+          [target]="selectedItems"
+          sourceHeader="Available Items"
+          targetHeader="Selected Items"
+          [dragdrop]="true"
+          [responsive]="true"
+          filterBy="productItemName"
+          [sourceFilterPlaceholder]="'Search available items'"
+          [targetFilterPlaceholder]="'Search selected items'"
+          (onMoveToTarget)="updateInvoiceItems()"
+          (onMoveAllToTarget)="updateInvoiceItems()"
+          (onMoveToSource)="updateInvoiceItems()"
+          (onMoveAllToSource)="updateInvoiceItems()">
+          <ng-template let-orderItem pTemplate="item">
+            <div class="flex flex-wrap p-2 align-items-center gap-3">
+              <!--<img
+                class="w-4rem shadow-2 flex-shrink-0 border-round"
+                src="https://primefaces.org/cdn/primeng/images/demo/product/{{ product.image }}"
+                alt="{item.name}" />-->
+              <div class="flex-1 flex flex-column gap-2">
+                        <span class="font-bold">
+                            {{ orderItem.productItemName }}
+                        </span>
+                <!--                <div class="flex align-items-center gap-2">
+                                  <i class="pi pi-tag text-sm"></i>
+                                  <span>
+                                                {{ orderItem.category }}
+                                            </span>
+                                </div>-->
+              </div>
+              <span class="font-bold text-900">
+                        {{ '$' + orderItem.unitPrice }}
+                    </span>
+            </div>
+          </ng-template>
+        </p-pickList>
+      </div>
+      <!-- Dentro del modal, después del PickList -->
+      <h5 class="mt-3">Invoice Breakdown</h5>
+      <p-table
+        [value]="groupedItems"
+        [tableStyle]="{ 'min-width': '60rem' }"
+        styleClass="p-datatable-striped"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Unit Price (Pre-Tax)</th>
+            <th>Total (Pre-Tax)</th>
+            <th>IVA (8%)</th>
+            <th>Total with IVA</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-item>
+          <tr>
+            <td>{{ item.productItemName }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.preTaxUnitPrice | currency: 'COP' }}</td>
+            <td>{{ item.totalPreTax | currency: 'COP' }}</td>
+            <td>{{ item.totalVAT | currency: 'COP' }}</td>
+            <td>{{ item.totalWithVAT | currency: 'COP' }}</td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+          <tr>
+            <th colspan="3" class="text-right">Subtotal (Pre-Tax):</th>
+            <td>{{ subtotal | currency: 'COP' }}</td>
+            <th>VAT Total:</th>
+            <td>{{ taxTotal | currency: 'COP' }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+
+      <!-- Sección de propina con Reactive Forms -->
+      <div class="card mt-3">
+        <h5>Tip</h5>
+
+        <!-- Botones de propina rápida -->
+        <div class="flex gap-2 mb-3">
+          <p-button
+            label="No Tip"
+            (onClick)="setTip(0)"
+            [outlined]="tipPercentage !== 0"
+            severity="secondary"
+          />
+          <p-button
+            label="3%"
+            (onClick)="setTip(3)"
+            [outlined]="tipPercentage !== 3"
+            severity="success"
+          />
+          <p-button
+            label="5%"
+            (onClick)="setTip(5)"
+            [outlined]="tipPercentage !== 5"
+            severity="warning"
+          />
+          <p-button
+            label="10%"
+            (onClick)="setTip(10)"
+            [outlined]="tipPercentage !== 10"
+            severity="danger"
+          />
+        </div>
+
+        <!-- Campo para propina personalizada -->
+        <div class="flex align-items-center gap-2">
+          <span>Custom Tip:</span>
+          <p-inputNumber
+            formControlName="tipAmount"
+            [min]="0"
+            mode="currency"
+            currency="COP"
+            placeholder="Enter amount"
+          />
+        </div>
+      </div>
+
+      <!-- Totales finales -->
+      <div class="mt-3">
+        <div class="flex justify-content-end gap-3">
+          <div>
+            <p>Total with VAT: <strong>{{ (subtotal + taxTotal) | currency: 'COP' }}</strong></p>
+            <p>Tip: <strong>{{ tipAmount | currency: 'COP' }}</strong></p>
+            <hr>
+            <p class="text-xl">Final Total:
+              <strong class="text-primary">{{ finalTotal | currency: 'COP' }}</strong>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <p-button
+        type="submit"
+        label="Generate"
+        icon="pi pi-check"
+        severity="success"/>
+    </form>
+  </p-dialog>
 
   <p-confirmDialog></p-confirmDialog>
 </div>

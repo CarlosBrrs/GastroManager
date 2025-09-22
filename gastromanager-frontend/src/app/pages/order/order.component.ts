@@ -9,12 +9,14 @@ import {ProductItemTableComponent} from "../product-item/product-item-table/prod
 import {OrderTableComponent} from "./order-table/order-table.component";
 import {ToastModule} from "primeng/toast";
 import {MessageService} from "primeng/api";
-import {OrderStore} from "../../core/store/order/order.store";
+import {OrdersStore} from "../../core/store/orders/ordersStore";
 import {StoreEventService} from "../../core/services/store-event/store-event.service";
 import {Subject, takeUntil} from "rxjs";
+import {InvoiceRequestDto} from "../../core/model/interfaces/InvoiceRequestDto";
+import {Order, UninvoicedOrderItem} from "../../core/store/orders/order.model";
 
 @Component({
-  selector: 'gm-order',
+  selector: 'gm-orders',
   standalone: true,
   imports: [
     AccordionModule,
@@ -32,8 +34,12 @@ import {Subject, takeUntil} from "rxjs";
 })
 export class OrderComponent implements OnInit, OnDestroy {
 
-  orderStore = inject(OrderStore)
+  orderStore = inject(OrdersStore)
   private readonly destroy$ = new Subject<void>();
+  invoiceModalVisible = false;
+  selectedOrder: Order | undefined = undefined;
+  uninvoicedItems: UninvoicedOrderItem[] = [];
+  sidebarVisible: boolean = false;
 
   constructor(private readonly messageService: MessageService, private readonly storeEventService: StoreEventService) {
     // Efecto para manejar eventos de éxito
@@ -78,6 +84,25 @@ export class OrderComponent implements OnInit, OnDestroy {
     });
   }
 
+  handleOpenInvoiceModal(order: Order) {
+    this.selectedOrder = order;
+    this.invoiceModalVisible = true; // Abre el modal inmediatamente (opcional: agregar un loading)
+
+    this.orderStore.getUninvoicedOrderItems(order.uuid).subscribe(uninvoicedItems => {
+      console.log(uninvoicedItems)
+      this.uninvoicedItems = uninvoicedItems.flatMap((item: UninvoicedOrderItem) =>
+        Array.from({length: item.quantity}, () => ({
+          ...item,
+        }))
+      );
+    });
+  }
+
+  handleCloseInvoiceModal() {
+    this.invoiceModalVisible = false;
+    // this.selectedOrder = null;
+    this.uninvoicedItems = [];
+  }
 
   handleAdd($event: any) {
     alert("method to handle add orders")
@@ -99,4 +124,23 @@ export class OrderComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  handleInvoices(data: { orderUuid: string; payload: InvoiceRequestDto }) {
+    console.log(data)
+    this.orderStore.generateInvoices(data.orderUuid, data.payload).subscribe(() => {
+      this.handleCloseInvoiceModal()
+    });
+  }
+
+  handleToggleSidebar(uuid: string) {
+    if (!uuid) {
+      this.sidebarVisible = false;
+      this.selectedOrder = undefined;
+    } else {
+      this.sidebarVisible = true;
+      this.selectedOrder = undefined; // activa el estado "cargando"
+      this.orderStore.getOrderDetails(uuid).subscribe(order => {
+        this.selectedOrder = order;
+      });
+    }
+  }
 }

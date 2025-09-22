@@ -1,0 +1,21 @@
+.create-order-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 100vh;
+  gap: 0;
+
+  .products-section {
+    overflow-y: auto;
+  }
+
+  .order-section {
+    overflow-y: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .create-order-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+}

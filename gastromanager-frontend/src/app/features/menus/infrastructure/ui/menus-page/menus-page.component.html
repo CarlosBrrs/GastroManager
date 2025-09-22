@@ -1,0 +1,12 @@
+<gm-menus-table [style]="{'width': '100%', 'min-height': '100%'}"
+                [data]="menus()"
+                [submenus]="submenus()"
+                [columns]="tableColumns"
+                [totalRecords]="totalRecords()"
+                [loading]="loading()"
+                [actions]="actions"
+                [selectedMenu]="selectedMenu()"
+                (onMenuSelect)="onSelectedMenuHandler($event)"
+                (onSubmenuAdd)="addSubmenuHandler($event)"
+>
+</gm-menus-table>

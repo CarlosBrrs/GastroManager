@@ -30,4 +30,4 @@ export function getIngredientById(http: HttpClient, rootUrl: string, params: Get
   );
 }
 
-getIngredientById.PATH = '/api/v1/ingredients/{ingredientUuid}';
+getIngredientById.PATH = '/api/v1/ingredients-page/{ingredientUuid}';

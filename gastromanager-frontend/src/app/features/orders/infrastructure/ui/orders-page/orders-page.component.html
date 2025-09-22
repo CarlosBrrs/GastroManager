@@ -1,0 +1,13 @@
+<main class="page-container">
+  <gm-orders-table [style]="{'width': '100%', 'min-height': '100%'}"
+                     [data]="orders()"
+                     [columns]="tableColumns"
+                     [totalRecords]="totalRecords()"
+                     [actions]="actions"
+                     [loading] = "loading()"
+                     [selectedOrder]="selectedOrder()"
+                     (onOrderSelected)="handleOrderSelected($event)"
+                     (changePage)="changePageHandler($event)"
+  >
+  </gm-orders-table>
+</main>

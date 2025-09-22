@@ -1,0 +1,82 @@
+@if (error) {
+  <div class="error-message general-error">
+    {{ error }}
+  </div>
+}
+
+
+<form [formGroup]="ingredientForm" (ngSubmit)="onSubmit()">
+  <div>
+    <label for="name">Nombre:</label>
+    <input id="name" formControlName="name" type="text"/>
+    @if (ingredientForm.get('name')?.invalid && ingredientForm.get('name')?.touched) {
+      <div class="error">
+        Nombre es requerido y debe tener al menos 3 caracteres.
+      </div>
+    }
+  </div>
+
+  <div>
+    <label for="pricePerUnit">Precio por Unidad:</label>
+    <input id="pricePerUnit" formControlName="pricePerUnit" type="number"/>
+    @if (ingredientForm.get('pricePerUnit')?.invalid && ingredientForm.get('pricePerUnit')?.touched) {
+      <div
+        class="error">
+        Precio válido es requerido (mayor o igual a 0).
+      </div>
+    }
+  </div>
+
+  <div>
+    <label for="unit">Unidad</label>
+    <select id="unit" formControlName="unit">
+      <option value="" disabled>Seleccione una unidad</option>
+      <option value="GRAMS">gramos</option>
+      <option value="MILLILITRES">ml</option>
+      <option value="UNITS">unidades</option>
+    </select>
+  </div>
+
+  <div>
+    <label for="availableStock">Stock Disponible:</label>
+    <input id="availableStock" formControlName="availableStock" type="number"/>
+    @if (ingredientForm.get('availableStock')?.invalid && ingredientForm.get('availableStock')?.touched) {
+      <div
+        class="error">
+        Stock disponible válido es requerido (>= 0).
+      </div>
+    }
+  </div>
+
+  <div>
+    <label for="minimumStockQuantity">Stock Mínimo:</label>
+    <input id="minimumStockQuantity" formControlName="minimumStockQuantity" type="number"/>
+    @if (ingredientForm.get('minimumStockQuantity')?.invalid && ingredientForm.get('minimumStockQuantity')?.touched) {
+      <div
+        class="error">
+        Stock mínimo válido es requerido (>= 0).
+      </div>
+    }
+  </div>
+
+  <div>
+    <label for="supplier">Proveedor:</label>
+    <input id="supplier" formControlName="supplier" type="text"/>
+    @if (ingredientForm.get('supplier')?.invalid && ingredientForm.get('supplier')?.touched) {
+      <div class="error">
+        Proveedor es requerido.
+      </div>
+    }
+  </div>
+
+  <button type="submit"
+          [disabled]="!ingredientForm.valid || loading"> @if (loading) {
+    <p-progressSpinner
+      styleClass="w-4rem h-4rem"
+      strokeWidth="3"
+      animationDuration="1s"/>
+  } @else {
+    {{ ingredientToEdit ? 'Editar Ingrediente' : 'Crear Ingrediente' }}
+  }
+  </button>
+</form>

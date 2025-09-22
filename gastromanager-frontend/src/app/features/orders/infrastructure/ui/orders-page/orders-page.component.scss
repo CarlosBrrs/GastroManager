@@ -1,0 +1,23 @@
+.split-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100vh;
+  gap: 1rem;
+}
+
+.left-pane, .right-pane {
+  flex: 1;
+  padding: 1rem;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.left-pane {
+  border-right: 2px solid #e0e0e0;
+  background-color: #f9f9f9;
+}
+
+.right-pane {
+  background-color: #ffffff;
+}

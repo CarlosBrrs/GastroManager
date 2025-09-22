@@ -1,0 +1,197 @@
+// =============================================================================
+// KAIHO DARK THEME - SISTEMA RESPONSIVE GLOBAL
+// Mobile-First Approach
+// =============================================================================
+
+// =============================================================================
+// BREAKPOINTS GLOBALES
+// =============================================================================
+$breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  xxl: 1400px
+) !default;
+
+// =============================================================================
+// MIXINS GLOBALES PARA RESPONSIVE
+// =============================================================================
+
+// Mobile-first: desde un breakpoint hacia arriba
+@mixin respond-up($breakpoint) {
+  @if map-has-key($breakpoints, $breakpoint) {
+    $breakpoint-value: map-get($breakpoints, $breakpoint);
+    @if $breakpoint-value != 0 {
+      @media (min-width: $breakpoint-value) {
+        @content;
+      }
+    } @else {
+      @content;
+    }
+  } @else {
+    @warn 'Breakpoint inválido: #{$breakpoint}. Disponibles: #{map-keys($breakpoints)}';
+  }
+}
+
+// Desktop-first: desde un breakpoint hacia abajo (cuando sea necesario)
+@mixin respond-down($breakpoint) {
+  @if map-has-key($breakpoints, $breakpoint) {
+    $breakpoint-value: map-get($breakpoints, $breakpoint);
+    @if $breakpoint-value != 0 {
+      @media (max-width: ($breakpoint-value - 1px)) {
+        @content;
+      }
+    }
+  } @else {
+    @warn 'Breakpoint inválido: #{$breakpoint}. Disponibles: #{map-keys($breakpoints)}';
+  }
+}
+
+// Entre dos breakpoints
+@mixin respond-between($lower, $upper) {
+  @if map-has-key($breakpoints, $lower) and map-has-key($breakpoints, $upper) {
+    $lower-value: map-get($breakpoints, $lower);
+    $upper-value: map-get($breakpoints, $upper);
+
+    @media (min-width: $lower-value) and (max-width: ($upper-value - 1px)) {
+      @content;
+    }
+  } @else {
+    @warn 'Breakpoints inválidos: #{$lower} o #{$upper}. Disponibles: #{map-keys($breakpoints)}';
+  }
+}
+
+// =============================================================================
+// VARIABLES RESPONSIVE BASADAS EN TU TEMA
+// =============================================================================
+
+// Spacing responsivo usando tus variables existentes
+$spacing-xs: $inlineSpacing;               // 0.5rem
+$spacing-sm: $inlineSpacing * 2;           // 1rem
+$spacing-md: $inlineSpacing * 3;           // 1.5rem
+$spacing-lg: $inlineSpacing * 4;           // 2rem
+$spacing-xl: $inlineSpacing * 5;           // 2.5rem
+
+// Border radius responsivo usando tu variable
+$border-radius-xs: calc($borderRadius * 0.25);   // 4px
+$border-radius-sm: calc($borderRadius * 0.5);    // 8px
+$border-radius-md: calc($borderRadius * 0.75);   // 12px
+$border-radius-lg: $borderRadius;                // 16px
+
+// Font sizes responsivo usando tu variable base
+$font-size-xs: $fontSize * 0.875;         // 0.875rem
+$font-size-sm: $fontSize * 0.9375;        // 0.9375rem
+$font-size-base: $fontSize;               // 1rem
+$font-size-md: $fontSize * 1.125;         // 1.125rem
+$font-size-lg: $fontSize * 1.25;          // 1.25rem
+$font-size-xl: $fontSize * 1.5;           // 1.5rem
+
+// =============================================================================
+// MIXINS UTILITARIOS PARA COMPONENTES
+// =============================================================================
+
+// Container responsivo genérico
+@mixin container-responsive($max-width: 1200px) {
+  max-width: $max-width;
+  margin: 0 auto;
+
+  // Mobile first
+  padding-left: $spacing-xs;
+  padding-right: $spacing-xs;
+
+  @include respond-up(sm) {
+    padding-left: $spacing-sm;
+    padding-right: $spacing-sm;
+  }
+
+  @include respond-up(md) {
+    padding-left: $spacing-md;
+    padding-right: $spacing-md;
+  }
+
+  @include respond-up(lg) {
+    padding-left: $spacing-lg;
+    padding-right: $spacing-lg;
+  }
+}
+
+// Form element base responsivo
+@mixin form-element-base() {
+  // Mobile first
+  font-size: $font-size-sm;
+  border-radius: $border-radius-xs;
+  transition: $formElementTransition;
+
+  @include respond-up(sm) {
+    font-size: $font-size-base;
+    border-radius: $border-radius-sm;
+  }
+
+  @include respond-up(md) {
+    border-radius: $border-radius-md;
+  }
+}
+
+// Button base responsivo
+@mixin button-base() {
+  // Mobile first
+  font-size: $font-size-sm;
+  border-radius: $border-radius-xs;
+  transition: $actionIconTransition;
+  min-height: 44px; // Touch target mínimo
+
+  @include respond-up(sm) {
+    font-size: $font-size-base;
+    border-radius: $border-radius-sm;
+    min-height: 48px;
+  }
+
+  @include respond-up(md) {
+    border-radius: $border-radius-md;
+    min-height: 52px;
+  }
+
+  @include respond-up(lg) {
+    font-size: $font-size-md;
+    min-height: 56px;
+  }
+}
+
+// Card base responsivo
+@mixin card-base() {
+  background: $shade800;
+  border: 1px solid $shade600;
+
+  // Mobile first
+  border-radius: $border-radius-sm;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  @include respond-up(sm) {
+    border-radius: $border-radius-md;
+  }
+
+  @include respond-up(md) {
+    border-radius: $border-radius-lg;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  @include respond-up(lg) {
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
+  }
+}
+
+// =============================================================================
+// CSS CUSTOM PROPERTIES PARA RUNTIME
+// =============================================================================
+
+:root {
+  // Breakpoints para acceso desde JavaScript si es necesario
+  --breakpoint-xs: #{map-get($breakpoints, xs)};
+  --breakpoint-sm: #{map-get($breakpoints, sm)};
+  --breakpoint-md: #{map-get($breakpoints, md)};
+  --breakpoint-lg: #{map-get($breakpoints, lg)};
+  --breakpoint-xl: #{map-get($breakpoints, xl)};
+  --breakpoint-xxl: #{map-get($breakpoints, xxl)};
+}

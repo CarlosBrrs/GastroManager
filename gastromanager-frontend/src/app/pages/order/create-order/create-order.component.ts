@@ -20,11 +20,11 @@ import {ConfirmDialogModule} from "primeng/confirmdialog";
 import {Router} from "@angular/router";
 import {OrderService} from "../../../core/services/order/order.service";
 import {ProductItemStore} from "../../../core/store/product-item/product-item.store";
-import {OrderStore} from "../../../core/store/order/order.store";
+import {OrdersStore} from "../../../core/store/orders/ordersStore";
 import {StoreEventService} from "../../../core/services/store-event/store-event.service";
 
 @Component({
-  selector: 'gm-create-order',
+  selector: 'gm-create-orders',
   standalone: true,
   imports: [
     SplitterModule,
@@ -50,7 +50,7 @@ import {StoreEventService} from "../../../core/services/store-event/store-event.
 export class CreateOrderComponent implements OnInit, OnDestroy {
   orderForm: FormGroup;
   productItemStore = inject(ProductItemStore)
-  orderStore = inject(OrderStore)
+  orderStore = inject(OrdersStore)
   private readonly destroy$ = new Subject<void>();
 
   constructor(private readonly storeEventService: StoreEventService,private readonly router: Router, private readonly fb: FormBuilder, private readonly confirmationService: ConfirmationService, private messageService: MessageService) {
@@ -161,21 +161,6 @@ export class CreateOrderComponent implements OnInit, OnDestroy {
     this.orderStore.createOrder(this.orderForm.value).subscribe(() => {
       this.router.navigate(['orders'])
     });
-    /*this.orderService.createOrder(this.orderForm.value).subscribe({
-        next: response => {
-          this.messageService.add({severity: 'success', summary: 'Confirmed', detail: 'Order placed successfully'});
-          this.router.navigate(['orders'])
-        },
-        error: error => {
-          this.messageService.add({severity: 'error', summary: 'Error placing order', detail: error.error.message});
-          console.log("error placing order", error)
-
-        },
-        complete: () => {
-          console.log("completed handle create in create-order component")
-        }
-      }
-    )*/
   }
 
   onQuantityChange(index: number, newValue: InputNumberInputEvent) {
@@ -221,7 +206,7 @@ export class CreateOrderComponent implements OnInit, OnDestroy {
         this.messageService.add({
           severity: 'info',
           summary: 'Order still in process ',
-          detail: 'Continue setting up your order',
+          detail: 'Continue setting up your orders',
           life: 3000
         });
       }

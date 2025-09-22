@@ -1,0 +1,47 @@
+<div class="product-selector">
+  <gm-product-filter (searchChanged)="onSearchChanged($event)"></gm-product-filter>
+
+  <!-- Mostrar categorías si hay datos, sino mostrar mensaje -->
+  @if (getCategoryNames().length > 0) {
+    <!-- Iterar sobre las categorías -->
+    <div class="categories-container">
+      @for (categoryName of getCategoryNames(); track categoryName) {
+        <div class="category-section">
+          <!-- Header de la categoría con toggle -->
+          <div class="category-header"
+               (click)="toggleCategory(categoryName)"
+               [class.expanded]="isCategoryExpanded(categoryName)">
+            <h3 [innerHTML]="highlightSearchTerm(categoryName)"></h3>
+            <span class="products-count">({{ getProductsForCategory(categoryName).length }})</span>
+            <i class="expand-icon"
+               [class.rotated]="isCategoryExpanded(categoryName)">▼</i>
+          </div>
+
+          <!-- Lista de productos (se muestra solo si está expandida) -->
+          @if (isCategoryExpanded(categoryName)) {
+            <div class="products-grid">
+              @for (product of getProductsForCategory(categoryName); track product.uuid) {
+                <div class="product-card"
+                     (click)="selectProduct(product)"
+                     [title]="product.description">
+                  <div class="product-info">
+                    <h4 class="product-name" [innerHTML]="highlightSearchTerm(product.name)"></h4>
+                    <div class="product-price">${{ product.salePrice | number:'1.2-2' }}</div>
+                  </div>
+                  <button class="add-button" type="button" (click)="selectProduct(product); $event.stopPropagation()">
+                    <i>+</i>
+                  </button>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  } @else {
+    <!-- Mensaje cuando no hay productos -->
+    <div class="no-products">
+      <p>No se encontraron productos</p>
+    </div>
+  }
+</div>

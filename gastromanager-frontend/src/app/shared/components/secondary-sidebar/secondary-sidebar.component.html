@@ -1,0 +1,12 @@
+<h3>Acciones</h3>
+<ul>
+  @for (link of links(); track $index) {
+    <li>
+      <a [routerLink]="link.route"> {{ link.label }}</a>
+    </li>
+
+  }
+</ul>
+<h4>Filtros</h4>
+
+<input type="text" placeholder="Buscar ingrediente..."/>

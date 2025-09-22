@@ -22,13 +22,13 @@ import {updateIngredient, UpdateIngredient$Params} from '../fn/ingredient-rest-c
 @Injectable({providedIn: 'root'})
 export class IngredientRestControllerService extends BaseService {
   /** Path part for operation `getIngredientById()` */
-  static readonly GetIngredientByIdPath = '/api/v1/ingredients/{ingredientUuid}';
+  static readonly GetIngredientByIdPath = '/api/v1/ingredients-page/{ingredientUuid}';
   /** Path part for operation `updateIngredient()` */
-  static readonly UpdateIngredientPath = '/api/v1/ingredients/{ingredientUuid}';
+  static readonly UpdateIngredientPath = '/api/v1/ingredients-page/{ingredientUuid}';
   /** Path part for operation `getAllIngredients()` */
-  static readonly GetAllIngredientsPath = '/api/v1/ingredients';
+  static readonly GetAllIngredientsPath = '/api/v1/ingredients-page';
   /** Path part for operation `addIngredient()` */
-  static readonly AddIngredientPath = '/api/v1/ingredients';
+  static readonly AddIngredientPath = '/api/v1/ingredients-page';
 
   constructor(config: ApiConfiguration, http: HttpClient) {
     super(config, http);

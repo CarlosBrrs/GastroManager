@@ -99,7 +99,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-// TODO: Dont call the endpoint always, instead save the user info in the service and call the signal
+// TODO: Dont call the endpoint always, instead save the user info in the store and call the signal
 
     this.userService.loadUserInfo().pipe(takeUntil(this.destroy$)).subscribe({
       next: (result) => {

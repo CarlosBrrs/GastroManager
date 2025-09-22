@@ -33,4 +33,4 @@ export function updateIngredient(http: HttpClient, rootUrl: string, params: Upda
   );
 }
 
-updateIngredient.PATH = '/api/v1/ingredients/{ingredientUuid}';
+updateIngredient.PATH = '/api/v1/ingredients-page/{ingredientUuid}';

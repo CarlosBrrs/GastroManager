@@ -30,4 +30,4 @@ export function getAllIngredients(http: HttpClient, rootUrl: string, params?: Ge
   );
 }
 
-getAllIngredients.PATH = '/api/v1/ingredients';
+getAllIngredients.PATH = '/api/v1/ingredients-page';

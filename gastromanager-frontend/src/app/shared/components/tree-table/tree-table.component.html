@@ -1,0 +1,126 @@
+<!-- src/app/shared/components/tree-table/tree-table.component.html -->
+<div class="menu-layout">
+  <!-- Sección izquierda: Menús -->
+  <div class="menu-list">
+    <h3>Menús</h3>
+    <ul>
+      @for (menu of data; track menu.uuid) {
+        <li [class.selected]="selectedMenu?.uuid === menu.uuid">
+          <span (click)="selectMenu(menu)">{{ menu.name }}</span>
+
+          <button (click)="editMenu(menu)">Editar</button>
+          <button (click)="deleteMenu(menu)">Eliminar</button>
+
+        </li>
+      }
+    </ul>
+  </div>
+
+  <!-- Sección derecha: Submenús del menú seleccionado -->
+  <div class="submenu-list">
+    @if (selectedMenu) {
+      <h3>Submenús de {{ selectedMenu.name }}</h3>
+      --- recordar arreglar la paginacion de submenus cuando la interfaz este mejor definida
+      <button (click)="addSubmenu(selectedMenu.uuid)">Agregar submenu para {{ selectedMenu.name }}</button>
+    } @else {
+      <p>Selecciona un menú para ver sus submenús</p>
+    }
+    <ul>
+    @for (submenu of submenus; track submenu.uuid) {
+      <li>
+        <span>{{ submenu.name }}</span> - <span>{{ submenu.description }}</span>
+        <button (click)="editSubmenu(submenu)">Editar</button>
+        <button (click)="deleteSubmenu(submenu)">Eliminar</button>
+        <button (click)="goToSubmenu(submenu)">Ver productos</button>
+      </li>
+    }
+      </ul>
+  </div>
+</div>
+
+<!--
+<table class="simple-table">
+  <thead>
+  <tr>
+    <th>Nombre</th>
+    <th>Descripción</th>
+    @if (actions?.length) {
+      <th>Acciones</th>
+    }
+  </tr>
+  </thead>
+  <tbody>
+    @for (menu of data; track menu.uuid) {
+      &lt;!&ndash; Fila de menú &ndash;&gt;
+      <tr>
+        <td>{{ menu.name }}</td>
+        <td>{{ menu.description }}</td>
+        @if (actions?.length) {
+          <td>
+            <button (click)="loadSubmenus(menu.uuid)">
+              {{ isExpanded(menu.uuid) ? 'Ocultar' : 'Ver' }} submenús
+            </button>
+            @for (action of actions; track action.label) {
+              <button
+                type="button"
+                [ngClass]="action.severity"
+                (click)="action.onClick(menu)">
+                <i [class]="action.icon"></i> {{ action.label }}
+              </button>
+            }
+          </td>
+        }
+      </tr>
+
+      &lt;!&ndash; Submenús (solo si está expandido) &ndash;&gt;
+      @if (isExpanded(menu.uuid)) {
+        <tr class="submenu-row">
+          <td colspan="3">
+            <table class="nested-table">
+              <thead>
+              <tr>
+                <th>Submenú</th>
+                <th>Descripción</th>
+              </tr>
+              </thead>
+              <tbody>
+                @for (submenu of submenusMap[menu.uuid] ?? []; track submenu.uuid) {
+                  <tr>
+                    <td>{{ submenu.name }}</td>
+                    <td>{{ submenu.description }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      }
+    }
+  </tbody>
+</table>
+-->
+
+
+<!--
+<p-treeTable [value]="data" [columns]="columns" [scrollable]="true" [tableStyle]="{'min-width':'50rem'}">
+  <ng-template pTemplate="header" let-columns>
+    <tr>
+      @for (col of columns; track $index) {
+        <th>{{ col.header }}</th>
+      }
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-columns="columns">
+    <tr [ttRow]="rowNode">
+      @for (col of columns; track $index) {
+        <td>
+          @if($index === 0) {
+            <p-treeTableToggler [rowNode]="rowNode" />
+          }
+          {{ rowData[col.field] }}
+        </td>
+      }
+    </tr>
+  </ng-template>
+</p-treeTable>
+-->
