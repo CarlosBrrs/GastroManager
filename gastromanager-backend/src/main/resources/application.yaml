@@ -17,7 +17,7 @@ spring:
         format_sql: true
         jdbc:
           time_zone: UTC
-    show-sql: true
+#    show-sql: true
     hibernate:
       ddl-auto: validate
   datasource:
@@ -51,22 +51,22 @@ server:
     context-path: /api/v1
   port: 8080
 
-logging:
-  level:
-    org:
-      springframework:
-        jdbc: DEBUG
-        data:
-          jpa: TRACE
-      orm:
-        jdbc:
-          bind: TRACE
-      hibernate:
-        SQL: DEBUG
-        type:
-          descriptor:
-            sql:
-              BasicBinder: TRACE
+#logging:
+#  level:
+#    org:
+#      springframework:
+#        jdbc: DEBUG
+#        data:
+#          jpa: TRACE
+#      orm:
+#        jdbc:
+#          bind: TRACE
+#      hibernate:
+#        SQL: DEBUG
+#        type:
+#          descriptor:
+#            sql:
+#              BasicBinder: TRACE
 
 springdoc:
   default-produces-media-type: application/json
@@ -81,7 +81,8 @@ spring:
       on-profile: dev
 
   datasource:
-    url: jdbc:postgresql://ep-red-credit-a63sdemi.us-west-2.aws.neon.tech/gastromanager-db?sslmode=require
+#    url: jdbc:postgresql://ep-red-credit-a63sdemi.us-west-2.aws.neon.tech/gastromanager-db?sslmode=require
+    url: jdbc:postgresql://db.zhgxmakctkpjulnzyghj.supabase.co:5432/postgres
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver

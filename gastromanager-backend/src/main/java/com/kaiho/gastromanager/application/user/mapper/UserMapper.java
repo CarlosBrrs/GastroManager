@@ -43,20 +43,20 @@ public class UserMapper {
             isVerified = true;
         }
         Contact contact = Contact.builder()
-                .email(userRequestDto.email())
-                .phone(userRequestDto.phone())
-                .build();
+                                 .email(userRequestDto.email())
+                                 .phone(userRequestDto.phone())
+                                 .build();
 
         return User.builder()
-                .name(userRequestDto.name())
-                .lastname(userRequestDto.lastname())
-                .contact(contact)
-                .username(userRequestDto.username())
-                .restaurant(restaurant)
-                .encodedPassword(passwordEncoder.encode(userRequestDto.password()))
-                .verified(isVerified)
-                .roles(roleSet)
-                .build();
+                   .name(userRequestDto.name())
+                   .lastname(userRequestDto.lastname())
+                   .contact(contact)
+                   .username(userRequestDto.username())
+                   .restaurant(restaurant)
+                   .encodedPassword(passwordEncoder.encode(userRequestDto.password()))
+                   .verified(isVerified)
+                   .roles(roleSet)
+                   .build();
     }
 
     public UserResponseDto toResponse(User user) {
@@ -64,17 +64,17 @@ public class UserMapper {
             return null;
         }
         return UserResponseDto.builder()
-                .uuid(user.getUuid())
-                .name(user.getName())
-                .lastname(user.getLastname())
-                .username(user.getUsername())
-                .email(user.getContact().getEmail())
-                .roles(user.getRoles().stream()
-                        .map(role -> RoleResponseDto.builder()
-                                .uuid(role.uuid())
-                                .name(role.roleType().name())
-                                .build())
-                        .collect(Collectors.toSet()))
-                .build();
+                              .uuid(user.getUuid())
+                              .name(user.getName())
+                              .lastname(user.getLastname())
+                              .username(user.getUsername())
+                              .email(user.getContact().getEmail())
+                              .roles(user.getRoles().stream()
+                                         .map(role -> RoleResponseDto.builder()
+                                                                     .uuid(role.uuid())
+                                                                     .name(role.roleType().name())
+                                                                     .build())
+                                         .collect(Collectors.toSet()))
+                              .build();
     }
 }

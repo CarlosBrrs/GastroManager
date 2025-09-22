@@ -1,25 +1,27 @@
 package com.kaiho.gastromanager.application.restaurant.mapper;
 
-import com.kaiho.gastromanager.application.restaurant.dto.request.RestaurantConfigRequestDto;
+import com.kaiho.gastromanager.application.restaurant.dto.request.RestaurantCreateRequestDto;
 import com.kaiho.gastromanager.application.restaurant.dto.request.RestaurantRequestDto;
 import com.kaiho.gastromanager.application.restaurant.dto.response.RestaurantConfigResponseDto;
+import com.kaiho.gastromanager.application.restaurant.dto.response.RestaurantDetailResponseDto;
 import com.kaiho.gastromanager.application.restaurant.dto.response.RestaurantResponseDto;
-import com.kaiho.gastromanager.domain.restaurant.api.RestaurantServicePort;
+import com.kaiho.gastromanager.application.restaurant.dto.response.UserRestaurantAccessResponseDto;
 import com.kaiho.gastromanager.domain.restaurant.model.Restaurant;
 import com.kaiho.gastromanager.domain.restaurant.model.RestaurantConfig;
-import com.kaiho.gastromanager.infrastructure.config.context.RestaurantContext;
+import com.kaiho.gastromanager.domain.restaurant.model.UserRestaurantAccess;
+import com.kaiho.gastromanager.domain.user.model.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.UUID;
-
-import static com.kaiho.gastromanager.infrastructure.config.context.RestaurantContext.getCurrentRestaurant;
 
 @Component
 @RequiredArgsConstructor
 public class RestaurantMapper {
 
-    private final RestaurantServicePort restaurantServicePort;
+    private final RestaurantConfigMapper restaurantConfigMapper;
 
     public RestaurantResponseDto toResponse(Restaurant restaurant) {
         return null;
@@ -30,22 +32,28 @@ public class RestaurantMapper {
             return null;
         }
         return Restaurant.builder()
-                .name(restaurantRequestDto.name())
-                .address(restaurantRequestDto.address().street())
-                .description(restaurantRequestDto.description())
-                .ownerUuid(ownerUuid)
-                .build();
+                         .name(restaurantRequestDto.name())
+                         .address(restaurantRequestDto.address().street())
+                         .description(restaurantRequestDto.description())
+                         .ownerUuid(ownerUuid)
+                         .build();
     }
 
-    public RestaurantConfig toDomain(RestaurantConfigRequestDto restaurantConfigRequestDto) {
+    public Restaurant toDomain(RestaurantCreateRequestDto restaurantConfigRequestDto) {
         if (restaurantConfigRequestDto == null) {
             return null;
         }
-        Restaurant restaurant = restaurantServicePort.getRestaurantById(getCurrentRestaurant());
-        return RestaurantConfig.builder()
-                .isPaymentRequiredBeforePlacement(restaurantConfigRequestDto.requirePaymentBeforeOrder())
-                .restaurant(restaurant)
-                .build();
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        RestaurantConfig configs = restaurantConfigMapper.toDomain(restaurantConfigRequestDto.configs());
+        return Restaurant.builder()
+                         .name(restaurantConfigRequestDto.name())
+                         .address(restaurantConfigRequestDto.address().street())
+                         .description(restaurantConfigRequestDto.description())
+                         .ownerUuid(principal.getUuid())
+                         .taxes(new ArrayList<>())
+                         .config(configs)
+                         .build();
     }
 
     public RestaurantConfigResponseDto toResponse(RestaurantConfig restaurantConfig) {
@@ -53,9 +61,35 @@ public class RestaurantMapper {
             return null;
         }
         return RestaurantConfigResponseDto.builder()
-                .uuid(restaurantConfig.getUuid())
-                .requirePaymentBeforeOrder(restaurantConfig.isPaymentRequiredBeforePlacement())
-                .restaurantName(restaurantConfig.getRestaurant().getName())
-                .build();
+                                          .uuid(restaurantConfig.getUuid())
+                                          .requirePaymentBeforeOrder(restaurantConfig.isPayBeforeOrder())
+                                          .build();
+    }
+
+    public UserRestaurantAccessResponseDto toUserRestaurantAccessResponse(UserRestaurantAccess userRestaurantAccess) {
+        if (userRestaurantAccess == null) {
+            return null;
+        }
+        return UserRestaurantAccessResponseDto.builder()
+                                              .uuid(userRestaurantAccess.getUuid())
+                                              .name(userRestaurantAccess.getName())
+                                              .description(userRestaurantAccess.getDescription())
+                                              .address(userRestaurantAccess.getAddress())
+                                              .accessType(userRestaurantAccess.getAccessType().name())
+                                              .build();
+    }
+
+    public RestaurantDetailResponseDto toRestaurantDetailResponse(Restaurant restaurant) {
+        if (restaurant == null) {
+            return null;
+        }
+        return RestaurantDetailResponseDto.builder()
+                                          .uuid(restaurant.getUuid())
+                                          .name(restaurant.getName())
+                                          .description(restaurant.getDescription())
+                                          .address(restaurant.getAddress())
+                                          .ownerUuid(restaurant.getOwnerUuid())
+                                          .config(toResponse(restaurant.getConfig()))
+                                          .build();
     }
 }

@@ -16,8 +16,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.kaiho.gastromanager.infrastructure.config.context.RestaurantContext.getCurrentRestaurant;
-
 @RequiredArgsConstructor
 @Service
 public class ProductItemUseCase implements ProductItemServicePort {
@@ -35,7 +33,7 @@ public class ProductItemUseCase implements ProductItemServicePort {
     @Transactional(readOnly = true)
     public ProductItem getProductItemByUUID(UUID uuid, UUID restaurantUuid) {
         return productItemPersistencePort.findProductItemByUuid(uuid, restaurantUuid)
-                .orElseThrow(() -> new ProductItemDoesNotExistException(uuid));
+                                         .orElseThrow(() -> new ProductItemDoesNotExistException(uuid));
     }
 
     @Override
@@ -69,7 +67,7 @@ public class ProductItemUseCase implements ProductItemServicePort {
             throw new ProductItemIngredientEmptyException();
         }
         ingredients.forEach(ingredient ->
-                ingredientServicePort.getIngredientById(ingredient.getIngredient().getUuid(), getCurrentRestaurant())
+                ingredientServicePort.getIngredientById(ingredient.getIngredient().getUuid())
         );
     }
 }

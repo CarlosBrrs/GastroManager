@@ -42,8 +42,8 @@ public final class User implements UserDetails {
             return Collections.emptySet();
         }
         return roles.stream()
-                .map(role -> new SimpleGrantedAuthority(role.roleType().getAuthority()))
-                .collect(Collectors.toSet());
+                    .map(role -> new SimpleGrantedAuthority(role.roleType().getAuthority()))
+                    .collect(Collectors.toSet());
     }
 
     @Override

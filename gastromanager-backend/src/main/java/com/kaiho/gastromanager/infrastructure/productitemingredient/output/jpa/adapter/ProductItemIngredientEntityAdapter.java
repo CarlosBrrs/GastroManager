@@ -25,8 +25,8 @@ public class ProductItemIngredientEntityAdapter implements ProductItemIngredient
 
         // Mapear las entidades de la base de datos a objetos de dominio
         return entities.stream()
-                .map(productItemIngredientEntityMapper::toDomain)
-                .toList();
+                       .map(productItemIngredientEntityMapper::toDomain)
+                       .toList();
 
     }
 }

@@ -14,7 +14,7 @@ public class PricingServiceUseCase implements PricingServicePort {
     public double calculateOrderTotal(List<OrderItem> orderItems, Map<UUID, Double> productItemPriceMap) {
         double totalAmount = 0.0;
 
-        //Here would go any logic to apply general discounts, or be more detailed about the order rubrics
+        /*//Here would go any logic to apply general discounts, or be more detailed about the order rubrics
         for (OrderItem orderItem : orderItems) {
             Double unitPrice = productItemPriceMap.get(orderItem.getProductItem().getUuid());
             if (unitPrice == null) {
@@ -22,7 +22,7 @@ public class PricingServiceUseCase implements PricingServicePort {
             }
             totalAmount += unitPrice * orderItem.getQuantity();
 
-        }
+        }*/
         return totalAmount;
     }
 }

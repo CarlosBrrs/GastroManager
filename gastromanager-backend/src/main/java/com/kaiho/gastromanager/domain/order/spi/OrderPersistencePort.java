@@ -1,13 +1,15 @@
 package com.kaiho.gastromanager.domain.order.spi;
 
 import com.kaiho.gastromanager.domain.order.model.Order;
+import com.kaiho.gastromanager.infrastructure.order.output.jpa.criteria.OrderSearchCriteria;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public interface OrderPersistencePort {
-    List<Order> findAllOrders();
+    Page<Order> findAllOrders(OrderSearchCriteria criteria, Pageable pageable);
 
     Order createOrder(Order order);
 
@@ -18,4 +20,6 @@ public interface OrderPersistencePort {
     UUID changeOrderStatus(UUID orderUuid, String newStatus, String reason);
 
     Optional<Order> findOrderByUuid(UUID orderUuid, UUID restaurantUuid);
+
+    void updateOrder(Order order);
 }

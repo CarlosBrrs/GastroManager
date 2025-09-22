@@ -12,7 +12,12 @@ import com.kaiho.gastromanager.domain.order.exception.InsufficientStockException
 import com.kaiho.gastromanager.domain.restaurant.api.RestaurantServicePort;
 import com.kaiho.gastromanager.domain.restaurant.exception.RestaurantDoesNotExistException;
 import com.kaiho.gastromanager.domain.restaurant.model.Restaurant;
+import com.kaiho.gastromanager.infrastructure.ingredient.output.jpa.criteria.IngredientSearchCriteria;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +28,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import static com.kaiho.gastromanager.infrastructure.config.context.RestaurantContext.getCurrentRestaurant;
+import static org.springframework.data.domain.Sort.Direction.ASC;
+import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @RequiredArgsConstructor
 @Service
@@ -40,15 +47,20 @@ public class IngredientUseCase implements IngredientServicePort {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Ingredient> getAllIngredients() {
-        return ingredientPersistencePort.getAllIngredients();
+    public Page<Ingredient> getAllIngredients(IngredientSearchCriteria criteria) {
+        Sort sort = Sort.by(
+                criteria.sortDirection().equalsIgnoreCase("desc") ? DESC : ASC,
+                criteria.sortBy()
+        );
+        Pageable pageable = PageRequest.of(criteria.page(), criteria.size(), sort);
+        return ingredientPersistencePort.getAllIngredients(criteria, pageable);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Ingredient getIngredientById(UUID uuid, UUID restaurantUuid) {
-        return ingredientPersistencePort.getIngredientByUuid(uuid, restaurantUuid)
-                .orElseThrow(() -> new IngredientDoesNotExistException(uuid.toString()));
+    public Ingredient getIngredientById(UUID uuid) {
+        return ingredientPersistencePort.getIngredientByUuid(uuid)
+                                        .orElseThrow(() -> new IngredientDoesNotExistException(uuid.toString()));
     }
 
     @Override
@@ -66,9 +78,8 @@ public class IngredientUseCase implements IngredientServicePort {
     @Override
     @Transactional
     public Ingredient updateIngredient(UUID uuid, Ingredient ingredient) {
-
-        Ingredient ingredientById = ingredientPersistencePort.getIngredientByUuid(uuid, ingredient.getRestaurant().getUuid())
-                .orElseThrow(() -> new IngredientDoesNotExistException(uuid.toString()));
+        Ingredient ingredientById = ingredientPersistencePort.getIngredientByUuid(uuid)
+                                                             .orElseThrow(() -> new IngredientDoesNotExistException(uuid.toString()));
         if (!ingredientById.getName().equals(ingredient.getName()) &&
                 ingredientPersistencePort.ingredientExistsByName(ingredient.getName(), ingredient.getRestaurant().getUuid())) {
             throw new IngredientAlreadyExistsException(ingredient.getName());
@@ -79,9 +90,9 @@ public class IngredientUseCase implements IngredientServicePort {
 
     @Override
     @Transactional
-    public UUID adjustIngredientStock(UUID ingredientUuid, int newStock, String reason, UUID restaurantUuid) {
-        Ingredient ingredientToUpdate = ingredientPersistencePort.getIngredientByUuid(ingredientUuid, restaurantUuid)
-                .orElseThrow(() -> new IngredientDoesNotExistException(ingredientUuid.toString()));
+    public UUID adjustIngredientStock(UUID ingredientUuid, int newStock, String reason) {
+        Ingredient ingredientToUpdate = ingredientPersistencePort.getIngredientByUuid(ingredientUuid)
+                                                                 .orElseThrow(() -> new IngredientDoesNotExistException(ingredientUuid.toString()));
 
         if (newStock == ingredientToUpdate.getAvailableStock()) {
             throw new AvailableStockNotUpdatedException();
@@ -98,7 +109,6 @@ public class IngredientUseCase implements IngredientServicePort {
 
     @Override
     public List<Ingredient> getIngredientsByUuid(Set<UUID> uuids) {
-        // Consulta los ingredientes desde el puerto de persistencia
         return ingredientPersistencePort.findIngredientsByUuids(uuids);
     }
 

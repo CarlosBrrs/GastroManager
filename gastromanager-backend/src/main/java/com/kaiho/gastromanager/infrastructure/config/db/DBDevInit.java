@@ -25,7 +25,7 @@ public class DBDevInit implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         createUserIfNotExists();
 
     }

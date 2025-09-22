@@ -2,13 +2,13 @@ package com.kaiho.gastromanager.domain.order.model;
 
 import com.kaiho.gastromanager.domain.orderitem.model.OrderItem;
 import com.kaiho.gastromanager.domain.restaurant.model.Restaurant;
-import com.kaiho.gastromanager.domain.user.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
@@ -21,15 +21,21 @@ import java.util.UUID;
 public class Order {
     private UUID uuid;
     private String code;
-    private User user;
     private Restaurant restaurant;
     private String customerNotes;
     private List<OrderItem> orderItems;
-    private double totalAmount;
-    private OrderStatus status;
+    private boolean requiresPaymentBefore;
+    private BigDecimal totalAmount;
+    private BigDecimal totalPaid;
+    private BigDecimal remainingToPay;
+    private OperationalStatus operationalStatus;
+    private PaymentStatus paymentStatus;
+    private InvoicingStatus invoicingStatus;
     private String createdBy;
     private Instant createdDate;
     private String updatedBy;
     private Instant updatedDate;
+    private String tableNumber;
+    private String customerName;
 
 }

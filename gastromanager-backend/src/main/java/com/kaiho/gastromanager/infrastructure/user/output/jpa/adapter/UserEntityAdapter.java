@@ -35,9 +35,9 @@ public class UserEntityAdapter implements UserPersistencePort {
         UserEntity userToSave = userEntityMapper.toEntity(user);
         if (user.getRoles().size() > 1 &&
                 user.getRoles().stream()
-                        .findFirst()
-                        .stream()
-                        .noneMatch(role -> role.roleType().equals(RoleType.ROLE_OWNER))) {
+                    .findFirst()
+                    .stream()
+                    .noneMatch(role -> role.roleType().equals(RoleType.ROLE_OWNER))) {
 
             RestaurantEntity restaurantEntity = restaurantEntityRepository.findById(user.getRestaurant().getUuid()).orElseThrow();
             restaurantEntity.addEmployee(userToSave);
@@ -86,7 +86,7 @@ public class UserEntityAdapter implements UserPersistencePort {
 
 
         UserEntity existingUserEntity = userEntityRepository.findById(updatedUser.getUuid())
-                .orElseThrow(() -> new UserDoesNotExistException(updatedUser.getUuid()));
+                                                            .orElseThrow(() -> new UserDoesNotExistException(updatedUser.getUuid()));
 
         existingUserEntity.setName(updatedUser.getName() != null ? updatedUser.getName() : existingUserEntity.getName());
         existingUserEntity.setLastname(updatedUser.getLastname() != null ? updatedUser.getLastname() : existingUserEntity.getLastname());
@@ -96,21 +96,21 @@ public class UserEntityAdapter implements UserPersistencePort {
 
         if (RestaurantContext.getCurrentRestaurant() != null) { // todo si estoy logueado, es decir si estoy modificando roles de un usuario
             existingUserEntity.setRoles(updatedUser.getRoles().stream()
-                    .map(roleEntityMapper::toEntity)
-                    .collect(Collectors.toSet()));
+                                                   .map(roleEntityMapper::toEntity)
+                                                   .collect(Collectors.toSet()));
         }
 
         if (updatedUser.getRestaurant() != null) {
             RestaurantEntity restaurantEntity = restaurantEntityRepository.findById(updatedUser.getRestaurant().getUuid())
-                    .orElseThrow(() -> new RestaurantDoesNotExistException(updatedUser.getRestaurant().getUuid().toString()));
+                                                                          .orElseThrow(() -> new RestaurantDoesNotExistException(updatedUser.getRestaurant().getUuid().toString()));
             existingUserEntity.setRestaurant(restaurantEntity);
         }
 
         if (updatedUser.getRestaurants() != null) {
             List<RestaurantEntity> restaurantEntities = updatedUser.getRestaurants().stream()
-                    .map(r -> restaurantEntityRepository.findById(r.getUuid())
-                            .orElseThrow(() -> new RestaurantDoesNotExistException(r.getUuid().toString())))
-                    .collect(Collectors.toCollection(ArrayList::new));
+                                                                   .map(r -> restaurantEntityRepository.findById(r.getUuid())
+                                                                                                       .orElseThrow(() -> new RestaurantDoesNotExistException(r.getUuid().toString())))
+                                                                   .collect(Collectors.toCollection(ArrayList::new));
             existingUserEntity.setRestaurants(restaurantEntities);
         }
 

@@ -21,18 +21,18 @@ public class IngredientEntityMapper {
             return null;
         }
         return Ingredient.builder()
-                .uuid(ingredientEntity.getUuid())
-                .name(ingredientEntity.getName())
-                .availableStock(ingredientEntity.getAvailableStock())
-                .unit(ingredientEntity.getUnit())
-                .pricePerUnit(ingredientEntity.getPricePerUnit())
-                .supplier(ingredientEntity.getSupplier())
-                .minimumStockQuantity(ingredientEntity.getMinimumStockQuantity())
-                .createdBy(ingredientEntity.getCreatedBy())
-                .createdDate(ingredientEntity.getCreatedDate())
-                .updatedBy(ingredientEntity.getUpdatedBy())
-                .updatedDate(ingredientEntity.getUpdatedDate())
-                .build();
+                         .uuid(ingredientEntity.getUuid())
+                         .name(ingredientEntity.getName())
+                         .availableStock(ingredientEntity.getAvailableStock())
+                         .unit(ingredientEntity.getUnit())
+                         .pricePerUnit(ingredientEntity.getPricePerUnit())
+                         .supplier(ingredientEntity.getSupplier())
+                         .minimumStockQuantity(ingredientEntity.getMinimumStockQuantity())
+                         .createdBy(ingredientEntity.getCreatedBy())
+                         .createdDate(ingredientEntity.getCreatedDate())
+                         .updatedBy(ingredientEntity.getUpdatedBy())
+                         .updatedDate(ingredientEntity.getUpdatedDate())
+                         .build();
     }
 
     public IngredientEntity toEntity(Ingredient ingredient) {
@@ -41,17 +41,18 @@ public class IngredientEntityMapper {
         }
         RestaurantEntity restaurantEntity = restaurantEntityRepository.findById(ingredient.getRestaurant().getUuid()).orElseThrow(() -> new RestaurantDoesNotExistException(ingredient.getRestaurant().getUuid().toString()));
         return IngredientEntity.builder()
-                .uuid(ingredient.getUuid())
-                .name(ingredient.getName())
-                .availableStock(ingredient.getAvailableStock())
-                .unit(ingredient.getUnit())
-                .restaurant(restaurantEntity)
-                .pricePerUnit(ingredient.getPricePerUnit())
-                .inventoryMovements(new ArrayList<>())
-                .minimumStockQuantity(ingredient.getMinimumStockQuantity())
-                .supplier(ingredient.getSupplier())
-                .createdDate(ingredient.getCreatedDate())
-                .createdBy(ingredient.getCreatedBy())
-                .build();
+                               .uuid(ingredient.getUuid())
+                               .name(ingredient.getName())
+                               .availableStock(ingredient.getAvailableStock())
+                               .unit(ingredient.getUnit())
+                               .restaurant(restaurantEntity)
+                               .pricePerUnit(ingredient.getPricePerUnit())
+                               .inventoryMovements(new ArrayList<>())
+                               .recipeIngredients(new ArrayList<>())
+                               .minimumStockQuantity(ingredient.getMinimumStockQuantity())
+                               .supplier(ingredient.getSupplier())
+                               .createdDate(ingredient.getCreatedDate())
+                               .createdBy(ingredient.getCreatedBy())
+                               .build();
     }
 }

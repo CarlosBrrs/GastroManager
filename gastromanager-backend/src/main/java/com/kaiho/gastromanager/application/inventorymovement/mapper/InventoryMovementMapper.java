@@ -11,9 +11,9 @@ public class InventoryMovementMapper {
             return null;
         }
         return InventoryMovement.builder()
-                .ingredientUuid(inventoryMovement.ingredientUuid())
-                .changeQuantity(inventoryMovement.changeQuantity())
-                .reason(inventoryMovement.reason())
-                .build();
+                                .ingredientUuid(inventoryMovement.ingredientUuid())
+                                .changeQuantity(inventoryMovement.changeQuantity())
+                                .reason(inventoryMovement.reason())
+                                .build();
     }
 }

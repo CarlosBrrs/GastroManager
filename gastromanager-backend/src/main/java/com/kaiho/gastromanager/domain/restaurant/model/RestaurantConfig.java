@@ -16,6 +16,7 @@ import java.util.UUID;
 public class RestaurantConfig {
 
     private UUID uuid;
-    private boolean isPaymentRequiredBeforePlacement;
+    private boolean payBeforeOrder;
+    private boolean isFranchise;
     private Restaurant restaurant;
 }

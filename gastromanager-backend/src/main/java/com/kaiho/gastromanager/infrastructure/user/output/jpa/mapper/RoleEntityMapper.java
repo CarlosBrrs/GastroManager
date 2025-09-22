@@ -12,9 +12,9 @@ public class RoleEntityMapper {
         }
 
         return Role.builder()
-                .uuid(roleEntity.getUuid())
-                .roleType(roleEntity.getRoleType())
-                .build();
+                   .uuid(roleEntity.getUuid())
+                   .roleType(roleEntity.getRoleType())
+                   .build();
     }
 
     public RoleEntity toEntity(Role role) {

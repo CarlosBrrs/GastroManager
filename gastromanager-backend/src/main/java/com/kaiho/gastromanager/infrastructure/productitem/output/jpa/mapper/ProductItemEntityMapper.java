@@ -31,23 +31,23 @@ public class ProductItemEntityMapper {
         Restaurant restaurant = restaurantEntityMapper.toDomain(productItemEntity.getRestaurant());
 
         List<ProductItemIngredient> ingredients = productItemEntity.getIngredients().stream()
-                .map(productItemIngredientEntityMapper::toDomain)
-                .toList();
+                                                                   .map(productItemIngredientEntityMapper::toDomain)
+                                                                   .toList();
 
         return ProductItem.builder()
-                .uuid(productItemEntity.getUuid())
-                .name(productItemEntity.getName())
-                .description(productItemEntity.getDescription())
-                .category(productItemEntity.getCategory())
-                .price(productItemEntity.getPrice())
-                .isEnabled(productItemEntity.isEnabled())
-                .restaurant(restaurant)
-                .ingredients(ingredients)
-                .createdBy(productItemEntity.getCreatedBy())
-                .createdDate(productItemEntity.getCreatedDate())
-                .updatedBy(productItemEntity.getUpdatedBy())
-                .updatedDate(productItemEntity.getUpdatedDate())
-                .build();
+                          .uuid(productItemEntity.getUuid())
+                          .name(productItemEntity.getName())
+                          .description(productItemEntity.getDescription())
+                          .category(productItemEntity.getCategory())
+                          .price(productItemEntity.getPrice())
+                          .isEnabled(productItemEntity.isEnabled())
+                          .restaurant(restaurant)
+                          .ingredients(ingredients)
+                          .createdBy(productItemEntity.getCreatedBy())
+                          .createdDate(productItemEntity.getCreatedDate())
+                          .updatedBy(productItemEntity.getUpdatedBy())
+                          .updatedDate(productItemEntity.getUpdatedDate())
+                          .build();
     }
 
     public ProductItemEntity toEntity(ProductItem productItem) {
@@ -56,20 +56,20 @@ public class ProductItemEntityMapper {
         }
 
         RestaurantEntity restaurant = restaurantEntityRepository.findById(productItem.getRestaurant().getUuid())
-                .orElseThrow(() -> new RestaurantDoesNotExistException(productItem.getRestaurant().getUuid().toString()));
+                                                                .orElseThrow(() -> new RestaurantDoesNotExistException(productItem.getRestaurant().getUuid().toString()));
 
         return ProductItemEntity.builder()
-                .uuid(productItem.getUuid())
-                .name(productItem.getName())
-                .description(productItem.getDescription())
-                .category(productItem.getCategory())
-                .price(productItem.getPrice())
-                .ingredients(new ArrayList<>())
-                .isEnabled(productItem.isEnabled())
-                .createdBy(productItem.getCreatedBy())
-                .createdDate(productItem.getCreatedDate())
-                .restaurant(restaurant)
-                .build();
+                                .uuid(productItem.getUuid())
+                                .name(productItem.getName())
+                                .description(productItem.getDescription())
+                                .category(productItem.getCategory())
+                                .price(productItem.getPrice())
+                                .ingredients(new ArrayList<>())
+                                .isEnabled(productItem.isEnabled())
+                                .createdBy(productItem.getCreatedBy())
+                                .createdDate(productItem.getCreatedDate())
+                                .restaurant(restaurant)
+                                .build();
 
     }
 

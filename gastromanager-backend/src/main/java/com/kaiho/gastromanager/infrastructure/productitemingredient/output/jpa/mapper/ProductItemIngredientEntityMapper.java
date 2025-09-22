@@ -27,10 +27,10 @@ public class ProductItemIngredientEntityMapper {
         Ingredient ingredient = ingredientEntityMapper.toDomain(productItemIngredientEntity.getIngredient());
 
         return ProductItemIngredient.builder()
-                .uuid(productItemIngredientEntity.getUuid())
-                .ingredient(ingredient)
-                .quantity(productItemIngredientEntity.getQuantity())
-                .build();
+                                    .uuid(productItemIngredientEntity.getUuid())
+                                    .ingredient(ingredient)
+                                    .quantity(productItemIngredientEntity.getQuantity())
+                                    .build();
     }
 
     public ProductItemIngredientEntity toEntity(ProductItemIngredient productItemIngredient) {
@@ -43,8 +43,8 @@ public class ProductItemIngredientEntityMapper {
                 .orElseThrow(() -> new IngredientDoesNotExistException(productItemIngredient.getIngredient().getUuid().toString()));
 
         return ProductItemIngredientEntity.builder()
-                .ingredient(ingredientEntity)
-                .quantity(productItemIngredient.getQuantity())
-                .build();
+                                          .ingredient(ingredientEntity)
+                                          .quantity(productItemIngredient.getQuantity())
+                                          .build();
     }
 }

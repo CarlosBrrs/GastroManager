@@ -35,8 +35,8 @@ public class ProductItemEntityAdapter implements ProductItemPersistencePort {
     @Override
     public List<ProductItem> findAllProductItems() {
         return productItemEntityRepository.findAll().stream()
-                .map(productItemEntityMapper::toDomain)
-                .toList();
+                                          .map(productItemEntityMapper::toDomain)
+                                          .toList();
     }
 
     @Override
@@ -52,7 +52,7 @@ public class ProductItemEntityAdapter implements ProductItemPersistencePort {
         ProductItemEntity productItemEntity = productItemEntityMapper.toEntity(productItem);
 
         List<ProductItemIngredientEntity> productItemIngredientEntityList = productItem.getIngredients().stream()
-                .map(productItemIngredientEntityMapper::toEntity).toList();
+                                                                                       .map(productItemIngredientEntityMapper::toEntity).toList();
 
         productItemIngredientEntityList.forEach(productItemEntity::addProductItemIngredient);
 
@@ -63,7 +63,7 @@ public class ProductItemEntityAdapter implements ProductItemPersistencePort {
     @Override
     public ProductItem updateProductItem(UUID uuid, ProductItem updatedProductItem) {
         ProductItemEntity existingEntity = productItemEntityRepository.findById(uuid)
-                .orElseThrow(() -> new ProductItemDoesNotExistException(uuid));
+                                                                      .orElseThrow(() -> new ProductItemDoesNotExistException(uuid));
 
         existingEntity.setName(updatedProductItem.getName());
         existingEntity.setDescription(updatedProductItem.getDescription());
@@ -82,7 +82,7 @@ public class ProductItemEntityAdapter implements ProductItemPersistencePort {
         List<ProductItemIngredientEntity> currentIngredients = existingEntity.getIngredients();
 
         Map<UUID, ProductItemIngredient> updatedMap = updatedIngredients.stream()
-                .collect(Collectors.toMap(pii -> pii.getIngredient().getUuid(), Function.identity()));
+                                                                        .collect(Collectors.toMap(pii -> pii.getIngredient().getUuid(), Function.identity()));
 
 
         Iterator<ProductItemIngredientEntity> iterator = currentIngredients.iterator();
@@ -100,11 +100,11 @@ public class ProductItemEntityAdapter implements ProductItemPersistencePort {
         for (ProductItemIngredient newIngredient : updatedMap.values()) {
 
             IngredientEntity ingredient = ingredientEntityRepository.findById(newIngredient.getIngredient().getUuid())
-                    .orElseThrow(() -> new IngredientDoesNotExistException(newIngredient.getIngredient().getUuid().toString()));
+                                                                    .orElseThrow(() -> new IngredientDoesNotExistException(newIngredient.getIngredient().getUuid().toString()));
 
             ProductItemIngredientEntity newEntity = ProductItemIngredientEntity.builder()
-                    .ingredient(ingredient)
-                    .quantity(newIngredient.getQuantity()).build();
+                                                                               .ingredient(ingredient)
+                                                                               .quantity(newIngredient.getQuantity()).build();
 
             existingEntity.addProductItemIngredient(newEntity);
         }

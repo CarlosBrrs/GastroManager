@@ -32,16 +32,16 @@ public class ProductItemMapper {
         }
 
         List<ProductItemIngredientResponseDto> productItemIngredientResponseDtoList = productItem.getIngredients().stream()
-                .map(productItemIngredientMapper::toResponse).toList();
+                                                                                                 .map(productItemIngredientMapper::toResponse).toList();
         return ProductItemResponseDto.builder()
-                .uuid(productItem.getUuid())
-                .name(productItem.getName())
-                .description(productItem.getDescription())
-                .price(productItem.getPrice())
-                .isEnabled(productItem.isEnabled())
-                .category(productItem.getCategory())
-                .ingredients(productItemIngredientResponseDtoList)
-                .build();
+                                     .uuid(productItem.getUuid())
+                                     .name(productItem.getName())
+                                     .description(productItem.getDescription())
+                                     .price(productItem.getPrice())
+                                     .isEnabled(productItem.isEnabled())
+                                     .category(productItem.getCategory())
+                                     .ingredients(productItemIngredientResponseDtoList)
+                                     .build();
     }
 
     public ProductItem toDomain(ProductItemRequestDto productItemRequestDto) {
@@ -54,17 +54,17 @@ public class ProductItemMapper {
         Set<ProductItemIngredientRequestDto> productItemIngredientRequestDtoSet = new HashSet<>(productItemRequestDto.ingredients());
 
         List<ProductItemIngredient> productItemIngredients = productItemIngredientRequestDtoSet.stream()
-                .map(productItemIngredientMapper::toDomain)
-                .toList();
+                                                                                               .map(productItemIngredientMapper::toDomain)
+                                                                                               .toList();
 
         return ProductItem.builder()
-                .name(productItemRequestDto.name())
-                .description(productItemRequestDto.description())
-                .price(productItemRequestDto.price())
-                .category(Category.valueOf(productItemRequestDto.category()))
-                .restaurant(restaurant)
-                .isEnabled(true)
-                .ingredients(productItemIngredients)
-                .build();
+                          .name(productItemRequestDto.name())
+                          .description(productItemRequestDto.description())
+                          .price(productItemRequestDto.price())
+                          .category(Category.valueOf(productItemRequestDto.category()))
+                          .restaurant(restaurant)
+                          .isEnabled(true)
+                          .ingredients(productItemIngredients)
+                          .build();
     }
 }

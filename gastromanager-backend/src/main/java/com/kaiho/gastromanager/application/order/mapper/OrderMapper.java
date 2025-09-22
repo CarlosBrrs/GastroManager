@@ -1,65 +1,93 @@
 package com.kaiho.gastromanager.application.order.mapper;
 
-import com.kaiho.gastromanager.application.order.dto.request.OrderRequestDto;
-import com.kaiho.gastromanager.application.order.dto.response.OrderResponseDto;
+import com.kaiho.gastromanager.application.order.dto.request.OrderCreateRequestDto;
+import com.kaiho.gastromanager.application.order.dto.request.OrderDetailResponseDto;
+import com.kaiho.gastromanager.application.order.dto.response.OrderSummaryResponseDto;
 import com.kaiho.gastromanager.application.orderitem.dto.response.OrderItemResponseDto;
 import com.kaiho.gastromanager.application.orderitem.mapper.OrderItemMapper;
 import com.kaiho.gastromanager.domain.order.model.Order;
-import com.kaiho.gastromanager.domain.order.model.OrderStatus;
 import com.kaiho.gastromanager.domain.orderitem.model.OrderItem;
-import com.kaiho.gastromanager.domain.restaurant.api.RestaurantServicePort;
 import com.kaiho.gastromanager.domain.restaurant.model.Restaurant;
-import com.kaiho.gastromanager.domain.user.model.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static com.kaiho.gastromanager.domain.order.model.InvoicingStatus.NOT_INVOICED;
+import static com.kaiho.gastromanager.domain.order.model.OperationalStatus.AWAITING_PAYMENT;
+import static com.kaiho.gastromanager.domain.order.model.PaymentStatus.UNPAID;
 import static com.kaiho.gastromanager.infrastructure.config.context.RestaurantContext.getCurrentRestaurant;
+import static java.math.BigDecimal.ZERO;
 
 @Component
 @RequiredArgsConstructor
 public class OrderMapper {
 
     private final OrderItemMapper orderItemMapper;
-    private final RestaurantServicePort restaurantServicePort;
 
-    public OrderResponseDto toResponse(Order order) {
+    public OrderSummaryResponseDto toResponse(Order order) {
         if (order == null) {
             return null;
         }
         List<OrderItemResponseDto> list = order.getOrderItems().stream().map(orderItemMapper::toResponse).toList();
-        return OrderResponseDto.builder()
-                .uuid(order.getUuid())
-                .code(order.getCode())
-                .updatedDate(order.getUpdatedDate())
-                .user(order.getUser().getName())
-                .userUuid(order.getUser().getUuid())
-                .totalPrice(order.getTotalAmount())
-                .status(order.getStatus())
-                .orderItems(list)
-                .build();
+        return OrderSummaryResponseDto.builder()
+                                      .uuid(order.getUuid())
+                                      .code(order.getCode())
+                                      .totalAmount(order.getTotalAmount())
+                                      .totalPaid(order.getTotalPaid())
+                                      .remainingToPay(order.getRemainingToPay())
+                                      .paymentStatus(order.getPaymentStatus())
+                                      .operationalStatus(order.getOperationalStatus())
+                                      .orderItems(list)
+                                      .build();
     }
 
-    public Order toDomain(OrderRequestDto orderRequestDto) {
+    public OrderDetailResponseDto toDetailResponse(Order order) {
+        if (order == null) {
+            return null;
+        }
+        List<OrderItemResponseDto> list = order.getOrderItems().stream().map(orderItemMapper::toResponse).toList();
+
+        return OrderDetailResponseDto.builder()
+                                     .uuid(order.getUuid())
+                                     .code(order.getCode())
+                                     .createdBy(order.getCreatedBy())
+                                     .customerName(order.getCustomerName())
+                                     .customerNotes(order.getCustomerNotes())
+                                     .tableNumber(order.getTableNumber())
+                                     .totalAmount(order.getTotalAmount())
+                                     .totalPaid(order.getTotalPaid())
+                                     .remainingToPay(order.getRemainingToPay())
+                                     .operationalStatus(order.getOperationalStatus())
+                                     .paymentStatus(order.getPaymentStatus())  // Agregar el campo faltante
+                                     .invoicingStatus(order.getInvoicingStatus())
+                                     .orderItems(list)
+                                     .updatedDate(order.getUpdatedDate())
+                                     .invoices(List.of()) // Array vacío por ahora
+                                     .requiresPaymentBefore(order.isRequiresPaymentBefore())
+                                     .build();
+    }
+
+    public Order toDomain(OrderCreateRequestDto orderRequestDto) {
         if (orderRequestDto == null) {
             return null;
         }
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User principal = (User) authentication.getPrincipal();
-        Restaurant restaurant = restaurantServicePort.getRestaurantById(getCurrentRestaurant());
+        Restaurant restaurant = Restaurant.builder().uuid(getCurrentRestaurant()).build();
 
         List<OrderItem> orderItems = orderRequestDto.orderItems().stream().map(orderItemMapper::toDomain)
-                .toList();
-        return Order.builder()
-                .user(principal)
-                .customerNotes(orderRequestDto.customerNotes())
-                .orderItems(orderItems)
-                .status(OrderStatus.AWAITING_PAYMENT)
-                .restaurant(restaurant)
-                .build();
+                                                    .toList();
+        Order order = Order.builder()
+                           .customerNotes(orderRequestDto.customerNotes())
+                           .orderItems(orderItems)
+                           .operationalStatus(AWAITING_PAYMENT)
+                           .invoicingStatus(NOT_INVOICED)
+                           .totalPaid(ZERO)
+                           .paymentStatus(UNPAID)
+                           .restaurant(restaurant)
+                           .tableNumber(orderRequestDto.tableNumber())
+                           .customerName(orderRequestDto.customerName())
+                           .build();
+        orderItems.forEach(orderItem -> orderItem.setOrder(order));
+        return order;
     }
 }

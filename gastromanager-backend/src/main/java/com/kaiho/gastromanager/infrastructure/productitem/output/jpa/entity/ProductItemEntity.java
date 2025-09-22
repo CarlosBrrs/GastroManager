@@ -43,8 +43,8 @@ public class ProductItemEntity extends Auditable implements Serializable {
     @OneToMany(mappedBy = "productItem", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductItemIngredientEntity> ingredients = new ArrayList<>();
 
-    @OneToMany(mappedBy = "productItem", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItemEntity> orderItems = new ArrayList<>();
+/*    @OneToMany(mappedBy = "productItem", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderItemEntity> orderItems = new ArrayList<>();*/
 
     @ManyToOne
     @JoinColumn(name = "restaurant_uuid")
@@ -55,9 +55,9 @@ public class ProductItemEntity extends Auditable implements Serializable {
         productItemIngredientEntity.setProductItem(this);
     }
 
-    public void addOrderItem(OrderItemEntity orderItemEntity) {
+/*    public void addOrderItem(OrderItemEntity orderItemEntity) {
         orderItems.add(orderItemEntity);
         orderItemEntity.setProductItem(this);
-    }
+    }*/
 
 }

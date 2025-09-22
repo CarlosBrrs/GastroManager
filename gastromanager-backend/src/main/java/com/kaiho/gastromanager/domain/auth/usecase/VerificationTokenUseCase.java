@@ -21,7 +21,7 @@ public class VerificationTokenUseCase implements VerificationTokenServicePort {
     @Override
     public VerificationToken findByToken(String token) {
         return verificationTokenPersistencePort.findByToken(UUID.fromString(token))
-                .orElseThrow(() -> new TokenDoesNotExistException(token));
+                                               .orElseThrow(() -> new TokenDoesNotExistException(token));
     }
 
     @Override
@@ -41,10 +41,10 @@ public class VerificationTokenUseCase implements VerificationTokenServicePort {
     public VerificationToken createVerificationToken(User user) {
         UUID token = generateValidVerificationToken();
         VerificationToken verificationToken = VerificationToken.builder()
-                .token(token)
-                .user(user)
-                .expiryDate(Instant.now().plusSeconds(300))
-                .build();
+                                                               .token(token)
+                                                               .user(user)
+                                                               .expiryDate(Instant.now().plusSeconds(300))
+                                                               .build();
         return verificationTokenPersistencePort.createVerificationToken(verificationToken);
     }
 

@@ -8,8 +8,6 @@ import com.kaiho.gastromanager.domain.productitemingredient.model.ProductItemIng
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import static com.kaiho.gastromanager.infrastructure.config.context.RestaurantContext.getCurrentRestaurant;
-
 @Component
 @RequiredArgsConstructor
 public class ProductItemIngredientMapper {
@@ -20,12 +18,12 @@ public class ProductItemIngredientMapper {
         if (productItemIngredientRequestDto == null) {
             return null;
         }
-        Ingredient ingredient = ingredientServicePort.getIngredientById(productItemIngredientRequestDto.ingredientUuid(), getCurrentRestaurant());
+        Ingredient ingredient = ingredientServicePort.getIngredientById(productItemIngredientRequestDto.ingredientUuid());
 
         return ProductItemIngredient.builder()
-                .ingredient(ingredient)
-                .quantity(productItemIngredientRequestDto.quantity())
-                .build();
+                                    .ingredient(ingredient)
+                                    .quantity(productItemIngredientRequestDto.quantity())
+                                    .build();
     }
 
     public ProductItemIngredientResponseDto toResponse(ProductItemIngredient productItemIngredient) {
@@ -33,10 +31,10 @@ public class ProductItemIngredientMapper {
             return null;
         }
         return ProductItemIngredientResponseDto.builder()
-                .ingredientUuid(productItemIngredient.getIngredient().getUuid())
-                .unit(productItemIngredient.getIngredient().getUnit().getSymbol())
-                .name(productItemIngredient.getIngredient().getName())
-                .quantity(productItemIngredient.getQuantity())
-                .build();
+                                               .ingredientUuid(productItemIngredient.getIngredient().getUuid())
+                                               .unit(productItemIngredient.getIngredient().getUnit().getSymbol())
+                                               .name(productItemIngredient.getIngredient().getName())
+                                               .quantity(productItemIngredient.getQuantity())
+                                               .build();
     }
 }

@@ -24,8 +24,8 @@ public class RoleEntityAdapter implements RolePersistencePort {
     @Override
     public Set<Role> findAllRolesByUuid(Set<UUID> uuids) {
         return roleEntityRepository.findAllByUuidIn(uuids).stream()
-                .map(roleEntityMapper::toDomain)
-                .collect(Collectors.toSet());
+                                   .map(roleEntityMapper::toDomain)
+                                   .collect(Collectors.toSet());
     }
 
     @Override
