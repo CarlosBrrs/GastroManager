@@ -57,16 +57,16 @@ services:
     #     user: postgres
     #     secrets:
     #       - db-password
-# The `volumes` tag allows us to share a folder with our container
-# Its syntax is as follows: [folder path on our machine]:[folder path to retrieve in the container]
+    # The `volumes` tag allows us to share a folder with our container
+    # Its syntax is as follows: [folder path on our machine]:[folder path to retrieve in the container]
     volumes:
-  # In this example, we share the folder `db-data` in our root repository, with the default PostgreSQL data path
-  # It means that every time the repository is modifying the data inside
-  # of `/var/lib/postgresql/data/`, automatically the change will appear in `db-data`
-  # You don't need to create the `db-data` folder. Docker Compose will do it for you
+      # In this example, we share the folder `db-data` in our root repository, with the default PostgreSQL data path
+      # It means that every time the repository is modifying the data inside
+      # of `/var/lib/postgresql/data/`, automatically the change will appear in `db-data`
+      # You don't need to create the `db-data` folder. Docker Compose will do it for you
       - ${PWD}/db-data/:/var/lib/postgresql/data/
         # In this example, we share an init.sql script with the container
-        # The init script will be executed when the database is first run
+      # The init script will be executed when the database is first run
       - ${PWD}/init.sql:/docker-entrypoint-initdb.d/init.sql
     #     environment:
     #       - POSTGRES_DB=example

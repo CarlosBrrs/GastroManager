@@ -2,6 +2,9 @@ package com.kaiho.gastromanager.domain.ingredient.spi;
 
 import com.kaiho.gastromanager.domain.ingredient.model.Ingredient;
 import com.kaiho.gastromanager.domain.restaurant.model.Restaurant;
+import com.kaiho.gastromanager.infrastructure.ingredient.output.jpa.criteria.IngredientSearchCriteria;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Map;
@@ -11,9 +14,9 @@ import java.util.UUID;
 
 public interface IngredientPersistencePort {
 
-    List<Ingredient> getAllIngredients();
+    Page<Ingredient> getAllIngredients(IngredientSearchCriteria criteria, Pageable pageable);
 
-    Optional<Ingredient> getIngredientByUuid(UUID uuid, UUID restaurantUuid);
+    Optional<Ingredient> getIngredientByUuid(UUID uuid);
 
     boolean ingredientExistsByName(String name, UUID restaurantUuid);
 

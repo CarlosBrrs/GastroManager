@@ -18,8 +18,8 @@ public class VerificationTokenEntityMapper {
             return null;
         }
         return VerificationTokenEntity.builder()
-                .token(verificationToken.getToken())
-                .expiryDate(verificationToken.getExpiryDate()).build();
+                                      .token(verificationToken.getToken())
+                                      .expiryDate(verificationToken.getExpiryDate()).build();
     }
 
     public VerificationToken toDomain(VerificationTokenEntity verificationTokenEntity) {
@@ -28,9 +28,9 @@ public class VerificationTokenEntityMapper {
         }
         User user = userEntityMapper.toDomain(verificationTokenEntity.getUser());
         return VerificationToken.builder()
-                .uuid(verificationTokenEntity.getUuid())
-                .user(user)
-                .token(verificationTokenEntity.getToken())
-                .expiryDate(verificationTokenEntity.getExpiryDate()).build();
+                                .uuid(verificationTokenEntity.getUuid())
+                                .user(user)
+                                .token(verificationTokenEntity.getToken())
+                                .expiryDate(verificationTokenEntity.getExpiryDate()).build();
     }
 }

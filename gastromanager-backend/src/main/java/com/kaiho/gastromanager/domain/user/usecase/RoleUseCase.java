@@ -30,8 +30,8 @@ public class RoleUseCase implements RoleServicePort {
         Set<Role> allRolesByUuid = rolePersistencePort.findAllRolesByUuid(roleUuids);
 
         Set<UUID> foundUuids = allRolesByUuid.stream()
-                .map(Role::uuid)
-                .collect(Collectors.toSet());
+                                             .map(Role::uuid)
+                                             .collect(Collectors.toSet());
 
         if (!foundUuids.containsAll(roleUuids)) {
             Set<UUID> missingUuids = new HashSet<>(roleUuids);

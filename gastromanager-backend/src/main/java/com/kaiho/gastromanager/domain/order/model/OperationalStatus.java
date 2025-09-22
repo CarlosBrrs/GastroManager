@@ -1,6 +1,6 @@
 package com.kaiho.gastromanager.domain.order.model;
 
-public enum OrderStatus {
+public enum OperationalStatus {
     AWAITING_PAYMENT,
     PENDING,
     PREPARING,

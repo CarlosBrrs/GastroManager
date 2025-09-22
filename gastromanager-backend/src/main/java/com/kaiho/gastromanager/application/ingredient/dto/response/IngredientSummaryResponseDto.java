@@ -6,7 +6,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Builder
-public record IngredientResponseDto(
+public record IngredientSummaryResponseDto(
         UUID uuid,
         String name,
         double availableStock,

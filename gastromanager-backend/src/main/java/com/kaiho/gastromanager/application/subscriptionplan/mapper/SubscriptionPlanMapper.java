@@ -11,10 +11,10 @@ public class SubscriptionPlanMapper {
             return null;
         }
         return SubscriptionPlanResponseDto.builder()
-                .uuid(subscriptionPlan.getUuid())
-                .name(subscriptionPlan.getName())
-                .description(subscriptionPlan.getDescription())
-                .price(subscriptionPlan.getPrice())
-                .build();
+                                          .uuid(subscriptionPlan.getUuid())
+                                          .name(subscriptionPlan.getName())
+                                          .description(subscriptionPlan.getDescription())
+                                          .price(subscriptionPlan.getPrice())
+                                          .build();
     }
 }

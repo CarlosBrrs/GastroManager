@@ -1,8 +1,8 @@
 package com.kaiho.gastromanager.infrastructure.user.output.jpa.entity;
 
 import com.kaiho.gastromanager.infrastructure.auth.output.jpa.entity.VerificationTokenEntity;
+import com.kaiho.gastromanager.infrastructure.cashregistersession.output.jpa.entity.CashRegisterSessionEntity;
 import com.kaiho.gastromanager.infrastructure.common.model.Auditable;
-import com.kaiho.gastromanager.infrastructure.order.output.jpa.entity.OrderEntity;
 import com.kaiho.gastromanager.infrastructure.restaurant.output.jpa.entity.RestaurantEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -58,9 +58,9 @@ public class UserEntity extends Auditable implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "role_uuid")
     )
     private Set<RoleEntity> roles = new HashSet<>();
-
+/*
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderEntity> orders;
+    private List<OrderEntity> orders;*/
 
     @ManyToOne
     @JoinColumn(name = "restaurant_uuid", referencedColumnName = "uuid")
@@ -69,10 +69,13 @@ public class UserEntity extends Auditable implements Serializable {
     @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
     private List<RestaurantEntity> restaurants = new ArrayList<>();
 
-    public void addOrder(OrderEntity order) {
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CashRegisterSessionEntity> cashRegisterSessions = new ArrayList<>();
+
+    /*    public void addOrder(OrderEntity order) {
         orders.add(order);
         order.setUser(this);
-    }
+    }*/
 
     public void addRestaurantToOwner(RestaurantEntity restaurant) {
         restaurants.add(restaurant);
@@ -88,5 +91,15 @@ public class UserEntity extends Auditable implements Serializable {
             this.verificationToken.setUser(null);
             this.verificationToken = null;
         }
+    }
+
+    public void addCashRegisterSession(CashRegisterSessionEntity session) {
+        cashRegisterSessions.add(session);
+        session.setUser(this);
+    }
+
+    public void removeCashRegisterSession(CashRegisterSessionEntity session) {
+        cashRegisterSessions.remove(session);
+        session.setUser(null);
     }
 }

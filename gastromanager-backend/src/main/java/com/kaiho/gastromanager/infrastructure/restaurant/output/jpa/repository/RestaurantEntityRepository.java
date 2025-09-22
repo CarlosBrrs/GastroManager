@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -13,4 +14,7 @@ public interface RestaurantEntityRepository extends JpaRepository<RestaurantEnti
     boolean existsByNameAndAddressAndOwnerUuid(@Param("name") String name, @Param("address") String address, @Param("ownerUuid") UUID ownerUuid);
 
     Optional<RestaurantEntity> findByName(String restName);
+
+    @Query("SELECT r FROM RestaurantEntity r WHERE r.owner.uuid = :ownerUuid")
+    List<RestaurantEntity> findByOwnerUuid(@Param("ownerUuid") UUID ownerUuid);
 }

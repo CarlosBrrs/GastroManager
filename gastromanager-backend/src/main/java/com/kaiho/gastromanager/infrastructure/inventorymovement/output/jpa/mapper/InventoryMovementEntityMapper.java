@@ -11,8 +11,8 @@ public class InventoryMovementEntityMapper {
             return null;
         }
         return InventoryMovementEntity.builder()
-                .changeQuantity(inventoryMovement.changeQuantity())
-                .reason(inventoryMovement.reason())
-                .build();
+                                      .changeQuantity(inventoryMovement.changeQuantity())
+                                      .reason(inventoryMovement.reason())
+                                      .build();
     }
 }

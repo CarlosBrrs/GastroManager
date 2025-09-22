@@ -11,6 +11,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,14 +26,24 @@ import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.B
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class RestaurantAuthFilter extends OncePerRequestFilter {
-    private static final List<String> EXCLUDED_PATHS = List.of("/api/v1/subscription-plans", "/api/v1/users", "/api/v1/auth/login", "/api/v1/auth/sign-up", BASE_URL + "/auth/verify-account");
+    private static final List<String> EXCLUDED_PATHS = List.of(
+            "/api/v1/subscription-plans",
+            "/api/v1/users",
+            "/api/v1/auth/login",
+            "/api/v1/auth/sign-up",
+            BASE_URL + "/auth/verify-account",
+            BASE_URL + "/restaurants/my-access",
+            BASE_URL + "/restaurants"
+    );
     private static final String RESTAURANT_UUID_HEADER = "X-Restaurant-Uuid";
     private final RestaurantServicePort restaurantServicePort;
     private final UserServicePort userServicePort;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
 
         String requestUri = request.getRequestURI();
 
@@ -48,6 +59,7 @@ public class RestaurantAuthFilter extends OncePerRequestFilter {
             throw new MissingRestaurantUuidHeaderException();
         }
         try {
+            log.debug("Processing request for restaurant UUID: {}", restaurantUuid);
             validateAccessToRestaurant(restaurantUuid);
 
             RestaurantContext.setCurrentRestaurant(UUID.fromString(restaurantUuid));

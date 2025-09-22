@@ -22,11 +22,11 @@ public class InventoryMovementUseCasePort implements InventoryMovementServicePor
     public void recordInventoryMovement(UUID ingredientUuid, double changeQuantity, String reason, Restaurant restaurant) {
 
         InventoryMovement movement = InventoryMovement.builder()
-                .ingredientUuid(ingredientUuid)
-                .changeQuantity(changeQuantity)
-                .reason(reason)
-                .restaurant(restaurant)
-                .build();
+                                                      .ingredientUuid(ingredientUuid)
+                                                      .changeQuantity(changeQuantity)
+                                                      .reason(reason)
+                                                      .restaurant(restaurant)
+                                                      .build();
 
         if (movement.changeQuantity() == 0) {
             throw new InvalidInventoryMovementQuantityException();

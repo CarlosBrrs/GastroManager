@@ -5,5 +5,5 @@ import lombok.Builder;
 import java.util.UUID;
 
 @Builder
-public record RestaurantConfigResponseDto(UUID uuid, String restaurantName, boolean requirePaymentBeforeOrder) {
+public record RestaurantConfigResponseDto(UUID uuid, boolean requirePaymentBeforeOrder) {
 }

@@ -51,6 +51,7 @@ public class AuthUseCase implements AuthServicePort {
         User user = (User) userServicePort.loadUserByUsername(login.username());
 
         if (!passwordEncoder.matches(login.password(), user.getEncodedPassword())) {
+            log.error("Password incorrect for user: {}", login.username());
             throw new BadCredentialsException("Password incorrect.");
         }
 
@@ -71,13 +72,13 @@ public class AuthUseCase implements AuthServicePort {
             restaurants.add(restaurantMap);
         } else if (user.getRestaurants() != null && !user.getRestaurants().isEmpty()) {
             restaurants = user.getRestaurants().stream()
-                    .map(rest -> {
-                        Map<String, String> restaurantMap = new HashMap<>();
-                        restaurantMap.put("uuid", rest.getUuid().toString());
-                        restaurantMap.put("name", rest.getName());
-                        return restaurantMap;
-                    })
-                    .toList();
+                              .map(rest -> {
+                                  Map<String, String> restaurantMap = new HashMap<>();
+                                  restaurantMap.put("uuid", rest.getUuid().toString());
+                                  restaurantMap.put("name", rest.getName());
+                                  return restaurantMap;
+                              })
+                              .toList();
         }
 
         response.put("restaurants", restaurants);

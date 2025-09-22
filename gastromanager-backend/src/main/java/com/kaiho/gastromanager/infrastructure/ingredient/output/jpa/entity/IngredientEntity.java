@@ -3,6 +3,7 @@ package com.kaiho.gastromanager.infrastructure.ingredient.output.jpa.entity;
 import com.kaiho.gastromanager.domain.ingredient.model.Unit;
 import com.kaiho.gastromanager.infrastructure.common.model.Auditable;
 import com.kaiho.gastromanager.infrastructure.inventorymovement.output.jpa.entity.InventoryMovementEntity;
+import com.kaiho.gastromanager.infrastructure.recipeingredient.output.jpa.entity.RecipeIngredientEntity;
 import com.kaiho.gastromanager.infrastructure.restaurant.output.jpa.entity.RestaurantEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -52,6 +53,9 @@ public class IngredientEntity extends Auditable implements Serializable {
     @OneToMany(mappedBy = "ingredient", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<InventoryMovementEntity> inventoryMovements = new ArrayList<>();
+
+    @OneToMany(mappedBy = "ingredient", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RecipeIngredientEntity> recipeIngredients = new ArrayList<>();
 
     private double pricePerUnit;
 

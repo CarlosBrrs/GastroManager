@@ -1,25 +1,22 @@
 package com.kaiho.gastromanager.infrastructure.order.output.jpa.adapter;
 
+import com.kaiho.gastromanager.domain.order.exception.OrderDoesNotExistException;
 import com.kaiho.gastromanager.domain.order.model.Order;
 import com.kaiho.gastromanager.domain.order.spi.OrderPersistencePort;
-import com.kaiho.gastromanager.domain.productitem.exception.ProductItemDoesNotExistException;
-import com.kaiho.gastromanager.domain.restaurant.exception.RestaurantDoesNotExistException;
+import com.kaiho.gastromanager.infrastructure.order.output.jpa.criteria.OrderSearchCriteria;
 import com.kaiho.gastromanager.infrastructure.order.output.jpa.entity.OrderEntity;
 import com.kaiho.gastromanager.infrastructure.order.output.jpa.mapper.OrderEntityMapper;
 import com.kaiho.gastromanager.infrastructure.order.output.jpa.repository.OrderEntityRepository;
-import com.kaiho.gastromanager.infrastructure.productitem.output.jpa.entity.ProductItemEntity;
-import com.kaiho.gastromanager.infrastructure.productitem.output.jpa.repository.ProductItemRepository;
-import com.kaiho.gastromanager.infrastructure.restaurant.output.jpa.entity.RestaurantEntity;
-import com.kaiho.gastromanager.infrastructure.restaurant.output.jpa.repository.RestaurantEntityRepository;
-import com.kaiho.gastromanager.infrastructure.user.output.jpa.entity.UserEntity;
-import com.kaiho.gastromanager.infrastructure.user.output.jpa.repository.UserEntityRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import static com.kaiho.gastromanager.infrastructure.order.output.jpa.specification.OrderEntitySpecification.buildSpecification;
 
 @RequiredArgsConstructor
 @Repository
@@ -27,34 +24,41 @@ public class OrderEntityAdapter implements OrderPersistencePort {
 
     private final OrderEntityRepository orderEntityRepository;
     private final OrderEntityMapper orderEntityMapper;
-    private final UserEntityRepository userEntityRepository;
-    private final ProductItemRepository productItemRepository;
-    private final RestaurantEntityRepository restaurantEntityRepository;
 
     @Override
-    public List<Order> findAllOrders() {
-        return orderEntityRepository.findAll().stream().map(orderEntityMapper::toDomain).toList();
+    public Page<Order> findAllOrders(OrderSearchCriteria criteria, Pageable pageable) {
+        Specification<OrderEntity> spec = buildSpecification(criteria);
+        Page<OrderEntity> entityList = orderEntityRepository.findAll(spec, pageable);
+        return entityList.map(orderEntityMapper::toDomain);
     }
 
     @Override
     public Order createOrder(Order order) {
 
-        List<ProductItemEntity> productItemEntityList = productItemRepository.findByUuidIn(order.getOrderItems()
-                .stream()
-                .map(orderItem -> orderItem.getProductItem().getUuid())
-                .toList());
+        OrderEntity orderEntity = orderEntityMapper.toEntity(order);
+
+        // guarda la entidad en la base de datos
+        OrderEntity savedEntity = orderEntityRepository.save(orderEntity);
+
+        // devuelve el dominio mapeado desde la entidad guardada
+        return orderEntityMapper.toDomain(savedEntity);
+//        return null;
+/*        List<ProductItemEntity> productItemEntityList = productItemRepository.findByUuidIn(order.getOrderItems()
+                                                                                                .stream()
+                                                                                                .map(orderItem -> orderItem.getProductItem().getUuid())
+                                                                                                .toList());
 
         UserEntity userEntity = userEntityRepository.findById(order.getUser().getUuid()).orElseThrow(() -> new UsernameNotFoundException(order.getUser().getUuid().toString()));
 
         RestaurantEntity restaurantEntity = restaurantEntityRepository.findById(order.getRestaurant().getUuid())
-                .orElseThrow(() -> new RestaurantDoesNotExistException(order.getRestaurant().getUuid().toString()));
+                                                                      .orElseThrow(() -> new RestaurantDoesNotExistException(order.getRestaurant().getUuid().toString()));
 
         OrderEntity orderEntity = orderEntityMapper.toEntity(order);
 
         orderEntity.getOrderItems().forEach(orderItemEntity -> {
             ProductItemEntity productItemEntity = productItemEntityList.stream()
-                    .filter(p -> p.getUuid().equals(orderItemEntity.getProductItem().getUuid())).findFirst()
-                    .orElseThrow(() -> new ProductItemDoesNotExistException(orderItemEntity.getProductItem().getUuid()));
+                                                                       .filter(p -> p.getUuid().equals(orderItemEntity.getProductItem().getUuid())).findFirst()
+                                                                       .orElseThrow(() -> new ProductItemDoesNotExistException(orderItemEntity.getProductItem().getUuid()));
             productItemEntity.addOrderItem(orderItemEntity);
         });
 
@@ -63,7 +67,7 @@ public class OrderEntityAdapter implements OrderPersistencePort {
 
         OrderEntity savedEntity = orderEntityRepository.save(orderEntity);
 
-        return orderEntityMapper.toDomain(savedEntity);
+        return orderEntityMapper.toDomain(savedEntity);*/
     }
 
     @Override
@@ -83,8 +87,26 @@ public class OrderEntityAdapter implements OrderPersistencePort {
 
     @Override
     public Optional<Order> findOrderByUuid(UUID orderUuid, UUID restaurantUuid) {
-        Optional<OrderEntity> orderEntity = orderEntityRepository.findById(orderUuid, restaurantUuid);
-        return orderEntity
-                .map(orderEntityMapper::toDomain);
+        return orderEntityRepository.findById(orderUuid, restaurantUuid).map(orderEntityMapper::toDomain);
+    }
+
+    @Override
+    public void updateOrder(Order order) {
+        // Obtener la entidad existente para preservar las colecciones
+        OrderEntity existingEntity = orderEntityRepository.findById(order.getUuid())
+                .orElseThrow(() -> new OrderDoesNotExistException(order.getUuid()));
+
+        // Actualizar solo los campos necesarios sin tocar las colecciones
+        existingEntity.setTotalPaid(order.getTotalPaid());
+        existingEntity.setTotalAmount(order.getTotalAmount());
+        existingEntity.setOperationalStatus(order.getOperationalStatus());
+        existingEntity.setPaymentStatus(order.getPaymentStatus());
+        existingEntity.setInvoicingStatus(order.getInvoicingStatus());
+        existingEntity.setCustomerNotes(order.getCustomerNotes());
+        existingEntity.setTableNumber(order.getTableNumber());
+        existingEntity.setCustomerName(order.getCustomerName());
+        existingEntity.setRequiresPaymentBeforeOrder(order.isRequiresPaymentBefore());
+
+        orderEntityRepository.save(existingEntity);
     }
 }

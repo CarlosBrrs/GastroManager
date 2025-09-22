@@ -5,6 +5,7 @@ import com.kaiho.gastromanager.domain.ingredient.model.Ingredient;
 import com.kaiho.gastromanager.domain.ingredient.spi.IngredientPersistencePort;
 import com.kaiho.gastromanager.domain.restaurant.exception.RestaurantDoesNotExistException;
 import com.kaiho.gastromanager.domain.restaurant.model.Restaurant;
+import com.kaiho.gastromanager.infrastructure.ingredient.output.jpa.criteria.IngredientSearchCriteria;
 import com.kaiho.gastromanager.infrastructure.ingredient.output.jpa.entity.IngredientEntity;
 import com.kaiho.gastromanager.infrastructure.ingredient.output.jpa.mapper.IngredientEntityMapper;
 import com.kaiho.gastromanager.infrastructure.ingredient.output.jpa.repository.IngredientEntityRepository;
@@ -12,6 +13,9 @@ import com.kaiho.gastromanager.infrastructure.restaurant.output.jpa.entity.Resta
 import com.kaiho.gastromanager.infrastructure.restaurant.output.jpa.mapper.RestaurantEntityMapper;
 import com.kaiho.gastromanager.infrastructure.restaurant.output.jpa.repository.RestaurantEntityRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -19,6 +23,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+
+import static com.kaiho.gastromanager.infrastructure.config.context.RestaurantContext.getCurrentRestaurant;
+import static com.kaiho.gastromanager.infrastructure.ingredient.output.jpa.specification.IngredientEntitySpecification.buildSpecification;
 
 @RequiredArgsConstructor
 @Repository
@@ -31,15 +38,19 @@ public class IngredientEntityAdapter implements IngredientPersistencePort {
 
 
     @Override
-    public List<Ingredient> getAllIngredients() {
-        List<IngredientEntity> entityList = ingredientEntityRepository.findAll();
-        return entityList.stream().map(ingredientEntityMapper::toDomain).toList();
+    public Page<Ingredient> getAllIngredients(IngredientSearchCriteria criteria, Pageable pageable) {
+        Specification<IngredientEntity> spec = buildSpecification(criteria);
+        Page<IngredientEntity> entityList = ingredientEntityRepository.findAll(spec, pageable);
+        return entityList.map(ingredientEntityMapper::toDomain);
     }
 
     @Override
-    public Optional<Ingredient> getIngredientByUuid(UUID uuid, UUID restaurantUuid) {
-        Optional<Ingredient> ingredient = ingredientEntityRepository.findById(uuid, restaurantUuid).map(ingredientEntityMapper::toDomain);
-        RestaurantEntity restaurantEntity = restaurantEntityRepository.findById(restaurantUuid).orElseThrow(() -> new RestaurantDoesNotExistException(restaurantUuid.toString()));
+    public Optional<Ingredient> getIngredientByUuid(UUID uuid) {
+        UUID currentRestaurant = getCurrentRestaurant();
+        Optional<Ingredient> ingredient = ingredientEntityRepository.findById(uuid, currentRestaurant)
+                                                                    .map(ingredientEntityMapper::toDomain);
+        RestaurantEntity restaurantEntity = restaurantEntityRepository.findById(currentRestaurant)
+                                                                      .orElseThrow(() -> new RestaurantDoesNotExistException(currentRestaurant.toString()));
         Restaurant restaurant = restaurantEntityMapper.toDomain(restaurantEntity);
         ingredient.ifPresent(ing -> ing.setRestaurant(restaurant));
         return ingredient;
@@ -59,7 +70,7 @@ public class IngredientEntityAdapter implements IngredientPersistencePort {
 
     @Override
     public Ingredient updateIngredient(UUID uuid, Ingredient ingredient) {
-        IngredientEntity existingEntity = ingredientEntityRepository.findById(uuid).orElseThrow(() -> new IngredientDoesNotExistException(uuid.toString()));
+        IngredientEntity existingEntity = ingredientEntityRepository.findById(uuid, ingredient.getRestaurant().getUuid()).orElseThrow(() -> new IngredientDoesNotExistException(uuid.toString()));
 
         existingEntity.setName(ingredient.getName());
         existingEntity.setUnit(ingredient.getUnit());

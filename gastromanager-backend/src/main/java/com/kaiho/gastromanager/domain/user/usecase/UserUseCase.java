@@ -30,7 +30,7 @@ public class UserUseCase implements UserServicePort {
     @Override
     public User getUserByUuid(UUID uuid) {
         return userPersistencePort.getUserByUuid(uuid)
-                .orElseThrow(() -> new UsernameDoesNotExistException(uuid));
+                                  .orElseThrow(() -> new UsernameDoesNotExistException(uuid));
     }
 
     @Override
@@ -131,6 +131,6 @@ public class UserUseCase implements UserServicePort {
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userPersistencePort.findUserByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Username " + username + " does not exist."));
+                                  .orElseThrow(() -> new UsernameNotFoundException("Username " + username + " does not exist."));
     }
 }

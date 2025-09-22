@@ -6,6 +6,7 @@ import com.kaiho.gastromanager.application.auth.handler.AuthHandler;
 import com.kaiho.gastromanager.infrastructure.common.model.ApiGenericResponse;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@Slf4j
 public class AuthRestController {
 
     private final AuthHandler authHandler;

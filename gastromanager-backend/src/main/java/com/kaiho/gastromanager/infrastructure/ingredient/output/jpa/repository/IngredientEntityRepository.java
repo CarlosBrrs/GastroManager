@@ -3,6 +3,7 @@ package com.kaiho.gastromanager.infrastructure.ingredient.output.jpa.repository;
 import com.kaiho.gastromanager.infrastructure.ingredient.output.jpa.entity.IngredientEntity;
 import com.kaiho.gastromanager.infrastructure.restaurant.output.jpa.entity.RestaurantEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface IngredientEntityRepository extends JpaRepository<IngredientEntity, UUID> {
+public interface IngredientEntityRepository extends JpaRepository<IngredientEntity, UUID>, JpaSpecificationExecutor<IngredientEntity> {
 
     @Query("SELECT CASE WHEN COUNT(i) > 0 THEN TRUE ELSE FALSE END FROM IngredientEntity i WHERE i.name = :name AND i.restaurant.uuid = :restaurantUuid")
     boolean existsByName(String name, UUID restaurantUuid);

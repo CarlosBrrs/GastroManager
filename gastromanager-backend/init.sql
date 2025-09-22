@@ -55,7 +55,7 @@ CREATE TABLE subscription_plans
     uuid         UUID PRIMARY KEY,
     name         VARCHAR(50) UNIQUE NOT NULL, -- Ej: "Basic", "Premium"
     description  TEXT,                        -- Descripción del plan
-    price        DOUBLE PRECISION   NOT NULL, -- Precio mensual
+    price        DOUBLE PRECISION   NOT NULL, -- Precio mensual //todo cambiar a DECIMAL(10, 5) y cambiar el mapeo de entidad a BigDecimal
     created_date TIMESTAMP          NOT NULL DEFAULT NOW()
 );
 
@@ -69,6 +69,38 @@ CREATE TABLE plan_features
     feature_value VARCHAR(255),
     valid_from    TIMESTAMP   NOT NULL DEFAULT NOW(),
     valid_to      TIMESTAMP
+);
+
+DROP TABLE IF EXISTS restaurants CASCADE;
+
+CREATE TABLE restaurants
+(
+    uuid                   UUID PRIMARY KEY,
+    name                   VARCHAR(255) NOT NULL,
+    description            VARCHAR(255),
+    owner_uuid             UUID         NOT NULL,
+    address                VARCHAR(255),
+    restaurant_config_uuid UUID UNIQUE  NOT NULL,
+    created_date           TIMESTAMP    NOT NULL,
+    created_by             VARCHAR(50)  NOT NULL,
+    updated_date           TIMESTAMP,
+    updated_by             VARCHAR(50),
+
+    FOREIGN KEY (owner_uuid) REFERENCES _users (uuid) ON DELETE CASCADE
+);
+
+DROP TABLE IF EXISTS restaurant_configs CASCADE;
+
+CREATE TABLE restaurant_configs
+(
+    uuid             UUID PRIMARY KEY,
+    is_franchise     BOOLEAN     NOT NULL DEFAULT false,
+    pay_before_order BOOLEAN     NOT NULL DEFAULT false,
+    enable_delivery  BOOLEAN     NOT NULL DEFAULT false,
+    created_date     TIMESTAMP   NOT NULL,
+    created_by       VARCHAR(50) NOT NULL,
+    updated_date     TIMESTAMP,
+    updated_by       VARCHAR(50)
 );
 
 DROP TABLE IF EXISTS ingredients CASCADE;
@@ -128,21 +160,23 @@ CREATE TABLE product_item_ingredients
     FOREIGN KEY (ingredient_uuid) REFERENCES ingredients (uuid) ON DELETE CASCADE
 );
 
-DROP TABLE IF EXISTS restaurants CASCADE;
+DROP TABLE IF EXISTS products CASCADE;
 
-CREATE TABLE restaurants
+CREATE TABLE products
 (
-    uuid         UUID PRIMARY KEY,
-    name         VARCHAR(255) NOT NULL,
-    description  VARCHAR(255),
-    owner_uuid   UUID         NOT NULL,
-    address      VARCHAR(255),
-    created_date TIMESTAMP    NOT NULL,
-    created_by   VARCHAR(50)  NOT NULL,
-    updated_date TIMESTAMP,
-    updated_by   VARCHAR(50),
-
-    FOREIGN KEY (owner_uuid) REFERENCES _users (uuid) ON DELETE CASCADE
+    uuid            UUID PRIMARY KEY,
+    name            VARCHAR(255)   NOT NULL,
+    description     TEXT,
+    category        VARCHAR(20),
+    purchase_price  DECIMAL(10, 2) NOT NULL,
+    sale_price      DECIMAL(10, 2) NOT NULL,
+    is_enabled      BOOLEAN        NOT NULL,
+    restaurant_uuid UUID           NOT NULL,
+    created_date    TIMESTAMP      NOT NULL,
+    created_by      VARCHAR(50)    NOT NULL,
+    updated_date    TIMESTAMP,
+    updated_by      VARCHAR(50),
+    FOREIGN KEY (restaurant_uuid) REFERENCES restaurants (uuid) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS restaurant_partners;
@@ -161,93 +195,281 @@ ALTER TABLE IF EXISTS ingredients
 ALTER TABLE IF EXISTS product_items
     ADD CONSTRAINT fk_restaurant FOREIGN KEY (restaurant_uuid) REFERENCES restaurants (uuid) ON DELETE SET NULL;
 
-DROP TABLE IF EXISTS restaurant_configs CASCADE;
+ALTER TABLE IF EXISTS restaurants
+    ADD CONSTRAINT fk_restaurant_config FOREIGN KEY (restaurant_config_uuid) REFERENCES restaurant_configs (uuid) ON DELETE SET NULL;
 
-CREATE TABLE restaurant_configs
+DROP TABLE IF EXISTS tax_configs CASCADE;
+
+CREATE TABLE tax_configs
 (
-    uuid                         UUID PRIMARY KEY,
-    restaurant_uuid              UUID        NOT NULL UNIQUE,
-    require_payment_before_order BOOLEAN     NOT NULL,
-    created_date                 TIMESTAMP   NOT NULL,
-    created_by                   VARCHAR(50) NOT NULL,
-    updated_date                 TIMESTAMP,
-    updated_by                   VARCHAR(50),
+    uuid         UUID PRIMARY KEY,
+    tax_type     VARCHAR(50)      NOT NULL UNIQUE CHECK (tax_type IN ('IVA', 'IMPO_CONSUMO')),
+    tax_rate     DOUBLE PRECISION NOT NULL,
+    description  TEXT,
+    created_date TIMESTAMP        NOT NULL,
+    created_by   VARCHAR(50)      NOT NULL,
+    updated_date TIMESTAMP,
+    updated_by   VARCHAR(50)
+);
+
+DROP TABLE IF EXISTS restaurant_taxes CASCADE;
+
+CREATE TABLE restaurant_taxes
+(
+    restaurant_uuid        UUID REFERENCES restaurants (uuid) ON DELETE CASCADE,
+    tax_configuration_uuid UUID REFERENCES tax_configs (uuid) ON DELETE CASCADE,
+    PRIMARY KEY (restaurant_uuid, tax_configuration_uuid)
+);
+
+DROP TABLE IF EXISTS menus CASCADE;
+
+CREATE TABLE menus
+(
+    uuid            UUID PRIMARY KEY,
+    name            VARCHAR(255) NOT NULL,
+    description     VARCHAR(255) NOT NULL,
+    is_enabled      BOOLEAN      NOT NULL,
+    restaurant_uuid UUID         NOT NULL,
+    created_date    TIMESTAMP    NOT NULL,
+    created_by      VARCHAR(50)  NOT NULL,
+    updated_date    TIMESTAMP,
+    updated_by      VARCHAR(50),
     FOREIGN KEY (restaurant_uuid) REFERENCES restaurants (uuid) ON DELETE CASCADE
+);
+
+DROP TABLE IF EXISTS submenus CASCADE;
+
+CREATE TABLE submenus
+(
+    uuid            UUID PRIMARY KEY,
+    name            VARCHAR(255) NOT NULL,
+    description     VARCHAR(255) NOT NULL,
+    is_enabled      BOOLEAN      NOT NULL,
+    restaurant_uuid UUID         NOT NULL,
+    menu_uuid       UUID         NOT NULL,
+    created_date    TIMESTAMP    NOT NULL,
+    created_by      VARCHAR(50)  NOT NULL,
+    updated_date    TIMESTAMP,
+    updated_by      VARCHAR(50),
+
+    FOREIGN KEY (restaurant_uuid) REFERENCES restaurants (uuid) ON DELETE CASCADE,
+    FOREIGN KEY (menu_uuid) REFERENCES menus (uuid) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS orders CASCADE;
 
 CREATE TABLE orders
 (
-    uuid            UUID PRIMARY KEY,
-    code            VARCHAR(14)                                 NOT NULL UNIQUE,
-    restaurant_uuid UUID                                        NOT NULL,
-    user_uuid       UUID                                        NOT NULL,
-    total_price     DOUBLE PRECISION                            NOT NULL,
-    total_paid      DOUBLE PRECISION DEFAULT 0,
-    customer_notes  VARCHAR(255),
-    status          VARCHAR(20)      DEFAULT 'AWAITING_PAYMENT' NOT NULL CHECK (status IN
-                                                                                ('AWAITING_PAYMENT', 'PENDING',
-                                                                                 'COMPLETED', 'PREPARING', 'CANCELLED',
-                                                                                 'READY', 'ON_TABLE')),
-    created_date    TIMESTAMP                                   NOT NULL,
-    created_by      VARCHAR(50)                                 NOT NULL,
-    updated_date    TIMESTAMP,
-    updated_by      VARCHAR(50),
-    FOREIGN KEY (user_uuid) REFERENCES _users (uuid) ON DELETE CASCADE,
+    uuid                          UUID PRIMARY KEY,
+    code                          VARCHAR(14)                            NOT NULL UNIQUE,
+    restaurant_uuid               UUID                                   NOT NULL,
+--     user_uuid          UUID                                        NOT NULL,
+    total_amount                  DECIMAL(10, 2)                         NOT NULL,
+    total_paid                    DECIMAL(10, 2)                         NOT NULL DEFAULT 0,
+    requires_payment_before_order BOOLEAN                                NOT NULL,
+    customer_notes                VARCHAR(255),
+    table_number                  VARCHAR(50),
+    customer_name                 VARCHAR(255),
+    operational_status            VARCHAR(20) DEFAULT 'AWAITING_PAYMENT' NOT NULL CHECK (operational_status IN
+                                                                                         ('AWAITING_PAYMENT', 'PENDING',
+                                                                                          'COMPLETED', 'PREPARING',
+                                                                                          'CANCELLED',
+                                                                                          'READY', 'SERVED')),
+    payment_status                VARCHAR(20) DEFAULT 'UNPAID'           NOT NULL CHECK (payment_status IN
+                                                                                         ('UNPAID', 'PARTIALLY_PAID',
+                                                                                          'FULLY_PAID', 'REFUNDED')),
+    invoicing_status              VARCHAR(20) DEFAULT 'NOT_INVOICED'     NOT NULL CHECK (invoicing_status IN
+                                                                                         ('NOT_INVOICED',
+                                                                                          'PARTIALLY_INVOICED',
+                                                                                          'FULLY_INVOICED')),
+    created_date                  TIMESTAMP                              NOT NULL,
+    created_by                    VARCHAR(50)                            NOT NULL,
+    updated_date                  TIMESTAMP,
+    updated_by                    VARCHAR(50),
+--     FOREIGN KEY (user_uuid) REFERENCES _users (uuid) ON DELETE CASCADE,
     FOREIGN KEY (restaurant_uuid) REFERENCES restaurants (uuid) ON DELETE CASCADE
 );
-/*DROP TABLE IF EXISTS invoices;
 
-CREATE TABLE invoices
-(
-    uuid            UUID PRIMARY KEY,
-    order_uuid      UUID             NOT NULL,
-    restaurant_uuid UUID             NOT NULL,
-    invoice_amount  DOUBLE PRECISION NOT NULL,
-    status          VARCHAR(20)      NOT NULL
-        CHECK (status IN ('PENDING', 'PAID', 'CANCELED')),
-    created_at      TIMESTAMP        NOT NULL DEFAULT NOW(),
-    due_date        TIMESTAMP        NULL,
-    FOREIGN KEY (order_uuid) REFERENCES orders (uuid) ON DELETE CASCADE
-);
+DROP TABLE IF EXISTS recipes CASCADE;
 
-*/
-DROP TABLE IF EXISTS payments CASCADE;
-
-CREATE TABLE payments
+CREATE TABLE recipes
 (
     uuid                UUID PRIMARY KEY,
-    order_uuid          UUID                          NOT NULL,
-    restaurant_uuid     UUID                          NOT NULL,
-    amount              DOUBLE PRECISION              NOT NULL,
-    status              VARCHAR(20) DEFAULT 'PENDING' NOT NULL CHECK (status IN ('PENDING', 'COMPLETED', 'FAILED')),
-    payment_date        TIMESTAMP                     NOT NULL,
-    payment_method      VARCHAR(50),
-    transaction_id      VARCHAR(100),
-    is_partial          BOOLEAN     DEFAULT FALSE,
-    parent_payment_uuid UUID,
-    FOREIGN KEY (order_uuid) REFERENCES orders (uuid) ON DELETE CASCADE
+    name                VARCHAR(255)   NOT NULL,
+    description         VARCHAR(255)   NOT NULL,
+    cost                DECIMAL(10, 2) NOT NULL,
+    base_recipe_uuid    UUID,
+    base_recipe_portion DOUBLE PRECISION,
+    restaurant_uuid     UUID           NOT NULL,
+    is_enabled          BOOLEAN        NOT NULL DEFAULT TRUE,
+    created_date        TIMESTAMP      NOT NULL,
+    created_by          VARCHAR(50)    NOT NULL,
+    updated_date        TIMESTAMP,
+    updated_by          VARCHAR(50),
+    FOREIGN KEY (restaurant_uuid) REFERENCES restaurants (uuid) ON DELETE CASCADE,
+    FOREIGN KEY (base_recipe_uuid) REFERENCES recipes (uuid) ON DELETE SET NULL
+);
+DROP TABLE IF EXISTS recipes_ingredients CASCADE;
+
+CREATE TABLE recipes_ingredients
+(
+    uuid            UUID PRIMARY KEY,
+    recipe_uuid     UUID             NOT NULL,
+--     restaurant_uuid   UUID             NOT NULL,
+    ingredient_uuid UUID             NOT NULL,
+    quantity        DOUBLE PRECISION NOT NULL,
+    created_date    TIMESTAMP        NOT NULL,
+    created_by      VARCHAR(50)      NOT NULL,
+    updated_date    TIMESTAMP,
+    updated_by      VARCHAR(50),
+    UNIQUE (recipe_uuid, ingredient_uuid),
+
+    FOREIGN KEY (recipe_uuid) REFERENCES recipes (uuid) ON DELETE CASCADE,
+    FOREIGN KEY (ingredient_uuid) REFERENCES ingredients (uuid) ON DELETE RESTRICT
 );
 
 DROP TABLE IF EXISTS order_items;
 
 CREATE TABLE order_items
 (
-    uuid              UUID PRIMARY KEY,
-    order_uuid        UUID             NOT NULL,
-    product_item_uuid UUID             NOT NULL,
+    uuid                UUID PRIMARY KEY,
+    order_uuid          UUID           NOT NULL,
+    product_uuid        UUID           NOT NULL,
 --     restaurant_uuid   UUID             NOT NULL,
-    quantity          INT              NOT NULL,
-    unit_price        DOUBLE PRECISION NOT NULL,
-    created_date      TIMESTAMP        NOT NULL,
-    created_by        VARCHAR(50)      NOT NULL,
-    updated_date      TIMESTAMP,
-    updated_by        VARCHAR(50),
-    UNIQUE (order_uuid, product_item_uuid),
+    quantity            INT            NOT NULL,
+    unit_price          DECIMAL(10, 2) NOT NULL,-- precio en el momento de la orden
+    subtotal            DECIMAL(10, 2) NOT NULL, -- cantidad * precio
+    discount_percentage DOUBLE PRECISION DEFAULT 0,
+    customer_notes      VARCHAR(500), -- notas del cliente para este item
+    created_date        TIMESTAMP      NOT NULL,
+    created_by          VARCHAR(50)    NOT NULL,
+    updated_date        TIMESTAMP,
+    updated_by          VARCHAR(50),
+    UNIQUE (order_uuid, product_uuid),
 
     FOREIGN KEY (order_uuid) REFERENCES orders (uuid) ON DELETE CASCADE,
-    FOREIGN KEY (product_item_uuid) REFERENCES product_items (uuid) ON DELETE CASCADE
+    FOREIGN KEY (product_uuid) REFERENCES products (uuid) ON DELETE CASCADE
+);
+
+DROP TABLE IF EXISTS invoices;
+
+CREATE TABLE invoices
+(
+    uuid            UUID PRIMARY KEY,
+    order_uuid      UUID                             NOT NULL,
+    restaurant_uuid UUID                             NOT NULL,
+    customer_name   VARCHAR(255)                     NOT NULL,
+    customer_phone  VARCHAR(255)                     NOT NULL,
+    customer_email  VARCHAR(255)                     NOT NULL,
+    subtotal        DECIMAL(10, 2)                   NOT NULL,
+    tax_amount      DECIMAL(10, 2)                   NOT NULL,
+    tax_rate        DECIMAL(10, 2)                   NOT NULL,
+    tip_amount      DECIMAL(10, 2) DEFAULT 0,
+    amount          DECIMAL(10, 2)                   NOT NULL, -- Total a pagar (subtotal + impuestos + tip, o según se calcule)
+    discount        DECIMAL(10, 2) DEFAULT 0,
+    payment_status  VARCHAR(20)    DEFAULT 'PENDING' NOT NULL
+        CHECK (payment_status IN ('PENDING', 'PAID', 'PARTIALLY_PAID', 'CANCELED')),
+    created_date    TIMESTAMP                        NOT NULL,
+    created_by      VARCHAR(50)                      NOT NULL,
+    updated_date    TIMESTAMP,
+    updated_by      VARCHAR(50),
+    FOREIGN KEY (order_uuid) REFERENCES orders (uuid) ON DELETE CASCADE,
+    FOREIGN KEY (restaurant_uuid) REFERENCES restaurants (uuid) ON DELETE CASCADE
+);
+
+DROP TABLE IF EXISTS invoice_items;
+
+CREATE TABLE invoice_items
+(
+    uuid            UUID PRIMARY KEY,
+    invoice_uuid    UUID             NOT NULL,
+    order_item_uuid UUID             NOT NULL,
+    quantity        INT              NOT NULL CHECK (quantity > 0),
+    unit_price      DECIMAL(10, 2)   NOT NULL CHECK (unit_price > 0),
+    discount        DECIMAL(10, 2) DEFAULT 0,
+    tax_amount      DECIMAL(10, 2)   NOT NULL,
+    tax_rate        DOUBLE PRECISION NOT NULL,
+    created_date    TIMESTAMP        NOT NULL,
+    created_by      VARCHAR(50)      NOT NULL,
+    updated_date    TIMESTAMP,
+    updated_by      VARCHAR(50),
+    FOREIGN KEY (invoice_uuid) REFERENCES invoices (uuid) ON DELETE CASCADE,
+    FOREIGN KEY (order_item_uuid) REFERENCES order_items (uuid) ON DELETE RESTRICT
+);
+
+DROP TABLE IF EXISTS cash_registers;
+
+CREATE TABLE cash_registers
+(
+    uuid            UUID PRIMARY KEY,
+    restaurant_uuid UUID         NOT NULL REFERENCES restaurants (uuid),
+    name            VARCHAR(100) NOT NULL, -- Ej: "Caja 1 Barra"
+    location        VARCHAR(100),          -- opcional
+    description     TEXT,
+    device_id       VARCHAR(100),          -- opcional
+    created_by      VARCHAR(50)  NOT NULL,
+    created_date    TIMESTAMP    NOT NULL,
+    updated_by      VARCHAR(50)  NOT NULL,
+    updated_date    TIMESTAMP    NOT NULL
+);
+
+DROP TABLE IF EXISTS cash_register_sessions;
+
+CREATE TABLE cash_register_sessions
+(
+    uuid               UUID PRIMARY KEY,
+    cash_register_uuid UUID           NOT NULL REFERENCES cash_registers (uuid),
+    user_uuid          UUID           NOT NULL REFERENCES _users (uuid),
+    opening_time       TIMESTAMP      NOT NULL,
+    closing_time       TIMESTAMP,
+    notes              TEXT,
+    opening_amount     NUMERIC(12, 2) NOT NULL,
+    closing_amount     NUMERIC(12, 2),
+    expected_amount    NUMERIC(12, 2),
+    difference         NUMERIC(12, 2),
+    balance_status     VARCHAR(20) CHECK (balance_status IN ('BALANCED','SHORT','OVER')),
+    status             VARCHAR(20)    NOT NULL CHECK (status IN ('OPEN', 'CLOSED')),
+    created_by         VARCHAR(50)    NOT NULL,
+    created_date       TIMESTAMP      NOT NULL,
+    updated_by         VARCHAR(50)    NOT NULL,
+    updated_date       TIMESTAMP      NOT NULL
+);
+
+DROP TABLE IF EXISTS cash_register_movements;
+
+CREATE TABLE cash_register_movements
+(
+    uuid                       UUID PRIMARY KEY,
+    cash_register_session_uuid UUID           NOT NULL REFERENCES cash_register_sessions (uuid),
+    movement_type              VARCHAR(20)    NOT NULL CHECK (movement_type IN ('INCOME', 'EXPENSE', 'ADJUSTMENT')),
+    adjustment_direction       VARCHAR(10) CHECK (adjustment_direction IN ('INCREASE', 'DECREASE')),
+    amount                     NUMERIC(12, 2) NOT NULL,
+    reason                     TEXT,         -- descripción del movimiento: "Ingreso adicional", "Pago a proveedor", etc.
+    reference                  VARCHAR(100), -- opcional: número de factura, comprobante, etc.
+    created_by                 VARCHAR(50)    NOT NULL,
+    created_date               TIMESTAMP      NOT NULL,
+    updated_by                 VARCHAR(50)    NOT NULL,
+    updated_date               TIMESTAMP      NOT NULL
+);
+
+DROP TABLE IF EXISTS payments CASCADE;
+
+CREATE TABLE payments
+(
+    uuid                       UUID PRIMARY KEY,
+    order_uuid                 UUID           NOT NULL REFERENCES orders (uuid),
+    restaurant_uuid            UUID           NOT NULL REFERENCES restaurants (uuid),
+    amount                     NUMERIC(12, 2) NOT NULL,
+    payment_method             VARCHAR(50)    NOT NULL,
+    tip_amount                 NUMERIC(12, 2) NOT NULL DEFAULT 0,
+    notes                      TEXT,
+    state                      VARCHAR(20)    NOT NULL,
+    created_by                 VARCHAR(50)    NOT NULL,
+    created_date               TIMESTAMP      NOT NULL,
+    updated_by                 VARCHAR(50)    NOT NULL,
+    updated_date               TIMESTAMP      NOT NULL,
+    transaction_id             VARCHAR(100),
+    cash_register_session_uuid UUID NOT NULL REFERENCES cash_register_sessions (uuid)
 );
 
 DROP TABLE IF EXISTS inventory_movements;
@@ -321,6 +543,12 @@ VALUES (uuid_generate_v4(), '5e2cb774-bcf0-4e26-aedf-622eb6f35501', 'max_restaur
        (uuid_generate_v4(), '61184460-4c95-476e-94ce-23f676ee94f4', 'max_restaurants', 'unlimited'),
        (uuid_generate_v4(), '61184460-4c95-476e-94ce-23f676ee94f4', 'max_employees', 'unlimited'),
        (uuid_generate_v4(), '61184460-4c95-476e-94ce-23f676ee94f4', 'priority_support', 'true');
+
+INSERT INTO tax_configs (uuid, tax_type, tax_rate, description, created_date, created_by, updated_by, updated_date)
+VALUES (uuid_generate_v4(), 'IVA', 0.19, 'Impuesto valor agregado', now(), 'admin', 'admin',
+        now()), -- IVA para franquicias
+       (uuid_generate_v4(), 'IMPO_CONSUMO', 0.08, 'Impuesto al consumo', now(), 'admin', 'admin', now());
+-- Impoconsumo para no franquicias
 --product items
 /*INSERT INTO product_items (uuid, name, description, price, category, is_enabled, created_date, created_by, updated_date,
                            updated_by)
@@ -627,4 +855,5 @@ VALUES (uuid_generate_v4(), (SELECT uuid FROM product_items WHERE name = 'Chicke
         '2024-10-09T00:00:00Z', 'cbarrios'),
        (uuid_generate_v4(), (SELECT uuid FROM product_items WHERE name = 'Chicken Wrap'),
         (SELECT uuid FROM ingredients WHERE name = 'Olive Oil'), 10.0, '2024-10-09T00:00:00Z', 'cbarrios',
-        '2024-10-09T00:00:00Z', 'cbarrios');*/
+        '2024-10-09T00:00:00Z', 'cbarrios');
+*/

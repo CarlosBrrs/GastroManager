@@ -3,7 +3,7 @@ package com.kaiho.gastromanager.application.ingredient.dto.request;
 import lombok.Builder;
 
 @Builder
-public record UpdateIngredientRequestDto(String name,
+public record IngredientUpdateRequestDto(String name,
                                          String unit,
                                          String supplier,
                                          double pricePerUnit,

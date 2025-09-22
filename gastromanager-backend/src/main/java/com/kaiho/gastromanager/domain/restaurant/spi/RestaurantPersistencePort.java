@@ -2,6 +2,7 @@ package com.kaiho.gastromanager.domain.restaurant.spi;
 
 import com.kaiho.gastromanager.domain.restaurant.model.Restaurant;
 import com.kaiho.gastromanager.domain.restaurant.model.RestaurantConfig;
+import com.kaiho.gastromanager.domain.restaurant.model.UserRestaurantAccess;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,4 +23,6 @@ public interface RestaurantPersistencePort {
     RestaurantConfig createRestaurantConfig(RestaurantConfig restaurantConfig);
 
     RestaurantConfig getRestaurantConfigByRestaurantUuid(UUID currentRestaurant);
+
+    List<UserRestaurantAccess> findRestaurantsByUser(UUID userUuid);
 }
