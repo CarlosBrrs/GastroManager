@@ -10,7 +10,7 @@ import {OrderSummaryResponseDto} from "../../domain/models/order-summary-respons
 import {OrderDetailResponseDto} from "../../domain/models/order-detail-response-dto.interface";
 import {mapOrderDetailToOrder, mapToOrder, mapToOrderCreateRequestDto} from "../../application/mappers/order.mapper";
 import {OrderCreateRequestDto} from "../../domain/models/order-create-request-dto.interface";
-import {environment} from "../../../../../environments/environment.dev";
+import {environment} from "../../../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'

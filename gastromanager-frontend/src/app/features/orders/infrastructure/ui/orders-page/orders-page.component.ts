@@ -70,8 +70,8 @@ export class OrdersPageComponent {
   }
 
   changePageHandler($event: { page: number; size: number }) {
-    // TODO: Implementar paginación usando ordersStore
-    // this.ordersStore.getOrders($event);
+    console.log($event)
+    this.ordersStore.getOrders($event);
   }
 
 }

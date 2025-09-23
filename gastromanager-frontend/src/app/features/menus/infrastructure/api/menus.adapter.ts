@@ -15,7 +15,7 @@ import {
 import {MenuRequestDto} from "../../domain/models/menu-request-dto.interface";
 import {Menu} from "../../domain/models/menu.interface";
 import {MenuDetailResponseDto} from "../../domain/models/menu-detail-response-dto.interface";
-import {environment} from "../../../../../environments/environment.dev";
+import {environment} from "../../../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'

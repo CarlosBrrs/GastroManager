@@ -6,7 +6,7 @@ import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {ApiGenericResponse} from "../../../../core/model/interfaces/ApiGenericResponse";
 import {map} from "rxjs/operators";
 import {mapToCashRegister} from "../../application/mappers/cash-register.mapper";
-import {environment} from "../../../../../environments/environment.dev";
+import {environment} from "../../../../../environments/environment";
 
 // DTOs para la respuesta del backend
 export interface CashRegisterResponseDto {

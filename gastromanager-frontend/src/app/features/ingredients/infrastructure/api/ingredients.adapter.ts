@@ -15,7 +15,7 @@ import {
 import {Ingredient} from "../../domain/models/ingredient.interface";
 import {IngredientRequestDto} from "../../domain/models/ingredient-request-dto.interface";
 import {IngredientDetailResponseDto} from "../../domain/models/ingredient-detail-response-dto.interface";
-import {environment} from "../../../../../environments/environment.dev";
+import {environment} from "../../../../../environments/environment";
 
 
 @Injectable({

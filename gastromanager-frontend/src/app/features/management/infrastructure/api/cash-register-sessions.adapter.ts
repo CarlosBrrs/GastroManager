@@ -7,7 +7,7 @@ import {CashRegisterSessionsRepository} from '../../domain/ports/cash-register-s
 import {ApiGenericResponse} from '../../../../core/model/interfaces/ApiGenericResponse';
 import {CashRegisterSessionResponseDto, OpenSessionRequestDto, SessionSummaryResponseDto, CloseSessionRequestDto} from './dtos/cash-register-session.dto';
 import {mapToCashRegisterSession, mapToSessionSummary} from '../../application/mappers/cash-register-session.mapper';
-import {environment} from "../../../../../environments/environment.dev";
+import {environment} from "../../../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
