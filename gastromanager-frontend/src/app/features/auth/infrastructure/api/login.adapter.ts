@@ -6,7 +6,7 @@ import {Login} from '../../domain/models/login.model';
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {ApiGenericResponse} from "../../../../core/model/interfaces/ApiGenericResponse";
 import {map} from "rxjs/operators";
-import {environment} from "../../../../../environments/environment.dev";
+import {environment} from "../../../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'

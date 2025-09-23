@@ -70,10 +70,9 @@ const initialState: OrderState = {
               {field: 'updatedBy', header: 'Actualizado Por'},
               {field: 'updatedDate', header: 'Fecha de Actualización'}*/
     ],
-    // selectedOrder: null,
     loading: false,
     error: null,
-    currentOrder: null, // Inicializar currentOrder como null
+    currentOrder: null,
     selectedOrder: null,
 }
 
@@ -186,14 +185,10 @@ export const OrderStore = signalStore(
       forceRefreshOrders: rxMethod<paginationParams>(
         pipe(
           tap(() => {
-            console.log('🔄 [OrderStore] Forzando actualización de órdenes - Limpiando todo el caché');
             patchState(store, { loading: true, error: null });
           }),
           switchMap((params) => {
             const page = params.page;
-            // Limpiar todo el caché para forzar una nueva petición completa
-            patchState(store, { pages: new Map<number, Order[]>() });
-
             return getOrders.execute(params).pipe(
               tapResponse({
                 next: (response) => {
@@ -227,16 +222,20 @@ export const OrderStore = signalStore(
                 const restaurantStore = inject(RestaurantStore);
 
                 // Effect que reacciona cuando cambia el restaurante seleccionado
+                // Solo en la inicialización, no durante navegación de páginas
                 effect(() => {
                     const restaurantUuid = restaurantStore.selectedRestaurantUuid();
                     console.log('🔄 [OrderStore] Restaurant UUID changed:', restaurantUuid);
 
                     // Solo cargar órdenes si tenemos un restaurante válido
-                    if (restaurantUuid && restaurantUuid.trim() !== '') {
-                        console.log('✅ [OrderStore] Loading orders for restaurant:', restaurantUuid);
+                    // Y solo si no hay páginas cargadas (inicialización)
+                    if (restaurantUuid && restaurantUuid.trim() !== '' && store.pages().size === 0) {
+                        console.log('✅ [OrderStore] Loading orders for restaurant (initial load):', restaurantUuid);
                         store.getOrders({page: 0, size: 7});
-                    } else {
+                    } else if (!restaurantUuid || restaurantUuid.trim() === '') {
                         console.log('⚠️ [OrderStore] No restaurant UUID available, skipping orders load');
+                    } else {
+                        console.log('🔄 [OrderStore] Restaurant changed but pages already loaded, skipping auto-load');
                     }
                 }, {allowSignalWrites: true});
             }

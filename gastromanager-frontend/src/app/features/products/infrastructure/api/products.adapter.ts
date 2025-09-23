@@ -11,7 +11,7 @@ import {ProductRequestDto} from "../../domain/models/product-request-dto.interfa
 import {ProductSummaryResponseDto} from "../../domain/models/product-summary-response-dto.interface";
 import {ProductGroupByResponseDto} from "../../domain/models/product-group-by-response-dto.interface";
 import {ProductsByCategory} from "../../domain/models/products-by-category.interface";
-import {environment} from "../../../../../environments/environment.dev";
+import {environment} from "../../../../../environments/environment";
 
 
 @Injectable({

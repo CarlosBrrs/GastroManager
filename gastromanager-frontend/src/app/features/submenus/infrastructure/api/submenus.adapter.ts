@@ -8,10 +8,8 @@ import {ApiGenericResponse} from "../../../../core/model/interfaces/ApiGenericRe
 import {map} from "rxjs/operators";
 import {SubmenuSummaryResponseDto} from "../../domain/models/submenu-summary-response-dto.interface";
 import {mapToSubmenu, mapToSubmenuRequestDto} from "../../application/mappers/submenu.mapper";
-import {MenuRequestDto} from "../../../menus/domain/models/menu-request-dto.interface";
-import {mapToMenuRequestDto} from "../../../menus/application/mappers/menu.mapper";
 import {SubmenuRequestDto} from "../../domain/models/submenu-request-dto.interface";
-import {environment} from "../../../../../environments/environment.dev";
+import {environment} from "../../../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'

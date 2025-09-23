@@ -5,7 +5,7 @@ import {ApiGenericResponse} from "../../../../core/model/interfaces/ApiGenericRe
 import {map} from "rxjs/operators";
 import {UserRepository} from "../../domain/ports/user.repository";
 import {User} from "../../../../core/store/auth/auth.store";
-import {environment} from "../../../../../environments/environment.dev";
+import {environment} from "../../../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'

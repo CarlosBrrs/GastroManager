@@ -71,7 +71,8 @@ export class PaymentFormComponent implements OnInit {
     { value: 'DEBIT_CARD', label: 'Tarjeta de Débito' },
     { value: 'TRANSFER', label: 'Transferencia Bancaria' },
     { value: 'NEQUI', label: 'Nequi' },
-    { value: 'DAVIPLATA', label: 'Daviplata' }
+    { value: 'DAVIPLATA', label: 'Daviplata' },
+    { value: 'CREDIT', label: 'Crédito' }
   ];
 
   ngOnInit() {
