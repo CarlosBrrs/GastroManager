@@ -67,7 +67,7 @@
         <label for="tableNumber">Mesa</label>
         <select id="tableNumber" class="form-select" formControlName="tableNumber" [disabled]="loading()">
           <option value="" selected disabled>Seleccione una mesa</option>
-          @for (tableNum of [1,2,3,4,5]; track tableNum) {
+          @for (tableNum of [1,2,3,4,5, 999]; track tableNum) {
             <option [value]="tableNum">Mesa {{ tableNum }}</option>
           }
         </select>
