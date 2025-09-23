@@ -6,6 +6,7 @@ public enum PaymentMethod {
     DEBIT_CARD("Tarjeta de débito"),
     TRANSFER("Transferencia bancaria"),
     NEQUI("Nequi"),
+    CREDIT("Crédito"),
     DAVIPLATA("Daviplata");
 
     private final String displayName;
