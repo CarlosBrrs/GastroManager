@@ -20,13 +20,13 @@ interface PaymentApiResponse {
 })
 export class PaymentsAdapter implements PaymentRepository {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = 'http://localhost:8080/api/v1/payments';
+  private readonly baseUrl: string = environment.API_URL;
 
   processPayment(paymentData: PaymentCreateData): Observable<string> {
     console.log('🚀 [PaymentsAdapter] Enviando pago al backend:', paymentData);
-    console.log('🌐 [PaymentsAdapter] URL del endpoint:', `${this.baseUrl}`);
+    console.log('🌐 [PaymentsAdapter] URL del endpoint:', `${this.baseUrl}/payments`);
 
-    return this.http.post<ApiGenericResponse<string>>(this.baseUrl, paymentData).pipe(
+    return this.http.post<ApiGenericResponse<string>>(`${this.baseUrl}/payments`, paymentData).pipe(
       map((response: ApiGenericResponse<string>) => {
         console.log('📊 [PaymentsAdapter] UUID del pago procesado:', response.data);
         return response.data;
