@@ -46,10 +46,12 @@ import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.P
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.PRODUCT_UUID_PARAMETER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.RECIPES_CONTROLLER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.RECIPE_UUID_PARAMETER;
+import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.REPORTS_CONTROLLER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.RESTAURANTS_CONTROLLER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.RESTAURANT_UUID_PARAMETER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.ROLES_CONTROLLER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.ROLE_UUID_PARAMETER;
+import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.SALES_ENDPOINT;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.SUBMENUS_CONTROLLER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.SUBMENU_UUID_PARAMETER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.SUPERUSER;
@@ -182,6 +184,9 @@ public class SecurityConfig {
                         .requestMatchers(POST, CASH_REGISTER_SESSIONS_CONTROLLER + "/close").hasAnyRole(SUPERUSER, OWNER, MANAGER, CASHIER)
                         .requestMatchers(PUT, CASH_REGISTER_SESSIONS_CONTROLLER + CASH_REGISTER_SESSION_UUID_PARAMETER + "/close").hasAnyRole(SUPERUSER, OWNER, MANAGER, CASHIER)
                         .requestMatchers(GET, CASH_REGISTER_SESSIONS_CONTROLLER + "/current-summary").authenticated()
+
+                        // reports controller
+                        .requestMatchers(GET, REPORTS_CONTROLLER + SALES_ENDPOINT).hasAnyRole(SUPERUSER, OWNER, MANAGER)
 
 
                         .requestMatchers(GET, BASE_URL + RESTAURANTS_CONTROLLER + "/**").hasAnyRole(SUPERUSER)
