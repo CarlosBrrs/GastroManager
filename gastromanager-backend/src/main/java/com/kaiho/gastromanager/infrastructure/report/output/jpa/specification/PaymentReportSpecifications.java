@@ -4,7 +4,6 @@ import com.kaiho.gastromanager.infrastructure.payment.output.jpa.entity.PaymentE
 import com.kaiho.gastromanager.infrastructure.report.input.rest.criteria.SalesReportCriteria;
 import org.springframework.data.jpa.domain.Specification;
 
-import jakarta.persistence.criteria.JoinType;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
