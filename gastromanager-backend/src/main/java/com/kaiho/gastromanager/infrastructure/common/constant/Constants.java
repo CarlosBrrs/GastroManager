@@ -25,6 +25,8 @@ public abstract class Constants {
     public static final String CASH_REGISTERS_CONTROLLER = "/cash-registers";
     public static final String PAYMENTS_CONTROLLER = "/payments";
     public static final String CASH_REGISTER_SESSIONS_CONTROLLER = "/cash-register-sessions";
+    public static final String REPORTS_CONTROLLER = "/reports";
+    public static final String SALES_ENDPOINT = "/sales";
     public static final String INVENTORY_MOVEMENT_CONTROLLER = "/inventory-movements";
     public static final String INGREDIENT_UUID_PARAMETER = "/{ingredientUuid}";
     public static final String RECIPE_UUID_PARAMETER = "/{recipeUuid}";
