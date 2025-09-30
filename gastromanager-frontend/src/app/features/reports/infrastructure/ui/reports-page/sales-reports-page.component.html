@@ -1,0 +1,74 @@
+<div class="sales-reports-page">
+  <div class="container-fluid">
+    <!-- Header compacto -->
+    <div class="page-header">
+      <div class="header-content">
+        <h2>💰 Reportes de Ventas</h2>
+        <span class="filters-summary">
+          @if (getActiveFiltersCount() > 0) {
+            {{ getActiveFiltersCount() }} filtros aplicados
+          } @else {
+            Todos los registros
+          }
+        </span>
+      </div>
+      <div class="header-actions">
+        <button
+          class="btn btn-sm btn-success"
+          (click)="applyFilters()"
+          [disabled]="loading() || !filtersService.hasValidFilters()"
+          [class.btn-warning]="hasUnappliedChanges()">
+          @if (loading()) {
+            ⏳ Cargando...
+          } @else if (hasUnappliedChanges()) {
+            🔍 Aplicar filtros
+          } @else {
+            ✅ Actualizado
+          }
+        </button>
+        <button class="btn btn-sm btn-outline-secondary" (click)="exportToExcel()">
+          📊 Exportar
+        </button>
+        <button class="btn btn-sm btn-primary" (click)="refreshData()" [disabled]="loading()">
+          @if (loading()) {
+            ⏳ Actualizando...
+          } @else {
+            🔄 Actualizar
+          }
+        </button>
+      </div>
+    </div>
+
+    <!-- Solo métricas de Total Vendido y Total Órdenes con loading state -->
+    <div class="metrics-row">
+      <div class="metric-card" [class.loading]="loading()">
+        <div class="metric-icon">💰</div>
+        <div class="metric-content">
+          @if (loading()) {
+            <div class="loading-skeleton">
+              <div class="skeleton-line"></div>
+              <div class="skeleton-text"></div>
+            </div>
+          } @else {
+            <span class="metric-value">${{ getTotalSales() | number:'1.0-0' }}</span>
+            <span class="metric-label">Total Vendido</span>
+          }
+        </div>
+      </div>
+      <div class="metric-card" [class.loading]="loading()">
+        <div class="metric-icon">📋</div>
+        <div class="metric-content">
+          @if (loading()) {
+            <div class="loading-skeleton">
+              <div class="skeleton-line"></div>
+              <div class="skeleton-text"></div>
+            </div>
+          } @else {
+            <span class="metric-value">{{ getTotalOrders() }}</span>
+            <span class="metric-label">Total Órdenes</span>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

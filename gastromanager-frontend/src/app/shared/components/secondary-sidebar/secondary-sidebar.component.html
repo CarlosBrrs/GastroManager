@@ -1,12 +1,164 @@
-<h3>Acciones</h3>
-<ul>
-  @for (link of links(); track $index) {
-    <li>
-      <a [routerLink]="link.route"> {{ link.label }}</a>
-    </li>
+<div class="secondary-sidebar">
+  <h3>Acciones</h3>
+  <ul class="actions-list">
+    @for (link of links(); track $index) {
+      <li>
+        <a [routerLink]="link.route" class="action-link">
+          {{ link.label }}
+        </a>
+      </li>
+    }
+  </ul>
 
+  @if (filters().length > 0) {
+    <div class="filters-section">
+      <div class="filters-header">
+        <h4>Filtros</h4>
+        <button
+          type="button"
+          class="btn-clear-filters"
+          (click)="onClearFilters()">
+          Limpiar
+        </button>
+      </div>
+
+      <div class="filters-container">
+        @for (filter of filters(); track filter.key) {
+          <div class="filter-item">
+            <!-- Filtro de búsqueda -->
+            @if (filter.type === 'search') {
+              <div class="form-group">
+                <input
+                  type="text"
+                  [placeholder]="filter.placeholder || 'Buscar...'"
+                  [value]="getFilterValue(filter.key)"
+                  (input)="onInputChange(filter.key, $event)"
+                  class="form-control">
+              </div>
+            }
+
+            <!-- Filtro de selección -->
+            @if (filter.type === 'select') {
+              <div class="form-group">
+                <label>{{ filter.label }}</label>
+                <select
+                  [value]="getFilterValue(filter.key)"
+                  (change)="onSelectChange(filter.key, $event)"
+                  class="form-control">
+                  <option value="">Todos</option>
+                  @for (option of filter.options; track option) {
+                    <option [value]="option">{{ option }}</option>
+                  }
+                </select>
+              </div>
+            }
+
+            <!-- Filtro de fecha -->
+            @if (filter.type === 'date') {
+              <div class="form-group">
+                <label>{{ filter.label }}</label>
+                <input
+                  type="date"
+                  [value]="getFilterValue(filter.key)"
+                  (change)="onInputChange(filter.key, $event)"
+                  class="form-control">
+              </div>
+            }
+
+            <!-- Filtro de rango -->
+            @if (filter.type === 'range') {
+              <div class="form-group">
+                <label>{{ filter.label }}</label>
+                <div class="range-inputs">
+                  <input
+                    type="number"
+                    placeholder="Mín"
+                    [min]="filter.min || 0"
+                    [max]="filter.max || 100000"
+                    [value]="getFilterValue(filter.key + '_min')"
+                    (input)="onInputChange(filter.key + '_min', $event)"
+                    class="form-control form-control-sm">
+                  <span class="range-separator">-</span>
+                  <input
+                    type="number"
+                    placeholder="Máx"
+                    [min]="filter.min || 0"
+                    [max]="filter.max || 100000"
+                    [value]="getFilterValue(filter.key + '_max')"
+                    (input)="onInputChange(filter.key + '_max', $event)"
+                    class="form-control form-control-sm">
+                </div>
+              </div>
+            }
+
+            <!-- Filtro multiselect -->
+            @if (filter.type === 'multiselect') {
+              <div class="form-group">
+                <label>{{ filter.label }}</label>
+                <div class="multiselect-dropdown">
+                  <!-- Botón del dropdown -->
+                  <button
+                    type="button"
+                    class="dropdown-toggle"
+                    (click)="toggleDropdown(filter.key)"
+                    [class.active]="isDropdownOpen(filter.key)">
+                    <span class="dropdown-text">
+                      @if (getFilterArray(filter.key).length === 0) {
+                        Seleccionar {{ filter.label?.toLowerCase() || 'opciones' }}
+                      } @else if (getFilterArray(filter.key).length === 1) {
+                        {{ getFilterArray(filter.key)[0] }}
+                      } @else {
+                        {{ getFilterArray(filter.key).length }} seleccionados
+                      }
+                    </span>
+                    <span class="dropdown-arrow" [class.rotated]="isDropdownOpen(filter.key)">▼</span>
+                  </button>
+
+                  <!-- Lista desplegable -->
+                  @if (isDropdownOpen(filter.key)) {
+                    <div class="dropdown-menu">
+                      <!-- Botón "Seleccionar/Deseleccionar todas" solo para cajas -->
+                      @if (filter.key === 'cashRegister') {
+                        <div class="select-all-section">
+                          <button
+                            type="button"
+                            class="select-all-btn"
+                            (click)="toggleSelectAll(filter.key, filter.options || [])"
+                            [class.all-selected]="areAllSelected(filter.key, filter.options || [])"
+                            [class.partial-selected]="hasPartialSelection(filter.key, filter.options || [])">
+                            @if (areAllSelected(filter.key, filter.options || [])) {
+                              ✓ Deseleccionar todas
+                            } @else {
+                              ☐ Seleccionar todas
+                            }
+                          </button>
+                        </div>
+                      }
+
+                      <!-- Opciones individuales -->
+                      @for (option of filter.options; track option) {
+                        <div class="dropdown-item">
+                          <input
+                            type="checkbox"
+                            [id]="filter.key + '_' + option"
+                            [checked]="isOptionChecked(filter.key, option)"
+                            (change)="onMultiSelectChange(filter.key, option, $event)"
+                            class="checkbox-input">
+                          <label [for]="filter.key + '_' + option" class="checkbox-label">
+                            {{ option }}
+                          </label>
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Botón de aplicar filtros removido - ahora está en la página principal -->
+    </div>
   }
-</ul>
-<h4>Filtros</h4>
-
-<input type="text" placeholder="Buscar ingrediente..."/>
+</div>
