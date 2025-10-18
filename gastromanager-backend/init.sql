@@ -112,7 +112,7 @@ CREATE TABLE ingredients
     available_stock        DOUBLE PRECISION NOT NULL,
     unit                   VARCHAR(20)      NOT NULL CHECK (unit IN ('GRAMS', 'UNITS', 'MILLILITRES')),
     supplier               VARCHAR(255)     NOT NULL,
-    price_per_unit         DOUBLE PRECISION NOT NULL,
+    price_per_unit         DECIMAL(10, 2)   NOT NULL,
     restaurant_uuid        UUID             NOT NULL,
     minimum_stock_quantity INT              NOT NULL,
     is_enabled             BOOLEAN          NOT NULL DEFAULT TRUE,
@@ -172,6 +172,7 @@ CREATE TABLE products
     sale_price      DECIMAL(10, 2) NOT NULL,
     is_enabled      BOOLEAN        NOT NULL,
     restaurant_uuid UUID           NOT NULL,
+    mode            VARCHAR(10)    NOT NULL DEFAULT 'BASIC' CHECK (mode IN ('BASIC', 'ADVANCED')),
     created_date    TIMESTAMP      NOT NULL,
     created_by      VARCHAR(50)    NOT NULL,
     updated_date    TIMESTAMP,
@@ -309,6 +310,7 @@ CREATE TABLE recipes
     FOREIGN KEY (restaurant_uuid) REFERENCES restaurants (uuid) ON DELETE CASCADE,
     FOREIGN KEY (base_recipe_uuid) REFERENCES recipes (uuid) ON DELETE SET NULL
 );
+
 DROP TABLE IF EXISTS recipes_ingredients CASCADE;
 
 CREATE TABLE recipes_ingredients
@@ -325,6 +327,42 @@ CREATE TABLE recipes_ingredients
     UNIQUE (recipe_uuid, ingredient_uuid),
 
     FOREIGN KEY (recipe_uuid) REFERENCES recipes (uuid) ON DELETE CASCADE,
+    FOREIGN KEY (ingredient_uuid) REFERENCES ingredients (uuid) ON DELETE RESTRICT
+);
+
+DROP TABLE IF EXISTS product_recipes CASCADE;
+
+CREATE TABLE product_recipes
+(
+    uuid                UUID PRIMARY KEY,
+    product_uuid        UUID NOT NULL,
+    recipe_uuid         UUID NOT NULL,
+    quantity_multiplier DOUBLE PRECISION DEFAULT 1,
+    last_synced_date    TIMESTAMP,
+    created_date    TIMESTAMP        NOT NULL,
+    created_by      VARCHAR(50)      NOT NULL,
+    updated_date    TIMESTAMP,
+    updated_by      VARCHAR(50),
+    UNIQUE (product_uuid, recipe_uuid),
+    FOREIGN KEY (product_uuid) REFERENCES products (uuid) ON DELETE CASCADE,
+    FOREIGN KEY (recipe_uuid) REFERENCES recipes (uuid) ON DELETE RESTRICT
+);
+
+DROP TABLE IF EXISTS product_ingredients CASCADE;
+
+CREATE TABLE product_ingredients
+(
+    uuid            UUID PRIMARY KEY,
+    product_uuid    UUID             NOT NULL,
+    ingredient_uuid UUID             NOT NULL,
+    quantity        DOUBLE PRECISION NOT NULL,
+    unit            VARCHAR(20),
+    created_date    TIMESTAMP        NOT NULL,
+    created_by      VARCHAR(50)      NOT NULL,
+    updated_date    TIMESTAMP,
+    updated_by      VARCHAR(50),
+    UNIQUE (product_uuid, ingredient_uuid),
+    FOREIGN KEY (product_uuid) REFERENCES products (uuid) ON DELETE CASCADE,
     FOREIGN KEY (ingredient_uuid) REFERENCES ingredients (uuid) ON DELETE RESTRICT
 );
 
@@ -427,7 +465,7 @@ CREATE TABLE cash_register_sessions
     closing_amount     NUMERIC(12, 2),
     expected_amount    NUMERIC(12, 2),
     difference         NUMERIC(12, 2),
-    balance_status     VARCHAR(20) CHECK (balance_status IN ('BALANCED','SHORT','OVER')),
+    balance_status     VARCHAR(20) CHECK (balance_status IN ('BALANCED', 'SHORT', 'OVER')),
     status             VARCHAR(20)    NOT NULL CHECK (status IN ('OPEN', 'CLOSED')),
     created_by         VARCHAR(50)    NOT NULL,
     created_date       TIMESTAMP      NOT NULL,
@@ -469,7 +507,7 @@ CREATE TABLE payments
     updated_by                 VARCHAR(50)    NOT NULL,
     updated_date               TIMESTAMP      NOT NULL,
     transaction_id             VARCHAR(100),
-    cash_register_session_uuid UUID NOT NULL REFERENCES cash_register_sessions (uuid)
+    cash_register_session_uuid UUID           NOT NULL REFERENCES cash_register_sessions (uuid)
 );
 
 DROP TABLE IF EXISTS inventory_movements;

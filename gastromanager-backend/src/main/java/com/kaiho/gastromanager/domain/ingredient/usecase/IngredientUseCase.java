@@ -58,6 +58,12 @@ public class IngredientUseCase implements IngredientServicePort {
 
     @Override
     @Transactional(readOnly = true)
+    public List<Ingredient> getAllIngredientsWithoutPagination() {
+        return ingredientPersistencePort.getAllIngredientsByRestaurant();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Ingredient getIngredientById(UUID uuid) {
         return ingredientPersistencePort.getIngredientByUuid(uuid)
                                         .orElseThrow(() -> new IngredientDoesNotExistException(uuid.toString()));
@@ -142,5 +148,10 @@ public class IngredientUseCase implements IngredientServicePort {
     @Override
     public Restaurant getRestaurantByIngredientUuid(UUID ingredientUuid) {
         return ingredientPersistencePort.getRestaurantByIngredientUuid(ingredientUuid).orElseThrow(() -> new RestaurantDoesNotExistException("..."));
+    }
+
+    @Override
+    public boolean existsByUuid(UUID uuid) {
+        return ingredientPersistencePort.existsByUuid(uuid, getCurrentRestaurant());
     }
 }

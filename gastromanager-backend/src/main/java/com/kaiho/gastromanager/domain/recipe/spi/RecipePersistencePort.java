@@ -15,4 +15,8 @@ public interface RecipePersistencePort {
     Page<Recipe> getAllRecipes(RecipeSearchCriteria criteria, Pageable pageable);
 
     Optional<Recipe> getRecipeByUuid(UUID recipeUuid);
+
+    boolean recipeExistsByName(String name);
+
+    boolean recipeExistsByUuid(UUID uuid, UUID currentRestaurant);
 }

@@ -6,8 +6,8 @@ import lombok.Builder;
 public record RecipeSearchCriteria(
         String search,
         Boolean isEnabled,
-        String sortBy,// campo para ordenar
-        String sortDirection, // "asc" o "desc"
+        String sortBy,
+        String sortDirection,
         int page,
         int size
 ) {

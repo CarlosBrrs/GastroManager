@@ -106,4 +106,17 @@ public class IngredientEntityAdapter implements IngredientPersistencePort {
 
     }
 
+    @Override
+    public boolean existsByUuid(UUID uuid, UUID currentRestaurant) {
+        return ingredientEntityRepository.existsByUuid(uuid, currentRestaurant);
+    }
+
+    @Override
+    public List<Ingredient> getAllIngredientsByRestaurant() {
+        List<IngredientEntity> entities = ingredientEntityRepository.findAll();
+        return entities.stream()
+                .map(ingredientEntityMapper::toDomain)
+                .toList();
+    }
+
 }

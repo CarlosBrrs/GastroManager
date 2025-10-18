@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.UUID;
 
 import static com.kaiho.gastromanager.infrastructure.common.model.ApiGenericResponse.buildSuccessResponse;
@@ -35,6 +36,17 @@ public class IngredientHandlerImpl implements IngredientHandler {
         Page<IngredientSummaryResponseDto> ingredientResponseDtoList = ingredientPage.map(ingredientMapper::toResponseSummary);
 
         return buildSuccessResponse("List of ingredients retrieved successfully", ingredientResponseDtoList);
+    }
+
+    @Override
+    public ApiGenericResponse<List<IngredientSummaryResponseDto>> getAllIngredientsWithoutPagination() {
+        List<Ingredient> ingredients = ingredientServicePort.getAllIngredientsWithoutPagination();
+
+        List<IngredientSummaryResponseDto> ingredientResponseList = ingredients.stream()
+                .map(ingredientMapper::toResponseSummary)
+                .toList();
+
+        return buildSuccessResponse("All ingredients retrieved successfully", ingredientResponseList);
     }
 
     @Override

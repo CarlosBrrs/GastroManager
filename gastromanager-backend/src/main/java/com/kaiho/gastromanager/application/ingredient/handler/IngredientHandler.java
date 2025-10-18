@@ -9,10 +9,13 @@ import com.kaiho.gastromanager.infrastructure.common.model.ApiGenericResponse;
 import com.kaiho.gastromanager.infrastructure.ingredient.output.jpa.criteria.IngredientSearchCriteria;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface IngredientHandler {
     ApiGenericResponse<Page<IngredientSummaryResponseDto>> getAllIngredients(IngredientSearchCriteria criteria);
+    
+    ApiGenericResponse<List<IngredientSummaryResponseDto>> getAllIngredientsWithoutPagination();
 
     ApiGenericResponse<IngredientDetailResponseDto> getIngredientById(UUID uuid);
 

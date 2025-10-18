@@ -2,6 +2,7 @@ package com.kaiho.gastromanager.application.ingredient.dto.response;
 
 import lombok.Builder;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -11,7 +12,7 @@ public record IngredientSummaryResponseDto(
         String name,
         double availableStock,
         String unit,
-        double pricePerUnit,
+        BigDecimal pricePerUnit,
         String supplier,
         int minimumStockQuantity,
         String createdBy,

@@ -13,9 +13,9 @@ import java.util.UUID;
 public interface IngredientServicePort {
     Page<Ingredient> getAllIngredients(IngredientSearchCriteria criteria);
 
-    Ingredient getIngredientById(UUID uuid);
+    List<Ingredient> getAllIngredientsWithoutPagination();
 
-//    Ingredient getIngredientById(UUID uuid, UUID currentRestaurant);
+    Ingredient getIngredientById(UUID uuid);
 
     UUID addIngredient(Ingredient ingredient);
 
@@ -28,4 +28,6 @@ public interface IngredientServicePort {
     void batchAdjustStock(Map<UUID, Double> stockAdjustments, String orderPlacement);
 
     Restaurant getRestaurantByIngredientUuid(UUID ingredientUuid);
+
+    boolean existsByUuid(UUID uuid);
 }

@@ -12,4 +12,6 @@ public interface RecipeServicePort {
     Page<Recipe> getAllRecipes(RecipeSearchCriteria criteria);
 
     Recipe getRecipeById(UUID recipeUuid);
+
+    boolean existsByUuid(UUID uuid);
 }

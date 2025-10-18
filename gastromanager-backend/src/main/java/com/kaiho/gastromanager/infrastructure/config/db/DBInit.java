@@ -31,6 +31,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Set;
@@ -73,43 +74,21 @@ public class DBInit implements CommandLineRunner {
         // Crear 2 restaurantes automáticamente
         createRestaurantIfNotExists("Crepes & Waffles", "Description for Crepes & Waffles rest", "Address for C&W", "owner", false, false);
         createRestaurantIfNotExists("KFC", "Description for KFC", "Address for KFC", "owner2", false, true);
-/*
-        createIngredientIfNotExists("All-Purpose Flour", 10000, "GRAMS", "random_supplier", 0.0025, "Crepes & Waffles", 500);
-        createIngredientIfNotExists("Granulated Sugar", 5000, "GRAMS", "random_supplier", 0.0035, "Crepes & Waffles", 300);
-        createIngredientIfNotExists("Salt", 5000, "GRAMS", "random_supplier", 0.0015, "Crepes & Waffles", 200);
-        createIngredientIfNotExists("Butter", 1000, "GRAMS", "random_supplier", 0.015, "Crepes & Waffles", 100);
-        createIngredientIfNotExists("Eggs", 700, "UNITS", "random_supplier", 0.25, "Crepes & Waffles", 50);
-        createIngredientIfNotExists("Milk", 10000, "MILLILITRES", "random_supplier", 0.01, "Crepes & Waffles", 200);
-        createIngredientIfNotExists("Yeast", 2000, "GRAMS", "random_supplier", 0.005, "Crepes & Waffles", 50);
-        createIngredientIfNotExists("Vanilla Extract", 1000, "MILLILITRES", "random_supplier", 0.5, "Crepes & Waffles", 20);
-        createIngredientIfNotExists("Chicken Breast", 10000, "GRAMS", "random_supplier", 0.025, "Crepes & Waffles", 200);
-        createIngredientIfNotExists("Cream Cheese", 1000, "GRAMS", "random_supplier", 0.03, "Crepes & Waffles", 100);
-        createIngredientIfNotExists("Ground Beef", 8000, "GRAMS", "random_supplier", 0.03, "Crepes & Waffles", 150);
-        createIngredientIfNotExists("Lettuce", 1000, "GRAMS", "random_supplier", 0.005, "Crepes & Waffles", 100);
-        createIngredientIfNotExists("Tomato", 2000, "GRAMS", "random_supplier", 0.01, "Crepes & Waffles", 50);
-        createIngredientIfNotExists("Cheese", 3000, "GRAMS", "random_supplier", 0.03, "Crepes & Waffles", 80);
-        createIngredientIfNotExists("Potatoes", 10000, "GRAMS", "random_supplier", 0.01, "Crepes & Waffles", 200);
-        createIngredientIfNotExists("Tomato Sauce", 6000, "GRAMS", "random_supplier", 0.03, "Crepes & Waffles", 200);
-        createIngredientIfNotExists("Pepperoni", 2000, "GRAMS", "random_supplier", 0.05, "Crepes & Waffles", 100);
-        createIngredientIfNotExists("Hummus", 3000, "GRAMS", "random_supplier", 0.04, "Crepes & Waffles", 50);
-        createIngredientIfNotExists("Chocolate", 1000, "GRAMS", "random_supplier", 0.02, "Crepes & Waffles", 100);
-        createIngredientIfNotExists("Bun", 500, "UNITS", "random_supplier", 0.5, "Crepes & Waffles", 100);
-        createIngredientIfNotExists("Pasta", 3000, "GRAMS", "random_supplier", 0.01, "Crepes & Waffles", 200);
-        createIngredientIfNotExists("Oil", 5000, "MILLILITRES", "random_supplier", 0.005, "Crepes & Waffles", 500);
-        createIngredientIfNotExists("Onion", 5000, "GRAMS", "random_supplier", 0.005, "Crepes & Waffles", 100);
-        createIngredientIfNotExists("Garlic", 1000, "GRAMS", "random_supplier", 0.001, "Crepes & Waffles", 100);
-        createIngredientIfNotExists("Olive Oil", 5000, "MILLILITRES", "random_supplier", 0.005, "Crepes & Waffles", 500);
-        createIngredientIfNotExists("Cucumber", 1000, "GRAMS", "random_supplier", 0.01, "Crepes & Waffles", 100);
-        createIngredientIfNotExists("Caesar Dressing", 1000, "MILLILITRES", "random_supplier", 0.02, "Crepes & Waffles", 150);
-        createIngredientIfNotExists("Croutons", 3000, "GRAMS", "random_supplier", 0.03, "Crepes & Waffles", 200);
-        createIngredientIfNotExists("Parmesan Cheese", 3000, "GRAMS", "random_supplier", 0.05, "Crepes & Waffles", 80);
-        createIngredientIfNotExists("Chocolate Ice Cream", 5000, "GRAMS", "random_supplier", 0.05, "Crepes & Waffles", 150);
-        createIngredientIfNotExists("Chocolate Syrup", 1000, "MILLILITRES", "random_supplier", 0.02, "Crepes & Waffles", 100);
-        createIngredientIfNotExists("Chocolate Syrup KFC", 5000, "MILLILITRES", "random_supplier KFC", 0.02, "KFC", 100);
-        createIngredientIfNotExists("Eggs KFC", 900, "UNITS", "random_supplier KFC", 0.2, "KFC", 30);
-        createIngredientIfNotExists("Tomato KFC", 2000, "GRAMS", "random_supplier KFC", 0.02, "KFC", 80);
-        createIngredientIfNotExists("Onion KFC", 5000, "GRAMS", "random_supplier KFC", 0.05, "KFC", 90);
-*/
+
+        // Ingredientes para Crepes & Waffles (restaurante de comida variada)
+        createIngredientIfNotExists("Harina de trigo", 10000, "GRAMS", "Distribuidora La Cosecha", BigDecimal.valueOf(4.5), "Crepes & Waffles", 2000);
+        createIngredientIfNotExists("Huevos", 200, "UNITS", "Granja Santa Fe", BigDecimal.valueOf(500), "Crepes & Waffles", 50);
+        createIngredientIfNotExists("Leche", 15000, "MILLILITRES", "Alpina", BigDecimal.valueOf(3.8), "Crepes & Waffles", 3000);
+        createIngredientIfNotExists("Mantequilla", 2000, "GRAMS", "Alpina", BigDecimal.valueOf(28), "Crepes & Waffles", 500);
+        createIngredientIfNotExists("Azúcar", 5000, "GRAMS", "Ingenio del Cauca", BigDecimal.valueOf(4.2), "Crepes & Waffles", 1000);
+
+        // Ingredientes para KFC (restaurante de pollo frito)
+        createIngredientIfNotExists("Pechuga de pollo", 15000, "GRAMS", "Pollos El Bucanero", BigDecimal.valueOf(18.5), "KFC", 3000);
+        createIngredientIfNotExists("Harina de maíz", 8000, "GRAMS", "Molinos del Valle", BigDecimal.valueOf(5.2), "KFC", 2000);
+        createIngredientIfNotExists("Papas", 20000, "GRAMS", "Finca La Esperanza", BigDecimal.valueOf(3.5), "KFC", 5000);
+        createIngredientIfNotExists("Aceite vegetal", 10000, "MILLILITRES", "Aceites La Favorita", BigDecimal.valueOf(9.8), "KFC", 2000);
+        createIngredientIfNotExists("Sal", 3000, "GRAMS", "Sal Marina del Pacífico", BigDecimal.valueOf(2.8), "KFC", 500);
+
         assignRestaurantToUser("Crepes & Waffles", "manager");
         assignRestaurantToUser("Crepes & Waffles", "waiter");
         assignRestaurantToUser("Crepes & Waffles", "chef");
@@ -251,7 +230,7 @@ public class DBInit implements CommandLineRunner {
     }
 
     private void createIngredientIfNotExists(String name, int availableStock, String unit,
-                                             String supplier, double pricePerUnit, String restaurantName,
+                                             String supplier, BigDecimal pricePerUnit, String restaurantName,
                                              int minimumStockQuantity) {
         // Validar la existencia del restaurante
         RestaurantEntity restaurantEntity = restaurantEntityRepository.findByName(restaurantName)

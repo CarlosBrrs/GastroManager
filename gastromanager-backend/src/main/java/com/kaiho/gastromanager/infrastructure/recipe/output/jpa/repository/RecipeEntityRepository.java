@@ -12,4 +12,10 @@ public interface RecipeEntityRepository extends JpaRepository<RecipeEntity, UUID
 
     @Query("SELECT r FROM RecipeEntity r WHERE r.uuid = :recipeUuid AND r.restaurant.uuid = :currentRestaurant")
     Optional<RecipeEntity> findById(UUID recipeUuid, UUID currentRestaurant);
+
+    @Query("SELECT CASE WHEN COUNT(r) > 0 THEN TRUE ELSE FALSE END FROM RecipeEntity r WHERE r.name = :name AND r.restaurant.uuid = :restaurantUuid")
+    boolean existsByNameAndRestaurantUuid(String name, UUID restaurantUuid);
+
+    @Query("SELECT CASE WHEN COUNT(r) > 0 THEN TRUE ELSE FALSE END FROM RecipeEntity r WHERE r.uuid = :uuid AND r.restaurant.uuid = :currentRestaurant")
+    boolean existsByUuid(UUID uuid, UUID currentRestaurant);
 }
