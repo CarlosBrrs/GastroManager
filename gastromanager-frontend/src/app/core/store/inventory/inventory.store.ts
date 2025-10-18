@@ -1,5 +1,5 @@
 import {patchState, signalStore, withHooks, withMethods, withState} from "@ngrx/signals";
-import {inject, effect} from "@angular/core";
+import {inject} from "@angular/core";
 import {rxMethod} from "@ngrx/signals/rxjs-interop";
 import {catchError, concatMap, finalize, Observable, of, pipe, switchMap, tap, throwError} from "rxjs";
 import {GetIngredientsUseCase} from "../../../features/ingredients/application/usecases/get-ingredients.use-case";
@@ -13,7 +13,9 @@ import {
 } from "../../../features/ingredients/application/usecases/get-ingredient-by-uuid.use-case";
 import {EditIngredientUseCase} from "../../../features/ingredients/application/usecases/edit-ingredient.use-case";
 import {Page} from "../../model/interfaces/pagination/page.interface";
-import {RestaurantStore} from "../restaurant/restaurant.store";
+import {
+  GetAllIngredientsNoPaginationUseCase
+} from "../../../features/ingredients/application/usecases/get-all-ingredients-no-pagination.use-case";
 
 export type ColumnProperties = {
   field: string;
@@ -33,6 +35,7 @@ type InventoryState = {
   error: string | null;
   ingredientToEdit: Ingredient | null;
   selectedIngredient: Ingredient | null;
+  allIngredients: Ingredient[];
 }
 
 const initialState: InventoryState = {
@@ -54,7 +57,8 @@ const initialState: InventoryState = {
   selectedIngredient: null,
   loading: false,
   error: null,
-  ingredientToEdit: null
+  ingredientToEdit: null,
+  allIngredients: []
 }
 
 export const InventoryStore = signalStore(
@@ -64,12 +68,15 @@ export const InventoryStore = signalStore(
                getIngredients = inject(GetIngredientsUseCase),
                createIngredient = inject(CreateIngredientUseCase),
                editIngredient = inject(EditIngredientUseCase),
-               getIngredientByUuid = inject(GetIngredientByUuidUseCase)) => ({
+               getIngredientByUuid = inject(GetIngredientByUuidUseCase),
+               getAllIngredientsNoPagination = inject(GetAllIngredientsNoPaginationUseCase)) => ({
     createIngredient: (ingredient: Ingredient): Observable<Page<Ingredient>> => {
       patchState(store, {loading: true, error: null});
       return createIngredient.execute(ingredient).pipe(
         tap(createdIngredientUuid => {
           console.log('Ingredient created with uuid:', createdIngredientUuid);
+          // Limpiar el caché de todos los ingredientes
+          patchState(store, {allIngredients: []});
         }),
         catchError((error: HttpErrorResponse) => {
           const message = error.message || 'Error desconocido';
@@ -133,12 +140,12 @@ export const InventoryStore = signalStore(
           )
         })
       )),
-    getIngredientById: rxMethod<{ uuid: string, forEdit?: boolean}>(
+    getIngredientById: rxMethod<{ uuid: string, forEdit?: boolean }>(
       pipe(
         tap(() => {
           patchState(store, {loading: true, error: null});
         }),
-        switchMap(({ uuid, forEdit }) => {
+        switchMap(({uuid, forEdit}) => {
           return getIngredientByUuid.execute(uuid).pipe(
             tapResponse({
               next: (response) => {
@@ -162,11 +169,44 @@ export const InventoryStore = signalStore(
     ),
     clearIngredientToEdit: () => patchState(store, {ingredientToEdit: null}),
     clearSelectedIngredient: () => patchState(store, {selectedIngredient: null}),
+    getAllIngredientsNoPagination: rxMethod<void>(
+      pipe(
+        tap(() => {
+          patchState(store, {loading: true, error: null});
+        }),
+        switchMap(() => {
+          // Si ya tenemos todos los ingredientes cargados, los retornamos
+          if (store.allIngredients().length > 0) {
+            patchState(store, {loading: false});
+            return of(store.allIngredients());
+          }
+          // Si no, hacemos la petición al servidor
+          return getAllIngredientsNoPagination.execute().pipe(
+            tapResponse({
+              next: (ingredients) => {
+                patchState(store, {allIngredients: ingredients});
+                console.log('✅ Todos los ingredientes cargados:', ingredients.length);
+              },
+              error: (error: HttpErrorResponse) => {
+                const message = error.message || 'Error desconocido';
+                patchState(store, {error: message});
+                console.error('❌ Error al cargar ingredientes:', message);
+              },
+              finalize: () => {
+                patchState(store, {loading: false})
+              }
+            })
+          )
+        })
+      )
+    ),
     editIngredient: (ingredient: Ingredient): Observable<Page<Ingredient>> => {
       patchState(store, {loading: true, error: null});
       return editIngredient.execute(ingredient.uuid, ingredient).pipe(
         tap(updatedIngredient => {
           console.log('Ingredient updated with info:', updatedIngredient);
+          // Limpiar el caché de todos los ingredientes
+          patchState(store, {allIngredients: []});
         }),
         catchError((error: HttpErrorResponse) => {
           const message = error.message || 'Error desconocido';

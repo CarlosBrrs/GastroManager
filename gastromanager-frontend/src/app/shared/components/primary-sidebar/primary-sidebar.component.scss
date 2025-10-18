@@ -1,4 +1,164 @@
-.sidebar a.active {
-  font-weight: bold;
-  color: #007bff;
+// Primary Sidebar - estilo sobrio y minimalista alineado a login-page
+.sidebar {
+  width: 160px; // compacto y consistente con diseño sobrio
+  height: 100vh;
+  background: var(--surface-ground, #0f1720); /* dejar que tema global controle */
+  position: fixed;
+  left: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  z-index: 1000;
+  overflow: hidden;
+  border-right: 1px solid rgba(255,255,255,0.03);
+  color: var(--text-color, #e6eef8);
+
+  /* Centrar logo que está directo dentro del nav */
+  > img {
+    display: block;
+    margin: 14px auto;
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+    transition: transform 160ms ease;
+  }
+
+  // Header más compacto
+  .sidebar-header {
+    padding: 12px 10px;
+    text-align: center;
+    background: transparent;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+
+    img {
+      max-width: 40px;
+      height: auto;
+      transition: transform 160ms ease;
+    }
+
+    .app-title {
+      color: var(--text-color, #e6eef8);
+      font-size: 0.88rem;
+      font-weight: 600;
+      margin-top: 6px;
+      letter-spacing: 0.4px;
+    }
+  }
+
+  // Lista más compacta
+  ul {
+    list-style: none;
+    padding: 8px 0;
+    margin: 0;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  ul li {
+    margin: 6px 0;
+  }
+
+  ul li a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    color: rgba(255,255,255,0.75);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-radius: 10px;
+    transition: background 150ms ease, color 150ms ease, transform 120ms ease;
+  }
+
+  ul li a:hover {
+    background: var(--surface-1, rgba(255,255,255,0.02));
+    color: var(--text-color, #e6eef8);
+    transform: translateX(2px);
+  }
+
+  ul li a .icon {
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255,255,255,0.8);
+    font-size: 1.15rem;
+  }
+
+  ul li a .label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: inherit;
+  }
+
+  /* Estado activo: borde izquierdo discreto y color primario */
+  ul li a.active,
+  ul li a.router-link-active {
+    color: var(--primary-color, #64ffda);
+    background: transparent;
+    border-left: 4px solid var(--primary-color, #64ffda);
+    padding-left: 10px; /* compensar borde */
+    margin-left: 4px;
+  }
+
+  // Footer más compacto
+  .sidebar-footer {
+    padding: 10px 12px;
+    border-top: 1px solid rgba(255,255,255,0.03);
+    background: transparent;
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255,255,255,0.75);
+      font-size: 0.78rem;
+
+      .avatar {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: var(--surface-2, rgba(255,255,255,0.02));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary-color, #64ffda);
+        font-weight: 600;
+        font-size: 0.75rem;
+        border: 1px solid rgba(255,255,255,0.03);
+      }
+
+      .user-details {
+        flex: 1;
+
+        .user-name {
+          color: var(--text-color, #e6eef8);
+          font-weight: 500;
+          font-size: 0.82rem;
+        }
+
+        .user-role {
+          color: rgba(255,255,255,0.6);
+          font-size: 0.72rem;
+        }
+      }
+    }
+  }
+}
+
+/* Responsive: ajuste en pantallas pequeñas */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 220px; /* más ancho en móviles para facilitar interacción */
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+  }
+
+  .sidebar.mobile-open {
+    transform: translateX(0);
+  }
 }

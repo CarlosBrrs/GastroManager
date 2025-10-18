@@ -1,0 +1,32 @@
+<main class="page-container">
+  <div class="recipes-header">
+    <div class="header-content">
+      <div class="title-section">
+        <h1>Gestión de Recetas</h1>
+        <p class="subtitle">Administra las recetas de tu restaurante</p>
+      </div>
+      <div class="actions-section">
+        <button pButton
+                type="button"
+                label="Nueva Receta"
+                icon="pi pi-plus"
+                class="add-recipe-button"
+                (click)="onAddRecipe()">
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="recipes-content">
+    <gm-table
+      [data]="recipes()"
+      [columns]="tableColumns"
+      [totalRecords]="totalRecords()"
+      [actions]="actions"
+      [loading]="loading()"
+      [selectedItem]="selectedRecipe()"
+      (onRowSelect)="handleRecipeSelected($event)"
+      (changePage)="changePageHandler($event)">
+    </gm-table>
+  </div>
+</main>

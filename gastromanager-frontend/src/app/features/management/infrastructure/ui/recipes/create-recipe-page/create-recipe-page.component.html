@@ -1,7 +1,7 @@
-<gm-create-product-form
+<gm-create-recipe-form
   [availableIngredients]="availableIngredients()"
   [availableRecipes]="availableRecipes()"
-  (onCreateProduct)="createProductHandler($event)"
   [loading]="loading()"
   [error]="error()"
-></gm-create-product-form>
+  (onCreateRecipe)="createRecipeHandler($event)">
+</gm-create-recipe-form>

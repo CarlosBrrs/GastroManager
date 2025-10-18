@@ -1,3 +1,6 @@
+import {ProductIngredient} from "./product-ingredient.interface";
+import {ProductRecipe} from "./product-recipe.interface";
+
 export interface Product {
   uuid: string;
   name: string;
@@ -9,4 +12,7 @@ export interface Product {
   createdDate: Date;
   updatedBy: string;
   updatedDate: Date;
+  // Para modo avanzado
+  recipes?: ProductRecipe[];
+  ingredients?: ProductIngredient[];
 }

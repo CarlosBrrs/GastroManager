@@ -1,0 +1,208 @@
+<div class="form-container">
+  <h2>Crear Nueva Receta</h2>
+
+  @if (error()) {
+    <div class="error-message general-error">
+      {{ error() }}
+    </div>
+  }
+
+  <form [formGroup]="recipeForm" (ngSubmit)="onSubmit()">
+    <!-- Grid de campos básicos -->
+    <div class="form-grid">
+      <div class="form-field col-span-2">
+        <label for="name">Nombre:</label>
+        <input id="name" formControlName="name" type="text" placeholder="Nombre de la receta"/>
+        @if (recipeForm.get('name')?.invalid && recipeForm.get('name')?.touched) {
+          <div class="error">
+            Nombre es requerido y debe tener al menos 3 caracteres.
+          </div>
+        }
+      </div>
+
+      <div class="form-field col-span-2">
+        <label for="description">Descripción:</label>
+        <input id="description" formControlName="description" type="text" placeholder="Descripción breve"/>
+        @if (recipeForm.get('description')?.invalid && recipeForm.get('description')?.touched) {
+          <div class="error">
+            Descripción es requerida y debe tener al menos 3 caracteres.
+          </div>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="yieldPortions">Porciones:</label>
+        <input
+          id="yieldPortions"
+          formControlName="yieldPortions"
+          type="number"
+          min="1"
+          step="1"
+          placeholder="1"/>
+        @if (recipeForm.get('yieldPortions')?.invalid && recipeForm.get('yieldPortions')?.touched) {
+          <div class="error">
+            Mínimo 1
+          </div>
+        }
+      </div>
+
+      <div class="form-field">
+        <label>Costo (calculado):</label>
+        <div class="calculated-cost">
+          <span class="currency-symbol">$</span>
+          <span class="cost-value">{{ totalProductionCost | number:'1.2-2' }}</span>
+        </div>
+        @if (selectedBaseRecipe()) {
+          <small class="cost-breakdown">
+            Receta base: ${{ selectedBaseRecipe()!.cost | number:'1.2-2' }} +
+            Ingredientes: ${{ totalProductionCost - selectedBaseRecipe()!.cost | number:'1.2-2' }}
+          </small>
+        } @else {
+          <small class="cost-info">Automático según ingredientes</small>
+        }
+      </div>
+    </div>
+
+    <!-- Sección de Receta Base -->
+    <div class="recipes-section">
+      <h3>Receta Base (opcional)</h3>
+
+      <div class="recipe-selector-wrapper">
+        <div class="form-field">
+          <label for="baseRecipeSelect">Seleccionar receta:</label>
+          <select
+            id="baseRecipeSelect"
+            class="recipe-dropdown"
+            (change)="onBaseRecipeChange($event)"
+            [value]="selectedBaseRecipe()?.uuid || ''">
+            <option value="">-- Ninguna --</option>
+            @for (recipe of availableRecipes(); track recipe.uuid) {
+              <option [value]="recipe.uuid">
+                {{ recipe.name }} - ${{ recipe.cost | number:'1.2-2' }}
+              </option>
+            }
+          </select>
+        </div>
+
+        @if (selectedBaseRecipe()) {
+          <div class="recipe-details-panel">
+            <div class="panel-header">
+              <div class="recipe-info-row">
+                <h4>{{ selectedBaseRecipe()!.name }}</h4>
+                <span class="recipe-cost-badge">${{ selectedBaseRecipe()!.cost | number:'1.2-2' }}</span>
+              </div>
+              <p class="recipe-description">{{ selectedBaseRecipe()!.description }}</p>
+            </div>
+
+            @if (selectedBaseRecipe()!.ingredients && selectedBaseRecipe()!.ingredients.length > 0) {
+              <div class="ingredients-details-section">
+                <h5>Ingredientes de la receta base:</h5>
+                <div class="ingredients-table">
+                  @for (ingredient of selectedBaseRecipe()!.ingredients; track ingredient.ingredientUuid) {
+                    <div class="ingredient-row">
+                      <span class="ingredient-name">{{ ingredient.ingredientName }}</span>
+                      <span class="ingredient-quantity">{{ ingredient.quantity }}</span>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Sección de Ingredientes -->
+    <div class="ingredients-section">
+      <h3>Ingredientes</h3>
+
+      <div class="ingredients-container">
+        <!-- Lista de ingredientes disponibles -->
+        <div class="available-ingredients-box">
+          <div class="box-header">
+            <h4>Disponibles</h4>
+            <div class="search-box">
+              <input
+                type="text"
+                class="search-input"
+                placeholder="🔍 Buscar ingrediente..."
+                [value]="ingredientSearchTerm()"
+                (input)="updateSearchTerm($any($event.target).value)"/>
+              @if (ingredientSearchTerm()) {
+                <button type="button" class="clear-search" (click)="clearSearch()">×</button>
+              }
+            </div>
+          </div>
+          <div class="ingredients-list">
+            @for (ingredient of getAvailableIngredients(); track ingredient.uuid) {
+              <div class="ingredient-item available" (click)="addIngredient(ingredient)">
+                <span class="ingredient-name">
+                  {{ ingredient.name }}
+                  <span class="unit-price">({{ ingredient.pricePerUnit | currency:'USD':'symbol':'1.0-2' }}/{{ ingredient.unit }})</span>
+                </span>
+                <span class="ingredient-unit">({{ getUnitText(ingredient.unit) }})</span>
+                <button type="button" class="add-btn">+</button>
+              </div>
+            } @empty {
+              <p class="empty-message">
+                @if (ingredientSearchTerm()) {
+                  No se encontraron ingredientes
+                } @else {
+                  No hay ingredientes disponibles
+                }
+              </p>
+            }
+          </div>
+        </div>
+
+        <!-- Lista de ingredientes seleccionados -->
+        <div class="selected-ingredients-box">
+          <h4>Seleccionados ({{ selectedIngredients().length }})</h4>
+          <div class="ingredients-list">
+            @for (ingredient of selectedIngredients(); track ingredient.uuid) {
+              <div class="ingredient-item selected">
+                <span class="ingredient-name">
+                  {{ ingredient.name }}
+                  <span class="unit-price">({{ ingredient.pricePerUnit | currency:'USD':'symbol':'1.0-2' }}/{{ ingredient.unit }})</span>
+                </span>
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  [value]="ingredient.quantity"
+                  (input)="updateIngredientQuantity(ingredient.uuid, $any($event.target).value)"
+                  placeholder="0"
+                  class="quantity-input"/>
+                <span class="unit-label">{{ ingredient.unit }}</span>
+                <button type="button"
+                        class="remove-btn"
+                        (click)="removeIngredient(ingredient.uuid)"
+                        title="Remover ingrediente">
+                  ×
+                </button>
+              </div>
+            } @empty {
+              <p class="empty-message">No hay ingredientes seleccionados</p>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn-primary" [disabled]="!recipeForm.valid || loading()">
+        @if (loading()) {
+          <p-progressSpinner
+            styleClass="w-4rem h-4rem"
+            strokeWidth="3"
+            animationDuration="1s"/>
+        } @else {
+          Crear Receta
+        }
+      </button>
+      <button type="button" class="btn-secondary" (click)="onCancel()">
+        Cancelar
+      </button>
+    </div>
+  </form>
+</div>

@@ -30,6 +30,7 @@ const sidebarLinks: Record<string, SidebarLink[]> = {
   ],
   management: [
     {label: 'Mesas', route: '/management/tables'},
+    {label: 'Recetas', route: '/management/recipes'},
     {label: 'Cajas registradoras', route: '/management/cash-registers'},
     {label: 'Configuración', route: '/management/settings'},
     {label: 'Reportes', route: '/management/reports'},

@@ -1,7 +1,68 @@
-:host {
-  ::ng-deep {
-    .p-password {
-    width: 100%;
-    }
+/*
+!*.login-container {
+  padding: $cardBodyPadding;
+  border-radius: $border-radius-md;
+  box-shadow: $cardShadow;
+  background: $cardBg;
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-title {
+  font-size: $font-size-lg;
+  color: $primaryColor;
+  margin-bottom: $spacing-lg;
+  text-align: center;
+  font-weight: $font-weight-bold;
+}
+
+.p-inputtext, .p-password {
+  @include form-element-base();
+  width: 100%;
+  margin-bottom: $spacing-md;
+  background: $inputBg;
+  color: $inputTextColor;
+  border-radius: $border-radius-sm;
+  border: 1px solid $inputBorderColor;
+  font-size: $font-size-base;
+  padding: $inputPadding;
+}*!
+
+.submit-button {
+  @include button-base(); // Estilos base responsivos del tema
+
+  // Personalización adicional usando variables del tema
+  box-shadow: $buttonShadow;
+  border-radius: $border-radius-lg;
+  font-size: $font-size-lg;
+  padding: $buttonPadding;
+  background: $primaryColor;
+  color: $primaryColorText;
+  border: 2px solid $primaryColor;
+
+  // Hover personalizado
+  &:hover {
+    background: $primary-600;
+    color: $primaryColorText;
+    box-shadow: $buttonShadowHover;
+    border-color: $primary-700;
+  }
+
+  // Si quieres agregar un ícono
+  .button-icon {
+    margin-right: $spacing-sm;
+    font-size: $font-size-base;
+    color: $primaryColorText;
   }
 }
+!*
+
+
+.error-message {
+  color: $dangerColor;
+  font-size: $font-size-sm;
+  margin-bottom: $spacing-md;
+  text-align: center;
+}
+*!
+*/

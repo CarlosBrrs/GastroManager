@@ -7,3 +7,13 @@ p-table {
   justify-content: center;
   gap: 0.5rem;
 }
+
+.cell-link {
+  color: var(--primary-color);
+  font-weight: 500;
+  cursor: default;
+
+  &:hover {
+    color: var(--primary-600);
+  }
+}

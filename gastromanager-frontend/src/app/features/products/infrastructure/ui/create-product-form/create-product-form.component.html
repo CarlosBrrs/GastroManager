@@ -4,86 +4,247 @@
   </div>
 }
 
+<!-- Selector de modo con switch -->
+<div class="mode-selector">
+  <span class="mode-label" [class.active]="creationMode() === 'basic'">📝 Básico</span>
+  <p-inputSwitch
+    [ngModel]="creationMode() === 'advanced'"
+    (ngModelChange)="switchMode($event ? 'advanced' : 'basic')"
+    styleClass="mode-switch">
+  </p-inputSwitch>
+  <span class="mode-label" [class.active]="creationMode() === 'advanced'">🔬 Avanzado</span>
+</div>
 
 <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
-  <div>
-    <label for="name">Nombre:</label>
-    <input id="name" formControlName="name" type="text"/>
-    @if (productForm.get('name')?.invalid && productForm.get('name')?.touched) {
-      <div class="error">
-        Nombre es requerido y debe tener al menos 3 caracteres.
+  <!-- Campos básicos (siempre visibles) -->
+  <div class="basic-fields">
+    <div class="form-row">
+      <div class="form-field">
+        <label for="name">Nombre</label>
+        <input id="name" formControlName="name" type="text" pInputText/>
+        @if (productForm.get('name')?.invalid && productForm.get('name')?.touched) {
+          <small class="error">Requerido (mín. 3 caracteres)</small>
+        }
       </div>
-    }
-  </div>
 
-  <div>
-    <label for="description">Descripcion:</label>
-    <input id="description" formControlName="description" type="text"/>
-    @if (productForm.get('description')?.invalid && productForm.get('description')?.touched) {
-      <div
-        class="error">
-        Descripcion es requerida y debe tener al menos 3 caracteres.
+      <div class="form-field">
+        <label for="category">Categoría</label>
+        <input id="category" formControlName="category" type="text" pInputText/>
+        @if (productForm.get('category')?.invalid && productForm.get('category')?.touched) {
+          <small class="error">Requerido (mín. 3 caracteres)</small>
+        }
       </div>
-    }
-  </div>
-
-  <div>
-    <label for="category">Categoria:</label>
-    <input id="category" formControlName="category" type="text"/>
-    @if (productForm.get('category')?.invalid && productForm.get('category')?.touched) {
-      <div
-        class="error">
-        Categoria es requerida y debe tener al menos 3 caracteres.
-      </div>
-    }
-  </div>
-
-  <div>
-    <label for="purchasePrice">Precio de compra:</label>
-    <div class="currency-input">
-      <span class="currency-symbol">$</span>
-      <input
-        id="purchasePrice"
-        formControlName="purchasePrice"
-        type="number"
-        min="0"
-        step="0.01"
-        placeholder="0.00"/>
     </div>
-    @if (productForm.get('purchasePrice')?.invalid && productForm.get('purchasePrice')?.touched) {
-      <div class="error">
-        Error en precio de compra
-      </div>
-    }
-  </div>
 
-  <div>
-    <label for="salePrice">Precio de venta:</label>
-    <div class="currency-input">
-      <span class="currency-symbol">$</span>
-      <input
-        id="salePrice"
-        formControlName="salePrice"
-        type="number"
-        min="0"
-        step="0.01"
-        placeholder="0.00"/>
+    <div class="form-field full-width">
+      <label for="description">Descripción</label>
+      <input id="description" formControlName="description" type="text" pInputText/>
+      @if (productForm.get('description')?.invalid && productForm.get('description')?.touched) {
+        <small class="error">Requerido (mín. 3 caracteres)</small>
+      }
     </div>
-    @if (productForm.get('salePrice')?.invalid && productForm.get('salePrice')?.touched) {
-      <div class="error">
-        Error en precio de venta
-      </div>
-    }
   </div>
 
+  <!-- Modo Básico -->
+  @if (creationMode() === 'basic') {
+    <div class="basic-mode">
+      <div class="form-field">
+        <label for="purchasePrice">Precio de compra</label>
+        <p-inputNumber
+          inputId="purchasePrice"
+          formControlName="purchasePrice"
+          mode="currency"
+          currency="USD"
+          locale="en-US"
+          [minFractionDigits]="2"
+          [maxFractionDigits]="2">
+        </p-inputNumber>
+        @if (productForm.get('purchasePrice')?.invalid && productForm.get('purchasePrice')?.touched) {
+          <small class="error">Requerido (mayor a 0)</small>
+        }
+      </div>
 
-  <button type="submit"
-          [disabled]="!productForm.valid || loading()">
+      <div class="form-field">
+        <label for="salePrice">Precio de venta</label>
+        <p-inputNumber
+          inputId="salePrice"
+          formControlName="salePrice"
+          mode="currency"
+          currency="USD"
+          locale="en-US"
+          [minFractionDigits]="2"
+          [maxFractionDigits]="2">
+        </p-inputNumber>
+        @if (productForm.get('salePrice')?.invalid && productForm.get('salePrice')?.touched) {
+          <small class="error">Requerido (mayor a 0)</small>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- Modo Avanzado -->
+  @if (creationMode() === 'advanced') {
+    <div class="advanced-mode">
+      <!-- Precio calculado automáticamente -->
+      <div class="calculated-price-section">
+        <div class="form-field">
+          <label>Precio de compra (calculado)</label>
+          <div class="calculated-cost">
+            <span class="cost-value">{{ calculatedPurchasePrice | currency:'USD':'symbol':'1.2-2' }}</span>
+          </div>
+          <small class="cost-info">Calculado automáticamente</small>
+        </div>
+
+        <div class="form-field">
+          <label for="salePriceAdv">Precio de venta</label>
+          <p-inputNumber
+            inputId="salePriceAdv"
+            formControlName="salePrice"
+            mode="currency"
+            currency="USD"
+            locale="en-US"
+            [minFractionDigits]="2"
+            [maxFractionDigits]="2">
+          </p-inputNumber>
+          @if (productForm.get('salePrice')?.invalid && productForm.get('salePrice')?.touched) {
+            <small class="error">Requerido (mayor a 0)</small>
+          }
+        </div>
+      </div>
+
+      <!-- Sección de Ingredientes -->
+      <div class="ingredients-section">
+        <h3>Ingredientes</h3>
+
+        <div class="ingredients-container">
+          <!-- Lista de ingredientes disponibles -->
+          <div class="available-box">
+            <div class="box-header">
+              <h4>Disponibles</h4>
+              <div class="search-box">
+                <input
+                  type="text"
+                  class="search-input"
+                  placeholder="🔍 Buscar..."
+                  [value]="ingredientSearchTerm()"
+                  (input)="updateIngredientSearchTerm($any($event.target).value)"
+                  pInputText/>
+                @if (ingredientSearchTerm()) {
+                  <button type="button" class="clear-search" (click)="clearIngredientSearch()">×</button>
+                }
+              </div>
+            </div>
+            <div class="items-list">
+              @for (ingredient of getAvailableIngredients(); track ingredient.uuid) {
+                <div class="item available" (click)="addIngredient(ingredient)">
+                  <span class="item-name">{{ ingredient.name }}</span>
+                  <span class="item-price">{{ ingredient.pricePerUnit | currency:'USD':'symbol':'1.0-2' }}/{{ ingredient.unit }}</span>
+                  <button type="button" class="add-btn">+</button>
+                </div>
+              } @empty {
+                <p class="empty-message">
+                  {{ ingredientSearchTerm() ? 'Sin resultados' : 'No hay ingredientes' }}
+                </p>
+              }
+            </div>
+          </div>
+
+          <!-- Lista de ingredientes seleccionados -->
+          <div class="selected-box">
+            <h4>Seleccionados ({{ selectedIngredients().length }})</h4>
+            <div class="items-list">
+              @for (ingredient of selectedIngredients(); track ingredient.uuid) {
+                <div class="item selected">
+                  <span class="item-name">{{ ingredient.name }}</span>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    [value]="ingredient.quantity"
+                    (input)="updateIngredientQuantity(ingredient.uuid, $any($event.target).value)"
+                    placeholder="0"
+                    class="quantity-input"
+                    pInputText/>
+                  <span class="unit-label">{{ ingredient.unit }}</span>
+                  <button type="button" class="remove-btn" (click)="removeIngredient(ingredient.uuid)">×</button>
+                </div>
+              } @empty {
+                <p class="empty-message">Sin selección</p>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sección de Recetas -->
+      <div class="recipes-section">
+        <h3>Recetas</h3>
+
+        <div class="recipes-container">
+          <!-- Lista de recetas disponibles -->
+          <div class="available-box">
+            <div class="box-header">
+              <h4>Disponibles</h4>
+              <div class="search-box">
+                <input
+                  type="text"
+                  class="search-input"
+                  placeholder="🔍 Buscar..."
+                  [value]="recipeSearchTerm()"
+                  (input)="updateRecipeSearchTerm($any($event.target).value)"
+                  pInputText/>
+                @if (recipeSearchTerm()) {
+                  <button type="button" class="clear-search" (click)="clearRecipeSearch()">×</button>
+                }
+              </div>
+            </div>
+            <div class="items-list">
+              @for (recipe of getAvailableRecipes(); track recipe.uuid) {
+                <div class="item available" (click)="addRecipe(recipe)">
+                  <span class="item-name">{{ recipe.name }}</span>
+                  <span class="item-price">{{ recipe.cost | currency:'USD':'symbol':'1.0-2' }}</span>
+                  <button type="button" class="add-btn">+</button>
+                </div>
+              } @empty {
+                <p class="empty-message">
+                  {{ recipeSearchTerm() ? 'Sin resultados' : 'No hay recetas' }}
+                </p>
+              }
+            </div>
+          </div>
+
+          <!-- Lista de recetas seleccionadas -->
+          <div class="selected-box">
+            <h4>Seleccionadas ({{ selectedRecipes().length }})</h4>
+            <div class="items-list">
+              @for (recipe of selectedRecipes(); track recipe.uuid) {
+                <div class="item selected">
+                  <span class="item-name">{{ recipe.name }}</span>
+                  <input
+                    type="number"
+                    min="1"
+                    step="1"
+                    [value]="recipe.multiplier"
+                    (input)="updateRecipeMultiplier(recipe.uuid, $any($event.target).value)"
+                    placeholder="1"
+                    class="multiplier-input"
+                    pInputText/>
+                  <span class="multiplier-label">x</span>
+                  <button type="button" class="remove-btn" (click)="removeRecipe(recipe.uuid)">×</button>
+                </div>
+              } @empty {
+                <p class="empty-message">Sin selección</p>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <button type="submit" [disabled]="!productForm.valid || loading()">
     @if (loading()) {
-      <p-progressSpinner
-        styleClass="w-4rem h-4rem"
-        strokeWidth="3"
-        animationDuration="1s"/>
+      <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="3" animationDuration="1s"/>
     } @else {
       Crear producto
     }
