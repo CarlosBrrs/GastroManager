@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.kaiho.gastromanager.infrastructure.config.context.RestaurantContext.getCurrentRestaurant;
 
@@ -26,7 +25,6 @@ public class RecipeMapper {
 
 
     private final RecipeServicePort recipeServicePort;
-    private final RecipeIngredientMapper recipeIngredient;
     private final RecipeIngredientMapper recipeIngredientMapper;
 
     public Recipe toDomain(RecipeRequestDto recipeRequestDto) {
@@ -34,8 +32,8 @@ public class RecipeMapper {
             return null;
         }
         List<RecipeIngredient> ingredients = recipeRequestDto.ingredients().stream()
-                                                             .map(recipeIngredientRequestDto -> recipeIngredient.toRecipeIngredient(recipeIngredientRequestDto, recipeRequestDto.yieldPortions()))
-                                                             .collect(Collectors.toList());
+                                                             .map(recipeIngredientRequestDto -> recipeIngredientMapper.toRecipeIngredient(recipeIngredientRequestDto, recipeRequestDto.yieldPortions()))
+                                                             .toList();
         Recipe recipe = Recipe.builder()
                               .name(recipeRequestDto.name())
                               .description(recipeRequestDto.description())

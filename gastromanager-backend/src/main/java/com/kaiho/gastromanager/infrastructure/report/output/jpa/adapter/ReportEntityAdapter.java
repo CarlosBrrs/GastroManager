@@ -132,14 +132,14 @@ public class ReportEntityAdapter implements ReportPersistencePort {
         /*
         // Contar órdenes completadas vs canceladas basado en operational status
         int completedOrders = (int) orders.stream()
-                .filter(o -> o.getOperationalStatus() != null &&
+                .filter(o -> o.getOperationalStatus() != null && 
                            ("COMPLETED".equals(o.getOperationalStatus().toString()) ||
                             "READY".equals(o.getOperationalStatus().toString()) ||
                             "DELIVERED".equals(o.getOperationalStatus().toString())))
                 .count();
 
         int cancelledOrders = (int) orders.stream()
-                .filter(o -> o.getOperationalStatus() != null &&
+                .filter(o -> o.getOperationalStatus() != null && 
                            "CANCELLED".equals(o.getOperationalStatus().toString()))
                 .count();
 
@@ -153,15 +153,15 @@ public class ReportEntityAdapter implements ReportPersistencePort {
         // Si hay pagos completados (estado COMPLETED), consideramos esas órdenes como "vendidas" para efectos del reporte
         int completedOrders = orders.size(); // Todas las órdenes que aparecen aquí tienen pagos completados
         int cancelledOrders = 0; // Por ahora no manejamos cancelaciones desde operational status
-
+        
         // NOTA: Cuando operational status esté funcionando:
         // - Descomentar el código anterior
         // - Eliminar esta lógica temporal
         // - Considerar órdenes con estados: COMPLETED, READY, DELIVERED como completadas
         // - Considerar órdenes con estado: CANCELLED como canceladas
-
+        
         // Calcular valor promedio por orden
-        BigDecimal averageOrderValue = completedOrders > 0
+        BigDecimal averageOrderValue = completedOrders > 0 
                 ? totalSales.divide(BigDecimal.valueOf(completedOrders), 2, RoundingMode.HALF_UP)
                 : BigDecimal.ZERO;
 

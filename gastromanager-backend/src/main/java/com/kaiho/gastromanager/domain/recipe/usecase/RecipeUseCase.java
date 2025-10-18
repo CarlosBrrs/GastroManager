@@ -2,6 +2,7 @@ package com.kaiho.gastromanager.domain.recipe.usecase;
 
 import com.kaiho.gastromanager.domain.ingredient.model.Ingredient;
 import com.kaiho.gastromanager.domain.recipe.api.RecipeServicePort;
+import com.kaiho.gastromanager.domain.recipe.exception.RecipeAlreadyExistsException;
 import com.kaiho.gastromanager.domain.recipe.exception.RecipeDoesNotExistException;
 import com.kaiho.gastromanager.domain.recipe.model.BaseRecipe;
 import com.kaiho.gastromanager.domain.recipe.model.Recipe;
@@ -23,6 +24,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.kaiho.gastromanager.infrastructure.config.context.RestaurantContext.getCurrentRestaurant;
 import static org.springframework.data.domain.Sort.Direction.ASC;
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
@@ -35,6 +37,10 @@ public class RecipeUseCase implements RecipeServicePort {
     @Transactional
     @Override
     public Recipe createRecipe(Recipe recipe) {
+
+        if (recipePersistencePort.recipeExistsByName(recipe.getName())) {
+            throw new RecipeAlreadyExistsException(recipe.getName());
+        }
 
         if (recipe.getBaseRecipe() != null) {
             baseRecipeValidations(recipe);
@@ -68,12 +74,17 @@ public class RecipeUseCase implements RecipeServicePort {
                                     .orElseThrow(() -> new RecipeDoesNotExistException(recipeUuid));
     }
 
+    @Override
+    public boolean existsByUuid(UUID uuid) {
+        return recipePersistencePort.recipeExistsByUuid(uuid, getCurrentRestaurant());
+    }
+
     private void calculateCost(Recipe recipe) {
         BigDecimal totalCost = BigDecimal.ZERO;
 
         for (RecipeIngredient ing : recipe.getIngredients()) {
             Ingredient fullIng = ing.getIngredient();
-            BigDecimal cost = BigDecimal.valueOf(fullIng.getPricePerUnit()).multiply(BigDecimal.valueOf(ing.getQuantity()));
+            BigDecimal cost = fullIng.getPricePerUnit().multiply(BigDecimal.valueOf(ing.getQuantity()));
             totalCost = totalCost.add(cost);
         }
         if (recipe.getBaseRecipe() != null) {

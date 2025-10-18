@@ -44,9 +44,19 @@ public class RecipeEntityAdapter implements RecipePersistencePort {
     @Override
     public Optional<Recipe> getRecipeByUuid(UUID recipeUuid) {
         UUID currentRestaurant = getCurrentRestaurant();
-        Optional<Recipe> recipe = recipeEntityRepository.findById(recipeUuid, currentRestaurant)
-                                                        .map(recipeEntityMapper::toDomain);
 
-        return recipe;
+        return recipeEntityRepository.findById(recipeUuid, currentRestaurant)
+                                     .map(recipeEntityMapper::toDomain);
+    }
+
+    @Override
+    public boolean recipeExistsByName(String name) {
+        UUID restaurantUuid = getCurrentRestaurant();
+        return recipeEntityRepository.existsByNameAndRestaurantUuid(name, restaurantUuid);
+    }
+
+    @Override
+    public boolean recipeExistsByUuid(UUID uuid, UUID currentRestaurant) {
+        return recipeEntityRepository.existsByUuid(uuid, currentRestaurant);
     }
 }

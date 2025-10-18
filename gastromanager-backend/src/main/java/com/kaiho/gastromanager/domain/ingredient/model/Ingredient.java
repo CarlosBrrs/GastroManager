@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -20,7 +21,7 @@ public class Ingredient {
     private String name;
     private double availableStock;
     private Unit unit;
-    private double pricePerUnit;
+    private BigDecimal pricePerUnit;
     private String supplier;
     private int minimumStockQuantity;
     private String createdBy;

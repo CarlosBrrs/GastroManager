@@ -16,6 +16,8 @@ public interface IngredientPersistencePort {
 
     Page<Ingredient> getAllIngredients(IngredientSearchCriteria criteria, Pageable pageable);
 
+    List<Ingredient> getAllIngredientsByRestaurant();
+
     Optional<Ingredient> getIngredientByUuid(UUID uuid);
 
     boolean ingredientExistsByName(String name, UUID restaurantUuid);
@@ -31,4 +33,6 @@ public interface IngredientPersistencePort {
     void updateIngredientsStock(Map<UUID, Double> newAvailableStocks);
 
     Optional<Restaurant> getRestaurantByIngredientUuid(UUID ingredientUuid);
+
+    boolean existsByUuid(UUID uuid, UUID currentRestaurant);
 }

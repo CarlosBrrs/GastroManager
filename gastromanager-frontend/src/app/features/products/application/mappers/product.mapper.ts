@@ -5,18 +5,30 @@ import {ProductGroupByResponseDto, ProductCategoryItemDto} from "../../domain/mo
 import {ProductsByCategory} from "../../domain/models/products-by-category.interface";
 
 export function mapToProductRequestDto(product: Product): ProductRequestDto {
-  return {
-    name: product.name,
-    purchasePrice: product.purchasePrice,
-    salePrice: product.salePrice,
-    category: product.category,
-    description: product.description,
-    createdBy: product.createdBy,
-    createdDate: product.createdDate,
-    updatedBy: product.updatedBy,
-    updatedDate: product.updatedDate
-  };
+  // Verificar si es modo avanzado (tiene recipes o ingredients)
+  const isAdvancedMode = (product.recipes && product.recipes.length > 0) ||
+                         (product.ingredients && product.ingredients.length > 0);
 
+  if (isAdvancedMode) {
+    // Modo avanzado: no enviar purchasePrice
+    return {
+      name: product.name,
+      description: product.description,
+      category: product.category,
+      salePrice: product.salePrice,
+      recipes: product.recipes || [],
+      ingredients: product.ingredients || []
+    };
+  } else {
+    // Modo básico: enviar purchasePrice, sin recipes ni ingredients
+    return {
+      name: product.name,
+      description: product.description,
+      category: product.category,
+      purchasePrice: product.purchasePrice,
+      salePrice: product.salePrice
+    };
+  }
 }
 
 export function mapToProduct(product: ProductSummaryResponseDto): Product {

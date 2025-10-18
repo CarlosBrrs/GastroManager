@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -49,6 +50,12 @@ public class IngredientRestController {
                                                                     .size(size)
                                                                     .build();
         ApiGenericResponse<Page<IngredientSummaryResponseDto>> handlerResponse = ingredientHandler.getAllIngredients(criteria);
+        return new ResponseEntity<>(handlerResponse, HttpStatus.OK);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<ApiGenericResponse<List<IngredientSummaryResponseDto>>> getAllIngredientsWithoutPagination() {
+        ApiGenericResponse<List<IngredientSummaryResponseDto>> handlerResponse = ingredientHandler.getAllIngredientsWithoutPagination();
         return new ResponseEntity<>(handlerResponse, HttpStatus.OK);
     }
 

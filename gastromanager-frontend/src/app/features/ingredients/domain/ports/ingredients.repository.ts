@@ -6,6 +6,8 @@ export interface IngredientsRepository {
 
   getAllIngredients(params: { page: number, size: number }): Observable<Page<Ingredient>>;
 
+  getAllIngredientsNoPagination(): Observable<Ingredient[]>;
+
   createIngredient(ingredient: Ingredient): Observable<string>;
 
   getIngredientById(uuid: string): Observable<Ingredient>;

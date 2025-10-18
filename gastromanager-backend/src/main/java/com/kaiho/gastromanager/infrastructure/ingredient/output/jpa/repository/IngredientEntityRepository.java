@@ -25,4 +25,7 @@ public interface IngredientEntityRepository extends JpaRepository<IngredientEnti
     @Query("SELECT i FROM IngredientEntity i WHERE i.restaurant.uuid = :restaurantUuid AND i.uuid = :uuid")
     Optional<IngredientEntity> findById(UUID uuid, UUID restaurantUuid);
 
+    @Query("SELECT CASE WHEN COUNT(i) > 0 THEN TRUE ELSE FALSE END FROM IngredientEntity i WHERE i.uuid = :uuid AND i.restaurant.uuid = :currentRestaurant")
+    boolean existsByUuid(UUID uuid, UUID currentRestaurant);
+
 }

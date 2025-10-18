@@ -93,6 +93,7 @@ public class SecurityConfig {
                         // ingredients controller
                         .requestMatchers(POST, INGREDIENTS_CONTROLLER).hasAnyRole(SUPERUSER, OWNER, MANAGER, CHEF)
                         .requestMatchers(GET, INGREDIENTS_CONTROLLER).authenticated() // ALL ROLES can access
+                        .requestMatchers(GET, INGREDIENTS_CONTROLLER + "/all").authenticated() // ALL ROLES can access
                         .requestMatchers(GET, INGREDIENTS_CONTROLLER + INGREDIENT_UUID_PARAMETER).authenticated() // ALL ROLES can access
                         .requestMatchers(PUT, INGREDIENTS_CONTROLLER + INGREDIENT_UUID_PARAMETER).hasAnyRole(SUPERUSER, OWNER, MANAGER, CHEF)
                         .requestMatchers(PATCH, INGREDIENTS_CONTROLLER + INGREDIENT_UUID_PARAMETER + "/deactivate").hasAnyRole(SUPERUSER, OWNER, MANAGER, CHEF)

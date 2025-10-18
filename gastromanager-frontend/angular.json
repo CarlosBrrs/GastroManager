@@ -26,11 +26,17 @@
             ],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src/assets/custom-themes/kaiho-dark-theme"
+              ]
+            },
             "assets": [
               {
                 "glob": "**/*",
                 "input": "public"
-              },"src/assets"
+              },
+              "src/assets"
             ],
             "styles": [
               "src/styles.scss"

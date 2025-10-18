@@ -1,4 +1,6 @@
 <gm-create-product-form
+  [availableIngredients]="availableIngredients()"
+  [availableRecipes]="availableRecipes()"
   (onCreateProduct)="createProductHandler($event)"
   [loading]="loading()"
   [error]="error()"

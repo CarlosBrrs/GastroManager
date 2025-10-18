@@ -26,6 +26,7 @@ import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -57,7 +58,7 @@ public class IngredientEntity extends Auditable implements Serializable {
     @OneToMany(mappedBy = "ingredient", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecipeIngredientEntity> recipeIngredients = new ArrayList<>();
 
-    private double pricePerUnit;
+    private BigDecimal pricePerUnit;
 
     private int minimumStockQuantity;
     private String supplier;

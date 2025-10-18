@@ -13,6 +13,11 @@ import com.kaiho.gastromanager.domain.order.spi.OrderPersistencePort;
 import com.kaiho.gastromanager.domain.orderitem.model.OrderItem;
 import com.kaiho.gastromanager.domain.product.api.ProductServicePort;
 import com.kaiho.gastromanager.domain.product.model.Product;
+import com.kaiho.gastromanager.domain.product.model.ProductIngredient;
+import com.kaiho.gastromanager.domain.product.model.ProductMode;
+import com.kaiho.gastromanager.domain.product.model.ProductRecipe;
+import com.kaiho.gastromanager.domain.recipe.model.Recipe;
+import com.kaiho.gastromanager.domain.recipeingredient.model.RecipeIngredient;
 import com.kaiho.gastromanager.domain.restaurant.api.RestaurantServicePort;
 import com.kaiho.gastromanager.domain.restaurant.model.Restaurant;
 import com.kaiho.gastromanager.infrastructure.config.generator.OrderCodeGenerator;
@@ -26,12 +31,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 
-import static com.kaiho.gastromanager.domain.order.model.OperationalStatus.PENDING;
 import static com.kaiho.gastromanager.infrastructure.config.context.RestaurantContext.getCurrentRestaurant;
 import static java.util.stream.Collectors.toMap;
 import static org.springframework.data.domain.Sort.Direction.ASC;
@@ -66,14 +71,26 @@ public class OrderUseCase implements OrderServicePort {
         List<Product> foundProducts = productServicePort.findAllByUuidInAndRestaurant(requestedProductUuids, getCurrentRestaurant());
         validateProductsExist(foundProducts, requestedProductUuids);
 
+        // Crear mapa de productos para acceso rápido
         Map<UUID, Product> productMap = foundProducts.stream()
                                                      .collect(toMap(Product::getUuid, Function.identity()));
+
+        // Calcular las cantidades requeridas de ingredientes (una sola vez)
+        Map<UUID, Double> requiredIngredientQuantities = calculateRequiredIngredients(order.getOrderItems(), productMap);
+
+        // Validar que hay stock suficiente de ingredientes antes de crear la orden
+        validateIngredientsStock(requiredIngredientQuantities);
+
+        // Generar código antes de descontar stock (para incluirlo en el registro)
+        String orderCode = generateFiveLengthUniqueCode();
+        order.setCode(orderCode);
+
+        // Descontar el stock de los ingredientes
+        decreaseIngredientsStockOrder(requiredIngredientQuantities, orderCode);
 
         calculateAndAssignOrderItemPrices(order.getOrderItems(), productMap);
 
         calculateAndAssignTotalAmount(order);
-
-        order.setCode(generateFiveLengthUniqueCode());
 
         Order savedOrder = orderPersistencePort.createOrder(order);
 
@@ -93,12 +110,14 @@ public class OrderUseCase implements OrderServicePort {
             order.setRequiresPaymentBefore(false);
         }
     }
+
     private void calculateAndAssignTotalAmount(Order order) {
         BigDecimal totalAmount = order.getOrderItems().stream()
                                       .map(OrderItem::getSubtotal)
                                       .reduce(BigDecimal.ZERO, BigDecimal::add);
         order.setTotalAmount(totalAmount);
     }
+
     private void calculateAndAssignOrderItemPrices(List<OrderItem> orderItems, Map<UUID, Product> productMap) {
         for (OrderItem orderItem : orderItems) {
             UUID productUuid = orderItem.getProduct().getUuid();
@@ -114,6 +133,7 @@ public class OrderUseCase implements OrderServicePort {
             orderItem.setProduct(product);
         }
     }
+
     private void validateProductsExist(List<Product> products, List<UUID> requestedProductUuids) {
         List<UUID> foundProductUuids = products.stream()
                                                .map(Product::getUuid)
@@ -152,14 +172,14 @@ public class OrderUseCase implements OrderServicePort {
     @Transactional(readOnly = true)
     public Order getOrderByUUID(UUID orderUuid, UUID restaurantUuid) {
         Order order = orderPersistencePort.findOrderByUuid(orderUuid, restaurantUuid)
-                                   .orElseThrow(() -> new OrderDoesNotExistException(orderUuid));
-        
+                                          .orElseThrow(() -> new OrderDoesNotExistException(orderUuid));
+
         // Calcular el restante a pagar
         calculateRemainingToPay(order);
-        
+
         return order;
     }
-    
+
     private void calculateRemainingToPay(Order order) {
         BigDecimal totalPaid = order.getTotalPaid() != null ? order.getTotalPaid() : BigDecimal.ZERO;
         BigDecimal remainingToPay = order.getTotalAmount().subtract(totalPaid);
@@ -180,48 +200,142 @@ public class OrderUseCase implements OrderServicePort {
         return orderItemsWithPrices;
     }*/
 
-    private void validateIngredientsStock(List<OrderItem> orderItems) {
+    /**
+     * Valida que hay stock suficiente de ingredientes para procesar todos los OrderItems.
+     * <p>
+     * Este método maneja tres escenarios:
+     * 1. Productos en modo BASIC: No requieren validación de stock (no tienen ingredientes)
+     * 2. Productos en modo ADVANCED con ingredientes directos: Valida ingredientes del producto
+     * 3. Productos en modo ADVANCED con recetas: Valida ingredientes de cada receta
+     *
+     * @param requiredIngredientQuantities Mapa con UUID del ingrediente -> cantidad requerida
+     * @throws InsufficientStockException Si no hay stock suficiente de algún ingrediente
+     */
+    private void validateIngredientsStock(Map<UUID, Double> requiredIngredientQuantities) {
+        // Si no hay ingredientes requeridos (todos los productos son BASIC), no validar nada
+        if (requiredIngredientQuantities.isEmpty()) {
+            return;
+        }
 
-        // Obtener cantidades necesarias por ingrediente en la orden
-        Map<UUID, Double> requiredIngredientQuantities = calculateRequiredIngredients(orderItems);
-
-        // Consultar todos los ingredientes necesarios de una vez
+        // Obtener todos los ingredientes necesarios de la base de datos en una sola consulta
         List<Ingredient> ingredients = ingredientServicePort.getIngredientsByUuid(requiredIngredientQuantities.keySet());
 
-        // Para cada registro del mapa de ingredientes
+        // Validar el stock disponible de cada ingrediente
         for (Map.Entry<UUID, Double> entry : requiredIngredientQuantities.entrySet()) {
             UUID ingredientUuid = entry.getKey();
             double requiredQuantity = entry.getValue();
 
-            Ingredient ingredient = ingredients.stream().filter(ing -> ing.getUuid().equals(ingredientUuid)).findFirst().orElseThrow(() -> new IngredientDoesNotExistException(ingredientUuid.toString()));
-            // Si tengo menos stock del que quiero usar para la orden lanzar excepcion
+            // Buscar el ingrediente en la lista obtenida
+            Ingredient ingredient = ingredients.stream()
+                                               .filter(ing -> ing.getUuid().equals(ingredientUuid))
+                                               .findFirst()
+                                               .orElseThrow(() -> new IngredientDoesNotExistException(ingredientUuid.toString()));
+
+            // Validar que hay stock suficiente
             if (ingredient.getAvailableStock() < requiredQuantity) {
-                throw new InsufficientStockException(ingredient.getName(), requiredQuantity, ingredient.getAvailableStock());
+                throw new InsufficientStockException(
+                        ingredient.getName(),
+                        requiredQuantity,
+                        ingredient.getAvailableStock()
+                );
             }
         }
     }
 
-    private Map<UUID, Double> calculateRequiredIngredients(List<OrderItem> orderItems) {
-        return null;
-
-/*        List<ProductItemIngredient> productItemIngredients = orderItems.stream()
-                                                                       .flatMap(orderItem -> orderItem.getProductItem().getIngredients().stream()
-                                                                                                      .peek(productItemIngredient -> productItemIngredient.setProductItem(orderItem.getProductItem()))
-                                                                       ).toList();
-
+    /**
+     * Calcula la cantidad total requerida de cada ingrediente para todos los OrderItems.
+     * <p>
+     * Este método procesa cada producto según su modo:
+     * - BASIC: No calcula nada (no tiene ingredientes)
+     * - ADVANCED: Suma ingredientes directos + ingredientes de recetas
+     *
+     * @param orderItems Los items de la orden
+     * @param productMap Mapa de productos por UUID
+     * @return Mapa con UUID del ingrediente -> cantidad total requerida
+     */
+    private Map<UUID, Double> calculateRequiredIngredients(List<OrderItem> orderItems, Map<UUID, Product> productMap) {
         Map<UUID, Double> requiredQuantities = new HashMap<>();
-        for (OrderItem orderItem : orderItems) {
-            List<ProductItemIngredient> relatedIngredients = productItemIngredients.stream()
-                                                                                   .filter(ingredient -> ingredient.getProductItem().getUuid().equals(orderItem.getProductItem().getUuid()))
-                                                                                   .toList();
 
-            for (ProductItemIngredient productItemIngredient : relatedIngredients) {
-                double usedQuantity = (orderItem.getQuantity() * productItemIngredient.getQuantity());
-                requiredQuantities.merge(productItemIngredient.getIngredient().getUuid(), usedQuantity, Double::sum);
+        for (OrderItem orderItem : orderItems) {
+            Product product = productMap.get(orderItem.getProduct().getUuid());
+
+            // Si el producto es BASIC, no tiene ingredientes que validar
+            if (product.getMode() == ProductMode.BASIC) {
+                continue;
+            }
+
+            // Procesar ingredientes directos del producto (si existen)
+            if (product.getIngredients() != null && !product.getIngredients().isEmpty()) {
+                processProductIngredients(product.getIngredients(), orderItem.getQuantity(), requiredQuantities);
+            }
+
+            // Procesar ingredientes de las recetas asociadas (si existen)
+            if (product.getRecipes() != null && !product.getRecipes().isEmpty()) {
+                processProductRecipes(product.getRecipes(), orderItem.getQuantity(), requiredQuantities);
             }
         }
 
-        return requiredQuantities;*/
+        return requiredQuantities;
+    }
+
+    /**
+     * Procesa los ingredientes directos de un producto y acumula las cantidades necesarias.
+     *
+     * @param productIngredients Lista de ingredientes directos del producto
+     * @param orderQuantity      Cantidad del producto en la orden
+     * @param requiredQuantities Mapa acumulador de cantidades requeridas
+     */
+    private void processProductIngredients(
+            List<ProductIngredient> productIngredients,
+            int orderQuantity,
+            Map<UUID, Double> requiredQuantities
+    ) {
+        for (ProductIngredient productIngredient : productIngredients) {
+            UUID ingredientUuid = productIngredient.getIngredient().getUuid();
+
+            // Cantidad necesaria = cantidad del ingrediente en el producto * cantidad de productos en la orden
+            double neededQuantity = productIngredient.getQuantity() * orderQuantity;
+
+            // Acumular la cantidad en el mapa (si ya existe, sumar)
+            requiredQuantities.merge(ingredientUuid, neededQuantity, Double::sum);
+        }
+    }
+
+    /**
+     * Procesa las recetas de un producto y acumula las cantidades de ingredientes necesarias.
+     * <p>
+     * Cada receta puede tener un multiplicador de cantidad (quantityMultiplier) que indica
+     * cuántas porciones de la receta se usan en el producto.
+     *
+     * @param productRecipes     Lista de recetas del producto
+     * @param orderQuantity      Cantidad del producto en la orden
+     * @param requiredQuantities Mapa acumulador de cantidades requeridas
+     */
+    private void processProductRecipes(
+            List<ProductRecipe> productRecipes,
+            int orderQuantity,
+            Map<UUID, Double> requiredQuantities
+    ) {
+        for (ProductRecipe productRecipe : productRecipes) {
+            Recipe recipe = productRecipe.getRecipe();
+            double quantityMultiplier = productRecipe.getQuantityMultiplier();
+
+            // Si la receta no tiene ingredientes, continuar con la siguiente
+            if (recipe.getIngredients() == null || recipe.getIngredients().isEmpty()) {
+                continue;
+            }
+
+            // Procesar cada ingrediente de la receta
+            for (RecipeIngredient recipeIngredient : recipe.getIngredients()) {
+                UUID ingredientUuid = recipeIngredient.getIngredient().getUuid();
+
+                // Cantidad necesaria = cantidad en receta * multiplicador de receta * cantidad de productos en la orden
+                double neededQuantity = recipeIngredient.getQuantity() * quantityMultiplier * orderQuantity;
+
+                // Acumular la cantidad en el mapa (si ya existe, sumar)
+                requiredQuantities.merge(ingredientUuid, neededQuantity, Double::sum);
+            }
+        }
     }
 
     private String generateFiveLengthUniqueCode() {
@@ -232,17 +346,36 @@ public class OrderUseCase implements OrderServicePort {
         return base36;
     }
 
-    private void decreaseIngredientsStockOrder(List<OrderItem> orderItems, String orderCode) {
+    /**
+     * Descuenta el stock de ingredientes para una orden.
+     * 
+     * Este método utiliza el mapa de cantidades requeridas calculado previamente
+     * y delega al servicio de ingredientes para realizar el ajuste en batch.
+     * 
+     * Si el mapa está vacío (productos en modo BASIC sin ingredientes), no hace nada.
+     * 
+     * NOTA: El método batchAdjustStock espera cantidades POSITIVAS para descontar,
+     * ya que internamente hace: newStock = availableStock - adjustment
+     * 
+     * @param requiredIngredientQuantities Mapa con UUID del ingrediente -> cantidad a descontar
+     * @param orderCode Código de la orden (para registro/auditoría del ajuste)
+     */
+    private void decreaseIngredientsStockOrder(Map<UUID, Double> requiredIngredientQuantities, String orderCode) {
+        // Si no hay ingredientes que descontar (todos los productos son BASIC), terminar
+        if (requiredIngredientQuantities.isEmpty()) {
+            return;
+        }
 
-        Map<UUID, Double> stockAdjustments = calculateRequiredIngredients(orderItems);
-
-        ingredientServicePort.batchAdjustStock(stockAdjustments, "Order placement for code " + orderCode);
+        // Realizar el ajuste en batch de todos los ingredientes
+        // Las cantidades ya son positivas, el método batchAdjustStock se encarga de restar
+        String adjustmentReason = "Descuento por orden #" + orderCode;
+        ingredientServicePort.batchAdjustStock(requiredIngredientQuantities, adjustmentReason);
     }
 
     @Override
     public BigDecimal[] getOrderTotals(UUID orderUuid) {
         Order order = orderPersistencePort.findOrderByUuid(orderUuid, getCurrentRestaurant())
-            .orElseThrow(() -> new OrderDoesNotExistException(orderUuid));
+                                          .orElseThrow(() -> new OrderDoesNotExistException(orderUuid));
         BigDecimal totalAmount = order.getTotalAmount();
         BigDecimal totalPaid = order.getTotalPaid();
         return new BigDecimal[]{totalAmount, totalPaid};

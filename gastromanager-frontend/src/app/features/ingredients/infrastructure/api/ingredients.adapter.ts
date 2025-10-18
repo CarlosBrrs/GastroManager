@@ -48,6 +48,18 @@ export class IngredientsAdapter implements IngredientsRepository {
     )
   }
 
+  getAllIngredientsNoPagination(): Observable<Ingredient[]> {
+    return this.http.get<ApiGenericResponse<IngredientResponseDto[]>>(`${this.baseUrl}/ingredients/all`
+    ).pipe(
+      map((response: ApiGenericResponse<IngredientResponseDto[]>) =>
+        response.data.map(dto => mapToIngredientSummary(dto))
+      ),
+      catchError((error: HttpErrorResponse) => {
+        throw new Error(error.error.message);
+      })
+    )
+  }
+
   createIngredient(ingredient: Ingredient): Observable<string> {
     const mappedIngredient: IngredientRequestDto = mapToIngredientRequestDto(ingredient);
     return this.http.post<ApiGenericResponse<string>>(`${this.baseUrl}/ingredients`, mappedIngredient
