@@ -94,8 +94,12 @@ public class SalesReportMapper {
                          .completedOrders(summary.completedOrders())
                          .cancelledOrders(summary.cancelledOrders())
                          .cancellationRate(summary.cancellationRate())
+                         .totalOrderValue(summary.totalOrderValue())
                          .totalRevenue(summary.totalRevenue())
+                         .totalTips(summary.totalTips())
                          .totalPaidWithTips(summary.totalPaidWithTips())
+                         .pendingAmount(summary.pendingAmount())
+                         .collectionRate(summary.collectionRate())
                          .averageOrderValue(summary.averageOrderValue())
                          /*.activeOrders(activeOrders)
                          .totalItemsSold(0) // totalItemsSold no está disponible en el modelo
