@@ -13,10 +13,7 @@ import {SidebarModule} from "primeng/sidebar";
   standalone: true,
   imports: [
     IngredientsTableComponent,
-    ContentHeaderComponent,
-    PaginationComponent,
     CurrencyPipe,
-    RouterOutlet,
     SidebarModule,
     JsonPipe,
   ],

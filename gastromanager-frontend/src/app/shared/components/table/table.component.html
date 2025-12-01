@@ -49,10 +49,10 @@
             </div>
           } @else if (col.clickable && rowData[col.field]) {
             <span class="cell-link">
-              {{ transformCellValue(col, rowData[col.field]) }}
+              {{ transformCellValue(col, rowData[col.field], rowData) }}
             </span>
           } @else {
-            <span [innerHTML]="transformCellValue(col, rowData[col.field])"></span>
+            <span [innerHTML]="transformCellValue(col, rowData[col.field], rowData)"></span>
           }
         </td>
       }

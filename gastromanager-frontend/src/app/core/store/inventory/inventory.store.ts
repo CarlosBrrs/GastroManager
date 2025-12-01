@@ -21,8 +21,9 @@ export type ColumnProperties = {
   field: string;
   header: string;
   sortable?: boolean;
-  transform?: (value: any) => string; // Función inline (actual)
+  transform?: (value: any, rowData?: any) => string; // Función inline con acceso a rowData
   pipe?: string; // Nombre del pipe a aplicar (nueva opción más elegante)
+  pipeArgs?: any; // Argumentos para el pipe (ej: formato de fecha)
   prefix?: string; // Texto a agregar al inicio
   suffix?: string; // Texto a agregar al final
 };
@@ -43,16 +44,45 @@ const initialState: InventoryState = {
   currentPage: 0,
   totalRecords: 0,
   tableColumns: [
-    {field: 'name', header: 'Nombre'},
-    {field: 'pricePerUnit', header: 'Precio por Unidad'},
-    {field: 'unit', header: 'Unidad'},
-    {field: 'availableStock', header: 'Stock Disponible'},
-    {field: 'minimumStockQuantity', header: 'Stock Mínimo'},
-    {field: 'supplier', header: 'Proveedor'},
-    // {field: 'createdBy', header: 'Creado Por'},
-    // {field: 'createdDate', header: 'Fecha de Creación'},
-    // {field: 'updatedBy', header: 'Actualizado Por'},
-    {field: 'updatedDate', header: 'Fecha de Actualización'}
+    {
+      field: 'name',
+      header: 'Nombre',
+      prefix: '📦 '
+    },
+    {
+      field: 'pricePerUnit',
+      header: 'Precio por Unidad',
+      pipe: 'currency',
+      prefix: '💰 ',
+      suffix: ' COP'
+    },
+    {
+      field: 'unit',
+      header: 'Unidad',
+      pipe: 'unit'
+    },
+    {
+      field: 'availableStock',
+      header: 'Stock Disponible',
+      pipe: 'stockStatus'
+    },
+    {
+      field: 'minimumStockQuantity',
+      header: 'Stock Mínimo',
+      prefix: '⚠️ '
+    },
+    {
+      field: 'supplier',
+      header: 'Proveedor',
+      prefix: '🏭 '
+    },
+    {
+      field: 'updatedDate',
+      header: 'Última Actualización',
+      pipe: 'localDateTime',
+      pipeArgs: 'short',
+      prefix: '🕒 '
+    }
   ],
   selectedIngredient: null,
   loading: false,
