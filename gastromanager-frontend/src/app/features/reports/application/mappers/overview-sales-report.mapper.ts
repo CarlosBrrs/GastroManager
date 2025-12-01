@@ -44,8 +44,12 @@ function mapToOverviewSalesReportSummary(dto: SalesReportSummaryDto): OverviewSa
     completedOrders: dto.completedOrders,
     cancelledOrders: dto.cancelledOrders,
     cancellationRate: dto.cancellationRate,
+    totalOrderValue: dto.totalOrderValue,
     totalRevenue: dto.totalRevenue,
+    totalTips: dto.totalTips,
     totalPaidWithTips: dto.totalPaidWithTips,
+    pendingAmount: dto.pendingAmount,
+    collectionRate: dto.collectionRate,
     averageOrderValue: dto.averageOrderValue
   };
 }

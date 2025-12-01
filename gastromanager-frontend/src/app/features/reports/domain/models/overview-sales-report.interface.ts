@@ -14,8 +14,12 @@ export interface OverviewSalesReportSummary {
   completedOrders: number;
   cancelledOrders: number;
   cancellationRate: number;
+  totalOrderValue: number;
   totalRevenue: number;
+  totalTips: number;
   totalPaidWithTips: number;
+  pendingAmount: number;
+  collectionRate: number;
   averageOrderValue: number;
 }
 

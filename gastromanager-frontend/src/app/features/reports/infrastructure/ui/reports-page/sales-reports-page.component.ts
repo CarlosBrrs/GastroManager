@@ -60,9 +60,29 @@ export class SalesReportsPageComponent {
     return data?.summary?.cancellationRate || 0;
   }
 
+  getTotalOrderValue(): number {
+    const data = this.salesData();
+    return data?.summary?.totalOrderValue || 0;
+  }
+
+  getTotalTips(): number {
+    const data = this.salesData();
+    return data?.summary?.totalTips || 0;
+  }
+
   getTotalPaidWithTips(): number {
     const data = this.salesData();
     return data?.summary?.totalPaidWithTips || 0;
+  }
+
+  getPendingAmount(): number {
+    const data = this.salesData();
+    return data?.summary?.pendingAmount || 0;
+  }
+
+  getCollectionRate(): number {
+    const data = this.salesData();
+    return data?.summary?.collectionRate || 0;
   }
 
   getAverageOrderValue(): number {
