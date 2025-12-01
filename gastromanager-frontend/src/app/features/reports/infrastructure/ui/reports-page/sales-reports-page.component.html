@@ -50,8 +50,23 @@
               <div class="skeleton-text"></div>
             </div>
           } @else {
+            <span class="metric-value">${{ getTotalOrderValue() | number:'1.0-0' }}</span>
+            <span class="metric-label">Valor Total Órdenes</span>
+          }
+        </div>
+      </div>
+
+      <div class="metric-card" [class.loading]="loading()">
+        <div class="metric-icon">💵</div>
+        <div class="metric-content">
+          @if (loading()) {
+            <div class="loading-skeleton">
+              <div class="skeleton-line"></div>
+              <div class="skeleton-text"></div>
+            </div>
+          } @else {
             <span class="metric-value">${{ getTotalRevenue() | number:'1.0-0' }}</span>
-            <span class="metric-label">Total Vendido</span>
+            <span class="metric-label">Total Recaudado</span>
           }
         </div>
       </div>
@@ -125,8 +140,53 @@
               <div class="skeleton-text"></div>
             </div>
           } @else {
+            <span class="metric-value">${{ getTotalTips() | number:'1.0-0' }}</span>
+            <span class="metric-label">Total Propinas</span>
+          }
+        </div>
+      </div>
+
+      <div class="metric-card" [class.loading]="loading()">
+        <div class="metric-icon">💳</div>
+        <div class="metric-content">
+          @if (loading()) {
+            <div class="loading-skeleton">
+              <div class="skeleton-line"></div>
+              <div class="skeleton-text"></div>
+            </div>
+          } @else {
             <span class="metric-value">${{ getTotalPaidWithTips() | number:'1.0-0' }}</span>
             <span class="metric-label">Total con Propinas</span>
+          }
+        </div>
+      </div>
+
+      <div class="metric-card" [class.loading]="loading()">
+        <div class="metric-icon">⏳</div>
+        <div class="metric-content">
+          @if (loading()) {
+            <div class="loading-skeleton">
+              <div class="skeleton-line"></div>
+              <div class="skeleton-text"></div>
+            </div>
+          } @else {
+            <span class="metric-value">${{ getPendingAmount() | number:'1.0-0' }}</span>
+            <span class="metric-label">Monto Pendiente</span>
+          }
+        </div>
+      </div>
+
+      <div class="metric-card" [class.loading]="loading()">
+        <div class="metric-icon">📈</div>
+        <div class="metric-content">
+          @if (loading()) {
+            <div class="loading-skeleton">
+              <div class="skeleton-line"></div>
+              <div class="skeleton-text"></div>
+            </div>
+          } @else {
+            <span class="metric-value">{{ getCollectionRate() | number:'1.1-1' }}%</span>
+            <span class="metric-label">Tasa de Cobro</span>
           }
         </div>
       </div>
