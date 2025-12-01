@@ -79,9 +79,10 @@ public class ReportEntityAdapter implements ReportPersistencePort {
      * Igualmente simple y elegante
      */
     private List<OrderEntity> getFilteredOrders(SalesReportCriteria criteria, UUID restaurantUuid) {
-        return orderEntityRepository.findAll(
+        /*return orderEntityRepository.findAll(
             OrderReportSpecifications.withCriteria(criteria, restaurantUuid)
-        );
+        );*/
+        return null;
     }
 
     private List<SalesReportDetail> generateReportDetails(List<PaymentEntity> payments) {

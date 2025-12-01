@@ -1,26 +1,49 @@
 package com.kaiho.gastromanager.infrastructure.report.output.jpa.specification;
 
+import com.kaiho.gastromanager.domain.order.model.OperationalStatus;
+import com.kaiho.gastromanager.domain.order.model.PaymentStatus;
 import com.kaiho.gastromanager.infrastructure.order.output.jpa.entity.OrderEntity;
-import com.kaiho.gastromanager.infrastructure.report.input.rest.criteria.SalesReportCriteria;
+import com.kaiho.gastromanager.infrastructure.report.input.rest.criteria.OrdersReportCriteria;
+import com.kaiho.gastromanager.infrastructure.report.input.rest.sales.criteria.OverviewSalesReportCriteria;
+import jakarta.persistence.criteria.JoinType;
 import org.springframework.data.jpa.domain.Specification;
 
-import jakarta.persistence.criteria.JoinType;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * Specifications para consultas dinámicas de órdenes en reportes de ventas
- * Filtra órdenes basado en sus pagos completados
- */
-public class OrderReportSpecificationsChangeToSales {
+public class OrderReportSpecifications {
 
-    /**
-     * Filtro por restaurante
-     */
-    public static Specification<OrderEntity> hasRestaurant(UUID restaurantUuid) {
+    private static Specification<OrderEntity> hasRestaurant(UUID restaurantUuid) {
         return (root, query, criteriaBuilder) ->
-            criteriaBuilder.equal(root.get("restaurant").get("uuid"), restaurantUuid);
+                criteriaBuilder.equal(root.get("restaurant").get("uuid"), restaurantUuid);
+    }
+
+    private static Specification<OrderEntity> hasOrdersBetween(Instant dateFrom, Instant dateTo) {
+        return (root, query, criteriaBuilder) -> {
+            if (dateFrom == null || dateTo == null) {
+                return criteriaBuilder.conjunction();
+            }
+            return criteriaBuilder.between(root.get("createdDate"), dateFrom, dateTo);
+        };
+    }
+
+    private static Specification<OrderEntity> hasOperationalStatuses(List<OperationalStatus> operationalStatuses) {
+        return (root, query, criteriaBuilder) -> {
+            if (operationalStatuses == null || operationalStatuses.isEmpty()) {
+                return criteriaBuilder.conjunction();
+            }
+            return root.get("operationalStatus").in(operationalStatuses);
+        };
+    }
+
+    private static Specification<OrderEntity> hasPaymentStatuses(List<PaymentStatus> paymentStatuses) {
+        return (root, query, criteriaBuilder) -> {
+            if (paymentStatuses == null || paymentStatuses.isEmpty()) {
+                return criteriaBuilder.conjunction();
+            }
+            return root.get("paymentStatus").in(paymentStatuses);
+        };
     }
 
     /**
@@ -30,8 +53,8 @@ public class OrderReportSpecificationsChangeToSales {
         return (root, query, criteriaBuilder) -> {
             var paymentJoin = root.join("payments", JoinType.INNER);
             return criteriaBuilder.and(
-                criteriaBuilder.equal(paymentJoin.get("state"), "COMPLETED"),
-                criteriaBuilder.between(paymentJoin.get("createdDate"), dateFrom, dateTo)
+                    criteriaBuilder.equal(paymentJoin.get("state"), "COMPLETED"),
+                    criteriaBuilder.between(paymentJoin.get("createdDate"), dateFrom, dateTo)
             );
         };
     }
@@ -99,12 +122,20 @@ public class OrderReportSpecificationsChangeToSales {
     /**
      * Specification compuesta para órdenes con pagos filtrados
      */
-    public static Specification<OrderEntity> withCriteria(SalesReportCriteria criteria, UUID restaurantUuid) {
+    public static Specification<OrderEntity> withCriteria(OrdersReportCriteria criteria, UUID restaurantUuid) {
         return Specification.where(hasRestaurant(restaurantUuid))
-                .and(hasCompletedPaymentsBetween(criteria.dateFrom(), criteria.dateTo()))
-                .and(hasPaymentsInCashRegisters(criteria.cashRegisterUuids()))
-                .and(hasPaymentsInSessionState(criteria.sessionState()))
-                .and(hasPaymentMethods(criteria.paymentMethods()))
-                .and(hasPaymentsFromUsers(criteria.assignedUserUuids()));
+                            .and(hasOrdersBetween(criteria.dateFrom(), criteria.dateTo()))
+                            .and(hasOperationalStatuses(criteria.operationalStatuses()))
+                            .and(hasPaymentStatuses(criteria.paymentStatuses()));
+    }
+
+    public static Specification<OrderEntity> withOverviewCriteria(
+            OverviewSalesReportCriteria criteria,
+            UUID restaurantUuid) {
+        return Specification.where(hasRestaurant(restaurantUuid))
+                            .and(hasOrdersBetween(criteria.dateFrom(), criteria.dateTo()));
+    }
+
+    private OrderReportSpecifications() {
     }
 }

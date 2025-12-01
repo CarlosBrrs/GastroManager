@@ -1,5 +1,6 @@
 package com.kaiho.gastromanager.infrastructure.orderitem.output.jpa.repository;
 
+import com.kaiho.gastromanager.infrastructure.order.output.jpa.entity.OrderEntity;
 import com.kaiho.gastromanager.infrastructure.orderitem.output.jpa.entity.OrderItemEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,4 +15,7 @@ public interface OrderItemEntityRepository extends JpaRepository<OrderItemEntity
 
     @Query("SELECT oi FROM OrderItemEntity oi WHERE oi.order.uuid = :orderUuid")
     List<OrderItemEntity> findByOrderUuid(UUID orderUuid);
+
+    @Query("SELECT oi FROM OrderItemEntity oi WHERE oi.order IN :orders")
+    List<OrderItemEntity> findByOrderIn(List<OrderEntity> orders);
 }
