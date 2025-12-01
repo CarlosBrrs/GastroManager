@@ -4,11 +4,12 @@ import { rxMethod } from "@ngrx/signals/rxjs-interop";
 import { pipe, switchMap, tap, finalize } from "rxjs";
 import { tapResponse } from "@ngrx/operators";
 import { HttpErrorResponse } from "@angular/common/http";
-import { SalesReport, SalesReportFilters } from "../../../features/reports/domain/models/sales-report.interface";
-import { GetSalesReportUseCase } from "../../../features/reports/application/usecases/get-sales-report.use-case";
+import { SalesReportFilters } from "../../../features/reports/domain/models/sales-report.interface";
+import { OverviewSalesReport } from "../../../features/reports/domain/models/overview-sales-report.interface";
+import { GetOverviewSalesReportUseCase } from "../../../features/reports/application/usecases/get-overview-sales-report.use-case";
 
 type SalesReportState = {
-  data: SalesReport | null;
+  data: OverviewSalesReport | null;
   loading: boolean;
   error: string | null;
   lastFilters: SalesReportFilters | null;
@@ -24,26 +25,26 @@ const initialState: SalesReportState = {
 export const SalesReportStore = signalStore(
   { providedIn: "root" },
   withState(initialState),
-  withMethods((store, getSalesReportUseCase = inject(GetSalesReportUseCase)) => ({
+  withMethods((store, getOverviewSalesReport = inject(GetOverviewSalesReportUseCase)) => ({
 
     getSalesReport: rxMethod<SalesReportFilters>(
       pipe(
         tap((filters) => {
-          console.log('🔥 [SalesReportStore] Loading sales report with filters:', filters);
+          console.log('🔥 [SalesReportStore] Loading overview sales report with filters:', filters);
           patchState(store, { loading: true, error: null, lastFilters: filters });
         }),
         switchMap((filters) =>
-          getSalesReportUseCase.execute(filters).pipe(
+          getOverviewSalesReport.execute(filters).pipe(
             tapResponse({
-              next: (salesReport: SalesReport) => {
-                console.log('✅ [SalesReportStore] Sales report loaded:', salesReport);
+              next: (salesReport: OverviewSalesReport) => {
+                console.log('✅ [SalesReportStore] Overview sales report loaded:', salesReport);
                 patchState(store, {
                   data: salesReport,
                   error: null
                 });
               },
               error: (error: HttpErrorResponse) => {
-                console.error('❌ [SalesReportStore] Error loading sales report:', error);
+                console.error('❌ [SalesReportStore] Error loading overview sales report:', error);
                 const message = error.message || 'Error desconocido';
                 patchState(store, {
                   error: message

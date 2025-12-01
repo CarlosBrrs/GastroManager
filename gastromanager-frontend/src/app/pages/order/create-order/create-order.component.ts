@@ -32,8 +32,6 @@ import {StoreEventService} from "../../../core/services/store-event/store-event.
     AvatarModule,
     CurrencyPipe,
     Button,
-    DatePipe,
-    JsonPipe,
     MenuItemCardComponent,
     ReactiveFormsModule,
     InputTextareaModule,

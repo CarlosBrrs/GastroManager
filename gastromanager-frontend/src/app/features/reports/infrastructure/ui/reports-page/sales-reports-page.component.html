@@ -39,7 +39,7 @@
       </div>
     </div>
 
-    <!-- Solo métricas de Total Vendido y Total Órdenes con loading state -->
+    <!-- Métricas principales con loading state -->
     <div class="metrics-row">
       <div class="metric-card" [class.loading]="loading()">
         <div class="metric-icon">💰</div>
@@ -50,11 +50,12 @@
               <div class="skeleton-text"></div>
             </div>
           } @else {
-            <span class="metric-value">${{ getTotalSales() | number:'1.0-0' }}</span>
+            <span class="metric-value">${{ getTotalRevenue() | number:'1.0-0' }}</span>
             <span class="metric-label">Total Vendido</span>
           }
         </div>
       </div>
+
       <div class="metric-card" [class.loading]="loading()">
         <div class="metric-icon">📋</div>
         <div class="metric-content">
@@ -69,88 +70,97 @@
           }
         </div>
       </div>
-    </div>
 
-    <!-- NUEVA SECCIÓN: Ventas por Producto -->
-<!--    <div class="product-sales-section">
-      <div class="sales-table-container">
-        <div class="table-header">
-          <h5>📦 Ventas por Producto</h5>
-          <div class="table-controls">
-            <select
-              class="form-control form-control-sm"
-              [value]="selectedTopCount"
-              (change)="onTopCountChange($event)">
-              @for (option of topCountOptions; track option.value) {
-                <option [value]="option.value">{{ option.label }}</option>
-              }
-            </select>
-          </div>
-        </div>
-
-        &lt;!&ndash; Tabla HTML nativa compacta &ndash;&gt;
-        <div class="custom-table-wrapper">
+      <div class="metric-card" [class.loading]="loading()">
+        <div class="metric-icon">✅</div>
+        <div class="metric-content">
           @if (loading()) {
-            <div class="table-loading">
-              <div class="loading-spinner">⏳</div>
-              <span>Cargando productos...</span>
+            <div class="loading-skeleton">
+              <div class="skeleton-line"></div>
+              <div class="skeleton-text"></div>
             </div>
           } @else {
-            <table class="custom-table">
-              <thead>
-                <tr>
-                  <th class="col-product">Producto</th>
-                  <th class="col-total">Total</th>
-                  <th class="col-price">Precio</th>
-                  <th class="col-orders">Vendidos</th>
-                  <th class="col-percentage">%</th>
-                </tr>
-              </thead>
-              <tbody>
-                @for (product of filteredProductSales(); track product.uuid) {
-                  <tr class="product-row" (click)="onProductRowSelect(product)">
-                    <td class="col-product">
-                      <span class="product-name">{{ product.productName }}</span>
-                    </td>
-                    <td class="col-total">
-                      <span class="total-amount">{{ formatCurrency(product.totalRevenue) }}</span>
-                    </td>
-                    <td class="col-price">
-                      <span class="price-amount">{{ formatCurrency(product.averagePrice) }}</span>
-                    </td>
-                    <td class="col-orders">
-                      <span class="order-count">{{ product.quantitySold }}</span>
-                    </td>
-                    <td class="col-percentage">
-                      <span class="percentage-badge">{{ formatPercentage(product.percentage) }}</span>
-                    </td>
-                  </tr>
-                } @empty {
-                  <tr>
-                    <td colspan="5" class="no-data">
-                      📄 No hay productos para mostrar
-                    </td>
-                  </tr>
-                }
-              </tbody>
-            </table>
+            <span class="metric-value">{{ getCompletedOrders() }}</span>
+            <span class="metric-label">Órdenes Completadas</span>
           }
         </div>
+      </div>
 
-        &lt;!&ndash; Info footer &ndash;&gt;
-        <div class="table-footer">
-          <div class="table-info">
-            <span class="info-text">
-              @if (loading()) {
-                ⏳ Cargando productos...
-              } @else {
-                📊 Mostrando {{ filteredProductSales().length }} productos de {{ dummyProductSales.length }} totales
-              }
-            </span>
-          </div>
+      <div class="metric-card" [class.loading]="loading()">
+        <div class="metric-icon">❌</div>
+        <div class="metric-content">
+          @if (loading()) {
+            <div class="loading-skeleton">
+              <div class="skeleton-line"></div>
+              <div class="skeleton-text"></div>
+            </div>
+          } @else {
+            <span class="metric-value">{{ getCancelledOrders() }}</span>
+            <span class="metric-label">Órdenes Canceladas</span>
+          }
         </div>
       </div>
-    </div>-->
+
+      <div class="metric-card" [class.loading]="loading()">
+        <div class="metric-icon">📊</div>
+        <div class="metric-content">
+          @if (loading()) {
+            <div class="loading-skeleton">
+              <div class="skeleton-line"></div>
+              <div class="skeleton-text"></div>
+            </div>
+          } @else {
+            <span class="metric-value">{{ getCancellationRate() | number:'1.1-1' }}%</span>
+            <span class="metric-label">Tasa de Cancelación</span>
+          }
+        </div>
+      </div>
+
+      <div class="metric-card" [class.loading]="loading()">
+        <div class="metric-icon">🎁</div>
+        <div class="metric-content">
+          @if (loading()) {
+            <div class="loading-skeleton">
+              <div class="skeleton-line"></div>
+              <div class="skeleton-text"></div>
+            </div>
+          } @else {
+            <span class="metric-value">${{ getTotalPaidWithTips() | number:'1.0-0' }}</span>
+            <span class="metric-label">Total con Propinas</span>
+          }
+        </div>
+      </div>
+
+      <div class="metric-card" [class.loading]="loading()">
+        <div class="metric-icon">💵</div>
+        <div class="metric-content">
+          @if (loading()) {
+            <div class="loading-skeleton">
+              <div class="skeleton-line"></div>
+              <div class="skeleton-text"></div>
+            </div>
+          } @else {
+            <span class="metric-value">${{ getAverageOrderValue() | number:'1.0-2' }}</span>
+            <span class="metric-label">Valor Promedio Orden</span>
+          }
+        </div>
+      </div>
+
+      <div class="metric-card" [class.loading]="loading()">
+        <div class="metric-icon">📅</div>
+        <div class="metric-content">
+          @if (loading()) {
+            <div class="loading-skeleton">
+              <div class="skeleton-line"></div>
+              <div class="skeleton-text"></div>
+            </div>
+          } @else {
+            <span class="metric-value">{{ getTotalDays() }}</span>
+            <span class="metric-label">Total Días</span>
+          }
+        </div>
+      </div>
+    </div>
 
   </div>
 </div>
