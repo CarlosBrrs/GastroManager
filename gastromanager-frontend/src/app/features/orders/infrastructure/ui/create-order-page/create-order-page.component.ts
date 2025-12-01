@@ -133,7 +133,8 @@ export class CreateOrderPageComponent implements OnInit {
       },
       error: (error) => {
         console.error('❌ Error al crear la orden:', error);
-        alert('Error al crear la orden. Por favor, inténtelo de nuevo.');
+        const errorMessage = error?.error?.message || error?.message || 'Error desconocido al crear la orden';
+        alert(`Error al crear la orden: ${errorMessage}`);
       }
     });
   }

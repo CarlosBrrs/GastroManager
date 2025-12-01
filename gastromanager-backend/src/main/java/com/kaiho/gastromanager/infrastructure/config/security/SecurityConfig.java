@@ -37,6 +37,7 @@ import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.M
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.MENUS_CONTROLLER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.MENU_UUID_PARAMETER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.ORDERS_CONTROLLER;
+import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.ORDERS_ENDPOINT;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.ORDER_UUID_PARAMETER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.OWNER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.PAYMENTS_CONTROLLER;
@@ -47,6 +48,7 @@ import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.P
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.RECIPES_CONTROLLER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.RECIPE_UUID_PARAMETER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.REPORTS_CONTROLLER;
+import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.REPORT_SALES_CONTROLLER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.RESTAURANTS_CONTROLLER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.RESTAURANT_UUID_PARAMETER;
 import static com.kaiho.gastromanager.infrastructure.common.constant.Constants.ROLES_CONTROLLER;
@@ -188,7 +190,10 @@ public class SecurityConfig {
 
                         // reports controller
                         .requestMatchers(GET, REPORTS_CONTROLLER + SALES_ENDPOINT).hasAnyRole(SUPERUSER, OWNER, MANAGER)
+                        .requestMatchers(GET, REPORTS_CONTROLLER + ORDERS_ENDPOINT).hasAnyRole(SUPERUSER, OWNER, MANAGER)
 
+                        //report/sales controller
+                        .requestMatchers(GET, REPORT_SALES_CONTROLLER + "/overview").hasAnyRole(SUPERUSER, OWNER, MANAGER)
 
                         .requestMatchers(GET, BASE_URL + RESTAURANTS_CONTROLLER + "/**").hasAnyRole(SUPERUSER)
 

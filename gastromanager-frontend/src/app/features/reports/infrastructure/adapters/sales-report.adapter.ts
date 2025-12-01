@@ -4,9 +4,12 @@ import { HttpClient, HttpErrorResponse, HttpParams } from "@angular/common/http"
 import { map } from "rxjs/operators";
 import { SalesReportRepository } from "../../domain/repositories/sales-report.repository";
 import { SalesReport, SalesReportFilters } from "../../domain/models/sales-report.interface";
+import { OverviewSalesReport } from "../../domain/models/overview-sales-report.interface";
 import { SalesReportResponseDto } from "../../domain/models/sales-report-response-dto.interface";
+import { OverviewSalesReportResponseDto } from "../../domain/models/overview-sales-report-response-dto.interface";
 import { ApiGenericResponse } from "../../../../core/model/interfaces/ApiGenericResponse";
 import { mapToSalesReport, mapToSalesReportFiltersDto } from "../../application/mappers/sales-report.mapper";
+import { mapToOverviewSalesReport, mapToOverviewSalesReportFiltersDto } from "../../application/mappers/overview-sales-report.mapper";
 import { environment } from "../../../../../environments/environment";
 
 @Injectable({
@@ -55,6 +58,26 @@ export class SalesReportAdapter implements SalesReportRepository {
       }),
       catchError((error: HttpErrorResponse) => {
         throw new Error(error.error?.message || error.message || 'Error al obtener el reporte de ventas');
+      })
+    );
+  }
+
+  getOverviewSalesReport(filters: SalesReportFilters): Observable<OverviewSalesReport> {
+    const filtersDto = mapToOverviewSalesReportFiltersDto(filters);
+
+    const requestParams = new HttpParams()
+      .set('dateFrom', filtersDto.dateFrom)
+      .set('dateTo', filtersDto.dateTo);
+
+    return this.http.get<ApiGenericResponse<OverviewSalesReportResponseDto>>(`${this.baseUrl}/reports/sales/overview`, {
+      params: requestParams
+    }).pipe(
+      map((response: ApiGenericResponse<OverviewSalesReportResponseDto>) => {
+        console.log("🚀 [SalesReportAdapter] Fetched overview sales report:", response);
+        return mapToOverviewSalesReport(response.data);
+      }),
+      catchError((error: HttpErrorResponse) => {
+        throw new Error(error.error?.message || error.message || 'Error al obtener el reporte general de ventas');
       })
     );
   }

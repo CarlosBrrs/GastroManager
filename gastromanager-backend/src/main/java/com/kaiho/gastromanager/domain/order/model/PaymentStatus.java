@@ -1,5 +1,8 @@
 package com.kaiho.gastromanager.domain.order.model;
 
+import lombok.Getter;
+
+@Getter
 public enum PaymentStatus {
     UNPAID("Sin pagar"),
     PARTIALLY_PAID("Parcialmente pagado"),
@@ -12,7 +15,4 @@ public enum PaymentStatus {
         this.description = description;
     }
 
-    public String getDescription() {
-        return description;
-    }
 }

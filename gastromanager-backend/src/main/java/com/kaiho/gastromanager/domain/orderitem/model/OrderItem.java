@@ -2,7 +2,6 @@ package com.kaiho.gastromanager.domain.orderitem.model;
 
 import com.kaiho.gastromanager.domain.order.model.Order;
 import com.kaiho.gastromanager.domain.product.model.Product;
-import com.kaiho.gastromanager.domain.productitem.model.ProductItem;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,6 +21,7 @@ public final class OrderItem {
     private Product product;
     private final int quantity;
     private BigDecimal unitPrice;
+    private BigDecimal purchasePrice;
     private String customerNotes;
     private Order order;
     private BigDecimal subtotal;
