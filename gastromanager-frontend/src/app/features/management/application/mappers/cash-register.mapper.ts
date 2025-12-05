@@ -1,5 +1,8 @@
-import { CashRegister, CashRegisterSession } from '../../domain/models/cash-register.interface';
-import { CashRegisterResponseDto, CashRegisterCurrentSessionResponseDto } from '../../infrastructure/api/cash-registers.adapter';
+import {CashRegister, CashRegisterSession} from '../../domain/models/cash-register.interface';
+import {
+  CashRegisterCurrentSessionResponseDto,
+  CashRegisterResponseDto
+} from '../../infrastructure/api/cash-registers.adapter';
 
 export function mapToCashRegister(dto: CashRegisterResponseDto): CashRegister {
   return {

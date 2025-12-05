@@ -16,6 +16,7 @@ import {Ingredient} from "../../domain/models/ingredient.interface";
 import {IngredientRequestDto} from "../../domain/models/ingredient-request-dto.interface";
 import {IngredientDetailResponseDto} from "../../domain/models/ingredient-detail-response-dto.interface";
 import {environment} from "../../../../../environments/environment";
+import {AdjustStockRequest} from "../../domain/models/adjust-stock-request.interface";
 
 
 @Injectable({
@@ -86,6 +87,18 @@ export class IngredientsAdapter implements IngredientsRepository {
     return this.http.put<ApiGenericResponse<IngredientResponseDto>>(`${this.baseUrl}/ingredients/${uuid}`, mappedIngredient
     ).pipe(
       map((response: ApiGenericResponse<IngredientResponseDto>) => response.data),
+      catchError((error: HttpErrorResponse) => {
+        throw new Error(error.error.message);
+      })
+    )
+  }
+
+  adjustIngredientStock(ingredientUuid: string, request: AdjustStockRequest): Observable<string> {
+    return this.http.patch<ApiGenericResponse<string>>(
+      `${this.baseUrl}/ingredients/${ingredientUuid}/adjust-ingredient-stock`,
+      request
+    ).pipe(
+      map((response: ApiGenericResponse<string>) => response.data),
       catchError((error: HttpErrorResponse) => {
         throw new Error(error.error.message);
       })

@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { PublicLayoutComponent } from './public-layout.component';
+import {PublicLayoutComponent} from './public-layout.component';
 
 describe('PublicLayoutComponent', () => {
   let component: PublicLayoutComponent;
@@ -10,7 +10,7 @@ describe('PublicLayoutComponent', () => {
     await TestBed.configureTestingModule({
       imports: [PublicLayoutComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(PublicLayoutComponent);
     component = fixture.componentInstance;

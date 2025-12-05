@@ -37,7 +37,7 @@ const initialState: RestaurantState = {
 }
 
 export const RestaurantStore = signalStore(
-  {providedIn: "root", },
+  {providedIn: "root",},
   withState(initialState),
   withMethods((store,
                getUserRestaurants = inject(GetUserRestaurantsUseCase),

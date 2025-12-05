@@ -2,7 +2,10 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
 import {TableLazyLoadEvent, TableModule, TableRowSelectEvent} from "primeng/table";
 import {Button} from "primeng/button";
 import {ActionButtonInfo} from "../../../core/model/interfaces/action-button-info.interface";
-import {OrderItemsPipe, CustomCurrencyPipe, OrderStatusPipe} from "../../pipes/table-transform.pipes";
+import {CustomCurrencyPipe, OrderItemsPipe, OrderStatusPipe} from "../../pipes/table-transform.pipes";
+import {StockStatusPipe} from "../../pipes/stock-status.pipe";
+import {UnitPipe} from "../../pipes/unit.pipe";
+import {LocalDateTimePipe} from "../../pipes/local-date-time.pipe";
 
 @Component({
   selector: 'gm-table',
@@ -36,8 +39,9 @@ export class TableComponent<T> {
   }
 
   onSelectedRow($event: TableRowSelectEvent) {
-    this.onRowSelect.emit($event.data);
+    this.onRowSelect.emit($event.data.uuid);
   }
+
 
   executeAction(action: ActionButtonInfo, rowData: any, event: Event) {
     event.stopPropagation();
@@ -45,7 +49,7 @@ export class TableComponent<T> {
   }
 
   // Método mejorado para aplicar transformaciones con prefix/suffix
-  transformCellValue(column: any, value: any): string {
+  transformCellValue(column: any, value: any, rowData?: any): string {
     let transformedValue = '';
 
     // Aplicar transformación (pipe o función) usando if/else para evitar declaraciones en case
@@ -70,9 +74,32 @@ export class TableComponent<T> {
         console.warn(`Error applying pipe ${column.pipe}:`, error);
         transformedValue = value?.toString() || '';
       }
+    } else if (column.pipe === 'stockStatus') {
+      try {
+        const minStock = rowData?.minimumStockQuantity;
+        transformedValue = new StockStatusPipe().transform(value, minStock);
+      } catch (error) {
+        console.warn(`Error applying pipe ${column.pipe}:`, error);
+        transformedValue = value?.toString() || '';
+      }
+    } else if (column.pipe === 'unit') {
+      try {
+        transformedValue = new UnitPipe().transform(value);
+      } catch (error) {
+        console.warn(`Error applying pipe ${column.pipe}:`, error);
+        transformedValue = value?.toString() || '';
+      }
+    } else if (column.pipe === 'localDateTime') {
+      try {
+        const format = column.pipeArgs || 'medium'; // Formato por defecto: medium
+        transformedValue = new LocalDateTimePipe().transform(value, format);
+      } catch (error) {
+        console.warn(`Error applying pipe ${column.pipe}:`, error);
+        transformedValue = value?.toString() || '';
+      }
     } else if (column.transform) {
       try {
-        transformedValue = column.transform(value);
+        transformedValue = column.transform(value, rowData);
       } catch (error) {
         console.warn(`Error applying transform function:`, error);
         transformedValue = value?.toString() || '';

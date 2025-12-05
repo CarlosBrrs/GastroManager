@@ -1,13 +1,10 @@
 import {ChangeDetectionStrategy, Component, computed, inject} from '@angular/core';
 import {AuthStore} from "../../../../../core/store/auth/auth.store";
-import {JsonPipe} from "@angular/common";
 
 @Component({
   selector: 'gm-dashboard',
   standalone: true,
-  imports: [
-    JsonPipe
-  ],
+  imports: [],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

@@ -1,16 +1,19 @@
-import { inject, Injectable } from '@angular/core';
-import { catchError, Observable } from 'rxjs';
-import { HttpClient, HttpErrorResponse, HttpParams } from "@angular/common/http";
-import { map } from "rxjs/operators";
-import { SalesReportRepository } from "../../domain/repositories/sales-report.repository";
-import { SalesReport, SalesReportFilters } from "../../domain/models/sales-report.interface";
-import { OverviewSalesReport } from "../../domain/models/overview-sales-report.interface";
-import { SalesReportResponseDto } from "../../domain/models/sales-report-response-dto.interface";
-import { OverviewSalesReportResponseDto } from "../../domain/models/overview-sales-report-response-dto.interface";
-import { ApiGenericResponse } from "../../../../core/model/interfaces/ApiGenericResponse";
-import { mapToSalesReport, mapToSalesReportFiltersDto } from "../../application/mappers/sales-report.mapper";
-import { mapToOverviewSalesReport, mapToOverviewSalesReportFiltersDto } from "../../application/mappers/overview-sales-report.mapper";
-import { environment } from "../../../../../environments/environment";
+import {inject, Injectable} from '@angular/core';
+import {catchError, Observable} from 'rxjs';
+import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
+import {map} from "rxjs/operators";
+import {SalesReportRepository} from "../../domain/repositories/sales-report.repository";
+import {SalesReport, SalesReportFilters} from "../../domain/models/sales-report.interface";
+import {OverviewSalesReport} from "../../domain/models/overview-sales-report.interface";
+import {SalesReportResponseDto} from "../../domain/models/sales-report-response-dto.interface";
+import {OverviewSalesReportResponseDto} from "../../domain/models/overview-sales-report-response-dto.interface";
+import {ApiGenericResponse} from "../../../../core/model/interfaces/ApiGenericResponse";
+import {mapToSalesReport, mapToSalesReportFiltersDto} from "../../application/mappers/sales-report.mapper";
+import {
+  mapToOverviewSalesReport,
+  mapToOverviewSalesReportFiltersDto
+} from "../../application/mappers/overview-sales-report.mapper";
+import {environment} from "../../../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'

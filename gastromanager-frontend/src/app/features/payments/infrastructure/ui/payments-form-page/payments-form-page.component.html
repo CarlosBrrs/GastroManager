@@ -39,16 +39,16 @@
 
     @if (!loading() && !error() && currentOrder()) {
       <gm-payment-form
-        [orderUuid]="currentOrder()!.uuid"
-        [totalAmount]="currentOrder()!.totalAmount"
-        [totalPaid]="currentOrder()!.totalPaid"
-        [remainingToPay]="currentOrder()!.remainingToPay"
+        (paymentSubmit)="onProcessPayment($event)"
         [customerName]="currentOrder()!.customerName"
-        [tableNumber]="currentOrder()!.tableNumber"
         [orderCode]="currentOrder()!.code"
         [orderItems]="currentOrder()!.orderItems"
+        [orderUuid]="currentOrder()!.uuid"
         [paymentLoading]="paymentLoading()"
-        (paymentSubmit)="onProcessPayment($event)">
+        [remainingToPay]="currentOrder()!.remainingToPay"
+        [tableNumber]="currentOrder()!.tableNumber"
+        [totalAmount]="currentOrder()!.totalAmount"
+        [totalPaid]="currentOrder()!.totalPaid">
       </gm-payment-form>
     }
 

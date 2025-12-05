@@ -8,7 +8,7 @@
   </div>
 
   <div class="form-body">
-    <form [formGroup]="openCashForm" (ngSubmit)="onSubmit()">
+    <form (ngSubmit)="onSubmit()" [formGroup]="openCashForm">
       <!-- Monto inicial -->
       <div class="mb-3">
         <label class="form-label">
@@ -18,12 +18,12 @@
         <div class="input-group">
           <span class="input-group-text">$</span>
           <input
-            type="number"
             class="form-control"
             formControlName="openingAmount"
-            placeholder="50,000"
             min="0"
-            step="1000">
+            placeholder="50,000"
+            step="1000"
+            type="number">
           <span class="input-group-text">COP</span>
         </div>
         @if (openCashForm.get('openingAmount')?.invalid && openCashForm.get('openingAmount')?.touched) {
@@ -49,16 +49,16 @@
         <textarea
           class="form-control"
           formControlName="notes"
-          rows="2"
-          placeholder="Notas sobre la apertura..."></textarea>
+          placeholder="Notas sobre la apertura..."
+          rows="2"></textarea>
       </div>
 
       <!-- Botones de acción -->
       <div class="form-actions">
-        <button type="button" class="btn btn-secondary btn-sm" (click)="onCancel()">
+        <button (click)="onCancel()" class="btn btn-secondary btn-sm" type="button">
           <i class="fas fa-times me-1"></i>Cancelar
         </button>
-        <button type="submit" class="btn btn-success btn-sm" [disabled]="openCashForm.invalid">
+        <button [disabled]="openCashForm.invalid" class="btn btn-success btn-sm" type="submit">
           <i class="fas fa-unlock-alt me-1"></i>Abrir Caja
         </button>
       </div>

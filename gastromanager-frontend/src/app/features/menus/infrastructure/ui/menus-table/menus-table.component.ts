@@ -1,17 +1,14 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
 import {ColumnProperties} from "../../../../../core/store/inventory/inventory.store";
 import {ActionButtonInfo} from "../../../../../core/model/interfaces/action-button-info.interface";
-import {TableComponent} from "../../../../../shared/components/table/table.component";
 import {TreeTableComponent} from "../../../../../shared/components/tree-table/tree-table.component";
 import {Menu} from "../../../domain/models/menu.interface";
 import {Submenu} from "../../../../submenus/domain/models/submenu.interface";
-import {JsonPipe} from "@angular/common";
 
 @Component({
   selector: 'gm-menus-table',
   standalone: true,
   imports: [
-    TableComponent,
     TreeTableComponent,
   ],
   templateUrl: './menus-table.component.html',

@@ -1,10 +1,10 @@
-<div class="screen" [style]="{'width': '100vw', 'height': '100vh'}">
+<div [style]="{'width': '100vw', 'height': '100vh'}" class="screen">
   <!-- Primary Sidebar -->
-  <nav class="primary-sidebar" [class.active]="isPrimaryOpen()">
+  <nav [class.active]="isPrimaryOpen()" class="primary-sidebar">
     <gm-primary-sidebar></gm-primary-sidebar>
     <!-- Botón de toggle para secondary dentro del primary -->
     @if (isPrimaryOpen()) {
-      <button class="toggle-btn secondary-toggle" (click)="toggleSecondary()">
+      <button (click)="toggleSecondary()" class="toggle-btn secondary-toggle">
         ☰
       </button>
     }
@@ -14,16 +14,16 @@
   <div class="main-layout">
     <!-- Top Bar -->
     <header class="top-bar">
-           <gm-navbar></gm-navbar>
+      <gm-navbar></gm-navbar>
     </header>
 
     <!-- Content Area -->
     <div class="content-area">
       <!-- Secondary Sidebar -->
       @if (showSecondarySidebar()) {
-      <aside class="secondary-sidebar" [class.active]="isSecondaryOpen()" [class.submenu]="!isPrimaryOpen()">
-        <gm-secondary-sidebar></gm-secondary-sidebar>
-      </aside>
+        <aside [class.active]="isSecondaryOpen()" [class.submenu]="!isPrimaryOpen()" class="secondary-sidebar">
+          <gm-secondary-sidebar></gm-secondary-sidebar>
+        </aside>
       }
 
       <!-- Main Content -->

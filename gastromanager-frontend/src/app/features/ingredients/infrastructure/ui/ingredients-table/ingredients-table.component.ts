@@ -1,7 +1,5 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
 import {TableModule} from "primeng/table";
-import {JsonPipe} from "@angular/common";
-import {PaginationComponent} from "../../../../../shared/components/pagination/pagination.component";
 import {TableComponent} from "../../../../../shared/components/table/table.component";
 import {ColumnProperties} from "../../../../../core/store/inventory/inventory.store";
 import {ActionButtonInfo} from "../../../../../core/model/interfaces/action-button-info.interface";
@@ -13,8 +11,6 @@ import {Ingredient} from "../../../domain/models/ingredient.interface";
   standalone: true,
   imports: [
     TableModule,
-    JsonPipe,
-    PaginationComponent,
     TableComponent
   ],
   templateUrl: './ingredients-table.component.html',

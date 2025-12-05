@@ -5,10 +5,10 @@
 }
 
 
-<form [formGroup]="ingredientForm" (ngSubmit)="onSubmit()">
+<form (ngSubmit)="onSubmit()" [formGroup]="ingredientForm">
   <div>
     <label for="name">Nombre:</label>
-    <input id="name" formControlName="name" type="text"/>
+    <input formControlName="name" id="name" type="text"/>
     @if (ingredientForm.get('name')?.invalid && ingredientForm.get('name')?.touched) {
       <div class="error">
         Nombre es requerido y debe tener al menos 3 caracteres.
@@ -18,7 +18,7 @@
 
   <div>
     <label for="pricePerUnit">Precio por Unidad:</label>
-    <input id="pricePerUnit" formControlName="pricePerUnit" type="number"/>
+    <input formControlName="pricePerUnit" id="pricePerUnit" type="number"/>
     @if (ingredientForm.get('pricePerUnit')?.invalid && ingredientForm.get('pricePerUnit')?.touched) {
       <div
         class="error">
@@ -29,8 +29,8 @@
 
   <div>
     <label for="unit">Unidad</label>
-    <select id="unit" formControlName="unit">
-      <option value="" disabled>Seleccione una unidad</option>
+    <select formControlName="unit" id="unit">
+      <option disabled value="">Seleccione una unidad</option>
       <option value="GRAMS">gramos</option>
       <option value="MILLILITRES">ml</option>
       <option value="UNITS">unidades</option>
@@ -39,7 +39,7 @@
 
   <div>
     <label for="availableStock">Stock Disponible:</label>
-    <input id="availableStock" formControlName="availableStock" type="number"/>
+    <input formControlName="availableStock" id="availableStock" type="number"/>
     @if (ingredientForm.get('availableStock')?.invalid && ingredientForm.get('availableStock')?.touched) {
       <div
         class="error">
@@ -50,7 +50,7 @@
 
   <div>
     <label for="minimumStockQuantity">Stock Mínimo:</label>
-    <input id="minimumStockQuantity" formControlName="minimumStockQuantity" type="number"/>
+    <input formControlName="minimumStockQuantity" id="minimumStockQuantity" type="number"/>
     @if (ingredientForm.get('minimumStockQuantity')?.invalid && ingredientForm.get('minimumStockQuantity')?.touched) {
       <div
         class="error">
@@ -61,7 +61,7 @@
 
   <div>
     <label for="supplier">Proveedor:</label>
-    <input id="supplier" formControlName="supplier" type="text"/>
+    <input formControlName="supplier" id="supplier" type="text"/>
     @if (ingredientForm.get('supplier')?.invalid && ingredientForm.get('supplier')?.touched) {
       <div class="error">
         Proveedor es requerido.
@@ -69,12 +69,12 @@
     }
   </div>
 
-  <button type="submit"
-          [disabled]="!ingredientForm.valid || loading"> @if (loading) {
+  <button [disabled]="!ingredientForm.valid || loading"
+          type="submit"> @if (loading) {
     <p-progressSpinner
-      styleClass="w-4rem h-4rem"
+      animationDuration="1s"
       strokeWidth="3"
-      animationDuration="1s"/>
+      styleClass="w-4rem h-4rem"/>
   } @else {
     {{ ingredientToEdit ? 'Editar Ingrediente' : 'Crear Ingrediente' }}
   }

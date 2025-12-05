@@ -1,5 +1,13 @@
-import { CashRegisterSession, SessionSummary, PaymentMethodSummary } from '../../domain/models/cash-register-session.interface';
-import { CashRegisterSessionResponseDto, SessionSummaryDataDto, PaymentMethodSummaryDto } from '../../infrastructure/api/dtos/cash-register-session.dto';
+import {
+  CashRegisterSession,
+  PaymentMethodSummary,
+  SessionSummary
+} from '../../domain/models/cash-register-session.interface';
+import {
+  CashRegisterSessionResponseDto,
+  PaymentMethodSummaryDto,
+  SessionSummaryDataDto
+} from '../../infrastructure/api/dtos/cash-register-session.dto';
 
 // Mapper para CashRegisterSession - Actualizado para manejar nueva estructura
 export function mapToCashRegisterSession(dto: CashRegisterSessionResponseDto): CashRegisterSession {

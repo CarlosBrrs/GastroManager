@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {Router} from '@angular/router';
 
 // Interface para tarjetas de reportes
 interface ReportCard {
@@ -21,8 +21,6 @@ interface ReportCard {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReportsDashboardComponent {
-
-  constructor(private router: Router) {}
 
   // Tarjetas de diferentes tipos de reportes
   readonly reportCards: ReportCard[] = [
@@ -75,6 +73,9 @@ export class ReportsDashboardComponent {
       color: 'danger'
     }
   ];
+
+  constructor(private router: Router) {
+  }
 
   // Navegar a un reporte específico
   navigateToReport(reportCard: ReportCard): void {

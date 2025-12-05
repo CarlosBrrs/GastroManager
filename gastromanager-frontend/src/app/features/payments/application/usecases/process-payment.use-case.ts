@@ -1,8 +1,7 @@
-import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
-import { PaymentRepository } from '../../domain/repositories/payment.repository';
-import { PaymentCreateData } from '../../domain/models/payment-create-data.interface';
-import { PaymentResponse } from '../../domain/models/payment-response.interface';
+import {inject, Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {PaymentRepository} from '../../domain/repositories/payment.repository';
+import {PaymentCreateData} from '../../domain/models/payment-create-data.interface';
 import {PaymentsAdapter} from "../../infrastructure/api/payments.adapter";
 
 @Injectable({

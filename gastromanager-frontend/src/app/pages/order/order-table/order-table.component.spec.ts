@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { OrderTableComponent } from './order-table.component';
+import {OrderTableComponent} from './order-table.component';
 
 describe('OrderTableComponent', () => {
   let component: OrderTableComponent;
@@ -10,7 +10,7 @@ describe('OrderTableComponent', () => {
     await TestBed.configureTestingModule({
       imports: [OrderTableComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(OrderTableComponent);
     component = fixture.componentInstance;

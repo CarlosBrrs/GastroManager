@@ -1,6 +1,6 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { IngredientsAdapter } from './ingredients.adapter';
+import {IngredientsAdapter} from './ingredients.adapter';
 
 describe('IngredientsService', () => {
   let service: IngredientsAdapter;

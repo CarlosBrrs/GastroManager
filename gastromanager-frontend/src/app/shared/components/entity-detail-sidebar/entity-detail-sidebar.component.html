@@ -1,0 +1,74 @@
+<p-sidebar
+  (onHide)="handleHide()"
+  [style]="{width: '450px'}"
+  [visible]="visible()"
+  position="right"
+  styleClass="entity-detail-sidebar">
+
+  <ng-template pTemplate="header">
+    <div class="sidebar-header">
+      <div class="header-content">
+        <h3 class="sidebar-title">{{ title() }}</h3>
+        @if (subtitle()) {
+          <span class="sidebar-subtitle">{{ subtitle() }}</span>
+        }
+      </div>
+    </div>
+  </ng-template>
+
+  <div class="sidebar-content">
+    @if (loading()) {
+      <div class="loading-state">
+        <div class="loading-spinner">
+          <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+        </div>
+        <p>Cargando detalles...</p>
+      </div>
+    } @else {
+      @for (section of sections(); track $index) {
+        <div class="detail-section">
+          <div class="section-header">
+            @if (section.icon) {
+              <span class="section-icon">{{ section.icon }}</span>
+            }
+            <h4 class="section-title">{{ section.title }}</h4>
+          </div>
+
+          <!-- Campos de información -->
+          @if (section.fields && section.fields.length > 0) {
+            <div class="section-content">
+              @for (field of section.fields; track $index) {
+                <div [class.highlight]="field.highlight" class="detail-row">
+                  <div class="detail-label">
+                    @if (field.icon) {
+                      <span class="field-icon">{{ field.icon }}</span>
+                    }
+                    <span>{{ field.label }}</span>
+                  </div>
+                  <div [class]="getFieldClass(field)" [innerHTML]="formatValue(field)"></div>
+                </div>
+              }
+            </div>
+          }
+
+          <!-- Acciones/Formularios dinámicos -->
+          @if (section.actions && section.actions.length > 0) {
+            <div class="section-actions">
+              @for (action of section.actions; track $index) {
+                @let actionInputs = {
+                  onSubmit: action.onSubmit,
+                  onCancel: action.onCancel,
+                  loading: action.inputs?.['loading'],
+                  error: action.inputs?.['error'],
+                  unit: action.inputs?.['unit']
+                };
+                <ng-container *ngComponentOutlet="action.component; inputs: actionInputs"></ng-container>
+              }
+            </div>
+          }
+        </div>
+      }
+    }
+  </div>
+</p-sidebar>
+

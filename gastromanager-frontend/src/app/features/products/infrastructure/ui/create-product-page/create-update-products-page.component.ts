@@ -18,16 +18,6 @@ import {Recipe} from "../../../../management/domain/models/recipe.interface";
 })
 export class CreateUpdateProductsPageComponent {
 
-  private readonly productsStore = inject(ProductStore);
-  private readonly inventoryStore = inject(InventoryStore);
-  private readonly router = inject(Router);
-
-  readonly loading = this.productsStore.loading;
-  readonly error = this.productsStore.error;
-
-  // Computed para obtener ingredientes del store
-  availableIngredients = computed(() => this.inventoryStore.allIngredients());
-
   // Recetas mockeadas - TODO: Obtener del RecipeStore cuando esté disponible el método
   availableRecipes = signal<Recipe[]>([
     {
@@ -36,10 +26,10 @@ export class CreateUpdateProductsPageComponent {
       description: 'Salsa de tomate clásica para pizzas',
       cost: 450.50,
       ingredients: [
-        { ingredientUuid: 'ing-1', ingredientName: 'Tomate triturado', quantity: 500 },
-        { ingredientUuid: 'ing-2', ingredientName: 'Aceite de oliva', quantity: 30 },
-        { ingredientUuid: 'ing-3', ingredientName: 'Ajo', quantity: 10 },
-        { ingredientUuid: 'ing-4', ingredientName: 'Orégano', quantity: 5 }
+        {ingredientUuid: 'ing-1', ingredientName: 'Tomate triturado', quantity: 500},
+        {ingredientUuid: 'ing-2', ingredientName: 'Aceite de oliva', quantity: 30},
+        {ingredientUuid: 'ing-3', ingredientName: 'Ajo', quantity: 10},
+        {ingredientUuid: 'ing-4', ingredientName: 'Orégano', quantity: 5}
       ],
       baseRecipe: null,
       isEnabled: true,
@@ -54,11 +44,11 @@ export class CreateUpdateProductsPageComponent {
       description: 'Masa tradicional italiana',
       cost: 320.75,
       ingredients: [
-        { ingredientUuid: 'ing-5', ingredientName: 'Harina 000', quantity: 1000 },
-        { ingredientUuid: 'ing-6', ingredientName: 'Agua', quantity: 600 },
-        { ingredientUuid: 'ing-7', ingredientName: 'Levadura fresca', quantity: 25 },
-        { ingredientUuid: 'ing-8', ingredientName: 'Sal', quantity: 20 },
-        { ingredientUuid: 'ing-2', ingredientName: 'Aceite de oliva', quantity: 50 }
+        {ingredientUuid: 'ing-5', ingredientName: 'Harina 000', quantity: 1000},
+        {ingredientUuid: 'ing-6', ingredientName: 'Agua', quantity: 600},
+        {ingredientUuid: 'ing-7', ingredientName: 'Levadura fresca', quantity: 25},
+        {ingredientUuid: 'ing-8', ingredientName: 'Sal', quantity: 20},
+        {ingredientUuid: 'ing-2', ingredientName: 'Aceite de oliva', quantity: 50}
       ],
       baseRecipe: null,
       isEnabled: true,
@@ -73,10 +63,10 @@ export class CreateUpdateProductsPageComponent {
       description: 'Salsa bechamel cremosa para pastas',
       cost: 280.00,
       ingredients: [
-        { ingredientUuid: 'ing-9', ingredientName: 'Leche', quantity: 1000 },
-        { ingredientUuid: 'ing-10', ingredientName: 'Mantequilla', quantity: 100 },
-        { ingredientUuid: 'ing-11', ingredientName: 'Harina común', quantity: 100 },
-        { ingredientUuid: 'ing-12', ingredientName: 'Nuez moscada', quantity: 2 }
+        {ingredientUuid: 'ing-9', ingredientName: 'Leche', quantity: 1000},
+        {ingredientUuid: 'ing-10', ingredientName: 'Mantequilla', quantity: 100},
+        {ingredientUuid: 'ing-11', ingredientName: 'Harina común', quantity: 100},
+        {ingredientUuid: 'ing-12', ingredientName: 'Nuez moscada', quantity: 2}
       ],
       baseRecipe: null,
       isEnabled: true,
@@ -86,6 +76,13 @@ export class CreateUpdateProductsPageComponent {
       updatedDate: '2025-01-01'
     }
   ]);
+  private readonly productsStore = inject(ProductStore);
+  readonly loading = this.productsStore.loading;
+  readonly error = this.productsStore.error;
+  private readonly inventoryStore = inject(InventoryStore);
+  // Computed para obtener ingredientes del store
+  availableIngredients = computed(() => this.inventoryStore.allIngredients());
+  private readonly router = inject(Router);
 
   constructor() {
     // Cargar ingredientes al inicializar el componente

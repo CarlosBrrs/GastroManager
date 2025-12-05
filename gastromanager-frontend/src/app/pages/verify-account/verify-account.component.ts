@@ -12,7 +12,7 @@ import {ProgressSpinnerModule} from "primeng/progressspinner";
   templateUrl: './verify-account.component.html',
   styleUrl: './verify-account.component.scss'
 })
-export class VerifyAccountComponent implements OnInit{
+export class VerifyAccountComponent implements OnInit {
   token: string | null = null;
   protected loading: boolean = true;
 

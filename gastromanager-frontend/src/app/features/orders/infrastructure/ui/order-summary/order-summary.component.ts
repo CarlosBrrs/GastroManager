@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, input, Output, inject, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, NonNullableFormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { OrderItem } from '../../../domain/models/order.models';
+import {ChangeDetectionStrategy, Component, computed, EventEmitter, inject, input, Output} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
+import {ProgressSpinnerModule} from 'primeng/progressspinner';
+import {OrderItem} from '../../../domain/models/order.models';
 import {Order} from "../../../domain/models/order.interface";
 
 @Component({
@@ -21,23 +21,13 @@ export class OrderSummaryComponent {
   restaurantConfig = input<any>(null);
 
   @Output() itemRemoved = new EventEmitter<string>();
-  @Output() quantityChanged = new EventEmitter<{productUuid: string, quantity: number}>();
-  @Output() orderSubmitted = new EventEmitter<{orderData: Order, requiresPayment: boolean}>();
-
-  private readonly fb = inject(NonNullableFormBuilder);
-
+  @Output() quantityChanged = new EventEmitter<{ productUuid: string, quantity: number }>();
+  @Output() orderSubmitted = new EventEmitter<{ orderData: Order, requiresPayment: boolean }>();
   // Computed para verificar si requiere pago previo
   requiresPaymentBeforeOrder = computed(() => {
     const config = this.restaurantConfig();
     return config?.configs?.requiresPaymentBeforeOrder === true;
   });
-
-  orderForm: FormGroup = this.fb.group({
-    tableNumber: this.fb.control<string>('', { validators: [Validators.required] }),
-    customerName: this.fb.control<string>('', { validators: [Validators.required] }),
-    orderNotes: this.fb.control<string>('')
-  });
-
   completeOrderData = computed(() => {
     const formData = this.orderForm.getRawValue();
     const items = this.orderItems();
@@ -59,6 +49,12 @@ export class OrderSummaryComponent {
       })
     };
   });
+  private readonly fb = inject(NonNullableFormBuilder);
+  orderForm: FormGroup = this.fb.group({
+    tableNumber: this.fb.control<string>('', {validators: [Validators.required]}),
+    customerName: this.fb.control<string>('', {validators: [Validators.required]}),
+    orderNotes: this.fb.control<string>('')
+  });
 
   getTotal(): number {
     return this.orderItems().reduce((sum, item) => sum + item.subtotal, 0);
@@ -71,7 +67,7 @@ export class OrderSummaryComponent {
   modifyQuantity(productUuid: string, currentQuantity: number, change: number): void {
     const newQuantity = currentQuantity + change;
     if (newQuantity > 0) {
-      this.quantityChanged.emit({ productUuid, quantity: newQuantity });
+      this.quantityChanged.emit({productUuid, quantity: newQuantity});
     }
   }
 

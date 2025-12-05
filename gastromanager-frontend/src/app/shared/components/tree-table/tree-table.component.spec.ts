@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { TreeTableComponent } from './tree-table.component';
+import {TreeTableComponent} from './tree-table.component';
 
 describe('TreeTableComponent', () => {
   let component: TreeTableComponent;
@@ -10,7 +10,7 @@ describe('TreeTableComponent', () => {
     await TestBed.configureTestingModule({
       imports: [TreeTableComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(TreeTableComponent);
     component = fixture.componentInstance;

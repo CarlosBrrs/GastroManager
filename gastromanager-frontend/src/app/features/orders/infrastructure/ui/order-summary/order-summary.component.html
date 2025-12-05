@@ -17,38 +17,38 @@
               <span class="item-name">{{ item.product.name }}</span>
               <div class="item-controls">
                 <button
-                  type="button"
-                  class="qty-btn decrease"
                   (click)="modifyQuantity(item.product.uuid, item.quantity, -1)"
-                  [disabled]="item.quantity <= 1 || loading()">
+                  [disabled]="item.quantity <= 1 || loading()"
+                  class="qty-btn decrease"
+                  type="button">
                   -
                 </button>
                 <span class="item-quantity">{{ item.quantity }}</span>
                 <button
-                  type="button"
-                  class="qty-btn increase"
                   (click)="modifyQuantity(item.product.uuid, item.quantity, +1)"
-                  [disabled]="loading()">
+                  [disabled]="loading()"
+                  class="qty-btn increase"
+                  type="button">
                   +
                 </button>
               </div>
               <span class="item-price">${{ item.subtotal | number:'1.2-2' }}</span>
               <button
-                type="button"
-                class="remove-btn"
                 (click)="removeItem(item.product.uuid)"
                 [disabled]="loading()"
-                title="Eliminar producto">
+                class="remove-btn"
+                title="Eliminar producto"
+                type="button">
                 ×
               </button>
             </div>
             <div class="item-notes">
               <input
-                type="text"
-                class="notes-input"
-                [placeholder]="'Notas para ' + item.product.name + '...'"
+                [disabled]="loading()"
                 [id]="'notes-' + item.product.uuid"
-                [disabled]="loading()">
+                [placeholder]="'Notas para ' + item.product.name + '...'"
+                class="notes-input"
+                type="text">
             </div>
           </div>
         }
@@ -60,14 +60,14 @@
     </div>
   }
 
-  <form [formGroup]="orderForm" (ngSubmit)="onSubmitOrder()">
+  <form (ngSubmit)="onSubmitOrder()" [formGroup]="orderForm">
     <!-- Campos simples requeridos: Mesa y Cliente -->
     <div class="order-form-fields">
       <div class="form-group">
         <label for="tableNumber">Mesa</label>
-        <select id="tableNumber" class="form-select" formControlName="tableNumber" [disabled]="loading()">
-          <option value="" selected disabled>Seleccione una mesa</option>
-          @for (tableNum of [1,2,3,4,5, 999]; track tableNum) {
+        <select [disabled]="loading()" class="form-select" formControlName="tableNumber" id="tableNumber">
+          <option disabled selected value="">Seleccione una mesa</option>
+          @for (tableNum of [1, 2, 3, 4, 5, 999]; track tableNum) {
             <option [value]="tableNum">Mesa {{ tableNum }}</option>
           }
         </select>
@@ -75,24 +75,26 @@
 
       <div class="form-group">
         <label for="customerName">A nombre de</label>
-        <input id="customerName" type="text" class="form-input" placeholder="Nombre del cliente" formControlName="customerName" [disabled]="loading()" />
+        <input [disabled]="loading()" class="form-input" formControlName="customerName" id="customerName"
+               placeholder="Nombre del cliente" type="text"/>
       </div>
 
       <div class="form-group">
         <label for="orderNotes">Notas generales</label>
-        <textarea id="orderNotes" rows="3" class="form-textarea" placeholder="Notas generales de la orden" formControlName="orderNotes" [disabled]="loading()"></textarea>
+        <textarea [disabled]="loading()" class="form-textarea" formControlName="orderNotes" id="orderNotes"
+                  placeholder="Notas generales de la orden" rows="3"></textarea>
       </div>
     </div>
 
     <div class="form-actions">
-      <button type="submit"
+      <button [disabled]="!orderForm.valid || orderItems().length === 0 || loading()"
               class="btn btn-primary"
-              [disabled]="!orderForm.valid || orderItems().length === 0 || loading()">
+              type="submit">
         @if (loading()) {
           <p-progressSpinner
-            styleClass="w-4rem h-4rem"
+            animationDuration="1s"
             strokeWidth="3"
-            animationDuration="1s"/>
+            styleClass="w-4rem h-4rem"/>
         } @else {
           @if (requiresPaymentBeforeOrder()) {
             Enviar Orden (Requiere Pago)

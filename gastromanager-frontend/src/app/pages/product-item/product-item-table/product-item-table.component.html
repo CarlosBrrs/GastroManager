@@ -24,22 +24,22 @@
 
   <p-table
     #dt
+    (onRowSelect)="onRowSelect($event)"
     [(selection)]="selectedProductItem"
     [globalFilterFields]="['name', 'description']"
+    [loading]="loading"
     [metaKeySelection]="false"
     [paginator]="true"
     [resizableColumns]="true"
     [rowHover]="true"
     [rows]="7"
-    [loading]="loading"
-    loadingIcon="pi pi-spin pi-spinner"
     [showCurrentPageReport]="true"
     [tableStyle]="{ 'min-width': '74rem' }"
     [value]="data"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
     dataKey="uuid"
+    loadingIcon="pi pi-spin pi-spinner"
     selectionMode="single"
-    (onRowSelect)="onRowSelect($event)"
   >
 
     <ng-template pTemplate="header">
@@ -112,7 +112,7 @@
     </ng-template>
   </p-table>
 
-  <p-sidebar [(visible)]="sidebarVisible" position="right" (onHide)="closeSidebar()" styleClass="w-30rem">
+  <p-sidebar (onHide)="closeSidebar()" [(visible)]="sidebarVisible" position="right" styleClass="w-30rem">
     <h3>Product item Details</h3>
     <!-- Verifica si hay un ingrediente seleccionado antes de mostrar los detalles -->
     @if (selectedProductItem) {
@@ -123,7 +123,7 @@
         <p><strong>Used ingredients:</strong></p>
         <ul>
           @for (ingredient of selectedProductItem.ingredients; track ingredient.ingredientUuid) {
-            <li>{{ ingredient.name }} - {{ ingredient.quantity }} {{ingredient.unit}}</li>
+            <li>{{ ingredient.name }} - {{ ingredient.quantity }} {{ ingredient.unit }}</li>
           }
         </ul>
       </div>

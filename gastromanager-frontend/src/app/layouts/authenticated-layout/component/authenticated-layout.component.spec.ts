@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { AuthenticatedLayoutComponent } from './authenticated-layout.component';
+import {AuthenticatedLayoutComponent} from './authenticated-layout.component';
 
 describe('AuthenticatedLayoutComponent', () => {
   let component: AuthenticatedLayoutComponent;
@@ -10,7 +10,7 @@ describe('AuthenticatedLayoutComponent', () => {
     await TestBed.configureTestingModule({
       imports: [AuthenticatedLayoutComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(AuthenticatedLayoutComponent);
     component = fixture.componentInstance;

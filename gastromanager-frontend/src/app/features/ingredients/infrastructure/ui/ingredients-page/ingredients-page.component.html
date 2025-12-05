@@ -1,27 +1,22 @@
 <main class="page-container">
-  <gm-ingredients-table [style]="{'width': '100%', 'min-height': '100%'}"
-                        [data]="ingredients()"
-                        [columns]="tableColumns"
-                        [totalRecords]="totalRecords()"
-                        [actions]="actions"
-                        [loading] = "loading()"
-                        [selectedIngredient]="selectedIngredient()"
+  <gm-ingredients-table (changePage)="changePageHandler($event)"
                         (onIngredientSelected)="handleIngredientSelected($event)"
-                        (changePage)="changePageHandler($event)"
+                        [actions]="actions"
+                        [columns]="tableColumns"
+                        [data]="ingredients()"
+                        [loading]="loading()"
+                        [selectedIngredient]="selectedIngredient()"
+                        [style]="{'width': '100%', 'min-height': '100%'}"
+                        [totalRecords]="totalRecords()"
   >
-    <!-- Custom cell templates -->
-    <ng-template #priceCell let-data>
-      {{ data.price | currency:'USD':'symbol':'1.2-2' }}
-    </ng-template>
-
-    <ng-template #stockCell let-data>
-        <span [class]="data.stock">
-          {{ data.stock }}
-        </span>
-    </ng-template>
   </gm-ingredients-table>
-  <p-sidebar [(visible)]="sidebarVisible" (onHide)="handleHideSidebar()" position="right">
-    <h3>Right Sidebar</h3>
-    {{selectedIngredient() | json}}
-  </p-sidebar>
+
+  <gm-entity-detail-sidebar
+    (onHide)="handleHideSidebar()"
+    [loading]="loading()"
+    [sections]="detailSections()"
+    [subtitle]="sidebarSubtitle()"
+    [title]="sidebarTitle()"
+    [visible]="sidebarVisible"
+  />
 </main>

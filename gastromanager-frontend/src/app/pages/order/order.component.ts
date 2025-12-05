@@ -5,8 +5,6 @@ import {TabViewModule} from "primeng/tabview";
 import {AvatarModule} from "primeng/avatar";
 import {BadgeModule} from "primeng/badge";
 import {CardModule} from "primeng/card";
-import {ProductItemTableComponent} from "../product-item/product-item-table/product-item-table.component";
-import {OrderTableComponent} from "./order-table/order-table.component";
 import {ToastModule} from "primeng/toast";
 import {MessageService} from "primeng/api";
 import {OrdersStore} from "../../core/store/orders/ordersStore";
@@ -25,8 +23,6 @@ import {Order, UninvoicedOrderItem} from "../../core/store/orders/order.model";
     AvatarModule,
     BadgeModule,
     CardModule,
-    ProductItemTableComponent,
-    OrderTableComponent,
     ToastModule
   ],
   templateUrl: './order.component.html',
@@ -35,11 +31,11 @@ import {Order, UninvoicedOrderItem} from "../../core/store/orders/order.model";
 export class OrderComponent implements OnInit, OnDestroy {
 
   orderStore = inject(OrdersStore)
-  private readonly destroy$ = new Subject<void>();
   invoiceModalVisible = false;
   selectedOrder: Order | undefined = undefined;
   uninvoicedItems: UninvoicedOrderItem[] = [];
   sidebarVisible: boolean = false;
+  private readonly destroy$ = new Subject<void>();
 
   constructor(private readonly messageService: MessageService, private readonly storeEventService: StoreEventService) {
     // Efecto para manejar eventos de éxito

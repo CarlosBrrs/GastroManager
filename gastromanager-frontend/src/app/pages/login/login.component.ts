@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Router, RouterLink} from "@angular/router";
+import {Router} from "@angular/router";
 import {FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {AuthService} from "../../core/services/auth/auth.service";
 import {MessageService} from "primeng/api";
@@ -14,7 +14,6 @@ import {CheckboxModule} from "primeng/checkbox";
   selector: 'gm-login',
   standalone: true,
   imports: [
-    RouterLink,
     FormsModule,
     ReactiveFormsModule,
     ToastModule,
@@ -57,7 +56,11 @@ export class LoginComponent implements OnInit {
           });
         },
         error: (error) => {
-          this.messageService.add({severity: 'error', summary: 'Error on login', detail: error.error.message || error.message});
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error on login',
+            detail: error.error.message || error.message
+          });
           console.error("Error al hacer login: ", error);
         },
         complete: () => {

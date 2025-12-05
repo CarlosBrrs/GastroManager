@@ -1,23 +1,19 @@
-import {Component, effect, inject, OnDestroy, OnInit, signal} from '@angular/core';
-import {RouterOutlet} from "@angular/router";
+import {Component, effect, inject, OnDestroy, OnInit} from '@angular/core';
 import {AdjustStockRequestDto, InventoryTableComponent} from "./inventory-table/inventory-table.component";
 import {MessageService} from "primeng/api";
 import {ToastModule} from "primeng/toast";
 import {IngredientRequestDto} from "../../core/model/interfaces/IngredientRequestDto";
 import {IngredientStore} from "../../core/store/inventory/ingredient.store";
 import {StoreEventService} from "../../core/services/store-event/store-event.service";
-import {AsyncPipe, JsonPipe} from "@angular/common";
 import {Subject, takeUntil} from "rxjs";
 
 @Component({
   selector: 'gm-inventory',
   standalone: true,
   imports: [
-    RouterOutlet,
     InventoryTableComponent,
     ToastModule,
-    JsonPipe,
-    AsyncPipe,
+
   ],
   templateUrl: './inventory.component.html',
   styleUrl: './inventory.component.scss'
@@ -70,8 +66,8 @@ export class InventoryComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$)
       )
       .subscribe(ingredients => {
-      console.log("ingredientes cargados ", ingredients)
-    })
+        console.log("ingredientes cargados ", ingredients)
+      })
   }
 
   // object with payload  and uuid

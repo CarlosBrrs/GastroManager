@@ -5,7 +5,6 @@ import {MenusStore} from "../../../../../core/store/menus/menus.store";
 import {ActionButtonInfo} from "../../../../../core/model/interfaces/action-button-info.interface";
 import {Router} from "@angular/router";
 import {SubmenuStore} from "../../../../../core/store/submenus/submenu.store";
-import {JsonPipe} from "@angular/common";
 import {Menu} from "../../../domain/models/menu.interface";
 
 @Component({
@@ -13,7 +12,7 @@ import {Menu} from "../../../domain/models/menu.interface";
   standalone: true,
   imports: [
     MenusTableComponent,
-    JsonPipe,
+
   ],
   templateUrl: './menus-page.component.html',
   styleUrl: './menus-page.component.scss',
@@ -22,8 +21,6 @@ import {Menu} from "../../../domain/models/menu.interface";
 export class MenusPageComponent {
 
   private readonly menusStore = inject(MenusStore);
-  private readonly submenuStore = inject(SubmenuStore);
-  private readonly router = inject(Router);
   menus = computed(() => {
     const page = this.menusStore.currentPage();
     return this.menusStore.pages().get(page) || [];
@@ -31,6 +28,8 @@ export class MenusPageComponent {
   totalRecords = computed(() => this.menusStore.totalRecords());
   loading = computed(() => this.menusStore.loading());
   selectedMenu = computed(() => this.menusStore.selectedMenu());
+  tableColumns: ColumnProperties[] = this.menusStore.tableColumns();
+  private readonly submenuStore = inject(SubmenuStore);
   submenus = computed(() => {
     const menu = this.selectedMenu();
     const page = this.submenuStore.currentPage();
@@ -38,8 +37,7 @@ export class MenusPageComponent {
     const byMenu = this.submenuStore.submenusByMenu().get(menu.uuid);
     return byMenu?.get(page) ?? [];
   });
-
-  tableColumns: ColumnProperties[] = this.menusStore.tableColumns();
+  private readonly router = inject(Router);
   actions: ActionButtonInfo[] =
     [
       {

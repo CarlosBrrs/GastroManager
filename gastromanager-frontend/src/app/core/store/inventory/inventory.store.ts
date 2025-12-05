@@ -1,7 +1,7 @@
 import {patchState, signalStore, withHooks, withMethods, withState} from "@ngrx/signals";
 import {inject} from "@angular/core";
 import {rxMethod} from "@ngrx/signals/rxjs-interop";
-import {catchError, concatMap, finalize, Observable, of, pipe, switchMap, tap, throwError} from "rxjs";
+import {catchError, concatMap, finalize, map, Observable, of, pipe, switchMap, tap, throwError} from "rxjs";
 import {GetIngredientsUseCase} from "../../../features/ingredients/application/usecases/get-ingredients.use-case";
 import {tapResponse} from "@ngrx/operators";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -16,13 +16,18 @@ import {Page} from "../../model/interfaces/pagination/page.interface";
 import {
   GetAllIngredientsNoPaginationUseCase
 } from "../../../features/ingredients/application/usecases/get-all-ingredients-no-pagination.use-case";
+import {
+  AdjustIngredientStockUseCase
+} from "../../../features/ingredients/application/usecases/adjust-ingredient-stock.use-case";
+import {AdjustStockRequest} from "../../../features/ingredients/domain/models/adjust-stock-request.interface";
 
 export type ColumnProperties = {
   field: string;
   header: string;
   sortable?: boolean;
-  transform?: (value: any) => string; // Función inline (actual)
+  transform?: (value: any, rowData?: any) => string; // Función inline con acceso a rowData
   pipe?: string; // Nombre del pipe a aplicar (nueva opción más elegante)
+  pipeArgs?: any; // Argumentos para el pipe (ej: formato de fecha)
   prefix?: string; // Texto a agregar al inicio
   suffix?: string; // Texto a agregar al final
 };
@@ -43,16 +48,45 @@ const initialState: InventoryState = {
   currentPage: 0,
   totalRecords: 0,
   tableColumns: [
-    {field: 'name', header: 'Nombre'},
-    {field: 'pricePerUnit', header: 'Precio por Unidad'},
-    {field: 'unit', header: 'Unidad'},
-    {field: 'availableStock', header: 'Stock Disponible'},
-    {field: 'minimumStockQuantity', header: 'Stock Mínimo'},
-    {field: 'supplier', header: 'Proveedor'},
-    // {field: 'createdBy', header: 'Creado Por'},
-    // {field: 'createdDate', header: 'Fecha de Creación'},
-    // {field: 'updatedBy', header: 'Actualizado Por'},
-    {field: 'updatedDate', header: 'Fecha de Actualización'}
+    {
+      field: 'name',
+      header: 'Nombre',
+      prefix: '📦 '
+    },
+    {
+      field: 'pricePerUnit',
+      header: 'Precio por Unidad',
+      pipe: 'currency',
+      prefix: '💰 ',
+      suffix: ' COP'
+    },
+    {
+      field: 'unit',
+      header: 'Unidad',
+      pipe: 'unit'
+    },
+    {
+      field: 'availableStock',
+      header: 'Stock Disponible',
+      pipe: 'stockStatus'
+    },
+    {
+      field: 'minimumStockQuantity',
+      header: 'Stock Mínimo',
+      prefix: '⚠️ '
+    },
+    {
+      field: 'supplier',
+      header: 'Proveedor',
+      prefix: '🏭 '
+    },
+    {
+      field: 'updatedDate',
+      header: 'Última Actualización',
+      pipe: 'localDateTime',
+      pipeArgs: 'short',
+      prefix: '🕒 '
+    }
   ],
   selectedIngredient: null,
   loading: false,
@@ -69,7 +103,8 @@ export const InventoryStore = signalStore(
                createIngredient = inject(CreateIngredientUseCase),
                editIngredient = inject(EditIngredientUseCase),
                getIngredientByUuid = inject(GetIngredientByUuidUseCase),
-               getAllIngredientsNoPagination = inject(GetAllIngredientsNoPaginationUseCase)) => ({
+               getAllIngredientsNoPagination = inject(GetAllIngredientsNoPaginationUseCase),
+               adjustIngredientStock = inject(AdjustIngredientStockUseCase)) => ({
     createIngredient: (ingredient: Ingredient): Observable<Page<Ingredient>> => {
       patchState(store, {loading: true, error: null});
       return createIngredient.execute(ingredient).pipe(
@@ -169,6 +204,7 @@ export const InventoryStore = signalStore(
     ),
     clearIngredientToEdit: () => patchState(store, {ingredientToEdit: null}),
     clearSelectedIngredient: () => patchState(store, {selectedIngredient: null}),
+    clearError: () => patchState(store, {error: null}),
     getAllIngredientsNoPagination: rxMethod<void>(
       pipe(
         tap(() => {
@@ -242,6 +278,52 @@ export const InventoryStore = signalStore(
           patchState(store, {loading: false});
         })
       )
+    },
+    adjustIngredientStock: (ingredientUuid: string, request: AdjustStockRequest): Observable<string> => {
+      patchState(store, {loading: true, error: null});
+
+      return adjustIngredientStock.execute(ingredientUuid, request).pipe(
+        tap(responseUuid => {
+          console.log('✅ Stock ajustado exitosamente para ingrediente:', responseUuid);
+          // Limpiar el caché de todos los ingredientes
+          patchState(store, {allIngredients: []});
+        }),
+        catchError((error: HttpErrorResponse) => {
+          const message = error.message || 'Error al ajustar stock';
+          patchState(store, {error: message, loading: false});
+          return throwError(() => error);
+        }),
+        concatMap((responseUuid) => {
+          console.log('Recargando lista de ingredientes después del ajuste...');
+
+          // Recargar la página actual de ingredientes
+          const params: paginationParams = {page: store.currentPage(), size: 7};
+          return getIngredients.execute(params).pipe(
+            tapResponse({
+              next: (response) => {
+                const {number, content} = response;
+                const updatedPages = new Map(store.pages());
+                updatedPages.set(number, content);
+                patchState(store, {
+                  pages: updatedPages,
+                  currentPage: params.page,
+                  totalRecords: response.totalElements
+                });
+
+              },
+              error: (error: HttpErrorResponse) => {
+                const message = error.message || 'Error al recargar ingredientes';
+                patchState(store, {error: message});
+              }
+            })
+          ).pipe(
+            map(() => responseUuid)
+          );
+        }),
+        finalize(() => {
+          patchState(store, {loading: false});
+        })
+      );
     },
   })),
   withHooks(

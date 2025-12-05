@@ -1,7 +1,7 @@
-<gm-create-menu [loading]="loading()"
-                [error]="error()"
-                (onCreateMenu)="createMenuHandler($event)"
+<gm-create-menu (onCreateMenu)="createMenuHandler($event)"
                 (onEditMenu)="editMenuHandler($event)"
-[menuToEdit]="menuToEdit()"
+                [error]="error()"
+                [loading]="loading()"
+                [menuToEdit]="menuToEdit()"
 
 ></gm-create-menu>

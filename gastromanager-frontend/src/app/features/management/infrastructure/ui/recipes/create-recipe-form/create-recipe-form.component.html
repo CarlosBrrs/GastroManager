@@ -7,12 +7,12 @@
     </div>
   }
 
-  <form [formGroup]="recipeForm" (ngSubmit)="onSubmit()">
+  <form (ngSubmit)="onSubmit()" [formGroup]="recipeForm">
     <!-- Grid de campos básicos -->
     <div class="form-grid">
       <div class="form-field col-span-2">
         <label for="name">Nombre:</label>
-        <input id="name" formControlName="name" type="text" placeholder="Nombre de la receta"/>
+        <input formControlName="name" id="name" placeholder="Nombre de la receta" type="text"/>
         @if (recipeForm.get('name')?.invalid && recipeForm.get('name')?.touched) {
           <div class="error">
             Nombre es requerido y debe tener al menos 3 caracteres.
@@ -22,7 +22,7 @@
 
       <div class="form-field col-span-2">
         <label for="description">Descripción:</label>
-        <input id="description" formControlName="description" type="text" placeholder="Descripción breve"/>
+        <input formControlName="description" id="description" placeholder="Descripción breve" type="text"/>
         @if (recipeForm.get('description')?.invalid && recipeForm.get('description')?.touched) {
           <div class="error">
             Descripción es requerida y debe tener al menos 3 caracteres.
@@ -33,12 +33,12 @@
       <div class="form-field">
         <label for="yieldPortions">Porciones:</label>
         <input
-          id="yieldPortions"
           formControlName="yieldPortions"
-          type="number"
+          id="yieldPortions"
           min="1"
+          placeholder="1"
           step="1"
-          placeholder="1"/>
+          type="number"/>
         @if (recipeForm.get('yieldPortions')?.invalid && recipeForm.get('yieldPortions')?.touched) {
           <div class="error">
             Mínimo 1
@@ -71,10 +71,10 @@
         <div class="form-field">
           <label for="baseRecipeSelect">Seleccionar receta:</label>
           <select
-            id="baseRecipeSelect"
-            class="recipe-dropdown"
             (change)="onBaseRecipeChange($event)"
-            [value]="selectedBaseRecipe()?.uuid || ''">
+            [value]="selectedBaseRecipe()?.uuid || ''"
+            class="recipe-dropdown"
+            id="baseRecipeSelect">
             <option value="">-- Ninguna --</option>
             @for (recipe of availableRecipes(); track recipe.uuid) {
               <option [value]="recipe.uuid">
@@ -123,25 +123,26 @@
             <h4>Disponibles</h4>
             <div class="search-box">
               <input
-                type="text"
+                (input)="updateSearchTerm($any($event.target).value)"
+                [value]="ingredientSearchTerm()"
                 class="search-input"
                 placeholder="🔍 Buscar ingrediente..."
-                [value]="ingredientSearchTerm()"
-                (input)="updateSearchTerm($any($event.target).value)"/>
+                type="text"/>
               @if (ingredientSearchTerm()) {
-                <button type="button" class="clear-search" (click)="clearSearch()">×</button>
+                <button (click)="clearSearch()" class="clear-search" type="button">×</button>
               }
             </div>
           </div>
           <div class="ingredients-list">
             @for (ingredient of getAvailableIngredients(); track ingredient.uuid) {
-              <div class="ingredient-item available" (click)="addIngredient(ingredient)">
+              <div (click)="addIngredient(ingredient)" class="ingredient-item available">
                 <span class="ingredient-name">
                   {{ ingredient.name }}
-                  <span class="unit-price">({{ ingredient.pricePerUnit | currency:'USD':'symbol':'1.0-2' }}/{{ ingredient.unit }})</span>
+                  <span class="unit-price">({{ ingredient.pricePerUnit | currency:'USD':'symbol':'1.0-2' }}
+                    /{{ ingredient.unit }})</span>
                 </span>
                 <span class="ingredient-unit">({{ getUnitText(ingredient.unit) }})</span>
-                <button type="button" class="add-btn">+</button>
+                <button class="add-btn" type="button">+</button>
               </div>
             } @empty {
               <p class="empty-message">
@@ -163,21 +164,22 @@
               <div class="ingredient-item selected">
                 <span class="ingredient-name">
                   {{ ingredient.name }}
-                  <span class="unit-price">({{ ingredient.pricePerUnit | currency:'USD':'symbol':'1.0-2' }}/{{ ingredient.unit }})</span>
+                  <span class="unit-price">({{ ingredient.pricePerUnit | currency:'USD':'symbol':'1.0-2' }}
+                    /{{ ingredient.unit }})</span>
                 </span>
                 <input
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  [value]="ingredient.quantity"
                   (input)="updateIngredientQuantity(ingredient.uuid, $any($event.target).value)"
+                  [value]="ingredient.quantity"
+                  class="quantity-input"
+                  min="0"
                   placeholder="0"
-                  class="quantity-input"/>
+                  step="0.01"
+                  type="number"/>
                 <span class="unit-label">{{ ingredient.unit }}</span>
-                <button type="button"
+                <button (click)="removeIngredient(ingredient.uuid)"
                         class="remove-btn"
-                        (click)="removeIngredient(ingredient.uuid)"
-                        title="Remover ingrediente">
+                        title="Remover ingrediente"
+                        type="button">
                   ×
                 </button>
               </div>
@@ -190,17 +192,17 @@
     </div>
 
     <div class="form-actions">
-      <button type="submit" class="btn-primary" [disabled]="!recipeForm.valid || loading()">
+      <button [disabled]="!recipeForm.valid || loading()" class="btn-primary" type="submit">
         @if (loading()) {
           <p-progressSpinner
-            styleClass="w-4rem h-4rem"
+            animationDuration="1s"
             strokeWidth="3"
-            animationDuration="1s"/>
+            styleClass="w-4rem h-4rem"/>
         } @else {
           Crear Receta
         }
       </button>
-      <button type="button" class="btn-secondary" (click)="onCancel()">
+      <button (click)="onCancel()" class="btn-secondary" type="button">
         Cancelar
       </button>
     </div>

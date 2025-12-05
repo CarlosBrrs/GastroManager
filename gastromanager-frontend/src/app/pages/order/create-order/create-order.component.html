@@ -1,8 +1,7 @@
-
-<p-confirmDialog />
+<p-confirmDialog/>
 <p-splitter
-  [panelSizes]="[65, 35]"
   [minSizes]="[65,35]"
+  [panelSizes]="[65, 35]"
   [style]="{ height: '100%' }">
 
 
@@ -14,8 +13,8 @@
             <ng-template pTemplate="content">
               <div class="flex flex-wrap items-container pt-4">
                 @for (product of productItemStore.productItems(); track product.uuid) {
-                  <gm-menu-item-card class="menu-item-card" [product]="product"
-                                     (addToOrder)="addToOrder(product)"></gm-menu-item-card>
+                  <gm-menu-item-card (addToOrder)="addToOrder(product)" [product]="product"
+                                     class="menu-item-card"></gm-menu-item-card>
                 }
               </div>
             </ng-template>
@@ -25,8 +24,8 @@
               <ng-template pTemplate="content">
                 <div class="flex flex-wrap items-container pt-4">
                   @for (product of productItemStore.productsByCategory()(category); track product.uuid) {
-                    <gm-menu-item-card class="menu-item-card" [product]="product"
-                                       (addToOrder)="addToOrder(product)"></gm-menu-item-card>
+                    <gm-menu-item-card (addToOrder)="addToOrder(product)" [product]="product"
+                                       class="menu-item-card"></gm-menu-item-card>
                   }
                 </div>
               </ng-template>
@@ -54,13 +53,13 @@
         <!-- Notas del cliente - Fuera del formArrayName -->
         @if (selectedProducts.length > 0) {
           <textarea
-            formControlName="customerNotes"
-            class="mb-2"
             [autoResize]="true"
+            class="mb-2"
             cols="55"
-            rows="1"
+            formControlName="customerNotes"
+            pInputTextarea
             placeholder="Customer notes for the order..."
-            pInputTextarea>
+            rows="1">
         </textarea>
         }
 
@@ -81,10 +80,10 @@
                   <div class="flex align-items-center gap-2">
                     <div class="item-image border-circle overflow-hidden"
                          style="width: 40px; height: 40px;">
-                      <img ngSrc="/assets/images/testfood.jpeg"
-                           [alt]="item.name"
+                      <img [alt]="item.name"
                            class="w-full h-full"
-                           style="object-fit: cover;" height="315" width="474">
+                           height="315"
+                           ngSrc="/assets/images/testfood.jpeg" style="object-fit: cover;" width="474">
                     </div>
                     <div class="item-details">
                       <div class="font-semibold">{{ item.name }}</div>
@@ -96,24 +95,24 @@
                   <div class="flex align-items-center gap-2 ml-auto">
                     <div class="card flex justify-content-center">
                       <p-inputNumber
-                        formControlName="quantity"
-                        [showButtons]="true"
-                        buttonLayout="horizontal"
-                        [size]="1"
-                        [min]="1"
-                        [allowEmpty]="false"
-                        incrementButtonIcon="pi pi-plus"
-                        decrementButtonIcon="pi pi-minus"
                         (onInput)="onQuantityChange(i, $event)"
+                        [allowEmpty]="false"
+                        [min]="1"
+                        [showButtons]="true"
+                        [size]="1"
+                        buttonLayout="horizontal"
+                        decrementButtonIcon="pi pi-minus"
+                        formControlName="quantity"
+                        incrementButtonIcon="pi pi-plus"
                       >
                       </p-inputNumber>
                     </div>
 
                     <p-button
-                      type="button"
-                      icon="pi pi-trash"
-                      class="p-button-danger p-button-sm"
                       (click)="removeItem(i)"
+                      class="p-button-danger p-button-sm"
+                      icon="pi pi-trash"
+                      type="button"
                     >
                     </p-button>
                   </div>
@@ -127,25 +126,25 @@
         <div class="order-summary border-top-1 surface-border pt-2 pb-2">
           <div class="flex justify-content-between mb-2">
             <span class="text-500">Subtotal</span>
-                        <span>{{ getSubtotal() | currency }}</span>
+            <span>{{ getSubtotal() | currency }}</span>
           </div>
           <div class="flex justify-content-between mb-2">
             <span class="text-500">Taxes</span>
-                        <span>{{ getTax() | currency }}</span>
+            <span>{{ getTax() | currency }}</span>
           </div>
 
           <div class="flex justify-content-between font-bold text-xl">
             <span>Total</span>
-                        <span>{{ getTotal() | currency }}</span>
+            <span>{{ getTotal() | currency }}</span>
           </div>
         </div>
 
         <!--         Botón de ordenar -->
         <div class="order-actions">
           <p-button
-            label="Place order"
-            icon="pi pi-check"
             [disabled]="selectedProducts.length === 0 || !orderForm.valid"
+            icon="pi pi-check"
+            label="Place order"
             styleClass="w-full p-button-raised"
             type="submit">
           </p-button>

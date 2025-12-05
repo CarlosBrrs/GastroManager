@@ -1,7 +1,4 @@
 import {ChangeDetectionStrategy, Component, computed, inject, OnInit, Signal} from '@angular/core';
-import {
-  CreateIngredientComponent
-} from "../../../../ingredients/infrastructure/ui/create-ingredient/create-ingredient.component";
 import {MenusStore} from "../../../../../core/store/menus/menus.store";
 import {Menu} from "../../../domain/models/menu.interface";
 import {CreateMenuComponent} from "../create-menu/create-menu.component";
@@ -11,7 +8,6 @@ import {ActivatedRoute, Router} from "@angular/router";
   selector: 'gm-create-update-menus-page',
   standalone: true,
   imports: [
-    CreateIngredientComponent,
     CreateMenuComponent
   ],
   templateUrl: './create-update-menus-page.component.html',
@@ -21,12 +17,11 @@ import {ActivatedRoute, Router} from "@angular/router";
 export class CreateUpdateMenusPageComponent implements OnInit {
 
   private readonly menusStore = inject(MenusStore);
-  private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
-
   menuToEdit = this.menusStore.menuToEdit as Signal<Menu | undefined>;
   loading = computed(() => this.menusStore.loading());
   error = computed(() => this.menusStore.error());
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
   ngOnInit(): void {
     const uuid = this.route.snapshot.paramMap.get('uuid');

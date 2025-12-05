@@ -1,8 +1,8 @@
-import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { CashRegisterSession, OpenSessionData } from '../../domain/models/cash-register-session.interface';
-import { CashRegisterSessionsRepository } from '../../domain/ports/cash-register-sessions.repository';
-import { CashRegisterSessionsAdapter } from '../../infrastructure/api/cash-register-sessions.adapter';
+import {inject, Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {CashRegisterSession, OpenSessionData} from '../../domain/models/cash-register-session.interface';
+import {CashRegisterSessionsRepository} from '../../domain/ports/cash-register-sessions.repository';
+import {CashRegisterSessionsAdapter} from '../../infrastructure/api/cash-register-sessions.adapter';
 
 @Injectable({
   providedIn: 'root'

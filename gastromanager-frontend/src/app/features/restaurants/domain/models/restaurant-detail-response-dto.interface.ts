@@ -1,4 +1,4 @@
-import { RestaurantConfigResponseDto } from './restaurant-config-response-dto.interface';
+import {RestaurantConfigResponseDto} from './restaurant-config-response-dto.interface';
 
 export interface RestaurantDetailResponseDto {
   uuid: string;

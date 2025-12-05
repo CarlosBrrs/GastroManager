@@ -1,4 +1,4 @@
-import {computed, Injectable, signal, inject, effect} from '@angular/core';
+import {computed, effect, inject, Injectable, signal} from '@angular/core';
 import {SalesReportFilters} from '../../domain/models/sales-report.interface';
 import {CashRegisterStore} from '../../../../core/store/cash-register/cash-register.store';
 import {LayoutStore} from '../../../../layouts/authenticated-layout/store/authenticated-layout.store';
@@ -12,15 +12,8 @@ export class FiltersService {
 
   // Estado de filtros centralizado
   private readonly filterValues = signal<Record<string, any>>({});
-
-  constructor() {
-    // Inicializar valores por defecto cuando cambien los filtros del módulo
-    this.initializeDefaultValues();
-  }
-
   // Getters públicos (solo estado, no datos del store)
   readonly filters = this.filterValues.asReadonly();
-
   // Computed para convertir filtros a formato del backend
   readonly salesFilters = computed(() => {
     const filters = this.filterValues();
@@ -34,6 +27,43 @@ export class FiltersService {
       assignedUserUuids: filters['assignedUserUuids'] || []
     } as SalesReportFilters;
   });
+
+  constructor() {
+    // Inicializar valores por defecto cuando cambien los filtros del módulo
+    this.initializeDefaultValues();
+  }
+
+  // Actualizar filtros desde el secondary sidebar
+  updateFilter(key: string, value: any): void {
+    console.log(`🔄 [FiltersService] Updating filter ${key}:`, value);
+
+    this.filterValues.update(current => ({
+      ...current,
+      [key]: value
+    }));
+  }
+
+  // Limpiar todos los filtros
+  clearAllFilters(): void {
+    console.log('🧹 [FiltersService] Clearing all filters');
+    this.filterValues.set({});
+  }
+
+  // Contar filtros activos
+  getActiveFiltersCount(): number {
+    const filters = this.filterValues();
+    return Object.keys(filters).filter(key => {
+      const value = filters[key];
+      const b = Array.isArray(value) ? value.length > 0 : true;
+      return value && (typeof value === 'string' ? value.trim() !== '' : b);
+    }).length;
+  }
+
+  // Verificar si los filtros tienen datos válidos
+  hasValidFilters(): boolean {
+    const filters = this.salesFilters();
+    return !!(filters.dateFrom && filters.dateTo);
+  }
 
   private initializeDefaultValues(): void {
     // Effect para inicializar valores por defecto cuando cambien los filtros dinámicos
@@ -67,38 +97,6 @@ export class FiltersService {
         }
       }
     }, {allowSignalWrites: true});
-  }
-
-  // Actualizar filtros desde el secondary sidebar
-  updateFilter(key: string, value: any): void {
-    console.log(`🔄 [FiltersService] Updating filter ${key}:`, value);
-
-    this.filterValues.update(current => ({
-      ...current,
-      [key]: value
-    }));
-  }
-
-  // Limpiar todos los filtros
-  clearAllFilters(): void {
-    console.log('🧹 [FiltersService] Clearing all filters');
-    this.filterValues.set({});
-  }
-
-  // Contar filtros activos
-  getActiveFiltersCount(): number {
-    const filters = this.filterValues();
-    return Object.keys(filters).filter(key => {
-      const value = filters[key];
-      const b = Array.isArray(value) ? value.length > 0 : true;
-      return value && (typeof value === 'string' ? value.trim() !== '' : b);
-    }).length;
-  }
-
-  // Verificar si los filtros tienen datos válidos
-  hasValidFilters(): boolean {
-    const filters = this.salesFilters();
-    return !!(filters.dateFrom && filters.dateTo);
   }
 
   private mapCashRegistersToUuids(cashRegisterNames: string[]): string[] {

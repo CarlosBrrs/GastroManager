@@ -1,10 +1,9 @@
-import { Injectable, inject } from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-import { Observable, map, catchError, throwError } from 'rxjs';
-import { PaymentRepository } from '../../domain/repositories/payment.repository';
-import { PaymentCreateData } from '../../domain/models/payment-create-data.interface';
-import { PaymentResponse } from '../../domain/models/payment-response.interface';
-import { environment } from '../../../../../environments/environment';
+import {catchError, map, Observable, throwError} from 'rxjs';
+import {PaymentRepository} from '../../domain/repositories/payment.repository';
+import {PaymentCreateData} from '../../domain/models/payment-create-data.interface';
+import {environment} from '../../../../../environments/environment';
 import {ApiGenericResponse} from "../../../../core/model/interfaces/ApiGenericResponse";
 
 // Interface para la respuesta del backend (estructura estándar con data que contiene solo el UUID)

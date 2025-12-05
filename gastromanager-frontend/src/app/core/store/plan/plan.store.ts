@@ -40,7 +40,7 @@ export const SubscriptionPlanStore = signalStore(
 
         if (plan && this.isPlanComplete(plan)) {
           // Si el plan tiene todos los detalles, solo lo seleccionamos
-          patchState(store, { selectedPlan: plan });
+          patchState(store, {selectedPlan: plan});
         } else {
           // Si no tiene todos los detalles, hacemos una nueva llamada a la API
           baseStore.performOperation(
@@ -65,7 +65,7 @@ export const SubscriptionPlanStore = signalStore(
     };
   }),
 
-  withComputed(({ selectedPlan }) => ({
+  withComputed(({selectedPlan}) => ({
     selectedPlanDetails: computed(() => selectedPlan())
   })),
   withHooks({

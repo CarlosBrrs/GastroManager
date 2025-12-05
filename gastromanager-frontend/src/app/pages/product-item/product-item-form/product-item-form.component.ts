@@ -10,7 +10,6 @@ import {MultiSelectModule} from "primeng/multiselect";
 import {Category} from "../../../core/model/enums/Category";
 import {DropdownModule} from "primeng/dropdown";
 import {forkJoin, of} from "rxjs";
-import {JsonPipe} from "@angular/common";
 import {IngredientStore} from "../../../core/store/inventory/ingredient.store";
 
 @Component({
@@ -25,8 +24,7 @@ import {IngredientStore} from "../../../core/store/inventory/ingredient.store";
     ReactiveFormsModule,
     InputTextareaModule,
     MultiSelectModule,
-    DropdownModule,
-    JsonPipe
+    DropdownModule
   ],
   templateUrl: './product-item-form.component.html',
   styleUrl: './product-item-form.component.scss'
@@ -120,6 +118,23 @@ export class ProductItemFormComponent implements OnInit {
     this.costOfProduction = this.calculateCostAndPrice();
   }
 
+  calculateCostAndPrice(): number {
+    let totalCost = 0;
+    this.selectedIngredients.forEach(ingredient => {
+      const quantity = this.productItemForm.get(`ingredientQuantities.${ingredient.uuid}`)?.value || 0;
+      const ingredientCost = this.availableIngredients.find(i => ingredient.uuid === i.uuid).pricePerUnit * quantity;
+      totalCost += ingredientCost;
+    });
+
+    const profitMargin = this.productItemForm.get('profitMargin')?.value || 30;
+    const suggestedPrice = totalCost * (1 + profitMargin / 100);
+    this.suggestedPrice = suggestedPrice;
+
+    // También podrías actualizar el precio en el formulario si lo deseas:
+    // this.productItemForm.get('price')?.setValue(suggestedPrice);
+    return totalCost;
+  }
+
   private setIngredientQuantitiesControls(selectedUuids: string[], initialItem?: any): void {
     const quantitiesGroup = this.productItemForm.get('ingredientQuantities') as FormGroup;
 
@@ -140,22 +155,5 @@ export class ProductItemFormComponent implements OnInit {
     });
 
     this.costOfProduction = this.calculateCostAndPrice();
-  }
-
-  calculateCostAndPrice(): number {
-    let totalCost = 0;
-    this.selectedIngredients.forEach(ingredient => {
-      const quantity = this.productItemForm.get(`ingredientQuantities.${ingredient.uuid}`)?.value || 0;
-      const ingredientCost = this.availableIngredients.find(i => ingredient.uuid === i.uuid).pricePerUnit * quantity;
-      totalCost += ingredientCost;
-    });
-
-    const profitMargin = this.productItemForm.get('profitMargin')?.value || 30;
-    const suggestedPrice = totalCost * (1 + profitMargin / 100);
-    this.suggestedPrice = suggestedPrice;
-
-    // También podrías actualizar el precio en el formulario si lo deseas:
-    // this.productItemForm.get('price')?.setValue(suggestedPrice);
-    return totalCost;
   }
 }

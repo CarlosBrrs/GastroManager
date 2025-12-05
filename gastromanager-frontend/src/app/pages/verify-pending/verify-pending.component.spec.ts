@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { VerifyPendingComponent } from './verify-pending.component';
+import {VerifyPendingComponent} from './verify-pending.component';
 
 describe('VerifyPendingComponent', () => {
   let component: VerifyPendingComponent;
@@ -10,7 +10,7 @@ describe('VerifyPendingComponent', () => {
     await TestBed.configureTestingModule({
       imports: [VerifyPendingComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(VerifyPendingComponent);
     component = fixture.componentInstance;

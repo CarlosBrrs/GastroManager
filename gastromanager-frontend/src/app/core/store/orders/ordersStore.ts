@@ -42,7 +42,7 @@ export const OrdersStore = signalStore(
           "Orden agregada con éxito"
         )
       },
-      getOrderDetails:(orderUuid: string): Observable<Order> => {
+      getOrderDetails: (orderUuid: string): Observable<Order> => {
         return baseStore.performOperation<Order>(
           orderService.getOrderByUuid(orderUuid).pipe(
             tap(order => console.log("Detalles de la orden obtenidos en tap", order)),

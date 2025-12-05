@@ -1,5 +1,5 @@
 <div class="payment-form">
-  <form [formGroup]="paymentForm" class="payment-form-container" (ngSubmit)="onProcessPayment()">
+  <form (ngSubmit)="onProcessPayment()" [formGroup]="paymentForm" class="payment-form-container">
 
     <!-- Detalles de la Orden (Solo lectura) -->
     <div class="order-details-section">
@@ -7,47 +7,47 @@
 
       <div class="row">
         <div class="col-md-6 mb-3">
-          <label for="orderCode" class="form-label">Código de Orden</label>
+          <label class="form-label" for="orderCode">Código de Orden</label>
           <input
-            type="text"
-            id="orderCode"
             class="form-control"
             formControlName="orderCode"
-            readonly>
+            id="orderCode"
+            readonly
+            type="text">
         </div>
 
         <div class="col-md-6 mb-3">
-          <label for="customerName" class="form-label">Cliente</label>
+          <label class="form-label" for="customerName">Cliente</label>
           <input
-            type="text"
-            id="customerName"
             class="form-control"
             formControlName="customerName"
-            readonly>
+            id="customerName"
+            readonly
+            type="text">
         </div>
       </div>
 
       <div class="row">
         <div class="col-md-6 mb-3">
-          <label for="tableNumber" class="form-label">Mesa</label>
+          <label class="form-label" for="tableNumber">Mesa</label>
           <input
-            type="text"
-            id="tableNumber"
             class="form-control"
             formControlName="tableNumber"
-            readonly>
+            id="tableNumber"
+            readonly
+            type="text">
         </div>
 
         <div class="col-md-6 mb-3">
-          <label for="totalAmount" class="form-label">Total de la Orden</label>
+          <label class="form-label" for="totalAmount">Total de la Orden</label>
           <div class="input-group">
             <span class="input-group-text">$</span>
             <input
-              type="number"
-              id="totalAmount"
               class="form-control"
               formControlName="totalAmount"
-              readonly>
+              id="totalAmount"
+              readonly
+              type="number">
           </div>
         </div>
       </div>
@@ -55,28 +55,28 @@
       <!-- Nueva fila para mostrar totales pagados y restantes -->
       <div class="row">
         <div class="col-md-6 mb-3">
-          <label for="totalPaid" class="form-label">Total Pagado</label>
+          <label class="form-label" for="totalPaid">Total Pagado</label>
           <div class="input-group">
             <span class="input-group-text">$</span>
             <input
-              type="number"
-              id="totalPaid"
-              class="form-control"
               [value]="totalPaid()"
-              readonly>
+              class="form-control"
+              id="totalPaid"
+              readonly
+              type="number">
           </div>
         </div>
 
         <div class="col-md-6 mb-3">
-          <label for="remainingToPay" class="form-label">Restante por Pagar</label>
+          <label class="form-label" for="remainingToPay">Restante por Pagar</label>
           <div class="input-group">
             <span class="input-group-text">$</span>
             <input
-              type="number"
-              id="remainingToPay"
-              class="form-control"
               [value]="remainingToPay()"
-              readonly>
+              class="form-control"
+              id="remainingToPay"
+              readonly
+              type="number">
           </div>
         </div>
       </div>
@@ -90,12 +90,12 @@
         <div class="table-responsive">
           <table class="table table-sm">
             <thead class="table-light">
-              <tr>
-                <th>Producto</th>
-                <th class="text-center">Cantidad</th>
-                <th class="text-end">Precio Unit.</th>
-                <th class="text-end">Total</th>
-              </tr>
+            <tr>
+              <th>Producto</th>
+              <th class="text-center">Cantidad</th>
+              <th class="text-end">Precio Unit.</th>
+              <th class="text-end">Total</th>
+            </tr>
             </thead>
             <tbody>
               @for (item of orderItems(); track item.uuid) {
@@ -108,10 +108,10 @@
               }
             </tbody>
             <tfoot class="table-light">
-              <tr class="fw-bold">
-                <td colspan="3" class="text-end">Subtotal:</td>
-                <td class="text-end">{{ totalAmount() | currency:'COP':'symbol':'1.0-0' }}</td>
-              </tr>
+            <tr class="fw-bold">
+              <td class="text-end" colspan="3">Subtotal:</td>
+              <td class="text-end">{{ totalAmount() | currency:'COP':'symbol':'1.0-0' }}</td>
+            </tr>
             </tfoot>
           </table>
         </div>
@@ -124,12 +124,12 @@
 
       <div class="row">
         <div class="col-md-6 mb-3">
-          <label for="paymentMethod" class="form-label">Método de Pago *</label>
+          <label class="form-label" for="paymentMethod">Método de Pago *</label>
           <select
-            id="paymentMethod"
+            [class.is-invalid]="paymentForm.get('paymentMethod')?.invalid && paymentForm.get('paymentMethod')?.touched"
             class="form-select"
             formControlName="paymentMethod"
-            [class.is-invalid]="paymentForm.get('paymentMethod')?.invalid && paymentForm.get('paymentMethod')?.touched">
+            id="paymentMethod">
             <option value="">Seleccionar método de pago</option>
             @for (method of paymentMethods; track method.value) {
               <option [value]="method.value">{{ method.label }}</option>
@@ -143,17 +143,17 @@
         </div>
 
         <div class="col-md-6 mb-3">
-          <label for="paymentAmount" class="form-label">Monto a Pagar *</label>
+          <label class="form-label" for="paymentAmount">Monto a Pagar *</label>
           <div class="input-group">
             <span class="input-group-text">$</span>
             <input
-              type="number"
-              id="paymentAmount"
+              [class.is-invalid]="paymentForm.get('paymentAmount')?.invalid && paymentForm.get('paymentAmount')?.touched"
               class="form-control"
               formControlName="paymentAmount"
+              id="paymentAmount"
               min="0"
               step="0.01"
-              [class.is-invalid]="paymentForm.get('paymentAmount')?.invalid && paymentForm.get('paymentAmount')?.touched">
+              type="number">
           </div>
           @if (paymentForm.get('paymentAmount')?.invalid && paymentForm.get('paymentAmount')?.touched) {
             <div class="invalid-feedback">
@@ -165,17 +165,17 @@
 
       <div class="row">
         <div class="col-md-6 mb-3">
-          <label for="tip" class="form-label">Propina (Opcional)</label>
+          <label class="form-label" for="tip">Propina (Opcional)</label>
           <div class="input-group">
             <span class="input-group-text">$</span>
             <input
-              type="number"
-              id="tip"
               class="form-control"
               formControlName="tip"
+              id="tip"
               min="0"
+              placeholder="0"
               step="0.01"
-              placeholder="0">
+              type="number">
           </div>
         </div>
 
@@ -191,14 +191,14 @@
       @if (requiresTransactionId()) {
         <div class="row">
           <div class="col-md-12 mb-3">
-            <label for="transactionId" class="form-label">ID de Transacción</label>
+            <label class="form-label" for="transactionId">ID de Transacción</label>
             <input
-              type="text"
-              id="transactionId"
               class="form-control"
               formControlName="transactionId"
+              id="transactionId"
+              maxlength="100"
               placeholder="Ingrese el ID de la transacción"
-              maxlength="100">
+              type="text">
             <div class="form-text">
               Para pagos con tarjeta, transferencias o billeteras digitales, ingrese el ID de la transacción
             </div>
@@ -209,14 +209,14 @@
       <!-- Campo Notes - Notas adicionales del pago -->
       <div class="row">
         <div class="col-md-12 mb-3">
-          <label for="notes" class="form-label">Notas Adicionales (Opcional)</label>
+          <label class="form-label" for="notes">Notas Adicionales (Opcional)</label>
           <textarea
-            id="notes"
             class="form-control"
             formControlName="notes"
-            rows="3"
+            id="notes"
+            maxlength="500"
             placeholder="Ingrese cualquier nota o comentario sobre el pago..."
-            maxlength="500">
+            rows="3">
           </textarea>
           <div class="form-text">
             Campo opcional para agregar comentarios sobre el pago o instrucciones especiales
@@ -228,15 +228,15 @@
 
     <!-- Botones de acción -->
     <div class="form-actions">
-      <button type="button" class="btn btn-secondary me-2">
+      <button class="btn btn-secondary me-2" type="button">
         Cancelar
       </button>
       <button
-        type="submit"
+        [disabled]="paymentForm.invalid || paymentLoading()"
         class="btn btn-primary"
-        [disabled]="paymentForm.invalid || paymentLoading()">
+        type="submit">
         @if (paymentLoading()) {
-          <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          <span aria-hidden="true" class="spinner-border spinner-border-sm me-2" role="status"></span>
           Procesando...
         } @else {
           Procesar Pago

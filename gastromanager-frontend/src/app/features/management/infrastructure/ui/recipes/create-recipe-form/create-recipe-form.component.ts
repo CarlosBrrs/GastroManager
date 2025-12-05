@@ -24,34 +24,26 @@ interface SelectedIngredient extends Ingredient {
 })
 export class CreateRecipeFormComponent {
   fb = inject(NonNullableFormBuilder);
-  private readonly router = inject(Router);
-
   // Input para recibir ingredientes disponibles desde el componente padre
   availableIngredients = input<Ingredient[]>([]);
-
   // Input para recibir recetas disponibles desde el componente padre
   availableRecipes = input<Recipe[]>([]);
-
   // Lista de ingredientes seleccionados
   selectedIngredients = signal<SelectedIngredient[]>([]);
-
   // Filtro de búsqueda para ingredientes
   ingredientSearchTerm = signal<string>('');
-
   // Receta base seleccionada
   selectedBaseRecipe = signal<Recipe | null>(null);
-
   recipeForm: FormGroup = this.fb.group({
     uuid: this.fb.control('', []),
     name: this.fb.control("", [Validators.required, Validators.minLength(3)]),
     description: this.fb.control("", [Validators.required, Validators.minLength(3)]),
     yieldPortions: new FormControl<number>(1, [Validators.required, Validators.min(1)]),
   });
-
   loading = input<boolean>(false);
   error = input<string | null>(null);
-
   @Output() onCreateRecipe = new EventEmitter<Partial<Recipe>>();
+  private readonly router = inject(Router);
 
   // Computed para calcular el costo total de producción
   get totalProductionCost(): number {
@@ -99,7 +91,7 @@ export class CreateRecipeFormComponent {
   updateIngredientQuantity(uuid: string, quantity: number) {
     const current = this.selectedIngredients();
     const updated = current.map(i =>
-      i.uuid === uuid ? { ...i, quantity } : i
+      i.uuid === uuid ? {...i, quantity} : i
     );
     this.selectedIngredients.set(updated);
   }

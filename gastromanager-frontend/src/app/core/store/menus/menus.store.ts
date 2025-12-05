@@ -49,7 +49,7 @@ export const MenusStore = signalStore(
                getMenuByUuid = inject(GetMenuByUuidUseCase),
                editMenu = inject(EditMenuUseCase)) => ({
     setSelectedMenu: (menu: Menu) => {
-      patchState(store, { selectedMenu: menu });
+      patchState(store, {selectedMenu: menu});
     },
     getMenus: rxMethod<paginationParams>(
       pipe(

@@ -6,22 +6,22 @@
 
 <!-- Selector de modo con switch -->
 <div class="mode-selector">
-  <span class="mode-label" [class.active]="creationMode() === 'basic'">📝 Básico</span>
+  <span [class.active]="creationMode() === 'basic'" class="mode-label">📝 Básico</span>
   <p-inputSwitch
-    [ngModel]="creationMode() === 'advanced'"
     (ngModelChange)="switchMode($event ? 'advanced' : 'basic')"
+    [ngModel]="creationMode() === 'advanced'"
     styleClass="mode-switch">
   </p-inputSwitch>
-  <span class="mode-label" [class.active]="creationMode() === 'advanced'">🔬 Avanzado</span>
+  <span [class.active]="creationMode() === 'advanced'" class="mode-label">🔬 Avanzado</span>
 </div>
 
-<form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+<form (ngSubmit)="onSubmit()" [formGroup]="productForm">
   <!-- Campos básicos (siempre visibles) -->
   <div class="basic-fields">
     <div class="form-row">
       <div class="form-field">
         <label for="name">Nombre</label>
-        <input id="name" formControlName="name" type="text" pInputText/>
+        <input formControlName="name" id="name" pInputText type="text"/>
         @if (productForm.get('name')?.invalid && productForm.get('name')?.touched) {
           <small class="error">Requerido (mín. 3 caracteres)</small>
         }
@@ -29,7 +29,7 @@
 
       <div class="form-field">
         <label for="category">Categoría</label>
-        <input id="category" formControlName="category" type="text" pInputText/>
+        <input formControlName="category" id="category" pInputText type="text"/>
         @if (productForm.get('category')?.invalid && productForm.get('category')?.touched) {
           <small class="error">Requerido (mín. 3 caracteres)</small>
         }
@@ -38,7 +38,7 @@
 
     <div class="form-field full-width">
       <label for="description">Descripción</label>
-      <input id="description" formControlName="description" type="text" pInputText/>
+      <input formControlName="description" id="description" pInputText type="text"/>
       @if (productForm.get('description')?.invalid && productForm.get('description')?.touched) {
         <small class="error">Requerido (mín. 3 caracteres)</small>
       }
@@ -51,13 +51,13 @@
       <div class="form-field">
         <label for="purchasePrice">Precio de compra</label>
         <p-inputNumber
-          inputId="purchasePrice"
-          formControlName="purchasePrice"
-          mode="currency"
-          currency="USD"
-          locale="en-US"
+          [maxFractionDigits]="2"
           [minFractionDigits]="2"
-          [maxFractionDigits]="2">
+          currency="USD"
+          formControlName="purchasePrice"
+          inputId="purchasePrice"
+          locale="en-US"
+          mode="currency">
         </p-inputNumber>
         @if (productForm.get('purchasePrice')?.invalid && productForm.get('purchasePrice')?.touched) {
           <small class="error">Requerido (mayor a 0)</small>
@@ -67,13 +67,13 @@
       <div class="form-field">
         <label for="salePrice">Precio de venta</label>
         <p-inputNumber
-          inputId="salePrice"
-          formControlName="salePrice"
-          mode="currency"
-          currency="USD"
-          locale="en-US"
+          [maxFractionDigits]="2"
           [minFractionDigits]="2"
-          [maxFractionDigits]="2">
+          currency="USD"
+          formControlName="salePrice"
+          inputId="salePrice"
+          locale="en-US"
+          mode="currency">
         </p-inputNumber>
         @if (productForm.get('salePrice')?.invalid && productForm.get('salePrice')?.touched) {
           <small class="error">Requerido (mayor a 0)</small>
@@ -98,13 +98,13 @@
         <div class="form-field">
           <label for="salePriceAdv">Precio de venta</label>
           <p-inputNumber
-            inputId="salePriceAdv"
-            formControlName="salePrice"
-            mode="currency"
-            currency="USD"
-            locale="en-US"
+            [maxFractionDigits]="2"
             [minFractionDigits]="2"
-            [maxFractionDigits]="2">
+            currency="USD"
+            formControlName="salePrice"
+            inputId="salePriceAdv"
+            locale="en-US"
+            mode="currency">
           </p-inputNumber>
           @if (productForm.get('salePrice')?.invalid && productForm.get('salePrice')?.touched) {
             <small class="error">Requerido (mayor a 0)</small>
@@ -123,23 +123,24 @@
               <h4>Disponibles</h4>
               <div class="search-box">
                 <input
-                  type="text"
-                  class="search-input"
-                  placeholder="🔍 Buscar..."
-                  [value]="ingredientSearchTerm()"
                   (input)="updateIngredientSearchTerm($any($event.target).value)"
-                  pInputText/>
+                  [value]="ingredientSearchTerm()"
+                  class="search-input"
+                  pInputText
+                  placeholder="🔍 Buscar..."
+                  type="text"/>
                 @if (ingredientSearchTerm()) {
-                  <button type="button" class="clear-search" (click)="clearIngredientSearch()">×</button>
+                  <button (click)="clearIngredientSearch()" class="clear-search" type="button">×</button>
                 }
               </div>
             </div>
             <div class="items-list">
               @for (ingredient of getAvailableIngredients(); track ingredient.uuid) {
-                <div class="item available" (click)="addIngredient(ingredient)">
+                <div (click)="addIngredient(ingredient)" class="item available">
                   <span class="item-name">{{ ingredient.name }}</span>
-                  <span class="item-price">{{ ingredient.pricePerUnit | currency:'USD':'symbol':'1.0-2' }}/{{ ingredient.unit }}</span>
-                  <button type="button" class="add-btn">+</button>
+                  <span class="item-price">{{ ingredient.pricePerUnit | currency:'USD':'symbol':'1.0-2' }}
+                    /{{ ingredient.unit }}</span>
+                  <button class="add-btn" type="button">+</button>
                 </div>
               } @empty {
                 <p class="empty-message">
@@ -157,16 +158,16 @@
                 <div class="item selected">
                   <span class="item-name">{{ ingredient.name }}</span>
                   <input
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    [value]="ingredient.quantity"
                     (input)="updateIngredientQuantity(ingredient.uuid, $any($event.target).value)"
-                    placeholder="0"
+                    [value]="ingredient.quantity"
                     class="quantity-input"
-                    pInputText/>
+                    min="0"
+                    pInputText
+                    placeholder="0"
+                    step="0.01"
+                    type="number"/>
                   <span class="unit-label">{{ ingredient.unit }}</span>
-                  <button type="button" class="remove-btn" (click)="removeIngredient(ingredient.uuid)">×</button>
+                  <button (click)="removeIngredient(ingredient.uuid)" class="remove-btn" type="button">×</button>
                 </div>
               } @empty {
                 <p class="empty-message">Sin selección</p>
@@ -187,23 +188,23 @@
               <h4>Disponibles</h4>
               <div class="search-box">
                 <input
-                  type="text"
-                  class="search-input"
-                  placeholder="🔍 Buscar..."
-                  [value]="recipeSearchTerm()"
                   (input)="updateRecipeSearchTerm($any($event.target).value)"
-                  pInputText/>
+                  [value]="recipeSearchTerm()"
+                  class="search-input"
+                  pInputText
+                  placeholder="🔍 Buscar..."
+                  type="text"/>
                 @if (recipeSearchTerm()) {
-                  <button type="button" class="clear-search" (click)="clearRecipeSearch()">×</button>
+                  <button (click)="clearRecipeSearch()" class="clear-search" type="button">×</button>
                 }
               </div>
             </div>
             <div class="items-list">
               @for (recipe of getAvailableRecipes(); track recipe.uuid) {
-                <div class="item available" (click)="addRecipe(recipe)">
+                <div (click)="addRecipe(recipe)" class="item available">
                   <span class="item-name">{{ recipe.name }}</span>
                   <span class="item-price">{{ recipe.cost | currency:'USD':'symbol':'1.0-2' }}</span>
-                  <button type="button" class="add-btn">+</button>
+                  <button class="add-btn" type="button">+</button>
                 </div>
               } @empty {
                 <p class="empty-message">
@@ -221,16 +222,16 @@
                 <div class="item selected">
                   <span class="item-name">{{ recipe.name }}</span>
                   <input
-                    type="number"
-                    min="1"
-                    step="1"
-                    [value]="recipe.multiplier"
                     (input)="updateRecipeMultiplier(recipe.uuid, $any($event.target).value)"
-                    placeholder="1"
+                    [value]="recipe.multiplier"
                     class="multiplier-input"
-                    pInputText/>
+                    min="1"
+                    pInputText
+                    placeholder="1"
+                    step="1"
+                    type="number"/>
                   <span class="multiplier-label">x</span>
-                  <button type="button" class="remove-btn" (click)="removeRecipe(recipe.uuid)">×</button>
+                  <button (click)="removeRecipe(recipe.uuid)" class="remove-btn" type="button">×</button>
                 </div>
               } @empty {
                 <p class="empty-message">Sin selección</p>
@@ -242,9 +243,9 @@
     </div>
   }
 
-  <button type="submit" [disabled]="!productForm.valid || loading()">
+  <button [disabled]="!productForm.valid || loading()" type="submit">
     @if (loading()) {
-      <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="3" animationDuration="1s"/>
+      <p-progressSpinner animationDuration="1s" strokeWidth="3" styleClass="w-4rem h-4rem"/>
     } @else {
       Crear producto
     }

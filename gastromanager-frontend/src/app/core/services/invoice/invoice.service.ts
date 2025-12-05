@@ -1,11 +1,8 @@
 import {Injectable} from '@angular/core';
 import {BaseHttpService} from "../basehttp/base-http.service";
-import {Observable, tap} from "rxjs";
-import {ApiGenericResponse} from "../../model/interfaces/ApiGenericResponse";
-import {ProductItemResponseDto} from "../../model/interfaces/ProductItemResponseDto";
-import {ProductItem} from "../../store/product-item/product-item.model";
+import {Observable} from "rxjs";
 import {ProductItemRequestDto} from "../../model/interfaces/ProductItemRequestDto";
-import { Invoice } from '../../store/invoice/invoice.model';
+import {Invoice} from '../../store/invoice/invoice.model';
 
 @Injectable({
   providedIn: 'root'

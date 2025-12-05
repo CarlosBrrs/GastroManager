@@ -1,7 +1,6 @@
 import {inject, Injectable} from "@angular/core";
 import {Observable} from "rxjs";
 import {ProductsAdapter} from "../../infrastructure/api/products.adapter";
-import {Page} from "../../../../core/model/interfaces/pagination/page.interface";
 import {Product} from "../../domain/models/product.interface";
 import {ProductsRepository} from "../../domain/ports/products.repository";
 

@@ -1,9 +1,9 @@
 <nav class="sidebar">
-  <img ngSrc="/assets/images/gm-logo.svg" height="70" width="70" alt="gm-logo"/>
+  <img alt="gm-logo" height="70" ngSrc="/assets/images/gm-logo.svg" width="70"/>
   <ul>
     @for (item of links; track $index) {
       <li>
-        <a [routerLink]="item.route" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <a [routerLinkActiveOptions]="{exact: true}" [routerLink]="item.route" routerLinkActive="active">
           {{ item.label }}
         </a>
       </li>

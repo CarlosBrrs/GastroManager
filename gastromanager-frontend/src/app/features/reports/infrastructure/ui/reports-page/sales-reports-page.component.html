@@ -14,10 +14,10 @@
       </div>
       <div class="header-actions">
         <button
-          class="btn btn-sm btn-success"
           (click)="applyFilters()"
+          [class.btn-warning]="hasUnappliedChanges()"
           [disabled]="loading() || !filtersService.hasValidFilters()"
-          [class.btn-warning]="hasUnappliedChanges()">
+          class="btn btn-sm btn-success">
           @if (loading()) {
             ⏳ Cargando...
           } @else if (hasUnappliedChanges()) {
@@ -26,10 +26,10 @@
             ✅ Actualizado
           }
         </button>
-        <button class="btn btn-sm btn-outline-secondary" (click)="exportToExcel()">
+        <button (click)="exportToExcel()" class="btn btn-sm btn-outline-secondary">
           📊 Exportar
         </button>
-        <button class="btn btn-sm btn-primary" (click)="refreshData()" [disabled]="loading()">
+        <button (click)="refreshData()" [disabled]="loading()" class="btn btn-sm btn-primary">
           @if (loading()) {
             ⏳ Actualizando...
           } @else {
@@ -41,7 +41,7 @@
 
     <!-- Métricas principales con loading state -->
     <div class="metrics-row">
-      <div class="metric-card" [class.loading]="loading()">
+      <div [class.loading]="loading()" class="metric-card">
         <div class="metric-icon">💰</div>
         <div class="metric-content">
           @if (loading()) {
@@ -56,7 +56,7 @@
         </div>
       </div>
 
-      <div class="metric-card" [class.loading]="loading()">
+      <div [class.loading]="loading()" class="metric-card">
         <div class="metric-icon">💵</div>
         <div class="metric-content">
           @if (loading()) {
@@ -71,7 +71,7 @@
         </div>
       </div>
 
-      <div class="metric-card" [class.loading]="loading()">
+      <div [class.loading]="loading()" class="metric-card">
         <div class="metric-icon">📋</div>
         <div class="metric-content">
           @if (loading()) {
@@ -86,7 +86,7 @@
         </div>
       </div>
 
-      <div class="metric-card" [class.loading]="loading()">
+      <div [class.loading]="loading()" class="metric-card">
         <div class="metric-icon">✅</div>
         <div class="metric-content">
           @if (loading()) {
@@ -101,7 +101,7 @@
         </div>
       </div>
 
-      <div class="metric-card" [class.loading]="loading()">
+      <div [class.loading]="loading()" class="metric-card">
         <div class="metric-icon">❌</div>
         <div class="metric-content">
           @if (loading()) {
@@ -116,7 +116,7 @@
         </div>
       </div>
 
-      <div class="metric-card" [class.loading]="loading()">
+      <div [class.loading]="loading()" class="metric-card">
         <div class="metric-icon">📊</div>
         <div class="metric-content">
           @if (loading()) {
@@ -131,7 +131,7 @@
         </div>
       </div>
 
-      <div class="metric-card" [class.loading]="loading()">
+      <div [class.loading]="loading()" class="metric-card">
         <div class="metric-icon">🎁</div>
         <div class="metric-content">
           @if (loading()) {
@@ -146,7 +146,7 @@
         </div>
       </div>
 
-      <div class="metric-card" [class.loading]="loading()">
+      <div [class.loading]="loading()" class="metric-card">
         <div class="metric-icon">💳</div>
         <div class="metric-content">
           @if (loading()) {
@@ -161,7 +161,7 @@
         </div>
       </div>
 
-      <div class="metric-card" [class.loading]="loading()">
+      <div [class.loading]="loading()" class="metric-card">
         <div class="metric-icon">⏳</div>
         <div class="metric-content">
           @if (loading()) {
@@ -176,7 +176,7 @@
         </div>
       </div>
 
-      <div class="metric-card" [class.loading]="loading()">
+      <div [class.loading]="loading()" class="metric-card">
         <div class="metric-icon">📈</div>
         <div class="metric-content">
           @if (loading()) {
@@ -191,7 +191,7 @@
         </div>
       </div>
 
-      <div class="metric-card" [class.loading]="loading()">
+      <div [class.loading]="loading()" class="metric-card">
         <div class="metric-icon">💵</div>
         <div class="metric-content">
           @if (loading()) {
@@ -206,7 +206,7 @@
         </div>
       </div>
 
-      <div class="metric-card" [class.loading]="loading()">
+      <div [class.loading]="loading()" class="metric-card">
         <div class="metric-icon">📅</div>
         <div class="metric-content">
           @if (loading()) {

@@ -1,6 +1,5 @@
 import {inject, Injectable} from "@angular/core";
 import {Observable} from "rxjs";
-import {Page} from "../../../../core/model/interfaces/pagination/page.interface";
 import {SubmenusRepository} from "../../domain/ports/submenus.repository";
 import {SubmenusAdapter} from "../../infrastructure/api/submenus.adapter";
 import {Submenu} from "../../domain/models/submenu.interface";

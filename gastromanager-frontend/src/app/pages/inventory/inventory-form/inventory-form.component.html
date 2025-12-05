@@ -38,16 +38,16 @@
 
   </div>
   @if (!initialIngredient) {
-  <div class="field">
-    <label for="availableStock">Stock level:</label>
-    <p-inputNumber [min]="0" formControlName="availableStock" id="availableStock" inputId="availableStock"
-                   required/>
-  </div>
+    <div class="field">
+      <label for="availableStock">Stock level:</label>
+      <p-inputNumber [min]="0" formControlName="availableStock" id="availableStock" inputId="availableStock"
+                     required/>
+    </div>
   }
   <div class="field">
     <label for="unit">Unit:</label>
     @for (unit of units; track unit.symbol) {
-      <div id="unit" class="field-checkbox">
+      <div class="field-checkbox" id="unit">
         <p-radioButton
           [inputId]="unit.name"
           [value]="unit.symbol"
@@ -60,7 +60,8 @@
   </div>
   <div class="field">
     <label for="pricePerUnit">Price per unit:</label>
-    <p-inputNumber [maxFractionDigits]="5" [minFractionDigits]="1" [min]="0" currency="COP" formControlName="pricePerUnit" id="pricePerUnit"
+    <p-inputNumber [maxFractionDigits]="5" [minFractionDigits]="1" [min]="0" currency="COP"
+                   formControlName="pricePerUnit" id="pricePerUnit"
                    inputId="pricePerUnit" mode="currency" required
                    showClear/>
   </div>

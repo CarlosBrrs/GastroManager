@@ -1,0 +1,231 @@
+// =============================================================================
+// INVENTORY ADJUSTMENT FORM - ESTILO MINIMALISTA
+// =============================================================================
+
+.inventory-adjustment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0;
+}
+
+// ERROR BANNER
+.error-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid #ef4444;
+  border-radius: 8px;
+  color: #ef4444;
+  font-size: 0.875rem;
+  font-weight: 500;
+  animation: slideDown 0.3s ease;
+
+  i {
+    font-size: 1.1rem;
+  }
+
+  span {
+    flex: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// FORM GROUPS
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  label {
+    color: var(--text-color-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+}
+
+// SELECT BUTTON GROUP
+.select-button-group {
+  .select-button-description {
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--text-color-secondary);
+    font-style: italic;
+    margin-top: 0.5rem;
+  }
+}
+
+// INPUT STYLES (siguiendo patrón de login)
+::ng-deep .inventory-adjustment-form {
+  // SelectButton
+  .p-selectbutton {
+    display: flex;
+    width: 100%;
+
+    .p-button {
+      flex: 1;
+      background: var(--surface-card);
+      border: 1px solid var(--surface-border);
+      color: var(--text-color);
+      font-weight: 500;
+      transition: all 0.2s ease;
+
+      &:not(.p-highlight):hover {
+        background: var(--surface-hover);
+        border-color: var(--primary-color);
+      }
+
+      &.p-highlight {
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+        color: var(--primary-color-text);
+        font-weight: 600;
+      }
+
+      // Primero y último botón con bordes redondeados
+      &:first-child {
+        border-top-left-radius: 8px;
+        border-bottom-left-radius: 8px;
+      }
+
+      &:last-child {
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
+      }
+    }
+  }
+
+  .p-inputnumber,
+  .p-inputtextarea {
+    width: 100%;
+  }
+
+  .p-inputnumber-input,
+  .p-inputtextarea {
+    background: var(--surface-card);
+    border: 1px solid var(--surface-border);
+    border-radius: 8px;
+    padding: 0.75rem;
+    color: var(--text-color);
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+
+    &:enabled:hover {
+      border-color: var(--primary-color);
+    }
+
+    &:enabled:focus {
+      outline: 0 none;
+      outline-offset: 0;
+      box-shadow: 0 0 0 0.2rem var(--primary-color-alpha);
+      border-color: var(--primary-color);
+    }
+  }
+
+  .p-float-label {
+    label {
+      color: var(--text-color-secondary);
+      left: 0.75rem;
+      transition: all 0.2s ease;
+    }
+
+    input:focus ~ label,
+    input.p-filled ~ label,
+    textarea:focus ~ label,
+    textarea.p-filled ~ label,
+    .p-inputwrapper-focus ~ label,
+    .p-inputwrapper-filled ~ label {
+      top: -0.5rem;
+      font-size: 0.75rem;
+      color: var(--primary-color);
+      background: var(--surface-card);
+      padding: 0 0.25rem;
+    }
+  }
+
+  // InputNumber buttons
+  .p-inputnumber-button {
+    background: var(--surface-ground);
+    border: 1px solid var(--surface-border);
+    color: var(--text-color);
+
+    &:hover {
+      background: var(--surface-hover);
+      border-color: var(--primary-color);
+    }
+  }
+}
+
+// ERROR MESSAGES (igual que login)
+.error-message {
+  color: #ef4444;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+// FORM ACTIONS
+.form-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+
+  ::ng-deep .p-button {
+    flex: 1;
+    justify-content: center;
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+
+    &.p-button-secondary {
+      &:hover {
+        background: var(--surface-hover);
+        transform: translateY(-1px);
+      }
+    }
+
+    &.p-button-primary {
+      &:not(:disabled) {
+        &:hover {
+          transform: translateY(-1px);
+          box-shadow: var(--shadow-2);
+        }
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+  }
+}
+
+// RESPONSIVE
+@media (max-width: 768px) {
+  .inventory-adjustment-form {
+    gap: 0.75rem;
+  }
+
+  .form-actions {
+    flex-direction: column;
+
+    ::ng-deep .p-button {
+      width: 100%;
+    }
+  }
+}
+

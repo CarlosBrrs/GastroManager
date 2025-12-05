@@ -4,8 +4,7 @@ import {UserService} from "../../core/services/users/user.service";
 import {Subject, takeUntil} from "rxjs";
 import {Router} from "@angular/router";
 import {AvatarModule} from "primeng/avatar";
-import {CurrencyPipe, DatePipe, TitleCasePipe} from "@angular/common";
-import {Button} from "primeng/button";
+import {DatePipe} from "@angular/common";
 import {CardModule} from "primeng/card";
 import {HomeService} from "../../core/services/home/home.service";
 import {TableModule} from "primeng/table";
@@ -37,11 +36,8 @@ export interface RecentActivity {
   standalone: true,
   imports: [
     AvatarModule,
-    TitleCasePipe,
-    Button,
     CardModule,
     TableModule,
-    CurrencyPipe,
     QuickActionsComponent,
     DatePipe,
     KeyMetricsComponent,
@@ -87,8 +83,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     // ]
   };
   currentDate: Date = new Date();
-  private destroy$ = new Subject();
   summaryMetrics: Metric[] = [];
+  private destroy$ = new Subject();
 
   constructor(protected router: Router, private userService: UserService, private homeService: HomeService, private metricsService: MetricsService) {
 

@@ -10,6 +10,9 @@ export class StoreEventService {
   errorSignal = signal<string | null>(null);
   errorHeaderSignal = signal<string | undefined>(undefined);
 
+  constructor() {
+  }
+
   // Métodos para emitir eventos
   emitSuccess(header: string, message: string) {
     this.successHeaderSignal.set(header);
@@ -20,5 +23,4 @@ export class StoreEventService {
     this.errorHeaderSignal.set(header);
     this.errorSignal.set(message);
   }
-  constructor() { }
 }

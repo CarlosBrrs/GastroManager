@@ -1,5 +1,4 @@
 import {Component, effect, inject, OnDestroy, OnInit} from '@angular/core';
-import {InventoryTableComponent} from "../inventory/inventory-table/inventory-table.component";
 import {ProductItemTableComponent} from "./product-item-table/product-item-table.component";
 import {MessageService} from "primeng/api";
 import {ProductItemStore} from "../../core/store/product-item/product-item.store";
@@ -10,7 +9,6 @@ import {Subject, takeUntil} from "rxjs";
   selector: 'gm-product-item',
   standalone: true,
   imports: [
-    InventoryTableComponent,
     ProductItemTableComponent
   ],
   templateUrl: './product-item.component.html',

@@ -18,11 +18,12 @@ import {FiltersService} from "../../../features/reports/infrastructure/services/
 })
 export class SecondarySidebarComponent {
   layoutStore = inject(LayoutStore);
-  private readonly filtersService = inject(FiltersService);
-
   links = computed(() => this.layoutStore.secondarySidebarLinks());
   // Cambiar para usar filtros dinámicos en lugar de estáticos
   filters = computed(() => this.layoutStore.dynamicModuleFilters());
+  // Estado para controlar qué dropdown está abierto
+  openDropdowns: Record<string, boolean> = {};
+  private readonly filtersService = inject(FiltersService);
   filterValues = computed(() => this.filtersService.filters());
 
   // Helper method para acceder a los valores de filtros de forma type-safe
@@ -96,9 +97,6 @@ export class SecondarySidebarComponent {
     const selectedCount = options.filter(option => currentValues.includes(option)).length;
     return selectedCount > 0 && selectedCount < options.length;
   }
-
-  // Estado para controlar qué dropdown está abierto
-  openDropdowns: Record<string, boolean> = {};
 
   toggleDropdown(filterKey: string): void {
     this.openDropdowns[filterKey] = !this.openDropdowns[filterKey];

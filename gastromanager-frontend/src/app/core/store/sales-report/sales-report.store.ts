@@ -1,12 +1,14 @@
-import { patchState, signalStore, withMethods, withState } from "@ngrx/signals";
-import { inject } from "@angular/core";
-import { rxMethod } from "@ngrx/signals/rxjs-interop";
-import { pipe, switchMap, tap, finalize } from "rxjs";
-import { tapResponse } from "@ngrx/operators";
-import { HttpErrorResponse } from "@angular/common/http";
-import { SalesReportFilters } from "../../../features/reports/domain/models/sales-report.interface";
-import { OverviewSalesReport } from "../../../features/reports/domain/models/overview-sales-report.interface";
-import { GetOverviewSalesReportUseCase } from "../../../features/reports/application/usecases/get-overview-sales-report.use-case";
+import {patchState, signalStore, withMethods, withState} from "@ngrx/signals";
+import {inject} from "@angular/core";
+import {rxMethod} from "@ngrx/signals/rxjs-interop";
+import {finalize, pipe, switchMap, tap} from "rxjs";
+import {tapResponse} from "@ngrx/operators";
+import {HttpErrorResponse} from "@angular/common/http";
+import {SalesReportFilters} from "../../../features/reports/domain/models/sales-report.interface";
+import {OverviewSalesReport} from "../../../features/reports/domain/models/overview-sales-report.interface";
+import {
+  GetOverviewSalesReportUseCase
+} from "../../../features/reports/application/usecases/get-overview-sales-report.use-case";
 
 type SalesReportState = {
   data: OverviewSalesReport | null;
@@ -23,7 +25,7 @@ const initialState: SalesReportState = {
 };
 
 export const SalesReportStore = signalStore(
-  { providedIn: "root" },
+  {providedIn: "root"},
   withState(initialState),
   withMethods((store, getOverviewSalesReport = inject(GetOverviewSalesReportUseCase)) => ({
 
@@ -31,7 +33,7 @@ export const SalesReportStore = signalStore(
       pipe(
         tap((filters) => {
           console.log('🔥 [SalesReportStore] Loading overview sales report with filters:', filters);
-          patchState(store, { loading: true, error: null, lastFilters: filters });
+          patchState(store, {loading: true, error: null, lastFilters: filters});
         }),
         switchMap((filters) =>
           getOverviewSalesReport.execute(filters).pipe(
@@ -52,7 +54,7 @@ export const SalesReportStore = signalStore(
               }
             }),
             finalize(() => {
-              patchState(store, { loading: false });
+              patchState(store, {loading: false});
             })
           )
         )

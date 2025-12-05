@@ -1,5 +1,5 @@
 // Rutas para reports
-import { Routes } from '@angular/router';
+import {Routes} from '@angular/router';
 
 export const reportsRoutes: Routes = [
   {

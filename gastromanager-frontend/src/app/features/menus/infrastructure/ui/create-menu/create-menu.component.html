@@ -5,10 +5,10 @@
 }
 
 
-<form [formGroup]="menuForm" (ngSubmit)="onSubmit()">
+<form (ngSubmit)="onSubmit()" [formGroup]="menuForm">
   <div>
     <label for="name">Nombre:</label>
-    <input id="name" formControlName="name" type="text"/>
+    <input formControlName="name" id="name" type="text"/>
     @if (menuForm.get('name')?.invalid && menuForm.get('name')?.touched) {
       <div class="error">
         Nombre es requerido y debe tener al menos 3 caracteres.
@@ -18,7 +18,7 @@
 
   <div>
     <label for="description">Descripcion:</label>
-    <input id="description" formControlName="description" type="text"/>
+    <input formControlName="description" id="description" type="text"/>
     @if (menuForm.get('description')?.invalid && menuForm.get('description')?.touched) {
       <div
         class="error">
@@ -28,13 +28,12 @@
   </div>
 
 
-
-  <button type="submit"
-          [disabled]="!menuForm.valid || loading"> @if (loading) {
+  <button [disabled]="!menuForm.valid || loading"
+          type="submit"> @if (loading) {
     <p-progressSpinner
-      styleClass="w-4rem h-4rem"
+      animationDuration="1s"
       strokeWidth="3"
-      animationDuration="1s"/>
+      styleClass="w-4rem h-4rem"/>
   } @else {
     {{ menuToEdit ? 'Editar menu' : 'Crear menu' }}
   }

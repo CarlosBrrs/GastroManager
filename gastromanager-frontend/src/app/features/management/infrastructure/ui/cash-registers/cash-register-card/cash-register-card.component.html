@@ -1,4 +1,4 @@
-<div class="cash-register-card" [class.expanded]="isExpanded()">
+<div [class.expanded]="isExpanded()" class="cash-register-card">
   <div class="card-header">
     <div class="d-flex justify-content-between align-items-center">
       <h6 class="card-title mb-0">{{ cashRegister().name }}</h6>
@@ -16,7 +16,8 @@
       <div class="session-compact">
         <div class="session-row">
           <span class="label">Inicial:</span>
-          <span class="value">{{ cashRegister().currentSession!.initialAmount | currency:'COP':'symbol':'1.0-0' }}</span>
+          <span
+            class="value">{{ cashRegister().currentSession!.initialAmount | currency:'COP':'symbol':'1.0-0' }}</span>
         </div>
         <div class="session-row">
           <span class="label">Por:</span>
@@ -39,22 +40,23 @@
     <div class="card-footer">
       @if (cashRegister().status === 'ACTIVE') {
         <div class="btn-group">
-          <button type="button" class="btn btn-sm btn-outline-danger" (click)="onCloseClick()" title="Cerrar caja">
+          <button (click)="onCloseClick()" class="btn btn-sm btn-outline-danger" title="Cerrar caja" type="button">
             <i class="fas fa-lock me-1"></i>Cerrar
           </button>
-          <button type="button" class="btn btn-sm btn-outline-info" (click)="onTransactionsClick()" title="Ver transacciones">
+          <button (click)="onTransactionsClick()" class="btn btn-sm btn-outline-info" title="Ver transacciones"
+                  type="button">
             <i class="fas fa-list me-1"></i>Transacciones
           </button>
-          <button type="button" class="btn btn-sm btn-outline-primary" (click)="onDetailsClick()" title="Ver detalles">
+          <button (click)="onDetailsClick()" class="btn btn-sm btn-outline-primary" title="Ver detalles" type="button">
             <i class="fas fa-eye me-1"></i>Detalles
           </button>
         </div>
       } @else {
         <div class="btn-group">
-          <button type="button" class="btn btn-sm btn-outline-success" (click)="onOpenClick()" title="Abrir caja">
+          <button (click)="onOpenClick()" class="btn btn-sm btn-outline-success" title="Abrir caja" type="button">
             <i class="fas fa-unlock me-1"></i>Abrir
           </button>
-          <button type="button" class="btn btn-sm btn-outline-primary" (click)="onDetailsClick()" title="Ver detalles">
+          <button (click)="onDetailsClick()" class="btn btn-sm btn-outline-primary" title="Ver detalles" type="button">
             <i class="fas fa-eye me-1"></i>Detalles
           </button>
         </div>
@@ -71,24 +73,24 @@
         </h6>
 
         <!-- Formulario para abrir caja -->
-        <form [formGroup]="openCashRegisterForm" class="open-cash-form mb-3" (ngSubmit)="onConfirmOpen()">
+        <form (ngSubmit)="onConfirmOpen()" [formGroup]="openCashRegisterForm" class="open-cash-form mb-3">
           <div class="row">
             <!-- Campo Monto Inicial -->
             <div class="col-md-6 mb-3">
-              <label for="initialAmount" class="form-label fw-semibold">
+              <label class="form-label fw-semibold" for="initialAmount">
                 <i class="fas fa-dollar-sign me-1 text-success"></i>Monto Inicial *
               </label>
               <div class="input-group">
                 <span class="input-group-text">$</span>
                 <input
-                  type="number"
-                  id="initialAmount"
-                  class="form-control"
                   [class.is-invalid]="isFieldInvalid('initialAmount', 'open')"
+                  class="form-control"
                   formControlName="initialAmount"
-                  placeholder="0"
+                  id="initialAmount"
                   min="0"
+                  placeholder="0"
                   step="1000"
+                  type="number"
                 />
               </div>
               @if (isFieldInvalid('initialAmount', 'open')) {
@@ -100,16 +102,16 @@
 
             <!-- Campo Notas -->
             <div class="col-md-6 mb-3">
-              <label for="notes" class="form-label fw-semibold">
+              <label class="form-label fw-semibold" for="notes">
                 <i class="fas fa-sticky-note me-1 text-info"></i>Notas (Opcional)
               </label>
               <textarea
-                id="notes"
                 class="form-control"
                 formControlName="notes"
+                id="notes"
+                maxlength="200"
                 placeholder="Ingresa notas adicionales..."
                 rows="3"
-                maxlength="200"
               ></textarea>
             </div>
           </div>
@@ -125,10 +127,10 @@
 
           <!-- Botones de acción -->
           <div class="expanded-actions">
-            <button type="button" class="btn btn-secondary me-2" (click)="onCancelExpansion()">
+            <button (click)="onCancelExpansion()" class="btn btn-secondary me-2" type="button">
               <i class="fas fa-times me-1"></i>Cancelar
             </button>
-            <button type="submit" class="btn btn-success" [disabled]="openCashRegisterForm.invalid">
+            <button [disabled]="openCashRegisterForm.invalid" class="btn btn-success" type="submit">
               <i class="fas fa-unlock me-1"></i>Abrir Caja
             </button>
           </div>
@@ -156,15 +158,18 @@
               </div>
               <div class="summary-line">
                 <span class="text-muted">Inicial:</span>
-                <span class="text-primary fw-bold ms-1">{{ sessionSummary().openingAmount | currency:'COP':'symbol':'1.0-0' }}</span>
+                <span
+                  class="text-primary fw-bold ms-1">{{ sessionSummary().openingAmount | currency:'COP':'symbol':'1.0-0' }}</span>
               </div>
               <div class="summary-line">
                 <span class="text-muted">Efectivo:</span>
-                <span class="text-success fw-bold ms-1">{{ sessionSummary().totalCashPayments | currency:'COP':'symbol':'1.0-0' }}</span>
+                <span
+                  class="text-success fw-bold ms-1">{{ sessionSummary().totalCashPayments | currency:'COP':'symbol':'1.0-0' }}</span>
               </div>
               <div class="summary-line">
                 <span class="text-muted">Esperado:</span>
-                <span class="text-warning fw-bold ms-1">{{ sessionSummary().expectedCashAmount | currency:'COP':'symbol':'1.0-0' }}</span>
+                <span
+                  class="text-warning fw-bold ms-1">{{ sessionSummary().expectedCashAmount | currency:'COP':'symbol':'1.0-0' }}</span>
               </div>
             </div>
 
@@ -177,7 +182,8 @@
                 <div class="payment-method-two-lines">
                   <div class="d-flex justify-content-between align-items-center">
                     <span class="method-name-two-lines">{{ method.paymentMethodDescription }}</span>
-                    <span class="method-amount-two-lines fw-bold">{{ method.totalAmount | currency:'COP':'symbol':'1.0-0' }}</span>
+                    <span
+                      class="method-amount-two-lines fw-bold">{{ method.totalAmount | currency:'COP':'symbol':'1.0-0' }}</span>
                   </div>
                   <div class="method-transactions">
                     <small class="text-muted">{{ method.transactionCount }} transacciones</small>
@@ -199,24 +205,24 @@
         }
 
         <!-- Formulario para cerrar caja - Ultra compacto -->
-        <form [formGroup]="closeCashRegisterForm" class="close-cash-form-compact mb-1" (ngSubmit)="onConfirmClose()">
+        <form (ngSubmit)="onConfirmClose()" [formGroup]="closeCashRegisterForm" class="close-cash-form-compact mb-1">
           <div class="row g-2">
             <!-- Campo Monto Final -->
             <div class="col-md-6 mb-1">
-              <label for="finalAmount" class="form-label-compact">
+              <label class="form-label-compact" for="finalAmount">
                 <i class="fas fa-calculator me-1 text-warning"></i>Monto Final *
               </label>
               <div class="input-group input-group-sm">
                 <span class="input-group-text">$</span>
                 <input
-                  type="number"
-                  id="finalAmount"
-                  class="form-control"
                   [class.is-invalid]="isFieldInvalid('finalAmount', 'close')"
+                  class="form-control"
                   formControlName="finalAmount"
-                  placeholder="0"
+                  id="finalAmount"
                   min="0"
+                  placeholder="0"
                   step="1000"
+                  type="number"
                 />
               </div>
               @if (isFieldInvalid('finalAmount', 'close')) {
@@ -233,16 +239,16 @@
 
             <!-- Campo Notas de Cierre -->
             <div class="col-md-6 mb-1">
-              <label for="closeNotes" class="form-label-compact">
+              <label class="form-label-compact" for="closeNotes">
                 <i class="fas fa-sticky-note me-1 text-info"></i>Notas (Opcional)
               </label>
               <textarea
-                id="closeNotes"
                 class="form-control form-control-sm"
                 formControlName="notes"
+                id="closeNotes"
+                maxlength="200"
                 placeholder="Observaciones..."
                 rows="2"
-                maxlength="200"
               ></textarea>
             </div>
           </div>
@@ -260,10 +266,11 @@
 
           <!-- Botones de acción compactos -->
           <div class="expanded-actions-compact">
-            <button type="button" class="btn btn-sm btn-secondary me-2" (click)="onCancelExpansion()">
+            <button (click)="onCancelExpansion()" class="btn btn-sm btn-secondary me-2" type="button">
               <i class="fas fa-times me-1"></i>Cancelar
             </button>
-            <button type="submit" class="btn btn-sm btn-danger" [disabled]="closeCashRegisterForm.invalid || !sessionSummary()">
+            <button [disabled]="closeCashRegisterForm.invalid || !sessionSummary()" class="btn btn-sm btn-danger"
+                    type="submit">
               <i class="fas fa-lock me-1"></i>Cerrar Caja
             </button>
           </div>

@@ -87,7 +87,7 @@ export class OrdersAdapter implements OrdersRepository {
     )
   }
 
-  getOrderByUuid(orderUuid: string ): Observable<Order> {
+  getOrderByUuid(orderUuid: string): Observable<Order> {
     console.log('🔄 [OrdersAdapter] Iniciando llamado getOrderByUuid con UUID:', orderUuid);
     console.log('🔄 [OrdersAdapter] URL de petición:', `${this.baseUrl}/orders/${orderUuid}`);
 

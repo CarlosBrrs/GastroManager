@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { KeyMetricsComponent } from './key-metrics.component';
+import {KeyMetricsComponent} from './key-metrics.component';
 
 describe('KeyMetricsComponent', () => {
   let component: KeyMetricsComponent;
@@ -10,7 +10,7 @@ describe('KeyMetricsComponent', () => {
     await TestBed.configureTestingModule({
       imports: [KeyMetricsComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(KeyMetricsComponent);
     component = fixture.componentInstance;

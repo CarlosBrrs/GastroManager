@@ -1,16 +1,13 @@
 import {patchState, signalStore, withHooks, withMethods, withState} from "@ngrx/signals";
 import {effect, inject} from "@angular/core";
 import {rxMethod} from "@ngrx/signals/rxjs-interop";
-import {catchError, finalize, of, pipe, switchMap, tap, throwError} from "rxjs";
+import {pipe, switchMap, tap} from "rxjs";
 import {tapResponse} from "@ngrx/operators";
 import {HttpErrorResponse} from "@angular/common/http";
+import {CashRegister} from "../../../features/management/domain/models/cash-register.interface";
 import {
-  CashRegister,
-  CashRegisterCreateData,
-  CashRegisterOpenData,
-  CashRegisterCloseData
-} from "../../../features/management/domain/models/cash-register.interface";
-import {GetAllCashRegistersUseCase} from "../../../features/management/application/usecases/get-all-cash-registers.use-case";
+  GetAllCashRegistersUseCase
+} from "../../../features/management/application/usecases/get-all-cash-registers.use-case";
 import {RestaurantStore} from "../restaurant/restaurant.store";
 
 type CashRegisterState = {
@@ -57,89 +54,89 @@ export const CashRegisterStore = signalStore(
         })
       )
     ),
-/*
-    getCashRegisterByUuid: (uuid: string) => {
-      patchState(store, {loading: true, error: null});
-      return cashRegisterService.getCashRegisterByUuid(uuid).pipe(
-        tap(cashRegister => {
-          console.log('📦 Cash register retrieved by UUID:', cashRegister);
-          patchState(store, {selectedCashRegister: cashRegister});
-        }),
-        catchError((error: HttpErrorResponse) => {
-          const message = error.message || 'Error desconocido';
-          patchState(store, {error: message});
-          return throwError(() => error);
-        }),
-        finalize(() => {
-          patchState(store, {loading: false});
-        })
-      );
-    },
+    /*
+        getCashRegisterByUuid: (uuid: string) => {
+          patchState(store, {loading: true, error: null});
+          return cashRegisterService.getCashRegisterByUuid(uuid).pipe(
+            tap(cashRegister => {
+              console.log('📦 Cash register retrieved by UUID:', cashRegister);
+              patchState(store, {selectedCashRegister: cashRegister});
+            }),
+            catchError((error: HttpErrorResponse) => {
+              const message = error.message || 'Error desconocido';
+              patchState(store, {error: message});
+              return throwError(() => error);
+            }),
+            finalize(() => {
+              patchState(store, {loading: false});
+            })
+          );
+        },
 
-    createCashRegister: (cashRegisterData: CashRegisterCreateData) => {
-      patchState(store, {loading: true, error: null});
-      return cashRegisterService.createCashRegister(cashRegisterData).pipe(
-        tap(createdUuid => {
-          console.log('✅ [CashRegisterStore] Cash register created with UUID:', createdUuid);
-        }),
-        catchError((error: HttpErrorResponse) => {
-          const message = error.message || 'Error desconocido';
-          patchState(store, {error: message});
-          return throwError(() => error);
-        }),
-        finalize(() => {
-          // Recargar la lista después de crear
-          store.getAllCashRegisters();
-          patchState(store, {loading: false});
-        })
-      );
-    },
+        createCashRegister: (cashRegisterData: CashRegisterCreateData) => {
+          patchState(store, {loading: true, error: null});
+          return cashRegisterService.createCashRegister(cashRegisterData).pipe(
+            tap(createdUuid => {
+              console.log('✅ [CashRegisterStore] Cash register created with UUID:', createdUuid);
+            }),
+            catchError((error: HttpErrorResponse) => {
+              const message = error.message || 'Error desconocido';
+              patchState(store, {error: message});
+              return throwError(() => error);
+            }),
+            finalize(() => {
+              // Recargar la lista después de crear
+              store.getAllCashRegisters();
+              patchState(store, {loading: false});
+            })
+          );
+        },
 
-    openCashRegister: (openData: CashRegisterOpenData) => {
-      patchState(store, {loading: true, error: null});
-      return cashRegisterService.openCashRegister(openData).pipe(
-        tap(sessionUuid => {
-          console.log('✅ [CashRegisterStore] Cash register opened with session UUID:', sessionUuid);
-        }),
-        catchError((error: HttpErrorResponse) => {
-          const message = error.message || 'Error desconocido';
-          patchState(store, {error: message});
-          return throwError(() => error);
-        }),
-        finalize(() => {
-          // Recargar la lista después de abrir
-          store.getAllCashRegisters();
-          patchState(store, {loading: false});
-        })
-      );
-    },
+        openCashRegister: (openData: CashRegisterOpenData) => {
+          patchState(store, {loading: true, error: null});
+          return cashRegisterService.openCashRegister(openData).pipe(
+            tap(sessionUuid => {
+              console.log('✅ [CashRegisterStore] Cash register opened with session UUID:', sessionUuid);
+            }),
+            catchError((error: HttpErrorResponse) => {
+              const message = error.message || 'Error desconocido';
+              patchState(store, {error: message});
+              return throwError(() => error);
+            }),
+            finalize(() => {
+              // Recargar la lista después de abrir
+              store.getAllCashRegisters();
+              patchState(store, {loading: false});
+            })
+          );
+        },
 
-    closeCashRegister: (closeData: CashRegisterCloseData) => {
-      patchState(store, {loading: true, error: null});
-      return cashRegisterService.closeCashRegister(closeData).pipe(
-        tap(result => {
-          console.log('✅ [CashRegisterStore] Cash register closed:', result);
-        }),
-        catchError((error: HttpErrorResponse) => {
-          const message = error.message || 'Error desconocido';
-          patchState(store, {error: message});
-          return throwError(() => error);
-        }),
-        finalize(() => {
-          // Recargar la lista después de cerrar
-          store.getAllCashRegisters();
-          patchState(store, {loading: false});
-        })
-      );
-    },
+        closeCashRegister: (closeData: CashRegisterCloseData) => {
+          patchState(store, {loading: true, error: null});
+          return cashRegisterService.closeCashRegister(closeData).pipe(
+            tap(result => {
+              console.log('✅ [CashRegisterStore] Cash register closed:', result);
+            }),
+            catchError((error: HttpErrorResponse) => {
+              const message = error.message || 'Error desconocido';
+              patchState(store, {error: message});
+              return throwError(() => error);
+            }),
+            finalize(() => {
+              // Recargar la lista después de cerrar
+              store.getAllCashRegisters();
+              patchState(store, {loading: false});
+            })
+          );
+        },
 
-    clearSelectedCashRegister: () => {
-      patchState(store, {selectedCashRegister: null});
-    },
+        clearSelectedCashRegister: () => {
+          patchState(store, {selectedCashRegister: null});
+        },
 
-    clearError: () => {
-      patchState(store, {error: null});
-    }*/
+        clearError: () => {
+          patchState(store, {error: null});
+        }*/
 
   })),
   withHooks({

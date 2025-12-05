@@ -74,10 +74,10 @@
         <div class="ingredient-quantity flex align-items-center justify-content-end">
           <span class="name">{{ selectedIngredient.name }}:</span>
 
-          <p-inputNumber [min]="0" mode="decimal"
+          <p-inputNumber (onInput)="onQuantityChange(selectedIngredient.uuid, $event)" [formControlName]="selectedIngredient.uuid"
                          [maxFractionDigits]="2"
-                         (onInput)="onQuantityChange(selectedIngredient.uuid, $event)"
-                         id="ingredient-name" inputId="quantity" [formControlName]="selectedIngredient.uuid"
+                         [min]="0"
+                         id="ingredient-name" inputId="quantity" mode="decimal"
                          required/>
           <span class="unit">{{ selectedIngredient.unit }}</span>
         </div>

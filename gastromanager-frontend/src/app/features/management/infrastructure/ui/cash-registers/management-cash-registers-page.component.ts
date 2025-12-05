@@ -1,10 +1,9 @@
-import { Component, ChangeDetectionStrategy, computed, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { CashRegisterCardComponent } from './cash-register-card/cash-register-card.component';
+import {ChangeDetectionStrategy, Component, computed, inject, signal} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {CashRegisterCardComponent} from './cash-register-card/cash-register-card.component';
 import {CashRegisterStore} from "../../../../../core/store/cash-register/cash-register.store";
 import {CashRegister} from "../../../domain/models/cash-register.interface";
 import {CashRegisterSessionStore} from "../../../../../core/store/cash-register/cash-register-session.store";
-import { of, delay } from 'rxjs';
 
 @Component({
   selector: 'gm-management-cash-registers-page',
@@ -16,43 +15,35 @@ import { of, delay } from 'rxjs';
 })
 export class ManagementCashRegistersPageComponent {
 
-  private readonly cashRegisterStore = inject(CashRegisterStore);
-  private readonly cashRegisterSessionStore = inject(CashRegisterSessionStore);
-
   // Signal para almacenar el resumen de sesión actual
   currentSessionSummary = signal<any>(null);
-
   // Signal para almacenar qué caja tiene el resumen cargado
   sessionSummaryForCashRegister = signal<string | null>(null);
-
-  // Computed properties basadas en el store - con tipos explícitos
-  cashRegisters = computed(() => this.cashRegisterStore.cashRegisters());
-  loading = computed(() => this.cashRegisterStore.loading());
-  error = computed(() => this.cashRegisterStore.error());
-
-  // Computed properties para el session store
-  sessionLoading = computed(() => this.cashRegisterSessionStore.loading());
-  sessionError = computed(() => this.cashRegisterSessionStore.error());
-  currentSession = computed(() => this.cashRegisterSessionStore.currentSession());
-
   // Computed properties para las estadísticas - con tipos explícitos para evitar errores
   activeCashRegisters = computed(() =>
     this.cashRegisters().filter((cr: CashRegister) => cr.status === 'ACTIVE').length
   );
-
   closedCashRegisters = computed(() =>
     this.cashRegisters().filter((cr: CashRegister) => cr.status === 'CLOSED').length
   );
-
   totalInitialAmount = computed(() =>
     this.cashRegisters()
       .filter((cr: CashRegister) => cr.currentSession)
       .reduce((total: number, cr: CashRegister) => total + (cr.currentSession?.initialAmount || 0), 0)
   );
-
   totalCashRegisters = computed(() => this.cashRegisters().length);
+  private readonly cashRegisterStore = inject(CashRegisterStore);
+  // Computed properties basadas en el store - con tipos explícitos
+  cashRegisters = computed(() => this.cashRegisterStore.cashRegisters());
+  loading = computed(() => this.cashRegisterStore.loading());
+  error = computed(() => this.cashRegisterStore.error());
+  private readonly cashRegisterSessionStore = inject(CashRegisterSessionStore);
+  // Computed properties para el session store
+  sessionLoading = computed(() => this.cashRegisterSessionStore.loading());
+  sessionError = computed(() => this.cashRegisterSessionStore.error());
+  currentSession = computed(() => this.cashRegisterSessionStore.currentSession());
 
-  onOpenCashRegister(data: {uuid: string, initialAmount: number, notes: string}) {
+  onOpenCashRegister(data: { uuid: string, initialAmount: number, notes: string }) {
 
     console.log('🟢 Recibiendo datos para abrir caja registradora:');
     console.log('📄 UUID:', data.uuid);
@@ -66,7 +57,8 @@ export class ManagementCashRegistersPageComponent {
       notes: data.notes
     }).subscribe();
   }
-  onCloseCashRegister(data: {uuid: string, finalAmount: number, notes: string}) {
+
+  onCloseCashRegister(data: { uuid: string, finalAmount: number, notes: string }) {
     console.log('🔒 Recibiendo datos para cerrar caja registradora:');
     console.log('📄 UUID:', data.uuid);
     console.log('💰 Monto final:', data.finalAmount);

@@ -1,13 +1,13 @@
 <div class="flex flex-column h-full">
   <div class="sidenav-logo-container flex flex-column align-items-center justify-content-center">
-    <div class="logo-container" (click)="message()">
+    <div (click)="message()" class="logo-container">
       <img src="assets/images/gm-logo.svg"/>
     </div>
   </div>
-  <p-menu class="flex h-full pt-3" [model]="items">
+  <p-menu [model]="items" class="flex h-full pt-3">
 
     <ng-template let-item pTemplate="item">
-      <a [routerLink]="item.route" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{exact: true}"
+      <a [routerLinkActiveOptions]="{exact: true}" [routerLinkActive]="'active'" [routerLink]="item.route"
          class="p-menuitem-link flex flex-column">
         <div [class]="item.icon" style="color: var(--primary-color); font-size: 1.5rem"></div>
         <div class="menu-label">{{ item.label }}</div>

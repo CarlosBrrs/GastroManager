@@ -1,8 +1,8 @@
-<div class="item-card border-1 surface-border border-round"
-  [class.disabled]="!product.isEnabled"
-  (click)="onProductClick()">
+<div (click)="onProductClick()"
+     [class.disabled]="!product.isEnabled"
+     class="item-card border-1 surface-border border-round">
   <div class="image-oval">
-    <img src="/assets/images/testfood.jpeg" [alt]="product.name"/>
+    <img [alt]="product.name" src="/assets/images/testfood.jpeg"/>
     @if (!product.isEnabled) {
       <div class="disabled-overlay">
         <i class="pi pi-ban text-xl"></i>

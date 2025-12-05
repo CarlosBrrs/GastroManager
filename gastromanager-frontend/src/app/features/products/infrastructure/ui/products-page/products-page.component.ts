@@ -20,7 +20,6 @@ import {ProductsTableComponent} from "../products-table/products-table.component
 export class ProductsPageComponent {
 
   private readonly productsStore = inject(ProductStore);
-  private readonly router = inject(Router);
   products = computed(() => {
     const page = this.productsStore.currentPage();
     return this.productsStore.pages().get(page) || [];
@@ -29,6 +28,7 @@ export class ProductsPageComponent {
   loading = computed(() => this.productsStore.loading());
   selectedProduct = computed(() => this.productsStore.selectedProduct());
   tableColumns: ColumnProperties[] = this.productsStore.tableColumns();
+  private readonly router = inject(Router);
   // TODO EVALUAR SI MOVER A STORE
   actions: ActionButtonInfo[] = [
     {
