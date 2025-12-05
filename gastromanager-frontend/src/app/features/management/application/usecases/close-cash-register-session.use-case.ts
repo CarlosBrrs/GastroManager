@@ -1,4 +1,4 @@
-import {inject, Inject, Injectable} from "@angular/core";
+import {inject, Injectable} from "@angular/core";
 import {Observable} from "rxjs";
 import {CashRegisterSessionsRepository} from "../../domain/ports/cash-register-sessions.repository";
 import {CashRegisterSessionsAdapter} from "../../infrastructure/api/cash-register-sessions.adapter";

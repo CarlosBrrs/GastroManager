@@ -2,7 +2,7 @@
   <!-- Header del Dashboard -->
   <div class="dashboard-header">
     <div class="welcome-section">
-      <img src="assets/images/gm-logo.svg" alt="GastroManager Logo" class="dashboard-logo">
+      <img alt="GastroManager Logo" class="dashboard-logo" src="assets/images/gm-logo.svg">
       <div class="welcome-text">
         <h1>Dashboard</h1>
         <p class="restaurant-name">{{ selectedRestaurant()?.name || 'Sin nombre/error' }}</p>
@@ -52,21 +52,23 @@
     <div class="widget recent-orders">
       <div class="widget-header">
         <h2>Órdenes Recientes</h2>
-        <button class="widget-action" (click)="onCreateNewOrder()">+ Nueva Orden</button>
+        <button (click)="onCreateNewOrder()" class="widget-action">+ Nueva Orden</button>
       </div>
       <div class="widget-content">
         @for (order of recentOrders(); track order.id) {
-          <div class="order-item" (click)="onViewOrderDetails(order.id)">
+          <div (click)="onViewOrderDetails(order.id)" class="order-item">
             <div class="order-info">
               <span class="order-id">{{ order.id }}</span>
               <span class="order-table">{{ order.table }}</span>
             </div>
             <div class="order-details">
               <span class="order-total">${{ order.total }}</span>
-              <span class="order-status" [class]="'status-' + order.status">
-                {{ order.status === 'pending' ? 'Pendiente' :
-                   order.status === 'preparing' ? 'Preparando' :
-                   order.status === 'ready' ? 'Listo' : 'Entregado' }}
+              <span [class]="'status-' + order.status" class="order-status">
+                {{
+                  order.status === 'pending' ? 'Pendiente' :
+                    order.status === 'preparing' ? 'Preparando' :
+                      order.status === 'ready' ? 'Listo' : 'Entregado'
+                }}
               </span>
             </div>
             <span class="order-time">{{ order.time }}</span>
@@ -79,7 +81,7 @@
     <div class="widget popular-products">
       <div class="widget-header">
         <h2>Productos Populares</h2>
-        <button class="widget-action" (click)="onViewInventory()">Ver Inventario</button>
+        <button (click)="onViewInventory()" class="widget-action">Ver Inventario</button>
       </div>
       <div class="widget-content">
         @for (product of popularProducts(); track product.name) {
@@ -103,11 +105,11 @@
       </div>
       <div class="widget-content">
         <div class="actions-grid">
-          <button class="action-button" (click)="onCreateNewOrder()">
+          <button (click)="onCreateNewOrder()" class="action-button">
             <span class="action-icon">🍽️</span>
             <span>Nueva Orden</span>
           </button>
-          <button class="action-button" (click)="onViewInventory()">
+          <button (click)="onViewInventory()" class="action-button">
             <span class="action-icon">📦</span>
             <span>Inventario</span>
           </button>

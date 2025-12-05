@@ -1,7 +1,7 @@
 import {inject, Injectable} from '@angular/core';
-import {HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {environment} from "../../../../environments/environment";
-import {catchError, Observable, throwError} from "rxjs";
+import {Observable} from "rxjs";
 import {ApiGenericResponse} from "../../model/interfaces/ApiGenericResponse";
 import {map} from "rxjs/operators";
 
@@ -11,9 +11,10 @@ import {map} from "rxjs/operators";
 export class BaseHttpService {
 
   apiUrl: string = environment.API_URL;
+  http: HttpClient = inject(HttpClient);
+
   constructor() {
   }
-  http: HttpClient = inject(HttpClient);
 
   protected handleRequest<T>(
     method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH',
@@ -34,7 +35,7 @@ export class BaseHttpService {
   }
 
   private buildHeaders(method: string, body?: any): HttpHeaders {
-    let headers = new HttpHeaders({ 'Accept': 'application/json' });
+    let headers = new HttpHeaders({'Accept': 'application/json'});
 
     if (['POST', 'PUT', 'PATCH'].includes(method) && body) {
       headers = headers.set('Content-Type', 'application/json');
@@ -50,10 +51,11 @@ export class BaseHttpService {
     }
     return response.data;
   }
-/*
-  private handleErrorResponse(error: HttpErrorResponse): Observable<never> {
-    const apiError = error.error as ApiGenericResponse<null>;
-    const errorMessage = apiError?.message || error.message;
-    return throwError(() => new Error(errorMessage));
-  }*/
+
+  /*
+    private handleErrorResponse(error: HttpErrorResponse): Observable<never> {
+      const apiError = error.error as ApiGenericResponse<null>;
+      const errorMessage = apiError?.message || error.message;
+      return throwError(() => new Error(errorMessage));
+    }*/
 }

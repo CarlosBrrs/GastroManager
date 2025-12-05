@@ -2,7 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import {RegisterFormComponent} from "./register-form/register-form.component";
 import {AuthService} from "../../core/services/auth/auth.service";
 import {Router} from "@angular/router";
-import {StoreEventService} from "../../core/services/store-event/store-event.service";
 import {MessageService} from "primeng/api";
 
 export interface SignupRequestDto {
@@ -19,6 +18,7 @@ interface ContactRequestDto {
   phone: string;
   website: string;
 }
+
 interface SubscriptionRequestDto {
   plan: string;
   paymentToken: string; // O Date si vas a manejar objetos de fecha
@@ -40,6 +40,7 @@ export class RegisterComponent implements OnInit {
   constructor(private readonly authService: AuthService, private readonly router: Router, private readonly messageService: MessageService) {
 
   }
+
   ngOnInit(): void {
 
   }

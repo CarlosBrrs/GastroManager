@@ -6,12 +6,12 @@
         <p class="subtitle">Administra las recetas de tu restaurante</p>
       </div>
       <div class="actions-section">
-        <button pButton
-                type="button"
-                label="Nueva Receta"
-                icon="pi pi-plus"
+        <button (click)="onAddRecipe()"
                 class="add-recipe-button"
-                (click)="onAddRecipe()">
+                icon="pi pi-plus"
+                label="Nueva Receta"
+                pButton
+                type="button">
         </button>
       </div>
     </div>
@@ -19,14 +19,14 @@
 
   <div class="recipes-content">
     <gm-table
-      [data]="recipes()"
-      [columns]="tableColumns"
-      [totalRecords]="totalRecords()"
+      (changePage)="changePageHandler($event)"
+      (onRowSelect)="handleRecipeSelected($event)"
       [actions]="actions"
+      [columns]="tableColumns"
+      [data]="recipes()"
       [loading]="loading()"
       [selectedItem]="selectedRecipe()"
-      (onRowSelect)="handleRecipeSelected($event)"
-      (changePage)="changePageHandler($event)">
+      [totalRecords]="totalRecords()">
     </gm-table>
   </div>
 </main>

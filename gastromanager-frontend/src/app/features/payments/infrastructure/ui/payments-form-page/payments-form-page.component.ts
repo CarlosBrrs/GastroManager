@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, inject, OnInit, OnDestroy} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {CommonModule} from '@angular/common';
 import {PaymentFormComponent} from '../payment-form/payment-form.component';
@@ -28,14 +28,12 @@ export class PaymentsFormPageComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly orderStore = inject(OrderStore);
-  private readonly restaurantStore = inject(RestaurantStore);
-  private readonly paymentStore = inject(PaymentStore);
-
   // Exponer signals del OrderStore
   readonly loading = this.orderStore.loading;
   readonly error = this.orderStore.error;
   readonly currentOrder = this.orderStore.currentOrder;
-
+  private readonly restaurantStore = inject(RestaurantStore);
+  private readonly paymentStore = inject(PaymentStore);
   // Exponer signals del PaymentStore
   readonly paymentLoading = this.paymentStore.loading;
   readonly paymentError = this.paymentStore.error;
@@ -86,6 +84,12 @@ export class PaymentsFormPageComponent implements OnInit, OnDestroy {
         // El error ya se maneja en el PaymentStore, no necesitamos hacer nada adicional aquí
       }
     });
+  }
+
+  ngOnDestroy() {
+    console.log('🗑️ [PaymentsFormPageComponent] Componente destruido, limpiando estado de pagos');
+    // Limpiar completamente el estado de pagos al destruir el componente
+    this.paymentStore.clearPaymentState();
   }
 
   /**
@@ -151,11 +155,5 @@ export class PaymentsFormPageComponent implements OnInit, OnDestroy {
         }
       }
     });
-  }
-
-  ngOnDestroy() {
-    console.log('🗑️ [PaymentsFormPageComponent] Componente destruido, limpiando estado de pagos');
-    // Limpiar completamente el estado de pagos al destruir el componente
-    this.paymentStore.clearPaymentState();
   }
 }

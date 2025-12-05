@@ -1,9 +1,8 @@
-import {HttpInterceptorFn, HttpRequest} from '@angular/common/http';
+import {HttpInterceptorFn, HttpRequest, HttpResponse} from '@angular/common/http';
 import {inject} from "@angular/core";
 import {AuthStore} from "../store/auth/auth.store";
-import { RestaurantStore } from "../store/restaurant/restaurant.store";
-import { tap } from 'rxjs/operators';
-import { HttpResponse } from '@angular/common/http';
+import {RestaurantStore} from "../store/restaurant/restaurant.store";
+import {tap} from 'rxjs/operators';
 
 // Lista blanca de URLs que NO requieren autenticación
 const PUBLIC_URLS: string[] = [
@@ -44,12 +43,12 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   if (token && !isPublicUrl(req.url)) {
 
     const authReq: HttpRequest<any> = req.clone({
-        setHeaders:
-          {
-            Authorization: `Bearer ${token}`,
-            'X-Restaurant-Uuid': restaurantUuid || '',
-          }
-      });
+      setHeaders:
+        {
+          Authorization: `Bearer ${token}`,
+          'X-Restaurant-Uuid': restaurantUuid || '',
+        }
+    });
 
     console.log('🔐 [AuthInterceptor] Headers agregados a la petición:');
     console.log('🔐 [AuthInterceptor] Authorization:', `Bearer ${token?.substring(0, 20)}...`);

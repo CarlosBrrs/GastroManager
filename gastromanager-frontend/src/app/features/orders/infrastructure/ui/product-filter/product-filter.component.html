@@ -1,15 +1,16 @@
 <div class="product-filter">
   <div class="search-container">
     <input
-      type="text"
-      [(ngModel)]="searchTerm"
       (input)="onSearchChange()"
+      [(ngModel)]="searchTerm"
+      class="search-input"
       placeholder="Buscar productos..."
-      class="search-input">
+      type="text">
     <button
-      *ngIf="searchTerm"
       (click)="clearSearch()"
-      class="clear-btn">×</button>
+      *ngIf="searchTerm"
+      class="clear-btn">×
+    </button>
   </div>
 </div>
 

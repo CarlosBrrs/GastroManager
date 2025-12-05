@@ -1,20 +1,20 @@
 <div class="create-order-layout">
   <div class="products-section">
     <gm-product-selector
-      [productsByCategory]="productsByCategory()"
-      (productSelected)="onProductSelected($event)">
+      (productSelected)="onProductSelected($event)"
+      [productsByCategory]="productsByCategory()">
     </gm-product-selector>
   </div>
 
   <div class="order-section">
     <gm-order-summary
-      [orderItems]="orderItems()"
-      [loading]="loading()"
-      [error]="error()"
-      [restaurantConfig]="currentRestaurantDetails()"
       (itemRemoved)="onItemRemoved($event)"
+      (orderSubmitted)="onOrderSubmitted($event)"
       (quantityChanged)="onQuantityChanged($event)"
-      (orderSubmitted)="onOrderSubmitted($event)">
+      [error]="error()"
+      [loading]="loading()"
+      [orderItems]="orderItems()"
+      [restaurantConfig]="currentRestaurantDetails()">
     </gm-order-summary>
   </div>
 </div>

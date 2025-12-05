@@ -16,21 +16,6 @@ import {RecipeStore} from "../../../../../../core/store/recipe/recipe.store";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CreateRecipePageComponent {
-  private readonly router = inject(Router);
-  private readonly inventoryStore = inject(InventoryStore);
-  private readonly recipeStore = inject(RecipeStore);
-
-  readonly loading = this.recipeStore.loading;
-  readonly error = this.recipeStore.error;
-
-  // Computed para obtener ingredientes del store
-  availableIngredients = computed(() => this.inventoryStore.allIngredients());
-
-  // Effect para loguear los ingredientes disponibles
-  constructor() {
-    this.inventoryStore.getAllIngredientsNoPagination();
-  }
-
   // Recetas mockeadas - TODO: Obtener del backend cuando esté disponible
   availableRecipes = signal<Recipe[]>([
     {
@@ -89,6 +74,18 @@ export class CreateRecipePageComponent {
       updatedDate: '2025-01-01'
     }
   ]);
+  private readonly router = inject(Router);
+  private readonly inventoryStore = inject(InventoryStore);
+  // Computed para obtener ingredientes del store
+  availableIngredients = computed(() => this.inventoryStore.allIngredients());
+  private readonly recipeStore = inject(RecipeStore);
+  readonly loading = this.recipeStore.loading;
+  readonly error = this.recipeStore.error;
+
+  // Effect para loguear los ingredientes disponibles
+  constructor() {
+    this.inventoryStore.getAllIngredientsNoPagination();
+  }
 
   createRecipeHandler($event: Partial<Recipe>) {
     console.log('📝 Creando receta:', $event);

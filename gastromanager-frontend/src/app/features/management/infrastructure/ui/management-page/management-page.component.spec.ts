@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { ManagementPageComponent } from './management-page.component';
+import {ManagementPageComponent} from './management-page.component';
 
 describe('ManagementPageComponent', () => {
   let component: ManagementPageComponent;
@@ -10,7 +10,7 @@ describe('ManagementPageComponent', () => {
     await TestBed.configureTestingModule({
       imports: [ManagementPageComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(ManagementPageComponent);
     component = fixture.componentInstance;

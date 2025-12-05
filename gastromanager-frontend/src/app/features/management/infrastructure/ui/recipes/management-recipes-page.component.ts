@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, computed, inject, signal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, signal} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {TableComponent} from "../../../../../shared/components/table/table.component";
 import {ButtonModule} from "primeng/button";
@@ -19,8 +19,6 @@ import {Router} from "@angular/router";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ManagementRecipesPageComponent {
-  private readonly router = inject(Router);
-
   // Data dummy para las recetas
   recipes = signal<Recipe[]>([
     {
@@ -227,11 +225,9 @@ export class ManagementRecipesPageComponent {
       updatedDate: '2025-10-06T07:00:00.000000Z'
     }
   ]);
-
   loading = signal(false);
   totalRecords = signal(5);
   selectedRecipe = signal<Recipe | null>(null);
-
   // Configuración de columnas para la tabla
   tableColumns = [
     {
@@ -259,7 +255,6 @@ export class ManagementRecipesPageComponent {
       transform: (baseRecipe: any) => this.formatBaseRecipe(baseRecipe)
     }
   ];
-
   // Acciones para cada fila
   actions: ActionButtonInfo[] = [
     {
@@ -284,6 +279,7 @@ export class ManagementRecipesPageComponent {
       onClick: (rowData) => this.deleteRecipe(rowData)
     }
   ];
+  private readonly router = inject(Router);
 
   onAddRecipe() {
     console.log('➕ Navegando a crear receta...');

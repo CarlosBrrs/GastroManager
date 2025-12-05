@@ -1,12 +1,10 @@
-import {Component, effect, inject, OnDestroy, OnInit, signal} from '@angular/core';
+import {Component, effect, inject, OnDestroy, OnInit} from '@angular/core';
 import {SplitterModule} from "primeng/splitter";
 import {TabViewModule} from "primeng/tabview";
 import {AvatarModule} from "primeng/avatar";
-import {CurrencyPipe, DatePipe, JsonPipe, NgOptimizedImage} from "@angular/common";
+import {CurrencyPipe, NgOptimizedImage} from "@angular/common";
 import {Button} from "primeng/button";
-import {ProductItemService} from "../../../core/services/product-item/product-item.service";
-import {finalize, Subject, takeUntil} from "rxjs";
-import {ProductItemResponseDto} from "../../../core/model/interfaces/ProductItemResponseDto";
+import {Subject, takeUntil} from "rxjs";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {MenuItemCardComponent} from "../../../shared/components/menu-item-card/menu-item-card.component";
 import {ProductItem} from "../../../core/model/interfaces/ProductItem";
@@ -18,7 +16,6 @@ import {OrderItem} from "../../../core/store/cart/cart.model";
 import {ToastModule} from "primeng/toast";
 import {ConfirmDialogModule} from "primeng/confirmdialog";
 import {Router} from "@angular/router";
-import {OrderService} from "../../../core/services/order/order.service";
 import {ProductItemStore} from "../../../core/store/product-item/product-item.store";
 import {OrdersStore} from "../../../core/store/orders/ordersStore";
 import {StoreEventService} from "../../../core/services/store-event/store-event.service";
@@ -49,9 +46,10 @@ export class CreateOrderComponent implements OnInit, OnDestroy {
   orderForm: FormGroup;
   productItemStore = inject(ProductItemStore)
   orderStore = inject(OrdersStore)
+  selectedProducts: any[] = [];
   private readonly destroy$ = new Subject<void>();
 
-  constructor(private readonly storeEventService: StoreEventService,private readonly router: Router, private readonly fb: FormBuilder, private readonly confirmationService: ConfirmationService, private messageService: MessageService) {
+  constructor(private readonly storeEventService: StoreEventService, private readonly router: Router, private readonly fb: FormBuilder, private readonly confirmationService: ConfirmationService, private messageService: MessageService) {
     this.orderForm = this.fb.group({
       customerNotes: new FormControl<string>(""),
       orderItems: this.fb.array<OrderItem>([]),
@@ -89,16 +87,14 @@ export class CreateOrderComponent implements OnInit, OnDestroy {
     }, {allowSignalWrites: true});
   }
 
+  get orderItems() {
+    return this.orderForm.get('orderItems') as FormArray;
+  }
+
   ngOnInit(): void {
     this.productItemStore.loadProductItems().pipe(
       takeUntil(this.destroy$)
     ).subscribe();
-  }
-
-  selectedProducts: any[] = [];
-
-  get orderItems() {
-    return this.orderForm.get('orderItems') as FormArray;
   }
 
   // Método para crear un FormGroup para cada item
@@ -167,26 +163,6 @@ export class CreateOrderComponent implements OnInit, OnDestroy {
     this.orderItems.at(index).patchValue({quantity: newNumber});
   }
 
-  private buildOrderSummary(): string {
-// Obtener los detalles de los elementos de la orden desde orderForm
-    const orderItems = this.orderForm.get('orderItems')?.value || [];
-
-    // Construir el mensaje dinámico
-    return orderItems.map((item: any) => {
-      const product = this.selectedProducts.find(p => p.uuid === item.productItemUuid);
-      if (!product) {
-        return `- Product with ID ${item.productItemUuid} not found.`;
-      }
-
-      const name = product.name;
-      const quantity = item.quantity || 0;
-      const price = product.price || 0;
-      const total = quantity * price;
-
-      return `</br>- ${name}: ${quantity} x ${price} = ${total.toFixed(2)}`;
-    }).join('\n');
-  }
-
   confirm1($event: MouseEvent) {
     this.confirmationService.confirm({
       target: $event.target as EventTarget,
@@ -214,5 +190,25 @@ export class CreateOrderComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  private buildOrderSummary(): string {
+// Obtener los detalles de los elementos de la orden desde orderForm
+    const orderItems = this.orderForm.get('orderItems')?.value || [];
+
+    // Construir el mensaje dinámico
+    return orderItems.map((item: any) => {
+      const product = this.selectedProducts.find(p => p.uuid === item.productItemUuid);
+      if (!product) {
+        return `- Product with ID ${item.productItemUuid} not found.`;
+      }
+
+      const name = product.name;
+      const quantity = item.quantity || 0;
+      const price = product.price || 0;
+      const total = quantity * price;
+
+      return `</br>- ${name}: ${quantity} x ${price} = ${total.toFixed(2)}`;
+    }).join('\n');
   }
 }

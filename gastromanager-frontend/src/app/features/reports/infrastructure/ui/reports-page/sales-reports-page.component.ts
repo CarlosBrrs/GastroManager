@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, computed, inject} from '@angular/core';
-import {DecimalPipe, CommonModule} from '@angular/common';
+import {CommonModule, DecimalPipe} from '@angular/common';
 import {FiltersService} from '../../../infrastructure/services/filters.service';
 import {SalesReportStore} from '../../../../../core/store/sales-report/sales-report.store';
 
@@ -15,16 +15,13 @@ import {SalesReportStore} from '../../../../../core/store/sales-report/sales-rep
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SalesReportsPageComponent {
-  private readonly salesReportStore = inject(SalesReportStore);
-
   // Hacer público filtersService para acceder desde template
   readonly filtersService = inject(FiltersService);
-
+  activeFiltersCount = computed(() => this.filtersService.getActiveFiltersCount());
+  private readonly salesReportStore = inject(SalesReportStore);
   // Computed para datos del store
   salesData = computed(() => this.salesReportStore.data());
   loading = computed(() => this.salesReportStore.loading());
-  activeFiltersCount = computed(() => this.filtersService.getActiveFiltersCount());
-
   // Computed para verificar si hay cambios pendientes
   hasUnappliedChanges = computed(() => {
     const currentFilters = this.filtersService.salesFilters();

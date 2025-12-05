@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {RouterLink, RouterLinkActive} from "@angular/router";
 import {NgOptimizedImage} from "@angular/common";
 
@@ -15,8 +15,8 @@ import {NgOptimizedImage} from "@angular/common";
 })
 export class PrimarySidebarComponent {
   links = [
-    { label: 'Dashboard', route: '/dashboard' },
-    { label: 'Ingredientes', route: '/ingredients' },
+    {label: 'Dashboard', route: '/dashboard'},
+    {label: 'Ingredientes', route: '/ingredients'},
     {label: 'Menús', route: '/menus'},
     {label: 'Productos', route: '/products'},
     {label: 'Ordenes', route: '/orders'},

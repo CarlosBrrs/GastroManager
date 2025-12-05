@@ -1,16 +1,16 @@
 <div class="container">
   <div class="orders-table">
     <gm-order-table
-      (invoiceGenerated)="handleInvoices($event)"
       (addNew)="handleAdd($event)"
       (delete)="handleDelete($event)"
+      (edit)="handleEdit($event)"
+      (invoiceGenerated)="handleInvoices($event)"
       (openModal)="handleOpenInvoiceModal($event)"
       (toggleSidebar)="handleToggleSidebar($event)"
+      [data]="orderStore.orders()"
       [selectedOrder]="selectedOrder"
       [sidebarVisible]="sidebarVisible"
       [uninvoicedItems]="uninvoicedItems"
-      (edit)="handleEdit($event)"
-      [data]="orderStore.orders()"
     >
     </gm-order-table>
   </div>

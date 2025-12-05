@@ -7,10 +7,10 @@
 -->
 
 
-<form [formGroup]="submenuForm" (ngSubmit)="onSubmit()">
+<form (ngSubmit)="onSubmit()" [formGroup]="submenuForm">
   <div>
     <label for="name">Nombre:</label>
-    <input id="name" formControlName="name" type="text"/>
+    <input formControlName="name" id="name" type="text"/>
     @if (submenuForm.get('name')?.invalid && submenuForm.get('name')?.touched) {
       <div class="error">
         Nombre es requerido y debe tener al menos 3 caracteres.
@@ -20,7 +20,7 @@
 
   <div>
     <label for="description">Descripcion:</label>
-    <input id="description" formControlName="description" type="text"/>
+    <input formControlName="description" id="description" type="text"/>
     @if (submenuForm.get('description')?.invalid && submenuForm.get('description')?.touched) {
       <div
         class="error">
@@ -29,21 +29,21 @@
     }
   </div>
 
-  <button type="submit"
-          [disabled]="!submenuForm.valid">
+  <button [disabled]="!submenuForm.valid"
+          type="submit">
 
     {{ 'Crear submenu' }}
 
   </button>
 
-<!--  <button type="submit"
-          [disabled]="!submenuForm.valid || loading"> @if (loading) {
-    <p-progressSpinner
-      styleClass="w-4rem h-4rem"
-      strokeWidth="3"
-      animationDuration="1s"/>
-  } @else {
-    {{ 'Crear submenu' }}
-  }
-  </button>-->
+  <!--  <button type="submit"
+            [disabled]="!submenuForm.valid || loading"> @if (loading) {
+      <p-progressSpinner
+        styleClass="w-4rem h-4rem"
+        strokeWidth="3"
+        animationDuration="1s"/>
+    } @else {
+      {{ 'Crear submenu' }}
+    }
+    </button>-->
 </form>

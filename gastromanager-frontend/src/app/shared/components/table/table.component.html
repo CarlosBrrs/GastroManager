@@ -1,22 +1,22 @@
-<p-table [value]="data"
-         [columns]="displayColumns"
-         [rowHover]="true"
+<p-table (onLazyLoad)="loadPageData($event)"
+         (onRowSelect)="onSelectedRow($event)"
          [(selection)]="selectedItem"
+         [columns]="displayColumns"
+         [lazy]="true"
+         [loading]="loading"
          [metaKeySelection]="false"
+         [paginator]="true"
+         [rowHover]="true"
+         [rows]="7"
+         [showCurrentPageReport]="true"
+         [showJumpToPageDropdown]="true"
+         [style]="{'width': '100%'}"
+         [totalRecords]="totalRecords"
+         [value]="data"
          dataKey="uuid"
          selectionMode="single"
-         styleClass="p-datatable-striped"
-         [paginator]="true"
-         [loading]="loading"
-         [style]="{'width': '100%'}"
-         [rows]="7"
-         [lazy]="true"
-         [totalRecords]="totalRecords"
-         (onLazyLoad)="loadPageData($event)"
-         (onRowSelect)="onSelectedRow($event)"
-         [showCurrentPageReport]="true"
-         [showJumpToPageDropdown]="true">
-  <ng-template pTemplate="header" let-columns>
+         styleClass="p-datatable-striped">
+  <ng-template let-columns pTemplate="header">
     <tr>
       @for (col of columns; track $index) {
         <th>{{ col.header }}
@@ -28,7 +28,7 @@
     </tr>
   </ng-template>
 
-  <ng-template pTemplate="body" let-rowData let-columns="columns">
+  <ng-template let-columns="columns" let-rowData pTemplate="body">
     <tr [pSelectableRow]="rowData" class="p-selectable-row">
       @for (col of columns; track $index) {
         <td>
@@ -36,13 +36,13 @@
             <div class="actions-container">
               @for (action of actions; track $index) {
                 @if (!action.visible || action.visible(rowData)) {
-                  <p-button [severity]="action.severity"
-                            [rounded]="true"
-                            [outlined]="true"
+                  <p-button (click)="executeAction(action, rowData, $event)"
+                            [disabled]="action.disabled ? action.disabled(rowData) : false"
                             [icon]="action.icon"
                             [label]="action.label"
-                            [disabled]="action.disabled ? action.disabled(rowData) : false"
-                            (click)="executeAction(action, rowData, $event)">
+                            [outlined]="true"
+                            [rounded]="true"
+                            [severity]="action.severity">
                   </p-button>
                 }
               }

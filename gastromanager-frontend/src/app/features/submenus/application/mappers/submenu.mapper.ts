@@ -1,4 +1,4 @@
-import { SubmenuRequestDto } from "../../domain/models/submenu-request-dto.interface";
+import {SubmenuRequestDto} from "../../domain/models/submenu-request-dto.interface";
 import {SubmenuSummaryResponseDto} from "../../domain/models/submenu-summary-response-dto.interface";
 import {Submenu} from "../../domain/models/submenu.interface";
 

@@ -1,9 +1,8 @@
 import {Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
 import {Button} from "primeng/button";
-import {CurrencyPipe, DatePipe, JsonPipe} from "@angular/common";
+import {CurrencyPipe} from "@angular/common";
 import {DialogModule} from "primeng/dialog";
 import {InputTextModule} from "primeng/inputtext";
-import {InventoryFormComponent} from "../../inventory/inventory-form/inventory-form.component";
 import {ConfirmationService, PrimeTemplate} from "primeng/api";
 import {Table, TableModule, TableRowSelectEvent} from "primeng/table";
 import {ToolbarModule} from "primeng/toolbar";
@@ -22,7 +21,6 @@ import {ProductItem} from "../../../core/store/product-item/product-item.model";
     CurrencyPipe,
     DialogModule,
     InputTextModule,
-    InventoryFormComponent,
     PrimeTemplate,
     TableModule,
     ToolbarModule,
@@ -30,9 +28,7 @@ import {ProductItem} from "../../../core/store/product-item/product-item.model";
     CheckboxModule,
     ConfirmDialogModule,
     FormsModule,
-    DatePipe,
-    SidebarModule,
-    JsonPipe
+    SidebarModule
   ],
   templateUrl: './product-item-table.component.html',
   styleUrl: './product-item-table.component.scss'
@@ -146,10 +142,6 @@ export class ProductItemTableComponent {
     this.openSidebar()
   }
 
-  private openSidebar() {
-    this.sidebarVisible = true;
-  }
-
   // Cerrar el sidebar
   closeSidebar() {
     this.sidebarVisible = false;
@@ -168,5 +160,9 @@ export class ProductItemTableComponent {
       inputElement.value = this.filterValue;
     }
     this.onGlobalFilter(this.table, {target: {value: this.filterValue}} as unknown as Event);
+  }
+
+  private openSidebar() {
+    this.sidebarVisible = true;
   }
 }

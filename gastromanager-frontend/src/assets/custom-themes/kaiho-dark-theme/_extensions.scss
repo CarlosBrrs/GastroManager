@@ -68,25 +68,25 @@ $breakpoints: (
 // =============================================================================
 
 // Spacing responsivo usando tus variables existentes
-$spacing-xs: $inlineSpacing;               // 0.5rem
-$spacing-sm: $inlineSpacing * 2;           // 1rem
-$spacing-md: $inlineSpacing * 3;           // 1.5rem
-$spacing-lg: $inlineSpacing * 4;           // 2rem
-$spacing-xl: $inlineSpacing * 5;           // 2.5rem
+$spacing-xs: $inlineSpacing; // 0.5rem
+$spacing-sm: $inlineSpacing * 2; // 1rem
+$spacing-md: $inlineSpacing * 3; // 1.5rem
+$spacing-lg: $inlineSpacing * 4; // 2rem
+$spacing-xl: $inlineSpacing * 5; // 2.5rem
 
 // Border radius responsivo usando tu variable
-$border-radius-xs: calc($borderRadius * 0.25);   // 4px
-$border-radius-sm: calc($borderRadius * 0.5);    // 8px
-$border-radius-md: calc($borderRadius * 0.75);   // 12px
-$border-radius-lg: $borderRadius;                // 16px
+$border-radius-xs: calc($borderRadius * 0.25); // 4px
+$border-radius-sm: calc($borderRadius * 0.5); // 8px
+$border-radius-md: calc($borderRadius * 0.75); // 12px
+$border-radius-lg: $borderRadius; // 16px
 
 // Font sizes responsivo usando tu variable base
-$font-size-xs: $fontSize * 0.875;         // 0.875rem
-$font-size-sm: $fontSize * 0.9375;        // 0.9375rem
-$font-size-base: $fontSize;               // 1rem
-$font-size-md: $fontSize * 1.125;         // 1.125rem
-$font-size-lg: $fontSize * 1.25;          // 1.25rem
-$font-size-xl: $fontSize * 1.5;           // 1.5rem
+$font-size-xs: $fontSize * 0.875; // 0.875rem
+$font-size-sm: $fontSize * 0.9375; // 0.9375rem
+$font-size-base: $fontSize; // 1rem
+$font-size-md: $fontSize * 1.125; // 1.125rem
+$font-size-lg: $fontSize * 1.25; // 1.25rem
+$font-size-xl: $fontSize * 1.5; // 1.5rem
 
 // =============================================================================
 // MIXINS UTILITARIOS PARA COMPONENTES

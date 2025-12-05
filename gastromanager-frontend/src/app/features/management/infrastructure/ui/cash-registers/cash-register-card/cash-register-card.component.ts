@@ -1,7 +1,7 @@
-import {Component, ChangeDetectionStrategy, input, output, signal, inject} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, NonNullableFormBuilder, Validators, FormGroup, AbstractControl } from '@angular/forms';
-import { CashRegister } from "../../../../domain/models/cash-register.interface";
+import {ChangeDetectionStrategy, Component, inject, input, output, signal} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {AbstractControl, FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
+import {CashRegister} from "../../../../domain/models/cash-register.interface";
 
 @Component({
   selector: 'gm-cash-register-card',
@@ -12,35 +12,30 @@ import { CashRegister } from "../../../../domain/models/cash-register.interface"
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CashRegisterCardComponent {
-  // Inyecciones
-  private readonly fb = inject(NonNullableFormBuilder);
-
   // Inputs reactivos
   cashRegister = input.required<CashRegister>();
   sessionSummary = input<any>(null); // Nuevo input para recibir el resumen de sesión
-
   // Estados locales para manejar la expansión
   isExpanded = signal(false);
   expandedMode = signal<'open' | 'close' | null>(null);
-
+  // Outputs reactivos
+  openCashRegister = output<{ uuid: string, initialAmount: number, notes: string }>();
+  closeCashRegister = output<{ uuid: string, finalAmount: number, notes: string }>();
+  viewDetails = output<string>();
+  viewTransactions = output<string>();
+  requestSessionSummary = output<string>(); // Nuevo output para solicitar resumen de sesión
+  // Inyecciones
+  private readonly fb = inject(NonNullableFormBuilder);
   // Formulario reactivo para abrir caja
   openCashRegisterForm = this.fb.group({
     initialAmount: this.fb.control(0, [Validators.required, Validators.min(0)]),
     notes: this.fb.control('')
   });
-
   // Formulario reactivo para cerrar caja
   closeCashRegisterForm = this.fb.group({
     finalAmount: this.fb.control(0, [Validators.required, Validators.min(0)]),
     notes: this.fb.control('')
   });
-
-  // Outputs reactivos
-  openCashRegister = output<{uuid: string, initialAmount: number, notes: string}>();
-  closeCashRegister = output<{uuid: string, finalAmount: number, notes: string}>();
-  viewDetails = output<string>();
-  viewTransactions = output<string>();
-  requestSessionSummary = output<string>(); // Nuevo output para solicitar resumen de sesión
 
   onOpenClick() {
     console.log('🟢 Expandiendo caja registradora para abrir:', this.cashRegister().name);
@@ -124,13 +119,6 @@ export class CashRegisterCardComponent {
     });
   }
 
-  private markFormGroupTouched(form: FormGroup) {
-    Object.keys(form.controls).forEach(key => {
-      const control: AbstractControl | null = form.get(key);
-      control?.markAsTouched();
-    });
-  }
-
   // Métodos de validación para el template
   isFieldInvalid(fieldName: string, formType: 'open' | 'close' = 'open'): boolean {
     const form: FormGroup = formType === 'open' ? this.openCashRegisterForm : this.closeCashRegisterForm;
@@ -182,5 +170,12 @@ export class CashRegisterCardComponent {
       default:
         return 'Desconocido';
     }
+  }
+
+  private markFormGroupTouched(form: FormGroup) {
+    Object.keys(form.controls).forEach(key => {
+      const control: AbstractControl | null = form.get(key);
+      control?.markAsTouched();
+    });
   }
 }

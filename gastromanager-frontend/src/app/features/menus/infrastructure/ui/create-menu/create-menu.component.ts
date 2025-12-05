@@ -27,11 +27,12 @@ export class CreateMenuComponent {
   @Input() error: string | null = null;
   @Output() onCreateMenu = new EventEmitter<Menu>();
 
+  private _menuToEdit?: Menu;
+
   get menuToEdit(): Menu | undefined {
     return this._menuToEdit;
   }
 
-  private _menuToEdit?: Menu;
   @Input()
   set menuToEdit(menu: Menu | undefined) {
     this._menuToEdit = menu;

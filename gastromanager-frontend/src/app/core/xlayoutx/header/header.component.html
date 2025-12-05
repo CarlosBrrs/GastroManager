@@ -1,18 +1,19 @@
 <p-toolbar>
   <div class="p-toolbar-group-left gap-4">
     <div class="company-logo">
-      <img ngSrc="assets/images/icon.png" alt="icon" height="40" width="40"></div>
-    <p-button [outlined]="true" icon="pi pi-bars" (click)="toggleSidebar()" class="p-button-secondary" [style]="{border: 'none'}"></p-button>
+      <img alt="icon" height="40" ngSrc="assets/images/icon.png" width="40"></div>
+    <p-button (click)="toggleSidebar()" [outlined]="true" [style]="{border: 'none'}" class="p-button-secondary"
+              icon="pi pi-bars"></p-button>
   </div>
 
   <div class="p-toolbar-group-center">
     <div class="restaurants">
       @if (role === 'ROLE_OWNER') {
         <p-dropdown
-          [options]="restaurants"
+          (onChange)="onSelectRestaurant()"
           [(ngModel)]="assignedRestaurant"
-          optionLabel="name"
-          (onChange)="onSelectRestaurant()"/>
+          [options]="restaurants"
+          optionLabel="name"/>
       } @else if (role === 'ROLE_SUPERUSER') {
 
       } @else {
@@ -23,7 +24,7 @@
 
   <div class="p-toolbar-group-right">
     <i class="pi pi-bell mr-4 p-text-secondary" pBadge style="font-size: 2rem" value="2"></i>
-    <p-button icon="pi pi-user" [rounded]="true" severity="info" [outlined]="true" (onClick)="op.toggle($event)"/>
+    <p-button (onClick)="op.toggle($event)" [outlined]="true" [rounded]="true" icon="pi pi-user" severity="info"/>
     <p-overlayPanel #op>
       <div class="flex flex-column gap-3 w-15rem">
         <p>Hello {{ role }}, these are the quick actions for your profile</p>
@@ -34,12 +35,13 @@
         <div>
           <span class="font-medium text-900 block mb-2">Invite Member</span>
           <div class="flex">
-            <p-button label="Invite" icon="pi pi-users"/>
+            <p-button icon="pi pi-users" label="Invite"/>
           </div>
         </div>
         <div>
           <span class="font-medium text-900 block mb-2">Team Members</span>
-          <p-button (onClick)="logout()" class="p-menuitem-link flex flex-column w-5" [style]="{backgroundColor: 'var(--surface-0)'}">
+          <p-button (onClick)="logout()" [style]="{backgroundColor: 'var(--surface-0)'}"
+                    class="p-menuitem-link flex flex-column w-5">
             <div class="pi pi-sign-out" style="color: var(--primary-color); font-size: 1.5rem"></div>
             <div class="menu-label">Logout</div>
           </p-button>

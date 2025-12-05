@@ -5,6 +5,7 @@ import {UserRestaurantResponseDto} from "../models/user-restaurant-response-dto.
 export interface RestaurantsRepository {
 
   getRestaurantDetails(uuid: string): Observable<Restaurant>;
+
   getUserRestaurants(): Observable<UserRestaurantResponseDto[]>;
 
 }

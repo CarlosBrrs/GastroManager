@@ -1,5 +1,5 @@
 // Rutas para payments
-import { Routes } from '@angular/router';
+import {Routes} from '@angular/router';
 
 export const paymentsRoutes: Routes = [
   {

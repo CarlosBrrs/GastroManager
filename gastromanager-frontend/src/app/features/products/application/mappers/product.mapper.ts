@@ -1,13 +1,16 @@
 import {Product} from "../../domain/models/product.interface";
 import {ProductRequestDto} from "../../domain/models/product-request-dto.interface";
 import {ProductSummaryResponseDto} from "../../domain/models/product-summary-response-dto.interface";
-import {ProductGroupByResponseDto, ProductCategoryItemDto} from "../../domain/models/product-group-by-response-dto.interface";
+import {
+  ProductCategoryItemDto,
+  ProductGroupByResponseDto
+} from "../../domain/models/product-group-by-response-dto.interface";
 import {ProductsByCategory} from "../../domain/models/products-by-category.interface";
 
 export function mapToProductRequestDto(product: Product): ProductRequestDto {
   // Verificar si es modo avanzado (tiene recipes o ingredients)
   const isAdvancedMode = (product.recipes && product.recipes.length > 0) ||
-                         (product.ingredients && product.ingredients.length > 0);
+    (product.ingredients && product.ingredients.length > 0);
 
   if (isAdvancedMode) {
     // Modo avanzado: no enviar purchasePrice

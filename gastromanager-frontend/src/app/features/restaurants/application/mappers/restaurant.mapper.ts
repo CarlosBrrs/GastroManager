@@ -1,5 +1,5 @@
-import { Restaurant } from '../../domain/models/restaurant.interface';
-import { RestaurantDetailResponseDto } from '../../domain/models/restaurant-detail-response-dto.interface';
+import {Restaurant} from '../../domain/models/restaurant.interface';
+import {RestaurantDetailResponseDto} from '../../domain/models/restaurant-detail-response-dto.interface';
 
 export function mapToRestaurantDetail(dto: RestaurantDetailResponseDto): Restaurant {
   return {

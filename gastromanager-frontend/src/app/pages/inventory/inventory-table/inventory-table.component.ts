@@ -9,7 +9,6 @@ import {ConfirmDialogModule} from "primeng/confirmdialog";
 import {DialogModule} from "primeng/dialog";
 import {InputTextModule} from "primeng/inputtext";
 import {InventoryFormComponent} from "../inventory-form/inventory-form.component";
-import {Ripple} from "primeng/ripple";
 import {IngredientRequestDto} from "../../../core/model/interfaces/IngredientRequestDto";
 import {SidebarModule} from "primeng/sidebar";
 import {IngredientItem} from "../../../core/store/inventory/ingredient.model";
@@ -33,7 +32,6 @@ export interface AdjustStockRequestDto {
     DialogModule,
     InputTextModule,
     InventoryFormComponent,
-    Ripple,
     SidebarModule,
     DatePipe,
     ReactiveFormsModule
@@ -58,12 +56,15 @@ export class InventoryTableComponent {
   @Output() addNew = new EventEmitter<IngredientRequestDto>();
 
   @Input() data: IngredientItem[] = [];
+  sidebarVisible: boolean = false;
+
   constructor(private readonly fb: FormBuilder) {
     this.stockForm = this.fb.group({
       newStock: [null, [Validators.required, Validators.min(0)]],
       reason: ['', Validators.required]
     });
   }
+
   openNew() {
     this.selectedIngredient = undefined;
     this.isModalVisible = true;
@@ -84,13 +85,13 @@ export class InventoryTableComponent {
     this.delete.emit(ingredientUuid);
   }
 
+  // TODO: CAMBIAR TIPO y separar el uuid del ingredient, ambos parametros estan llevando el uuid
+
   onGlobalFilter(dt: Table, event: Event) {
     const inputValue = (event.target as HTMLInputElement).value;
     this.filterValue = inputValue;
     dt.filterGlobal(inputValue, 'contains');
   }
-
-  // TODO: CAMBIAR TIPO y separar el uuid del ingredient, ambos parametros estan llevando el uuid
 
   onFormSubmit(ingredient: IngredientRequestDto) {
     if (this.selectedIngredient) {
@@ -114,8 +115,6 @@ export class InventoryTableComponent {
     this.openSidebar()
   }
 
-  sidebarVisible: boolean = false;
-
   // Abrir el sidebar
   openSidebar() {
     this.stockForm.reset({
@@ -131,7 +130,7 @@ export class InventoryTableComponent {
     this.selectedIngredient = undefined;
     if (this.filterValue) {
       setTimeout(() => {
-        this.onGlobalFilter(this.table, { target: { value: this.filterValue } } as unknown as Event);
+        this.onGlobalFilter(this.table, {target: {value: this.filterValue}} as unknown as Event);
       }, 0);
     }
   }
@@ -146,7 +145,7 @@ export class InventoryTableComponent {
     if (inputElement) {
       inputElement.value = this.filterValue;
     }
-    this.onGlobalFilter(this.table, { target: { value: this.filterValue } } as unknown as Event);
+    this.onGlobalFilter(this.table, {target: {value: this.filterValue}} as unknown as Event);
   }
 
   submitForm() {

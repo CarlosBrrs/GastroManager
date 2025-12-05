@@ -1,6 +1,5 @@
 import {Component, computed, effect, inject} from '@angular/core';
 import {NonNullableFormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
-import {AuthFacade} from "../../../application/facades/auth.facade";
 import {Login} from "../../../domain/models/login.model";
 import {ProgressSpinnerModule} from "primeng/progressspinner";
 import {InputTextModule} from "primeng/inputtext";
@@ -24,16 +23,14 @@ import {AuthStore} from "../../../../../core/store/auth/auth.store";
 })
 export class LoginPageComponent {
   private readonly fb = inject(NonNullableFormBuilder);
-  private readonly authStore = inject(AuthStore);
-  private readonly router = inject(Router);
-
   readonly loginForm = this.fb.group({
     username: ['', [Validators.required]],
     password: ['', [Validators.required, Validators.minLength(6)]]
   });
-
+  private readonly authStore = inject(AuthStore);
   readonly loading = computed(() => this.authStore.loading());
   readonly error = computed(() => this.authStore.error());
+  private readonly router = inject(Router);
 
   constructor() {
     effect(() => {

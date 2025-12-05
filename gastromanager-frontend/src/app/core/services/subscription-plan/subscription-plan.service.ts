@@ -18,6 +18,6 @@ export class SubscriptionPlanService extends BaseHttpService {
   }
 
   getSubscriptionPlanByUuid(uuid: string) {
-return this.handleRequest<SubscriptionPlan>("GET", "subscription-plans/" + uuid, {headers: {'Accept': 'application/json'}})
+    return this.handleRequest<SubscriptionPlan>("GET", "subscription-plans/" + uuid, {headers: {'Accept': 'application/json'}})
   }
 }

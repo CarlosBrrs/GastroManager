@@ -7,7 +7,7 @@
         <p class="page-subtitle text-muted">Gestión y monitoreo de cajas registradoras</p>
       </div>
       <div>
-        <button class="btn btn-primary" (click)="onCreateCashRegister()">
+        <button (click)="onCreateCashRegister()" class="btn btn-primary">
           <i class="fas fa-plus me-2"></i>Nueva Caja Registradora
         </button>
       </div>
@@ -29,7 +29,8 @@
           <div class="stats-separator">|</div>
           <div class="stats-compact-item">
             <i class="fas fa-dollar-sign text-info me-2"></i>
-            <span class="stats-text">Total Inicial: <strong>{{ totalInitialAmount() | currency:'COP':'symbol':'1.0-0' }}</strong></span>
+            <span
+              class="stats-text">Total Inicial: <strong>{{ totalInitialAmount() | currency:'COP':'symbol':'1.0-0' }}</strong></span>
           </div>
           <div class="stats-separator">|</div>
           <div class="stats-compact-item">
@@ -63,7 +64,7 @@
       <div class="alert alert-danger alert-dismissible" role="alert">
         <i class="fas fa-exclamation-triangle me-2"></i>
         <strong>Error en sesión:</strong> {{ sessionError() }}
-        <button type="button" class="btn-close" (click)="clearSessionError()" aria-label="Cerrar"></button>
+        <button (click)="clearSessionError()" aria-label="Cerrar" class="btn-close" type="button"></button>
       </div>
     }
 
@@ -72,13 +73,13 @@
       <div class="cash-registers-grid">
         @for (cashRegister of cashRegisters(); track cashRegister.uuid) {
           <gm-cash-register-card
-            [cashRegister]="cashRegister"
-            [sessionSummary]="getSessionSummaryForCashRegister(cashRegister.uuid)"
-            (openCashRegister)="onOpenCashRegister($event)"
             (closeCashRegister)="onCloseCashRegister($event)"
+            (openCashRegister)="onOpenCashRegister($event)"
+            (requestSessionSummary)="onRequestSessionSummary($event)"
             (viewDetails)="onViewCashRegisterDetails($event)"
             (viewTransactions)="onViewTransactions($event)"
-            (requestSessionSummary)="onRequestSessionSummary($event)"
+            [cashRegister]="cashRegister"
+            [sessionSummary]="getSessionSummaryForCashRegister(cashRegister.uuid)"
           >
           </gm-cash-register-card>
         }
@@ -89,7 +90,7 @@
             <i class="fas fa-cash-register fa-5x text-muted mb-3"></i>
             <h4 class="text-muted">No hay cajas registradoras configuradas</h4>
             <p class="text-muted mb-4">Comienza creando tu primera caja registradora</p>
-            <button class="btn btn-primary" (click)="onCreateCashRegister()">
+            <button (click)="onCreateCashRegister()" class="btn btn-primary">
               <i class="fas fa-plus me-2"></i>Crear Primera Caja Registradora
             </button>
           </div>

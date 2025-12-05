@@ -6,7 +6,6 @@ import {FormsModule} from "@angular/forms";
 import {NgOptimizedImage} from "@angular/common";
 import {AvatarModule} from "primeng/avatar";
 import {OverlayPanelModule} from "primeng/overlaypanel";
-import {RouterLink} from "@angular/router";
 import {AuthService} from "../../services/auth/auth.service";
 import {BadgeModule} from "primeng/badge";
 
@@ -21,7 +20,6 @@ import {BadgeModule} from "primeng/badge";
     NgOptimizedImage,
     AvatarModule,
     OverlayPanelModule,
-    RouterLink,
     BadgeModule
   ],
   templateUrl: './header.component.html',

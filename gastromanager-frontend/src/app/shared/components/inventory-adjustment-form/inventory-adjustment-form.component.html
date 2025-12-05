@@ -1,0 +1,105 @@
+<form (ngSubmit)="handleSubmit()" [formGroup]="form" class="inventory-adjustment-form">
+
+  <!-- Mensaje de error del store -->
+  @if (error()) {
+    <div class="error-banner">
+      <i class="pi pi-exclamation-triangle"></i>
+      <span>{{ error() }}</span>
+    </div>
+  }
+
+  <!-- SelectButton: Reemplazar vs Ajustar -->
+  <div class="form-group select-button-group">
+    <p-selectButton
+      [options]="adjustmentTypeOptions"
+      formControlName="adjustmentType"
+      optionLabel="label"
+      optionValue="value"
+      styleClass="w-full"
+    />
+    <div class="select-button-description">
+      @if (isReplaceMode) {
+        <span>El valor ingresado reemplazará el stock actual</span>
+      } @else {
+        <span>El valor ingresado se sumará o restará del stock actual</span>
+      }
+    </div>
+  </div>
+
+  <!-- Campo de cantidad -->
+  <div class="form-group">
+    <p-floatLabel>
+      <p-inputNumber
+        [maxFractionDigits]="2"
+        [minFractionDigits]="0"
+        [min]="0"
+        [showButtons]="true"
+        [step]="1"
+        [suffix]="unit() ? ' ' + unit() : ''"
+        formControlName="quantity"
+        inputId="quantity"
+        locale="es-CO"
+        mode="decimal"
+        styleClass="w-full"
+      />
+      <label for="quantity">
+        {{ isReplaceMode ? 'Cantidad a ajustar' : 'Nuevo valor de stock' }}
+      </label>
+    </p-floatLabel>
+    @if (form.get('quantity')?.invalid && form.get('quantity')?.touched) {
+      <small class="error-message">
+        @if (form.get('quantity')?.hasError('required')) {
+          La cantidad es requerida
+        }
+        @if (form.get('quantity')?.hasError('min')) {
+          La cantidad debe ser mayor a 0
+        }
+      </small>
+    }
+  </div>
+
+  <!-- Campo de razón -->
+  <div class="form-group">
+    <p-floatLabel>
+      <textarea
+        [autoResize]="true"
+        class="w-full"
+        formControlName="reason"
+        id="reason"
+        pInputTextarea
+        rows="3"
+      ></textarea>
+      <label for="reason">Razón del ajuste</label>
+    </p-floatLabel>
+    @if (form.get('reason')?.invalid && form.get('reason')?.touched) {
+      <small class="error-message">
+        @if (form.get('reason')?.hasError('required')) {
+          La razón es requerida
+        }
+        @if (form.get('reason')?.hasError('minlength')) {
+          Mínimo 3 caracteres
+        }
+      </small>
+    }
+  </div>
+
+  <!-- Botones de acción -->
+  <div class="form-actions">
+    <p-button
+      (onClick)="handleCancel()"
+      [disabled]="loading()"
+      [outlined]="true"
+      label="Cancelar"
+      severity="secondary"
+      type="button"
+    />
+    <p-button
+      [disabled]="form.invalid || loading()"
+      [label]="loading() ? 'Aplicando...' : 'Aplicar Ajuste'"
+      [loading]="loading()"
+      severity="primary"
+      type="submit"
+    />
+  </div>
+</form>
+

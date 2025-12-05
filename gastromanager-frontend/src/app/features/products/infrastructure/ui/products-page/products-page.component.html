@@ -1,13 +1,13 @@
 <main class="page-container">
-  <gm-products-table [style]="{'width': '100%', 'min-height': '100%'}"
-                        [data]="products()"
-                        [columns]="tableColumns"
-                        [totalRecords]="totalRecords()"
-                        [actions]="actions"
-                        [loading] = "loading()"
-                        [selectedProduct]="selectedProduct()"
-                        (onProductSelected)="handleProductSelected($event)"
-                        (changePage)="changePageHandler($event)"
+  <gm-products-table (changePage)="changePageHandler($event)"
+                     (onProductSelected)="handleProductSelected($event)"
+                     [actions]="actions"
+                     [columns]="tableColumns"
+                     [data]="products()"
+                     [loading]="loading()"
+                     [selectedProduct]="selectedProduct()"
+                     [style]="{'width': '100%', 'min-height': '100%'}"
+                     [totalRecords]="totalRecords()"
   >
   </gm-products-table>
 </main>

@@ -1,10 +1,9 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {ConfirmDialogModule} from "primeng/confirmdialog";
-import {CurrencyPipe, DatePipe, JsonPipe, NgClass} from "@angular/common";
+import {CurrencyPipe, DatePipe, JsonPipe} from "@angular/common";
 import {DialogModule} from "primeng/dialog";
 import {InputTextModule} from "primeng/inputtext";
 import {ConfirmationService, PrimeTemplate} from "primeng/api";
-import {ProductItemFormComponent} from "../../product-item/product-item-form/product-item-form.component";
 import {Table, TableModule, TableRowSelectEvent} from "primeng/table";
 import {ToolbarModule} from "primeng/toolbar";
 import {Router} from "@angular/router";
@@ -47,7 +46,6 @@ interface GroupedItem {
     DialogModule,
     InputTextModule,
     PrimeTemplate,
-    ProductItemFormComponent,
     TableModule,
     ToolbarModule,
     TagModule,
@@ -55,7 +53,6 @@ interface GroupedItem {
     SidebarModule,
     InputNumberModule,
     ReactiveFormsModule,
-    NgClass,
     PickListModule,
     JsonPipe,
     AccordionModule,
@@ -82,13 +79,13 @@ export class OrderTableComponent {
   isBilling: boolean = false;
   selectedItems: any[] = [];
   @Output() invoiceGenerated = new EventEmitter<{ orderUuid: string; payload: InvoiceRequestDto }>();
-  protected invoiceTotal: number = 0;
   @Input() uninvoicedItems: UninvoicedOrderItem[] = [];
   groupedItems: any[] = [];
   subtotal: number = 0;
   tipAmount: number = 0;
   taxTotal: number = 0
   tipPercentage: number = 0;
+  protected invoiceTotal: number = 0;
 
   constructor(private readonly fb: FormBuilder, private readonly router: Router, private readonly confirmationService: ConfirmationService,) {
     this.invoiceForm = this.fb.group({
@@ -104,6 +101,10 @@ export class OrderTableComponent {
         this.tipAmount = value || 0;
       }
     });
+  }
+
+  get finalTotal(): number {
+    return this.subtotal + this.taxTotal + this.tipAmount;
   }
 
   newOrder() {
@@ -222,10 +223,6 @@ export class OrderTableComponent {
     } else {
       this.tipAmount = this.invoiceForm.get('tipAmount')?.value || 0;
     }
-  }
-
-  get finalTotal(): number {
-    return this.subtotal + this.taxTotal + this.tipAmount;
   }
 
   setTip(percentage: number) {

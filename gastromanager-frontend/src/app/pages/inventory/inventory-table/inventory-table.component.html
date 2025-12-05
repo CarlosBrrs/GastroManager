@@ -1,16 +1,16 @@
 <div class="card">
   <h2 class="mb-4">Manage Inventory</h2>
 
-    <p-toolbar styleClass="mb-4">
-      <div class="flex align-items-center w-full justify-content-between">
+  <p-toolbar styleClass="mb-4">
+    <div class="flex align-items-center w-full justify-content-between">
 
-        <p-button
-          (onClick)="openNew()"
-          class="mr-2"
-          icon="pi pi-plus"
-          label="Add new ingredient"
-          severity="success"/>
-        <span class="p-input-icon-left p-input-icon-right">
+      <p-button
+        (onClick)="openNew()"
+        class="mr-2"
+        icon="pi pi-plus"
+        label="Add new ingredient"
+        severity="success"/>
+      <span class="p-input-icon-left p-input-icon-right">
                     <i class="pi pi-search"></i>
                     <input
                       (input)="onGlobalFilter(dt, $event)"
@@ -20,149 +20,152 @@
                       type="text"/>
           <i (click)="clearText()" class="pi pi-times cursor-pointer"></i>
                 </span>
+    </div>
+  </p-toolbar>
+
+  <p-table
+    #dt
+    (onRowSelect)="onRowSelect($event)"
+    [(selection)]="selectedIngredient"
+    [globalFilterFields]="['name', 'unit']"
+    [loading]="loading"
+    [metaKeySelection]="false"
+    [paginator]="true"
+    [resizableColumns]="true"
+    [rowHover]="true"
+    [rows]="7"
+    [showCurrentPageReport]="true"
+    [tableStyle]="{ 'min-width': '74rem' }"
+    [value]="data"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    dataKey="uuid"
+    loadingIcon="pi pi-spin pi-spinner"
+    selectionMode="single"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <!--          <th style="width: 4rem">-->
+        <!--          </th>-->
+        <th pResizableColumn pSortableColumn="name" scope="col" style="min-width:15rem">
+          Name
+          <p-sortIcon field="name"/>
+        </th>
+        <!--                    <th>
+                              Image
+                            </th>-->
+        <th pResizableColumn pSortableColumn="pricePerUnit" scope="col">
+          Price per unit
+          <p-sortIcon field="pricePerUnit"/>
+        </th>
+        <!--                    <th pSortableColumn="category" style="min-width:10rem">
+                              Category <p-sortIcon field="category" />
+                            </th>
+                            <th pSortableColumn="rating">
+                              Reviews <p-sortIcon field="rating" />
+                            </th>-->
+        <th pResizableColumn pSortableColumn="availableStock" scope="col">Stock level
+          <p-sortIcon field="availableStock"/>
+        </th>
+        <th pResizableColumn pSortableColumn="unit" scope="col" style="min-width:10rem">
+          Unit
+          <p-sortIcon field="unit"/>
+        </th>
+        <th pResizableColumn scope="col">Edit - Delete</th>
+      </tr>
+    </ng-template>
+    <ng-template let-ingredient pTemplate="body">
+
+      <tr [pSelectableRow]="ingredient">
+
+        <td>
+          {{ ingredient.name }}
+        </td>
+
+        <td>
+          {{ ingredient.pricePerUnit | currency: 'CAD':'symbol-narrow': '1.1-6' }}
+        </td>
+        <td>{{ ingredient.availableStock }}</td>
+        <td>{{ ingredient.unit }}</td>
+
+        <td>
+          <p-button
+            (onClick)="editIngredient(ingredient)"
+            [outlined]="true"
+            [rounded]="true"
+            class="mr-2"
+            icon="pi pi-pencil"
+            severity="success"/>
+          <p-button
+            (onClick)="deleteIngredient(ingredient.uuid)"
+            [outlined]="true"
+            [rounded]="true"
+            icon="pi pi-trash"
+            severity="danger"/>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="summary">
+      <div class="flex align-items-center justify-content-between">
+        In total there are {{ data ? data.length : 0 }} products.
       </div>
-    </p-toolbar>
+    </ng-template>
+  </p-table>
 
-    <p-table
-      #dt
-      [(selection)]="selectedIngredient"
-      [globalFilterFields]="['name', 'unit']"
-      [metaKeySelection]="false"
-      [paginator]="true"
-      [resizableColumns]="true"
-      [rowHover]="true"
-      [rows]="7"
-      [loading]="loading"
-      loadingIcon="pi pi-spin pi-spinner"
-      [showCurrentPageReport]="true"
-      [tableStyle]="{ 'min-width': '74rem' }"
-      [value]="data"
-      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-      dataKey="uuid"
-      selectionMode="single"
-      (onRowSelect)="onRowSelect($event)"
-    >
-      <ng-template pTemplate="header">
-        <tr>
-          <!--          <th style="width: 4rem">-->
-          <!--          </th>-->
-          <th pResizableColumn pSortableColumn="name" scope="col" style="min-width:15rem">
-            Name
-            <p-sortIcon field="name"/>
-          </th>
-          <!--                    <th>
-                                Image
-                              </th>-->
-          <th pResizableColumn pSortableColumn="pricePerUnit" scope="col">
-            Price per unit
-            <p-sortIcon field="pricePerUnit"/>
-          </th>
-          <!--                    <th pSortableColumn="category" style="min-width:10rem">
-                                Category <p-sortIcon field="category" />
-                              </th>
-                              <th pSortableColumn="rating">
-                                Reviews <p-sortIcon field="rating" />
-                              </th>-->
-          <th pResizableColumn pSortableColumn="availableStock" scope="col">Stock level<p-sortIcon field="availableStock"/></th>
-          <th pResizableColumn pSortableColumn="unit" scope="col" style="min-width:10rem">
-            Unit
-            <p-sortIcon field="unit"/>
-          </th>
-          <th pResizableColumn scope="col">Edit - Delete</th>
-        </tr>
-      </ng-template>
-      <ng-template let-ingredient pTemplate="body">
+  <p-sidebar (onHide)="closeSidebar()" [(visible)]="sidebarVisible" position="right" styleClass="w-30rem">
+    <h3>Ingredient Details</h3>
+    <!-- Verifica si hay un ingrediente seleccionado antes de mostrar los detalles -->
+    @if (selectedIngredient) {
+      <div>
+        <p><strong>Name:</strong> {{ selectedIngredient.name }}</p>
+        <p><strong>Price per
+          unit:</strong> {{ selectedIngredient.pricePerUnit | currency: 'CAD':'symbol-narrow': '1.2-5' }}</p>
+        <p><strong>Unit:</strong> {{ selectedIngredient.unit }}</p>
+        <p><strong>Available stock:</strong> {{ selectedIngredient.availableStock }}</p>
+        <p-button (onClick)="displayInputNewStock()" [loading]="loading"
+                  label="Set new Stock"></p-button>
+        <p><strong>Created by:</strong> {{ selectedIngredient.createdBy }}</p>
+        <p><strong>Created date:</strong> {{ selectedIngredient.createdDate | date }}</p>
+        <p><strong>Supplier:</strong> {{ selectedIngredient.supplier }}</p>
+        <p><strong>Minimum stock quantity:</strong> {{ selectedIngredient.minimumStockQuantity }}</p>
+        @if (showStockForm) {
+          <form (ngSubmit)="submitForm()" [formGroup]="stockForm">
+            <label for="newStock">New Stock:</label>
+            <input formControlName="newStock" id="newStock" placeholder="Enter new stock" required type="number"/>
 
-        <tr [pSelectableRow]="ingredient">
+            <label for="reason">Reason:</label>
+            <input formControlName="reason" id="reason" placeholder="Reason for update" required type="text"/>
 
-          <td>
-            {{ ingredient.name }}
-          </td>
+            <button [disabled]="stockForm.invalid" type="submit">Confirm</button>
+          </form>
+        }
+      </div>
+    } @else {
+      <div>
+        <p>No ingredient selected.</p>
+      </div>
+    }
+  </p-sidebar>
 
-          <td>
-            {{ ingredient.pricePerUnit | currency: 'CAD':'symbol-narrow': '1.1-6' }}
-          </td>
-          <td>{{ ingredient.availableStock }}</td>
-          <td>{{ ingredient.unit }}</td>
+  <p-dialog
+    (onHide)="hideDialog()"
+    (onMaximize)="isMaximized($event)"
+    [(visible)]="isModalVisible"
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+    [maximizable]="true"
+    [modal]="true"
+    [style]="isModalMaximized ? {} : {width: '800px', maxHeight: '600px'}"
+    header="Ingredient Details"
+    styleClass="p-fluid"
+  >
 
-          <td>
-            <p-button
-              (onClick)="editIngredient(ingredient)"
-              [outlined]="true"
-              [rounded]="true"
-              class="mr-2"
-              icon="pi pi-pencil"
-              severity="success"/>
-            <p-button
-              (onClick)="deleteIngredient(ingredient.uuid)"
-              [outlined]="true"
-              [rounded]="true"
-              icon="pi pi-trash"
-              severity="danger"/>
-          </td>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="summary">
-        <div class="flex align-items-center justify-content-between">
-          In total there are {{ data ? data.length : 0 }} products.
-        </div>
-      </ng-template>
-    </p-table>
-
-    <p-sidebar [(visible)]="sidebarVisible" position="right" (onHide)="closeSidebar()" styleClass="w-30rem">
-      <h3>Ingredient Details</h3>
-      <!-- Verifica si hay un ingrediente seleccionado antes de mostrar los detalles -->
-      @if (selectedIngredient) {
-        <div>
-          <p><strong>Name:</strong> {{ selectedIngredient.name }}</p>
-          <p><strong>Price per
-            unit:</strong> {{ selectedIngredient.pricePerUnit | currency: 'CAD':'symbol-narrow': '1.2-5' }}</p>
-          <p><strong>Unit:</strong> {{ selectedIngredient.unit }}</p>
-          <p><strong>Available stock:</strong> {{ selectedIngredient.availableStock }}</p> <p-button label="Set new Stock" [loading]="loading"
-                                                                                                     (onClick)="displayInputNewStock()" ></p-button>
-          <p><strong>Created by:</strong> {{ selectedIngredient.createdBy }}</p>
-          <p><strong>Created date:</strong> {{ selectedIngredient.createdDate | date }}</p>
-          <p><strong>Supplier:</strong> {{ selectedIngredient.supplier }}</p>
-          <p><strong>Minimum stock quantity:</strong> {{ selectedIngredient.minimumStockQuantity }}</p>
-          @if (showStockForm) {
-            <form [formGroup]="stockForm" (ngSubmit)="submitForm()">
-              <label for="newStock">New Stock:</label>
-              <input id="newStock" type="number" formControlName="newStock" placeholder="Enter new stock" required />
-
-              <label for="reason">Reason:</label>
-              <input id="reason" type="text" formControlName="reason" placeholder="Reason for update" required />
-
-              <button type="submit" [disabled]="stockForm.invalid">Confirm</button>
-            </form>
-          }
-        </div>
-      } @else {
-        <div>
-          <p>No ingredient selected.</p>
-        </div>
-      }
-    </p-sidebar>
-
-    <p-dialog
-      (onHide)="hideDialog()"
-      (onMaximize)="isMaximized($event)"
-      [(visible)]="isModalVisible"
-      [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
-      [maximizable]="true"
-      [modal]="true"
-      [style]="isModalMaximized ? {} : {width: '800px', maxHeight: '600px'}"
-      header="Ingredient Details"
-      styleClass="p-fluid"
-    >
-
-      @if (isModalVisible) {
-        <gm-inventory-form
-          #inventoryForm
-          [initialIngredient]="selectedIngredient"
-          (formSubmit)="onFormSubmit($event)"
-          (formCancel)="hideDialog()">
-        </gm-inventory-form>
-      }
-    </p-dialog>
+    @if (isModalVisible) {
+      <gm-inventory-form
+        #inventoryForm
+        (formCancel)="hideDialog()"
+        (formSubmit)="onFormSubmit($event)"
+        [initialIngredient]="selectedIngredient">
+      </gm-inventory-form>
+    }
+  </p-dialog>
 
 </div>

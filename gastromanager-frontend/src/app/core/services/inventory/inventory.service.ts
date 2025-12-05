@@ -1,9 +1,7 @@
 import {Injectable} from '@angular/core';
 import {BaseHttpService} from "../basehttp/base-http.service";
-import {Observable, tap} from "rxjs";
+import {Observable} from "rxjs";
 import {ApiGenericResponse} from "../../model/interfaces/ApiGenericResponse";
-import {IngredientResponseDto} from "../../model/interfaces/IngredientResponseDto";
-import {IngredientDetailResponseDto} from "../../model/interfaces/IngredientDetailResponseDto";
 import {IngredientRequestDto} from "../../model/interfaces/IngredientRequestDto";
 import {IngredientItem} from "../../store/inventory/ingredient.model";
 import {AdjustStockRequestDto} from "../../../pages/inventory/inventory-table/inventory-table.component";

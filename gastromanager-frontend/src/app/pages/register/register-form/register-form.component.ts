@@ -26,6 +26,7 @@ export class RegisterFormComponent implements OnInit {
   subscriptionPlanStore = inject(SubscriptionPlanStore);
   @Output() formSubmitted = new EventEmitter<any>();
   @Input() loading: boolean = false;
+
   constructor(private readonly fb: FormBuilder) {
   }
 

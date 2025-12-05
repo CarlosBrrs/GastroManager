@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
 import {TableLazyLoadEvent, TableModule, TableRowSelectEvent} from "primeng/table";
 import {Button} from "primeng/button";
 import {ActionButtonInfo} from "../../../core/model/interfaces/action-button-info.interface";
-import {OrderItemsPipe, CustomCurrencyPipe, OrderStatusPipe} from "../../pipes/table-transform.pipes";
+import {CustomCurrencyPipe, OrderItemsPipe, OrderStatusPipe} from "../../pipes/table-transform.pipes";
 import {StockStatusPipe} from "../../pipes/stock-status.pipe";
 import {UnitPipe} from "../../pipes/unit.pipe";
 import {LocalDateTimePipe} from "../../pipes/local-date-time.pipe";
@@ -39,8 +39,9 @@ export class TableComponent<T> {
   }
 
   onSelectedRow($event: TableRowSelectEvent) {
-    this.onRowSelect.emit($event.data);
+    this.onRowSelect.emit($event.data.uuid);
   }
+
 
   executeAction(action: ActionButtonInfo, rowData: any, event: Event) {
     event.stopPropagation();

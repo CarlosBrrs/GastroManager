@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { CreateUpdateMenusPageComponent } from './create-update-menus-page.component';
+import {CreateUpdateMenusPageComponent} from './create-update-menus-page.component';
 
 describe('CreateUpdateMenusPageComponent', () => {
   let component: CreateUpdateMenusPageComponent;
@@ -10,7 +10,7 @@ describe('CreateUpdateMenusPageComponent', () => {
     await TestBed.configureTestingModule({
       imports: [CreateUpdateMenusPageComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(CreateUpdateMenusPageComponent);
     component = fixture.componentInstance;

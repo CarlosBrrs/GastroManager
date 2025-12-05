@@ -1,20 +1,20 @@
 import {
-  SalesReport,
-  SalesReportFilters,
-  SalesReportSummary,
-  SalesReportDetail,
-  PaymentMethodSummary,
+  CashRegisterSessionSummary,
   CashRegisterSummary,
-  CashRegisterSessionSummary
+  PaymentMethodSummary,
+  SalesReport,
+  SalesReportDetail,
+  SalesReportFilters,
+  SalesReportSummary
 } from "../../domain/models/sales-report.interface";
 import {
-  SalesReportResponseDto,
-  SalesReportFiltersDto,
-  SalesReportSummaryDto,
-  SalesReportDetailDto,
-  PaymentMethodSummaryDto,
+  CashRegisterSessionSummaryDto,
   CashRegisterSummaryDto,
-  CashRegisterSessionSummaryDto
+  PaymentMethodSummaryDto,
+  SalesReportDetailDto,
+  SalesReportFiltersDto,
+  SalesReportResponseDto,
+  SalesReportSummaryDto
 } from "../../domain/models/sales-report-response-dto.interface";
 
 export function mapToSalesReport(dto: SalesReportResponseDto): SalesReport {

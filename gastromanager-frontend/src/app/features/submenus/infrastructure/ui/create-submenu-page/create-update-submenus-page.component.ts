@@ -1,8 +1,4 @@
 import {ChangeDetectionStrategy, Component, inject, OnInit} from '@angular/core';
-import {
-  CreateIngredientComponent
-} from "../../../../ingredients/infrastructure/ui/create-ingredient/create-ingredient.component";
-import {CreateMenuComponent} from "../../../../menus/infrastructure/ui/create-menu/create-menu.component";
 import {ActivatedRoute, Router} from "@angular/router";
 import {CreateSubmenuComponent} from "../../../../menus/infrastructure/ui/create-submenu/create-submenu.component";
 import {Submenu} from "../../../domain/models/submenu.interface";
@@ -12,8 +8,6 @@ import {SubmenuStore} from "../../../../../core/store/submenus/submenu.store";
   selector: 'gm-create-update-submenus-page',
   standalone: true,
   imports: [
-    CreateIngredientComponent,
-    CreateMenuComponent,
     CreateSubmenuComponent
   ],
   templateUrl: './create-update-submenus-page.component.html',
@@ -22,10 +16,10 @@ import {SubmenuStore} from "../../../../../core/store/submenus/submenu.store";
 })
 export class CreateUpdateSubmenusPageComponent implements OnInit {
 
+  menuUuid: string | undefined
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly submenuStore = inject(SubmenuStore);
-  menuUuid: string | undefined
 
   ngOnInit() {
     this.menuUuid = this.route.snapshot.paramMap.get('menuUuid') ?? '';

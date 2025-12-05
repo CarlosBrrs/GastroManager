@@ -17,8 +17,8 @@ import {OrderStore} from "../../../../../core/store/order/order.store";
 })
 export class OrdersPageComponent {
 
+  actions: ActionButtonInfo[] = [];
   private readonly ordersStore = inject(OrderStore);
-  private readonly router = inject(Router);
   orders = computed(() => {
     const page = this.ordersStore.currentPage();
     return this.ordersStore.pages().get(page) || [];
@@ -27,8 +27,7 @@ export class OrdersPageComponent {
   loading = computed(() => this.ordersStore.loading());
   selectedOrder = computed(() => this.ordersStore.selectedOrder());
   tableColumns: ColumnProperties[] = this.ordersStore.tableColumns();
-
-  actions: ActionButtonInfo[] = [];
+  private readonly router = inject(Router);
 
   constructor() {
     // Definir predicates reutilizables
@@ -50,7 +49,8 @@ export class OrdersPageComponent {
         icon: 'pi pi-trash',
         label: 'Delete',
         severity: 'danger',
-        onClick: (rowData) => { /* implementar eliminar si necesario */ },
+        onClick: (rowData) => { /* implementar eliminar si necesario */
+        },
         visible: (rowData) => true
       },
       {
@@ -58,7 +58,7 @@ export class OrdersPageComponent {
         icon: 'pi pi-credit-card',
         label: 'Pay',
         severity: 'success',
-        onClick: (rowData) => this.router.navigate(['/payments'], { queryParams: { orderUuid: rowData.uuid } }),
+        onClick: (rowData) => this.router.navigate(['/payments'], {queryParams: {orderUuid: rowData.uuid}}),
         visible: (rowData) => canPay(rowData),
         disabled: (rowData) => payDisabled(rowData)
       }

@@ -1,6 +1,6 @@
-import {Component, input, inject, OnInit, output} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormGroup, FormControl, Validators, ReactiveFormsModule, NonNullableFormBuilder } from '@angular/forms';
+import {Component, inject, input, OnInit, output} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormControl, FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 
 // Interface para los productos ordenados
 interface OrderItem {
@@ -43,10 +43,18 @@ export class PaymentFormComponent implements OnInit {
 
   // Output para enviar los datos del pago al padre
   paymentSubmit = output<PaymentData>();
-
+  // Métodos de pago disponibles (actualizados para coincidir con el backend)
+  paymentMethods = [
+    {value: 'CASH', label: 'Efectivo'},
+    {value: 'CREDIT_CARD', label: 'Tarjeta de Crédito'},
+    {value: 'DEBIT_CARD', label: 'Tarjeta de Débito'},
+    {value: 'TRANSFER', label: 'Transferencia Bancaria'},
+    {value: 'NEQUI', label: 'Nequi'},
+    {value: 'DAVIPLATA', label: 'Daviplata'},
+    {value: 'CREDIT', label: 'Crédito'}
+  ];
   // FormBuilder injection
   private readonly fb = inject(NonNullableFormBuilder);
-
   // Payment form
   paymentForm: FormGroup = this.fb.group({
     // Campos de la orden (deshabilitados)
@@ -63,17 +71,6 @@ export class PaymentFormComponent implements OnInit {
     transactionId: this.fb.control('', []), // Campo para ID de transacción
     notes: this.fb.control('', []) // Campo para notas adicionales
   });
-
-  // Métodos de pago disponibles (actualizados para coincidir con el backend)
-  paymentMethods = [
-    { value: 'CASH', label: 'Efectivo' },
-    { value: 'CREDIT_CARD', label: 'Tarjeta de Crédito' },
-    { value: 'DEBIT_CARD', label: 'Tarjeta de Débito' },
-    { value: 'TRANSFER', label: 'Transferencia Bancaria' },
-    { value: 'NEQUI', label: 'Nequi' },
-    { value: 'DAVIPLATA', label: 'Daviplata' },
-    { value: 'CREDIT', label: 'Crédito' }
-  ];
 
   ngOnInit() {
     // Poblar campos de la orden cuando se reciben los inputs

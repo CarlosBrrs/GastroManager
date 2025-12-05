@@ -26,15 +26,15 @@
       <p>Selecciona un menú para ver sus submenús</p>
     }
     <ul>
-    @for (submenu of submenus; track submenu.uuid) {
-      <li>
-        <span>{{ submenu.name }}</span> - <span>{{ submenu.description }}</span>
-        <button (click)="editSubmenu(submenu)">Editar</button>
-        <button (click)="deleteSubmenu(submenu)">Eliminar</button>
-        <button (click)="goToSubmenu(submenu)">Ver productos</button>
-      </li>
-    }
-      </ul>
+      @for (submenu of submenus; track submenu.uuid) {
+        <li>
+          <span>{{ submenu.name }}</span> - <span>{{ submenu.description }}</span>
+          <button (click)="editSubmenu(submenu)">Editar</button>
+          <button (click)="deleteSubmenu(submenu)">Eliminar</button>
+          <button (click)="goToSubmenu(submenu)">Ver productos</button>
+        </li>
+      }
+    </ul>
   </div>
 </div>
 

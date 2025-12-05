@@ -2,7 +2,6 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@
 import {ColumnProperties} from "../../../core/store/inventory/inventory.store";
 import {ActionButtonInfo} from "../../../core/model/interfaces/action-button-info.interface";
 import {TreeTableModule} from "primeng/treetable";
-import {JsonPipe, NgClass} from "@angular/common";
 import {Menu} from "../../../features/menus/domain/models/menu.interface";
 import {Submenu} from "../../../features/submenus/domain/models/submenu.interface";
 
@@ -22,8 +21,7 @@ import {Submenu} from "../../../features/submenus/domain/models/submenu.interfac
   standalone: true,
   imports: [
     TreeTableModule,
-    JsonPipe,
-    NgClass,
+
   ],
   templateUrl: './tree-table.component.html',
   styleUrl: './tree-table.component.scss',
@@ -41,18 +39,16 @@ export class TreeTableComponent {
   @Output() onSelectedMenu = new EventEmitter<Menu>();
   @Output() onSubmenuEdit = new EventEmitter<Submenu>();
   @Output() onSubmenuAdd = new EventEmitter<string>();
+  // Mapa de menú UUID a lista de submenús
+  submenusMap: { [menuId: string]: Submenu[] } = {};
+  // Estado de visibilidad por menú
+  expandedMenus: Set<string> = new Set();
 
   selectMenu(menu: Menu) {
 
     this.selectedMenu = menu;
     this.onSelectedMenu.emit(menu);
   }
-
-  // Mapa de menú UUID a lista de submenús
-  submenusMap: { [menuId: string]: Submenu[] } = {};
-
-  // Estado de visibilidad por menú
-  expandedMenus: Set<string> = new Set();
 
   loadSubmenus(menuUuid: string) {
     console.log(`Cargando submenús para el menú: ${menuUuid}`);
@@ -68,24 +64,8 @@ export class TreeTableComponent {
     });
   }
 
-  private toggle(menuId: string): void {
-    if (this.expandedMenus.has(menuId)) {
-      this.expandedMenus.delete(menuId);
-    } else {
-      this.expandedMenus.add(menuId);
-    }
-  }
-
   isExpanded(menuId: string): boolean {
     return this.expandedMenus.has(menuId);
-  }
-
-  // Simula carga
-  private fetchSubmenus(menuId: string): Promise<Submenu[]> {
-    return Promise.resolve([
-      // { uuid: '1', name: 'Submenu A', description: 'Submenu desc A', menuUuid: menuId },
-      // { uuid: '2', name: 'Submenu B', description: 'Submenu desc B', menuUuid: menuId },
-    ]);
   }
 
   editSubmenu(submenu: Submenu) {
@@ -110,5 +90,21 @@ export class TreeTableComponent {
 
   addSubmenu(menuUuid: string) {
     this.onSubmenuAdd.emit(menuUuid);
+  }
+
+  private toggle(menuId: string): void {
+    if (this.expandedMenus.has(menuId)) {
+      this.expandedMenus.delete(menuId);
+    } else {
+      this.expandedMenus.add(menuId);
+    }
+  }
+
+  // Simula carga
+  private fetchSubmenus(menuId: string): Promise<Submenu[]> {
+    return Promise.resolve([
+      // { uuid: '1', name: 'Submenu A', description: 'Submenu desc A', menuUuid: menuId },
+      // { uuid: '2', name: 'Submenu B', description: 'Submenu desc B', menuUuid: menuId },
+    ]);
   }
 }

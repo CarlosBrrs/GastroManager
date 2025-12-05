@@ -1,4 +1,4 @@
-import { SalesReportFilters } from "../../domain/models/sales-report.interface";
+import {SalesReportFilters} from "../../domain/models/sales-report.interface";
 import {
   OverviewSalesReport,
   OverviewSalesReportSummary,

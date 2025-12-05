@@ -1,0 +1,253 @@
+// =============================================================================
+// ENTITY DETAIL SIDEBAR - ESTILO MINIMALISTA
+// =============================================================================
+
+::ng-deep .entity-detail-sidebar {
+  .p-sidebar {
+    background: var(--surface-ground);
+  }
+
+  .p-sidebar-header {
+    background: var(--surface-card);
+    border-bottom: 1px solid var(--surface-border);
+    padding: 1.5rem;
+    box-shadow: none;
+  }
+
+  .p-sidebar-content {
+    background: var(--surface-ground);
+    padding: 0;
+  }
+
+  .p-sidebar-close {
+    color: var(--text-color);
+
+    &:hover {
+      background: var(--surface-hover);
+    }
+  }
+}
+
+// HEADER
+.sidebar-header {
+  width: 100%;
+
+  .header-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .sidebar-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-color);
+  }
+
+  .sidebar-subtitle {
+    font-size: 0.875rem;
+    color: var(--text-color-secondary);
+    font-weight: 400;
+  }
+}
+
+// CONTENIDO
+.sidebar-content {
+  padding: 1rem;
+  background: var(--surface-ground);
+  min-height: 100%;
+}
+
+// LOADING STATE
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  gap: 1rem;
+  color: var(--text-color-secondary);
+
+  .loading-spinner {
+    color: var(--primary-color);
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.95rem;
+  }
+}
+
+// SECCIONES
+.detail-section {
+  background: var(--surface-card);
+  border: 1px solid var(--surface-border);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  transition: all 0.2s ease;
+  cursor: default;
+
+  &:hover {
+    box-shadow: var(--shadow-2);
+    border-color: var(--primary-color);
+    transform: translateY(-1px);
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--surface-border);
+
+  .section-icon {
+    font-size: 1rem;
+    opacity: 0.8;
+  }
+
+  .section-title {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-color);
+  }
+}
+
+.section-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.section-actions {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+// FILAS DE DETALLE
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--surface-border);
+  transition: all 0.15s ease;
+
+  &:hover {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    background: var(--surface-hover);
+    border-radius: 6px;
+    margin: 0 -0.5rem;
+    border-bottom-color: transparent;
+  }
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  &.highlight {
+    background: var(--highlight-bg);
+    padding: 0.5rem;
+    border-radius: 6px;
+    border: 1px solid var(--primary-color);
+    margin: 0.25rem 0;
+
+    .detail-value {
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+
+    &:hover {
+      background: var(--highlight-bg);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transform: translateX(2px);
+    }
+  }
+}
+
+.detail-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-color);
+  flex: 0 0 45%;
+
+  .field-icon {
+    font-size: 1rem;
+    opacity: 0.7;
+  }
+}
+
+.detail-value {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-color);
+  text-align: right;
+  flex: 1;
+  word-break: break-word;
+
+  &.numeric {
+    font-variant-numeric: tabular-nums;
+    font-family: 'Roboto Mono', 'Courier New', monospace;
+  }
+
+  &.highlight {
+    color: var(--primary-color);
+    font-weight: 600;
+  }
+
+  .value-suffix {
+    margin-left: 0.25rem;
+    font-size: 0.85rem;
+    color: var(--text-color-secondary);
+  }
+}
+
+// RESPONSIVE
+@media (max-width: 768px) {
+  ::ng-deep .entity-detail-sidebar {
+    .p-sidebar {
+      width: 100% !important;
+    }
+  }
+
+  .sidebar-content {
+    padding: 1rem;
+  }
+
+  .detail-section {
+    padding: 1rem;
+  }
+
+  .detail-row {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+
+    .detail-label {
+      flex: 1;
+      width: 100%;
+    }
+
+    .detail-value {
+      text-align: left;
+      width: 100%;
+    }
+  }
+}
+
+

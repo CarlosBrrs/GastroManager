@@ -3,14 +3,12 @@ import {CreateIngredientComponent} from "../create-ingredient/create-ingredient.
 import {InventoryStore} from "../../../../../core/store/inventory/inventory.store";
 import {Ingredient} from "../../../domain/models/ingredient.interface";
 import {ActivatedRoute, Router} from "@angular/router";
-import {JsonPipe} from "@angular/common";
 
 @Component({
   selector: 'gm-create-ingredient-page',
   standalone: true,
   imports: [
-    CreateIngredientComponent,
-    JsonPipe
+    CreateIngredientComponent
   ],
   templateUrl: './create-update-ingredient-page.component.html',
   styleUrl: './create-update-ingredient-page.component.scss',
@@ -19,12 +17,11 @@ import {JsonPipe} from "@angular/common";
 export class CreateUpdateIngredientPageComponent implements OnInit {
 
   private readonly ingredientsStore = inject(InventoryStore);
-  private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
-
   ingredientToEdit = this.ingredientsStore.ingredientToEdit as Signal<Ingredient | undefined>;
   loading = computed(() => this.ingredientsStore.loading());
   error = computed(() => this.ingredientsStore.error());
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
   ngOnInit(): void {
     const uuid = this.route.snapshot.paramMap.get('uuid');

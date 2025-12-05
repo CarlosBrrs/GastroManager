@@ -1,4 +1,3 @@
-
 export interface SubmenuRequestDto {
   name: string;
   description: string;

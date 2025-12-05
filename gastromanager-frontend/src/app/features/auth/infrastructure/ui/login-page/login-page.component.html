@@ -2,12 +2,12 @@
   <div class="login-card">
     <!-- Logo GM -->
     <div class="logo-section">
-      <img src="assets/images/gm-logo.svg" alt="GastroManager Logo" class="logo">
+      <img alt="GastroManager Logo" class="logo" src="assets/images/gm-logo.svg">
       <h2>Iniciar Sesión</h2>
       <p class="subtitle">Bienvenido a GastroManager</p>
     </div>
 
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <form (ngSubmit)="onSubmit()" [formGroup]="loginForm">
       <!-- Mensaje de error general -->
       @if (error()) {
         <div class="error-message general-error">
@@ -18,13 +18,13 @@
       <div class="form-group">
         <label for="username">Email</label>
         <input
-          pInputText
-          id="username"
-          type="text"
-          formControlName="username"
-          placeholder="tu@email.com"
-          class="w-full"
           [class.ng-invalid]="loginForm.get('username')?.touched && loginForm.get('username')?.invalid"
+          class="w-full"
+          formControlName="username"
+          id="username"
+          pInputText
+          placeholder="tu@email.com"
+          type="text"
         />
         @if (loginForm.get('username')?.touched && loginForm.get('username')?.invalid) {
           <div class="error-message">
@@ -38,14 +38,14 @@
       <div class="form-group">
         <label for="password">Contraseña</label>
         <p-password
-          id="password"
-          formControlName="password"
-          placeholder="••••••••"
-          [toggleMask]="true"
-          [feedback]="false"
-          styleClass="w-full"
-          inputStyleClass="w-full"
           [class.ng-invalid]="loginForm.get('password')?.touched && loginForm.get('password')?.invalid"
+          [feedback]="false"
+          [toggleMask]="true"
+          formControlName="password"
+          id="password"
+          inputStyleClass="w-full"
+          placeholder="••••••••"
+          styleClass="w-full"
         />
         @if (loginForm.get('password')?.touched && loginForm.get('password')?.invalid) {
           <div class="error-message">
@@ -60,12 +60,12 @@
       </div>
 
       <button
+        [disabled]="loginForm.invalid || loading()"
+        [loading]="loading()"
+        class="submit-button w-full"
+        loadingIcon="pi pi-spin pi-spinner"
         pButton
         type="submit"
-        [disabled]="loginForm.invalid || loading()"
-        class="submit-button w-full"
-        [loading]="loading()"
-        loadingIcon="pi pi-spin pi-spinner"
       >
         @if (!loading()) {
           Ingresar

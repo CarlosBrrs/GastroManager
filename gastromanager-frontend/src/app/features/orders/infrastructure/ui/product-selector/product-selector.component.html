@@ -8,27 +8,27 @@
       @for (categoryName of getCategoryNames(); track categoryName) {
         <div class="category-section">
           <!-- Header de la categoría con toggle -->
-          <div class="category-header"
-               (click)="toggleCategory(categoryName)"
-               [class.expanded]="isCategoryExpanded(categoryName)">
+          <div (click)="toggleCategory(categoryName)"
+               [class.expanded]="isCategoryExpanded(categoryName)"
+               class="category-header">
             <h3 [innerHTML]="highlightSearchTerm(categoryName)"></h3>
             <span class="products-count">({{ getProductsForCategory(categoryName).length }})</span>
-            <i class="expand-icon"
-               [class.rotated]="isCategoryExpanded(categoryName)">▼</i>
+            <i [class.rotated]="isCategoryExpanded(categoryName)"
+               class="expand-icon">▼</i>
           </div>
 
           <!-- Lista de productos (se muestra solo si está expandida) -->
           @if (isCategoryExpanded(categoryName)) {
             <div class="products-grid">
               @for (product of getProductsForCategory(categoryName); track product.uuid) {
-                <div class="product-card"
-                     (click)="selectProduct(product)"
-                     [title]="product.description">
+                <div (click)="selectProduct(product)"
+                     [title]="product.description"
+                     class="product-card">
                   <div class="product-info">
-                    <h4 class="product-name" [innerHTML]="highlightSearchTerm(product.name)"></h4>
+                    <h4 [innerHTML]="highlightSearchTerm(product.name)" class="product-name"></h4>
                     <div class="product-price">${{ product.salePrice | number:'1.2-2' }}</div>
                   </div>
-                  <button class="add-button" type="button" (click)="selectProduct(product); $event.stopPropagation()">
+                  <button (click)="selectProduct(product); $event.stopPropagation()" class="add-button" type="button">
                     <i>+</i>
                   </button>
                 </div>

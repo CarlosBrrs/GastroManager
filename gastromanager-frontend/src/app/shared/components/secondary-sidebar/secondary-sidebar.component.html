@@ -15,9 +15,9 @@
       <div class="filters-header">
         <h4>Filtros</h4>
         <button
-          type="button"
+          (click)="onClearFilters()"
           class="btn-clear-filters"
-          (click)="onClearFilters()">
+          type="button">
           Limpiar
         </button>
       </div>
@@ -29,11 +29,11 @@
             @if (filter.type === 'search') {
               <div class="form-group">
                 <input
-                  type="text"
+                  (input)="onInputChange(filter.key, $event)"
                   [placeholder]="filter.placeholder || 'Buscar...'"
                   [value]="getFilterValue(filter.key)"
-                  (input)="onInputChange(filter.key, $event)"
-                  class="form-control">
+                  class="form-control"
+                  type="text">
               </div>
             }
 
@@ -42,8 +42,8 @@
               <div class="form-group">
                 <label>{{ filter.label }}</label>
                 <select
-                  [value]="getFilterValue(filter.key)"
                   (change)="onSelectChange(filter.key, $event)"
+                  [value]="getFilterValue(filter.key)"
                   class="form-control">
                   <option value="">Todos</option>
                   @for (option of filter.options; track option) {
@@ -58,10 +58,10 @@
               <div class="form-group">
                 <label>{{ filter.label }}</label>
                 <input
-                  type="date"
-                  [value]="getFilterValue(filter.key)"
                   (change)="onInputChange(filter.key, $event)"
-                  class="form-control">
+                  [value]="getFilterValue(filter.key)"
+                  class="form-control"
+                  type="date">
               </div>
             }
 
@@ -71,22 +71,22 @@
                 <label>{{ filter.label }}</label>
                 <div class="range-inputs">
                   <input
-                    type="number"
-                    placeholder="Mín"
-                    [min]="filter.min || 0"
-                    [max]="filter.max || 100000"
-                    [value]="getFilterValue(filter.key + '_min')"
                     (input)="onInputChange(filter.key + '_min', $event)"
-                    class="form-control form-control-sm">
+                    [max]="filter.max || 100000"
+                    [min]="filter.min || 0"
+                    [value]="getFilterValue(filter.key + '_min')"
+                    class="form-control form-control-sm"
+                    placeholder="Mín"
+                    type="number">
                   <span class="range-separator">-</span>
                   <input
-                    type="number"
-                    placeholder="Máx"
-                    [min]="filter.min || 0"
-                    [max]="filter.max || 100000"
-                    [value]="getFilterValue(filter.key + '_max')"
                     (input)="onInputChange(filter.key + '_max', $event)"
-                    class="form-control form-control-sm">
+                    [max]="filter.max || 100000"
+                    [min]="filter.min || 0"
+                    [value]="getFilterValue(filter.key + '_max')"
+                    class="form-control form-control-sm"
+                    placeholder="Máx"
+                    type="number">
                 </div>
               </div>
             }
@@ -98,10 +98,10 @@
                 <div class="multiselect-dropdown">
                   <!-- Botón del dropdown -->
                   <button
-                    type="button"
-                    class="dropdown-toggle"
                     (click)="toggleDropdown(filter.key)"
-                    [class.active]="isDropdownOpen(filter.key)">
+                    [class.active]="isDropdownOpen(filter.key)"
+                    class="dropdown-toggle"
+                    type="button">
                     <span class="dropdown-text">
                       @if (getFilterArray(filter.key).length === 0) {
                         Seleccionar {{ filter.label?.toLowerCase() || 'opciones' }}
@@ -111,7 +111,7 @@
                         {{ getFilterArray(filter.key).length }} seleccionados
                       }
                     </span>
-                    <span class="dropdown-arrow" [class.rotated]="isDropdownOpen(filter.key)">▼</span>
+                    <span [class.rotated]="isDropdownOpen(filter.key)" class="dropdown-arrow">▼</span>
                   </button>
 
                   <!-- Lista desplegable -->
@@ -121,11 +121,11 @@
                       @if (filter.key === 'cashRegister') {
                         <div class="select-all-section">
                           <button
-                            type="button"
-                            class="select-all-btn"
                             (click)="toggleSelectAll(filter.key, filter.options || [])"
                             [class.all-selected]="areAllSelected(filter.key, filter.options || [])"
-                            [class.partial-selected]="hasPartialSelection(filter.key, filter.options || [])">
+                            [class.partial-selected]="hasPartialSelection(filter.key, filter.options || [])"
+                            class="select-all-btn"
+                            type="button">
                             @if (areAllSelected(filter.key, filter.options || [])) {
                               ✓ Deseleccionar todas
                             } @else {
@@ -139,11 +139,11 @@
                       @for (option of filter.options; track option) {
                         <div class="dropdown-item">
                           <input
-                            type="checkbox"
-                            [id]="filter.key + '_' + option"
-                            [checked]="isOptionChecked(filter.key, option)"
                             (change)="onMultiSelectChange(filter.key, option, $event)"
-                            class="checkbox-input">
+                            [checked]="isOptionChecked(filter.key, option)"
+                            [id]="filter.key + '_' + option"
+                            class="checkbox-input"
+                            type="checkbox">
                           <label [for]="filter.key + '_' + option" class="checkbox-label">
                             {{ option }}
                           </label>

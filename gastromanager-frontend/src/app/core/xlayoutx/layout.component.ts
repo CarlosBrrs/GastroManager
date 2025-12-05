@@ -1,11 +1,8 @@
 import {Component, effect, OnInit, signal} from '@angular/core';
 import {SidebarComponent} from "./sidebar/sidebar.component";
-import {RouterLink, RouterOutlet} from "@angular/router";
+import {RouterOutlet} from "@angular/router";
 import {AuthService} from "../services/auth/auth.service";
-import {HeaderComponent} from "./header/header.component";
-import {FooterComponent} from "./footer/footer.component";
 import {UserService} from "../services/users/user.service";
-import {JsonPipe} from "@angular/common";
 import {UserResponseDto} from "../../services/models/user-response-dto";
 
 export const mockRestaurants = [
@@ -25,10 +22,7 @@ export const mockAssignedRestaurant = {name: 'Restaurante Italiano'};
   imports: [
     SidebarComponent,
     RouterOutlet,
-    HeaderComponent,
-    FooterComponent,
-    JsonPipe,
-    RouterLink,
+
   ],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss'

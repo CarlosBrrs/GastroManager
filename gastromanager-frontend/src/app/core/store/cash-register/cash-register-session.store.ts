@@ -1,7 +1,7 @@
 import {patchState, signalStore, withHooks, withMethods, withState} from "@ngrx/signals";
 import {inject} from "@angular/core";
 import {rxMethod} from "@ngrx/signals/rxjs-interop";
-import {catchError, concatMap, delay, finalize, map, of, pipe, switchMap, tap, throwError} from "rxjs";
+import {catchError, finalize, of, pipe, switchMap, tap, throwError} from "rxjs";
 import {tapResponse} from "@ngrx/operators";
 import {HttpErrorResponse} from "@angular/common/http";
 import {
@@ -15,9 +15,7 @@ import {
 import {
   CloseCashRegisterSessionUseCase
 } from "../../../features/management/application/usecases/close-cash-register-session.use-case";
-import {
-  GetSessionSummaryUseCase
-} from "../../../features/management/application/usecases/get-session-summary.use-case";
+import {GetSessionSummaryUseCase} from "../../../features/management/application/usecases/get-session-summary.use-case";
 import {CashRegisterStore} from "./cash-register.store";
 
 type CashRegisterSessionState = {
@@ -170,5 +168,5 @@ export const CashRegisterSessionStore = signalStore(
         console.log("🏪 [CashRegisterSessionStore] Initialized");
       }
     })
-)
+  )
 ;

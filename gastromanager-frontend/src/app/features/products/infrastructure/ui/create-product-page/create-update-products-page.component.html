@@ -1,7 +1,7 @@
 <gm-create-product-form
+  (onCreateProduct)="createProductHandler($event)"
   [availableIngredients]="availableIngredients()"
   [availableRecipes]="availableRecipes()"
-  (onCreateProduct)="createProductHandler($event)"
-  [loading]="loading()"
   [error]="error()"
+  [loading]="loading()"
 ></gm-create-product-form>

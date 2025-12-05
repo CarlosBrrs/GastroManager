@@ -1,5 +1,5 @@
-<gm-create-ingredient [ingredientToEdit]="ingredientToEdit()"
-                      [loading]="loading()"
+<gm-create-ingredient (onCreateIngredient)="createIngredientHandler($event)"
+                      (onEditIngredient)="editIngredientHandler($event)"
                       [error]="error()"
-                      (onCreateIngredient)="createIngredientHandler($event)"
-                      (onEditIngredient)="editIngredientHandler($event)"></gm-create-ingredient>
+                      [ingredientToEdit]="ingredientToEdit()"
+                      [loading]="loading()"></gm-create-ingredient>

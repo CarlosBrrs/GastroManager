@@ -2,10 +2,20 @@ import {inject, Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {catchError, map} from 'rxjs/operators';
-import {CashRegisterSession, CloseSessionData, OpenSessionData, SessionSummary} from '../../domain/models/cash-register-session.interface';
+import {
+  CashRegisterSession,
+  CloseSessionData,
+  OpenSessionData,
+  SessionSummary
+} from '../../domain/models/cash-register-session.interface';
 import {CashRegisterSessionsRepository} from '../../domain/ports/cash-register-sessions.repository';
 import {ApiGenericResponse} from '../../../../core/model/interfaces/ApiGenericResponse';
-import {CashRegisterSessionResponseDto, OpenSessionRequestDto, SessionSummaryResponseDto, CloseSessionRequestDto} from './dtos/cash-register-session.dto';
+import {
+  CashRegisterSessionResponseDto,
+  CloseSessionRequestDto,
+  OpenSessionRequestDto,
+  SessionSummaryResponseDto
+} from './dtos/cash-register-session.dto';
 import {mapToCashRegisterSession, mapToSessionSummary} from '../../application/mappers/cash-register-session.mapper';
 import {environment} from "../../../../../environments/environment";
 

@@ -22,24 +22,24 @@
 
   <p-table
     #dt
+    (onRowSelect)="onRowSelect($event)"
     [(selection)]="selectedOrder"
     [globalFilterFields]="['code']"
+    [loading]="loading"
     [metaKeySelection]="false"
     [paginator]="true"
     [resizableColumns]="true"
     [rowHover]="true"
     [rows]="7"
-    [loading]="loading"
-    loadingIcon="pi pi-spin pi-spinner"
     [showCurrentPageReport]="true"
-    sortField="updatedDate"
     [sortOrder]="-1"
     [tableStyle]="{ 'min-width': '74rem' }"
     [value]="data"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
     dataKey="uuid"
+    loadingIcon="pi pi-spin pi-spinner"
     selectionMode="single"
-    (onRowSelect)="onRowSelect($event)"
+    sortField="updatedDate"
   >
     <ng-template pTemplate="header">
       <tr>
@@ -123,17 +123,17 @@
             <!-- Estado de Pago -->
             <!--              *ngIf="orders.invoicingStatus === 'Fully Invoiced'"-->
             <p-tag
-              [value]="order.paymentStatus"
               [severity]="getPaymentStatusColor(order.paymentStatus)"
+              [value]="order.paymentStatus"
             />
             <!-- Acciones de Pago -->
             <div class="flex flex-column gap-2">
               <!--                *ngIf="orders.invoicingStatus === 'Fully Invoiced' && orders.paymentStatus !== 'Paid'"-->
               <p-button
                 (onClick)="openPaymentModal(order)"
+                [disabled]="order.invoicingStatus === 'Fully Invoiced' && order.paymentStatus !== 'Paid'"
                 [outlined]="true"
                 [rounded]="true"
-                [disabled]="order.invoicingStatus === 'Fully Invoiced' && order.paymentStatus !== 'Paid'"
                 icon="pi pi-credit-card"
                 label="Pay Now"
                 severity="danger"
@@ -159,7 +159,7 @@
       </div>
     </ng-template>
   </p-table>
-  <p-sidebar [(visible)]="sidebarVisible" position="right" (onHide)="toggleDetailsSidebar('')" styleClass="w-30rem">
+  <p-sidebar (onHide)="toggleDetailsSidebar('')" [(visible)]="sidebarVisible" position="right" styleClass="w-30rem">
     @if (!selectedOrder) {
       <div class="p-4 text-center">
         <p-progressSpinner></p-progressSpinner>
@@ -192,22 +192,22 @@
                     <!-- Si está pendiente -->
                     @if (invoice.status === 'PENDING') {
 
-                      <button pButton type="button" label="Pagar" icon="pi pi-credit-card" class="p-button-success"
-                              (click)="payInvoice(invoice)"></button>
-                      <button pButton type="button" label="Ver Detalle" icon="pi pi-eye" class="p-button-info"
-                              (click)="viewInvoice(invoice)"></button>
-                      <button pButton type="button" label="Modificar" icon="pi pi-pencil" class="p-button-warning"
-                              (click)="editInvoice(invoice)"></button>
-                      <button pButton type="button" label="Anular" icon="pi pi-times" class="p-button-danger"
-                              (click)="cancelInvoice(invoice)"></button>
+                      <button (click)="payInvoice(invoice)" class="p-button-success" icon="pi pi-credit-card" label="Pagar" pButton
+                              type="button"></button>
+                      <button (click)="viewInvoice(invoice)" class="p-button-info" icon="pi pi-eye" label="Ver Detalle" pButton
+                              type="button"></button>
+                      <button (click)="editInvoice(invoice)" class="p-button-warning" icon="pi pi-pencil" label="Modificar" pButton
+                              type="button"></button>
+                      <button (click)="cancelInvoice(invoice)" class="p-button-danger" icon="pi pi-times" label="Anular" pButton
+                              type="button"></button>
 
                     } @else if (invoice.status === 'PAID') {
-                      <button pButton type="button" label="Ver Factura" icon="pi pi-file" class="p-button-secondary"
-                              (click)="viewInvoice(invoice)"></button>
+                      <button (click)="viewInvoice(invoice)" class="p-button-secondary" icon="pi pi-file" label="Ver Factura" pButton
+                              type="button"></button>
 
                     } @else if ((invoice.status === 'CANCELLED')) {
-                      <button pButton type="button" label="Eliminar" icon="pi pi-trash" class="p-button-danger"
-                              (click)="deleteInvoice(invoice)"></button>
+                      <button (click)="deleteInvoice(invoice)" class="p-button-danger" icon="pi pi-trash" label="Eliminar" pButton
+                              type="button"></button>
                     }
                   </div>
                 </div>
@@ -219,9 +219,9 @@
           <h4>Generar nueva factura</h4>
           <p-button
             (onClick)="openInvoiceModal(selectedOrder)"
+            [disabled]="selectedOrder.operationalStatus === 'Entregado' && selectedOrder.invoicingStatus !== 'Fully Invoiced'"
             [outlined]="true"
             [rounded]="true"
-            [disabled]="selectedOrder.operationalStatus === 'Entregado' && selectedOrder.invoicingStatus !== 'Fully Invoiced'"
             icon="pi pi-barcode"
             label="Generate"
             severity="info"
@@ -236,42 +236,42 @@
 
   <!-- Modal para generar factura -->
   <p-dialog
+    (onHide)="closeInvoiceModal()"
     [(visible)]="invoiceModalVisible"
     [modal]="true"
     [style]="{ width: '60vw' }"
-    header="Generate Invoice"
-    (onHide)="closeInvoiceModal()">
-    <form [formGroup]="invoiceForm" (submit)="generateInvoice()">
+    header="Generate Invoice">
+    <form (submit)="generateInvoice()" [formGroup]="invoiceForm">
       <div class="mb-3">
         <label for="customerName">Customer Name:</label>
-        <input type="text" pInputText formControlName="customerName" id="customerName"/>
+        <input formControlName="customerName" id="customerName" pInputText type="text"/>
       </div>
       <div class="mb-3">
         <label for="customerName">Customer Phone:</label>
-        <input type="text" pInputText formControlName="customerPhone" id="customerPhone"/>
+        <input formControlName="customerPhone" id="customerPhone" pInputText type="text"/>
       </div>
       <div class="mb-3">
         <label for="customerName">Customer Email:</label>
-        <input type="text" pInputText formControlName="customerEmail" id="customerEmail"/>
+        <input formControlName="customerEmail" id="customerEmail" pInputText type="text"/>
       </div>
 
       <!-- Picklist para seleccionar items -->
       <div class="mb-3">
         <label>Select Items for Invoice:</label>
         <p-pickList
-          [source]="uninvoicedItems"
-          [target]="selectedItems"
-          sourceHeader="Available Items"
-          targetHeader="Selected Items"
-          [dragdrop]="true"
-          [responsive]="true"
-          filterBy="productItemName"
-          [sourceFilterPlaceholder]="'Search available items'"
-          [targetFilterPlaceholder]="'Search selected items'"
-          (onMoveToTarget)="updateInvoiceItems()"
+          (onMoveAllToSource)="updateInvoiceItems()"
           (onMoveAllToTarget)="updateInvoiceItems()"
           (onMoveToSource)="updateInvoiceItems()"
-          (onMoveAllToSource)="updateInvoiceItems()">
+          (onMoveToTarget)="updateInvoiceItems()"
+          [dragdrop]="true"
+          [responsive]="true"
+          [sourceFilterPlaceholder]="'Search available items'"
+          [source]="uninvoicedItems"
+          [targetFilterPlaceholder]="'Search selected items'"
+          [target]="selectedItems"
+          filterBy="productItemName"
+          sourceHeader="Available Items"
+          targetHeader="Selected Items">
           <ng-template let-orderItem pTemplate="item">
             <div class="flex flex-wrap p-2 align-items-center gap-3">
               <!--<img
@@ -299,8 +299,8 @@
       <!-- Dentro del modal, después del PickList -->
       <h5 class="mt-3">Invoice Breakdown</h5>
       <p-table
-        [value]="groupedItems"
         [tableStyle]="{ 'min-width': '60rem' }"
+        [value]="groupedItems"
         styleClass="p-datatable-striped"
       >
         <ng-template pTemplate="header">
@@ -314,7 +314,7 @@
           </tr>
         </ng-template>
 
-        <ng-template pTemplate="body" let-item>
+        <ng-template let-item pTemplate="body">
           <tr>
             <td>{{ item.productItemName }}</td>
             <td>{{ item.quantity }}</td>
@@ -327,7 +327,7 @@
 
         <ng-template pTemplate="footer">
           <tr>
-            <th colspan="3" class="text-right">Subtotal (Pre-Tax):</th>
+            <th class="text-right" colspan="3">Subtotal (Pre-Tax):</th>
             <td>{{ subtotal | currency: 'COP' }}</td>
             <th>VAT Total:</th>
             <td>{{ taxTotal | currency: 'COP' }}</td>
@@ -342,27 +342,27 @@
         <!-- Botones de propina rápida -->
         <div class="flex gap-2 mb-3">
           <p-button
-            label="No Tip"
             (onClick)="setTip(0)"
             [outlined]="tipPercentage !== 0"
+            label="No Tip"
             severity="secondary"
           />
           <p-button
-            label="3%"
             (onClick)="setTip(3)"
             [outlined]="tipPercentage !== 3"
+            label="3%"
             severity="success"
           />
           <p-button
-            label="5%"
             (onClick)="setTip(5)"
             [outlined]="tipPercentage !== 5"
+            label="5%"
             severity="warning"
           />
           <p-button
-            label="10%"
             (onClick)="setTip(10)"
             [outlined]="tipPercentage !== 10"
+            label="10%"
             severity="danger"
           />
         </div>
@@ -371,10 +371,10 @@
         <div class="flex align-items-center gap-2">
           <span>Custom Tip:</span>
           <p-inputNumber
-            formControlName="tipAmount"
             [min]="0"
-            mode="currency"
             currency="COP"
+            formControlName="tipAmount"
+            mode="currency"
             placeholder="Enter amount"
           />
         </div>
@@ -395,10 +395,10 @@
       </div>
 
       <p-button
-        type="submit"
-        label="Generate"
         icon="pi pi-check"
-        severity="success"/>
+        label="Generate"
+        severity="success"
+        type="submit"/>
     </form>
   </p-dialog>
 

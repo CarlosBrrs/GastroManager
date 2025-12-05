@@ -60,21 +60,6 @@ export class CreateProductFormComponent {
   error = input<string | null>(null);
   @Output() onCreateProduct = new EventEmitter<Product>();
 
-  // Cambiar modo de creación
-  switchMode(mode: 'basic' | 'advanced') {
-    this.creationMode.set(mode);
-
-    if (mode === 'advanced') {
-      // En modo avanzado, el precio de compra se calcula automáticamente
-      this.productForm.get('purchasePrice')?.clearValidators();
-      this.productForm.get('purchasePrice')?.updateValueAndValidity();
-    } else {
-      // En modo básico, el precio de compra es requerido
-      this.productForm.get('purchasePrice')?.setValidators([Validators.required, Validators.min(0.00001)]);
-      this.productForm.get('purchasePrice')?.updateValueAndValidity();
-    }
-  }
-
   // Computed para calcular el precio de compra en modo avanzado
   get calculatedPurchasePrice(): number {
     // Costo de los ingredientes seleccionados
@@ -90,6 +75,21 @@ export class CreateProductFormComponent {
     }, 0);
 
     return ingredientsCost + recipesCost;
+  }
+
+  // Cambiar modo de creación
+  switchMode(mode: 'basic' | 'advanced') {
+    this.creationMode.set(mode);
+
+    if (mode === 'advanced') {
+      // En modo avanzado, el precio de compra se calcula automáticamente
+      this.productForm.get('purchasePrice')?.clearValidators();
+      this.productForm.get('purchasePrice')?.updateValueAndValidity();
+    } else {
+      // En modo básico, el precio de compra es requerido
+      this.productForm.get('purchasePrice')?.setValidators([Validators.required, Validators.min(0.00001)]);
+      this.productForm.get('purchasePrice')?.updateValueAndValidity();
+    }
   }
 
   // Métodos para ingredientes
@@ -119,7 +119,7 @@ export class CreateProductFormComponent {
   updateIngredientQuantity(uuid: string, quantity: number) {
     const current = this.selectedIngredients();
     const updated = current.map(i =>
-      i.uuid === uuid ? { ...i, quantity } : i
+      i.uuid === uuid ? {...i, quantity} : i
     );
     this.selectedIngredients.set(updated);
   }
@@ -172,7 +172,7 @@ export class CreateProductFormComponent {
   updateRecipeMultiplier(uuid: string, multiplier: number) {
     const current = this.selectedRecipes();
     const updated = current.map(r =>
-      r.uuid === uuid ? { ...r, multiplier } : r
+      r.uuid === uuid ? {...r, multiplier} : r
     );
     this.selectedRecipes.set(updated);
   }

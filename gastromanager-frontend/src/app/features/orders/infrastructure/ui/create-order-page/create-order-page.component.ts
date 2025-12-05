@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, computed, inject, signal, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, inject, OnInit, signal} from '@angular/core';
 import {ProductSelectorComponent} from '../product-selector/product-selector.component';
 import {Product} from '../../../../products/domain/models/product.interface';
 import {ProductStore} from "../../../../../core/store/product/product.store";
@@ -30,6 +30,9 @@ export class CreateOrderPageComponent implements OnInit {
 
   // Exponer la configuración del restaurante actual
   readonly currentRestaurantDetails = this.restaurantStore.currentRestaurantDetails;
+  productsByCategory = computed(() => {
+    return this.productStore.productsByCategory() || {};
+  })
 
   ngOnInit() {
     // Si no hay productos por categoría cargados, cargarlos
@@ -41,10 +44,6 @@ export class CreateOrderPageComponent implements OnInit {
       });
     }
   }
-
-  productsByCategory = computed(() => {
-    return this.productStore.productsByCategory() || {};
-  })
 
   onProductSelected(product: Product): void {
     const currentItems = this.orderItems();
@@ -81,8 +80,8 @@ export class CreateOrderPageComponent implements OnInit {
     this.orderItems.set(updatedItems);
   }
 
-  onOrderSubmitted(event: {orderData: any, requiresPayment: boolean}): void {
-    const { orderData, requiresPayment } = event;
+  onOrderSubmitted(event: { orderData: any, requiresPayment: boolean }): void {
+    const {orderData, requiresPayment} = event;
     console.log('📦 Orden recibida en el padre:', orderData);
     console.log('💳 Requiere pago:', requiresPayment);
 

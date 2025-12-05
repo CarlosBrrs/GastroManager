@@ -1,16 +1,16 @@
 <div class="grid">
   @for (metric of metrics; track $index) {
 
-  <div class="col-12 md:col-4">
-    <p-card [header]="metric.label" [styleClass]="metric.color" class="p-shadow-2 block">
-      <div class="flex align-items-center justify-content-between">
-        <h3 class="m-0">{{ metric.value }}</h3>
-        <i class="{{ metric.icon }}" style="font-size: 2rem;"></i>
-      </div>
-      <p [ngClass]="{'text-success': metric.trend === 'up', 'text-danger': metric.trend === 'down'}">
-        {{ getTrendSymbol(metric.trend) }} {{ metric.trend }}
-      </p>
-    </p-card>
-  </div>
+    <div class="col-12 md:col-4">
+      <p-card [header]="metric.label" [styleClass]="metric.color" class="p-shadow-2 block">
+        <div class="flex align-items-center justify-content-between">
+          <h3 class="m-0">{{ metric.value }}</h3>
+          <i class="{{ metric.icon }}" style="font-size: 2rem;"></i>
+        </div>
+        <p [ngClass]="{'text-success': metric.trend === 'up', 'text-danger': metric.trend === 'down'}">
+          {{ getTrendSymbol(metric.trend) }} {{ metric.trend }}
+        </p>
+      </p-card>
+    </div>
   }
 </div>
