@@ -3,7 +3,7 @@
   <ul>
     @for (item of links; track $index) {
       <li>
-        <a [routerLinkActiveOptions]="{exact: true}" [routerLink]="item.route" routerLinkActive="active">
+        <a [routerLink]="item.route" routerLinkActive="active">
           {{ item.label }}
         </a>
       </li>

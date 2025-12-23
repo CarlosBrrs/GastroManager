@@ -5,6 +5,7 @@ import com.kaiho.gastromanager.domain.order.model.PaymentStatus;
 import com.kaiho.gastromanager.infrastructure.order.output.jpa.entity.OrderEntity;
 import com.kaiho.gastromanager.infrastructure.report.input.rest.criteria.OrdersReportCriteria;
 import com.kaiho.gastromanager.infrastructure.report.input.rest.sales.criteria.OverviewSalesReportCriteria;
+import com.kaiho.gastromanager.infrastructure.report.input.rest.sales.criteria.ProductSalesReportCriteria;
 import jakarta.persistence.criteria.JoinType;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -131,6 +132,13 @@ public class OrderReportSpecifications {
 
     public static Specification<OrderEntity> withOverviewCriteria(
             OverviewSalesReportCriteria criteria,
+            UUID restaurantUuid) {
+        return Specification.where(hasRestaurant(restaurantUuid))
+                            .and(hasOrdersBetween(criteria.dateFrom(), criteria.dateTo()));
+    }
+
+    public static Specification<OrderEntity> withProductSalesCriteria(
+            ProductSalesReportCriteria criteria,
             UUID restaurantUuid) {
         return Specification.where(hasRestaurant(restaurantUuid))
                             .and(hasOrdersBetween(criteria.dateFrom(), criteria.dateTo()));

@@ -5,14 +5,17 @@ import {map} from "rxjs/operators";
 import {SalesReportRepository} from "../../domain/repositories/sales-report.repository";
 import {SalesReport, SalesReportFilters} from "../../domain/models/sales-report.interface";
 import {OverviewSalesReport} from "../../domain/models/overview-sales-report.interface";
+import {ProductSales} from "../../domain/models/product-sales.interface";
 import {SalesReportResponseDto} from "../../domain/models/sales-report-response-dto.interface";
 import {OverviewSalesReportResponseDto} from "../../domain/models/overview-sales-report-response-dto.interface";
+import {ProductSalesResponseDto} from "../../domain/models/product-sales-response-dto.interface";
 import {ApiGenericResponse} from "../../../../core/model/interfaces/ApiGenericResponse";
 import {mapToSalesReport, mapToSalesReportFiltersDto} from "../../application/mappers/sales-report.mapper";
 import {
   mapToOverviewSalesReport,
   mapToOverviewSalesReportFiltersDto
 } from "../../application/mappers/overview-sales-report.mapper";
+import {mapToProductSalesList} from "../../application/mappers/product-sales.mapper";
 import {environment} from "../../../../../environments/environment";
 
 @Injectable({
@@ -81,6 +84,26 @@ export class SalesReportAdapter implements SalesReportRepository {
       }),
       catchError((error: HttpErrorResponse) => {
         throw new Error(error.error?.message || error.message || 'Error al obtener el reporte general de ventas');
+      })
+    );
+  }
+
+  getProductSales(filters: SalesReportFilters): Observable<ProductSales[]> {
+    const filtersDto = mapToOverviewSalesReportFiltersDto(filters);
+
+    const requestParams = new HttpParams()
+      .set('dateFrom', filtersDto.dateFrom)
+      .set('dateTo', filtersDto.dateTo);
+
+    return this.http.get<ApiGenericResponse<ProductSalesResponseDto[]>>(`${this.baseUrl}/reports/sales/products`, {
+      params: requestParams
+    }).pipe(
+      map((response: ApiGenericResponse<ProductSalesResponseDto[]>) => {
+        console.log("🚀 [SalesReportAdapter] Fetched product sales:", response);
+        return mapToProductSalesList(response.data);
+      }),
+      catchError((error: HttpErrorResponse) => {
+        throw new Error(error.error?.message || error.message || 'Error al obtener las ventas por producto');
       })
     );
   }

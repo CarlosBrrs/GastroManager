@@ -60,13 +60,17 @@ $breakpoint-lg: 1024px; // Laptops y más grandes
     .content-area {
       display: flex;
       flex-grow: 1;
+      min-height: 0;
+      height: 100%;
 
       .secondary-sidebar {
-        width: 180px;
-        background-color: #555;
+        width: 220px;
+        background-color: transparent;
         display: flex;
         flex-direction: column;
-        padding: 4px 8px;
+        padding: 0;
+        height: 100%;
+        margin-left: 2px;
       }
 
       .main-page-content {

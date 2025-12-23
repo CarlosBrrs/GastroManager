@@ -51,7 +51,7 @@
             </div>
           } @else {
             <span class="metric-value">${{ getTotalOrderValue() | number:'1.0-0' }}</span>
-            <span class="metric-label">Valor Total Órdenes</span>
+            <span class="metric-label">Valor total órdenes</span>
           }
         </div>
       </div>
@@ -66,7 +66,7 @@
             </div>
           } @else {
             <span class="metric-value">${{ getTotalRevenue() | number:'1.0-0' }}</span>
-            <span class="metric-label">Total Recaudado</span>
+            <span class="metric-label">Total recaudado</span>
           }
         </div>
       </div>
@@ -81,7 +81,7 @@
             </div>
           } @else {
             <span class="metric-value">{{ getTotalOrders() }}</span>
-            <span class="metric-label">Total Órdenes</span>
+            <span class="metric-label">Total órdenes</span>
           }
         </div>
       </div>
@@ -96,7 +96,7 @@
             </div>
           } @else {
             <span class="metric-value">{{ getCompletedOrders() }}</span>
-            <span class="metric-label">Órdenes Completadas</span>
+            <span class="metric-label">Órdenes completadas</span>
           }
         </div>
       </div>
@@ -111,7 +111,7 @@
             </div>
           } @else {
             <span class="metric-value">{{ getCancelledOrders() }}</span>
-            <span class="metric-label">Órdenes Canceladas</span>
+            <span class="metric-label">Órdenes canceladas</span>
           }
         </div>
       </div>
@@ -126,7 +126,7 @@
             </div>
           } @else {
             <span class="metric-value">{{ getCancellationRate() | number:'1.1-1' }}%</span>
-            <span class="metric-label">Tasa de Cancelación</span>
+            <span class="metric-label">Tasa de cancelación</span>
           }
         </div>
       </div>
@@ -141,7 +141,7 @@
             </div>
           } @else {
             <span class="metric-value">${{ getTotalTips() | number:'1.0-0' }}</span>
-            <span class="metric-label">Total Propinas</span>
+            <span class="metric-label">Total propinas</span>
           }
         </div>
       </div>
@@ -156,7 +156,7 @@
             </div>
           } @else {
             <span class="metric-value">${{ getTotalPaidWithTips() | number:'1.0-0' }}</span>
-            <span class="metric-label">Total con Propinas</span>
+            <span class="metric-label">Total con propinas</span>
           }
         </div>
       </div>
@@ -171,7 +171,7 @@
             </div>
           } @else {
             <span class="metric-value">${{ getPendingAmount() | number:'1.0-0' }}</span>
-            <span class="metric-label">Monto Pendiente</span>
+            <span class="metric-label">Monto pendiente</span>
           }
         </div>
       </div>
@@ -186,7 +186,7 @@
             </div>
           } @else {
             <span class="metric-value">{{ getCollectionRate() | number:'1.1-1' }}%</span>
-            <span class="metric-label">Tasa de Cobro</span>
+            <span class="metric-label">Tasa de cobro</span>
           }
         </div>
       </div>
@@ -201,7 +201,7 @@
             </div>
           } @else {
             <span class="metric-value">${{ getAverageOrderValue() | number:'1.0-2' }}</span>
-            <span class="metric-label">Valor Promedio Orden</span>
+            <span class="metric-label">Valor promedio orden</span>
           }
         </div>
       </div>
@@ -216,10 +216,78 @@
             </div>
           } @else {
             <span class="metric-value">{{ getTotalDays() }}</span>
-            <span class="metric-label">Total Días</span>
+            <span class="metric-label">Total días</span>
           }
         </div>
       </div>
+    </div>
+
+    <!-- Tabla de productos más vendidos -->
+    <div class="products-table-container">
+      <div class="table-header">
+        <h5>🏆 Productos más vendidos</h5>
+        <span class="table-info">
+          @if (salesReportStore.productSales()) {
+            {{ salesReportStore.productSales()?.length || 0 }} productos en total
+          }
+        </span>
+      </div>
+
+      <p-table
+        [value]="salesReportStore.productSales() || []"
+        [loading]="loading()"
+        [paginator]="true"
+        [rows]="10"
+        [rowsPerPageOptions]="[5, 10, 20, 50]"
+        styleClass="p-datatable-sm compact-table"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="{first}-{last} de {totalRecords}">
+
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="col-index">#</th>
+            <th class="col-product">📦 Producto</th>
+            <th class="col-units text-center">📊 Unidades</th>
+            <th class="col-sales text-end">💰 Ventas</th>
+            <th class="col-percentage text-center">📈 %</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-product let-rowIndex="rowIndex">
+          <tr>
+            <td>{{ rowIndex + 1 }}</td>
+            <td>
+              <strong>{{ product.productName }}</strong>
+            </td>
+            <td class="text-center">
+              <span class="badge-units">{{ product.unitsSold }}</span>
+            </td>
+            <td class="text-end">
+              <strong>${{ product.totalSales | number:'1.0-0' }}</strong>
+            </td>
+            <td>
+              <div class="percentage-container">
+                <span class="percentage-value">{{ product.salesPercentage | number:'1.2-2' }}%</span>
+                <div class="percentage-bar">
+                  <div class="percentage-fill" [style.width.%]="product.salesPercentage"></div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="5" class="text-center">
+              @if (loading()) {
+                <span>⏳ Cargando productos...</span>
+              } @else {
+                <span>📭 No hay datos de productos para mostrar</span>
+              }
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
     </div>
 
   </div>

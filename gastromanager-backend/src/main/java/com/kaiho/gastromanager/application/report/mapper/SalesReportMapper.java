@@ -3,12 +3,18 @@ package com.kaiho.gastromanager.application.report.mapper;
 import com.kaiho.gastromanager.application.report.dto.response.SalesReportResponseDto;
 import com.kaiho.gastromanager.application.report.dto.response.sales.FiltersDto;
 import com.kaiho.gastromanager.application.report.dto.response.sales.OverviewSalesReportResponseDto;
+import com.kaiho.gastromanager.application.report.dto.response.sales.ProductSalesResponseDto;
 import com.kaiho.gastromanager.application.report.dto.response.sales.SummaryDto;
 import com.kaiho.gastromanager.domain.report.model.SalesReport;
 import com.kaiho.gastromanager.domain.report.model.sales.OverviewSalesReport;
+import com.kaiho.gastromanager.domain.report.model.sales.ProductSalesReport;
 import com.kaiho.gastromanager.domain.report.model.sales.overview.Filters;
 import com.kaiho.gastromanager.domain.report.model.sales.overview.OverviewSummary;
+import com.kaiho.gastromanager.domain.report.model.sales.product.ProductSale;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class SalesReportMapper {
@@ -106,6 +112,30 @@ public class SalesReportMapper {
                          .averageItemsPerOrder(0.0) // averageItemsPerOrder no está disponible
                          .averageOrdersPerDay(averageOrdersPerDay)*/
                          .build();
+    }
+
+    public List<ProductSalesResponseDto> toProductSalesResponseDto(ProductSalesReport productSalesReport) {
+        if (productSalesReport == null || productSalesReport.products() == null) {
+            return List.of();
+        }
+
+        return productSalesReport.products().stream()
+                                 .map(this::toProductSaleDto)
+                                 .collect(Collectors.toList());
+    }
+
+    private ProductSalesResponseDto toProductSaleDto(ProductSale productSale) {
+        if (productSale == null) {
+            return null;
+        }
+
+        return ProductSalesResponseDto.builder()
+                                      .productUuid(productSale.productUuid())
+                                      .productName(productSale.productName())
+                                      .unitsSold(productSale.unitsSold())
+                                      .totalSales(productSale.totalSales())
+                                      .salesPercentage(productSale.salesPercentage())
+                                      .build();
     }
 }
 

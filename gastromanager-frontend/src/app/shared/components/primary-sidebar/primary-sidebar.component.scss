@@ -69,13 +69,14 @@
     font-size: 0.9rem;
     font-weight: 500;
     border-radius: 10px;
-    transition: background 150ms ease, color 150ms ease, transform 120ms ease;
+    border-right: 4px solid transparent;
+    transition: all 150ms ease;
   }
 
   ul li a:hover {
     background: var(--surface-1, rgba(255, 255, 255, 0.02));
     color: var(--text-color, #e6eef8);
-    transform: translateX(2px);
+    transform: translateX(-2px);
   }
 
   ul li a .icon {
@@ -95,14 +96,11 @@
     color: inherit;
   }
 
-  /* Estado activo: borde izquierdo discreto y color primario */
   ul li a.active,
   ul li a.router-link-active {
     color: var(--primary-color, #64ffda);
     background: transparent;
-    border-left: 4px solid var(--primary-color, #64ffda);
-    padding-left: 10px; /* compensar borde */
-    margin-left: 4px;
+    border-right-color: var(--primary-color, #64ffda);
   }
 
   // Footer más compacto
