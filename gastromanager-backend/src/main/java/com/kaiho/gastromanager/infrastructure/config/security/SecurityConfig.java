@@ -194,6 +194,7 @@ public class SecurityConfig {
 
                         //report/sales controller
                         .requestMatchers(GET, REPORT_SALES_CONTROLLER + "/overview").hasAnyRole(SUPERUSER, OWNER, MANAGER)
+                        .requestMatchers(GET, REPORT_SALES_CONTROLLER + "/products").hasAnyRole(SUPERUSER, OWNER, MANAGER)
 
                         .requestMatchers(GET, BASE_URL + RESTAURANTS_CONTROLLER + "/**").hasAnyRole(SUPERUSER)
 

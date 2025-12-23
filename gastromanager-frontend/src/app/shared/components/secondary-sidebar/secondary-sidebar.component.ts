@@ -1,5 +1,5 @@
 import {Component, computed, inject} from '@angular/core';
-import {RouterLink} from "@angular/router";
+import {RouterLink, RouterLinkActive} from "@angular/router";
 import {LayoutStore} from "../../../layouts/authenticated-layout/store/authenticated-layout.store";
 import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
@@ -10,6 +10,7 @@ import {FiltersService} from "../../../features/reports/infrastructure/services/
   standalone: true,
   imports: [
     RouterLink,
+    RouterLinkActive,
     CommonModule,
     FormsModule
   ],

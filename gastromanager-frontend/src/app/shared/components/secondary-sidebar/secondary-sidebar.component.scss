@@ -1,12 +1,48 @@
 .secondary-sidebar {
-  padding: 0.5rem;
-  background-color: #f8f9fa;
+  background: var(--surface-card, #1a2332);
+  color: var(--text-color, #e6eef8);
+  height: 100%;
+  width: 100%;
+  padding: 0.75rem 0.75rem 1rem 0.75rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  box-sizing: border-box;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(100, 255, 218, 0.15);
+    border-radius: 2px;
+
+    &:hover {
+      background: rgba(100, 255, 218, 0.25);
+    }
+  }
+
+  .section-title {
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-color-secondary, rgba(255, 255, 255, 0.5));
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.35rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
 
   h3, h4 {
-    color: #2c3e50;
-    font-weight: 600;
+    color: var(--text-color, #e6eef8);
+    font-weight: 500;
     margin-bottom: 0.5rem;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.3px;
   }
 
   .actions-list {
@@ -15,30 +51,32 @@
     margin: 0 0 1rem 0;
 
     li {
-      margin-bottom: 0.25rem;
+      margin-bottom: 0.15rem;
     }
 
     .action-link {
-      display: block;
-      padding: 0.35rem 0.5rem;
-      color: #495057;
+      display: flex;
+      align-items: center;
+      padding: 0.5rem 0.65rem;
+      color: var(--text-color-secondary, rgba(255, 255, 255, 0.7));
       text-decoration: none;
-      border-radius: 3px;
-      transition: all 0.3s ease;
-      border-left: 2px solid transparent;
-      font-size: 0.8rem;
+      border-radius: 6px;
+      transition: all 0.15s ease;
+      font-size: 0.85rem;
+      font-weight: 400;
+      border-right: 3px solid transparent;
 
       &:hover {
-        background-color: #e9ecef;
-        color: #007bff;
-        border-left-color: #007bff;
-        transform: translateX(1px);
+        background: rgba(100, 255, 218, 0.05);
+        color: var(--text-color, #e6eef8);
+        transform: translateX(-2px);
       }
 
       &.active {
-        background-color: #e3f2fd;
-        color: #1976d2;
-        border-left-color: #1976d2;
+        color: var(--primary-color, #64ffda);
+        background: transparent;
+        border-right-color: var(--primary-color, #64ffda);
+        font-weight: 400;
       }
     }
   }
@@ -48,98 +86,114 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 0.5rem;
-      padding: 0.25rem 0.5rem;
-      background-color: #e9ecef;
-      border-radius: 4px;
+      margin-bottom: 0.65rem;
+      padding: 0.35rem 0;
 
       h4 {
         margin: 0;
         font-size: 0.8rem;
-        color: #2c3e50;
+        font-weight: 500;
+        color: var(--text-color, #e6eef8);
+        letter-spacing: 0.3px;
       }
 
       .btn-clear-filters {
-        background: #fff;
-        border: 1px solid #007bff;
-        color: #007bff;
-        padding: 0.15rem 0.4rem;
-        border-radius: 3px;
-        font-size: 0.65rem;
-        font-weight: 500;
+        background: transparent;
+        border: 1px solid rgba(100, 255, 218, 0.3);
+        color: var(--primary-color, #64ffda);
+        padding: 0.3rem 0.6rem;
+        border-radius: 5px;
+        font-size: 0.7rem;
+        font-weight: 400;
         cursor: pointer;
         transition: all 0.2s ease;
 
         &:hover {
-          background-color: #007bff;
-          border-color: #007bff;
-          color: #fff;
+          background: rgba(100, 255, 218, 0.1);
+          border-color: rgba(100, 255, 218, 0.5);
+        }
+
+        &:active {
+          transform: translateY(1px);
         }
       }
     }
 
     .filters-container {
       .filter-item {
-        margin-bottom: 0.75rem;
-        padding: 0.4rem;
-        background-color: #ffffff;
-        border-radius: 4px;
-        border: 1px solid #e9ecef;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        margin-bottom: 0.65rem;
+        padding: 0;
 
         .form-group {
           label {
             display: block;
-            font-size: 0.7rem;
-            font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 0.25rem;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
+            font-size: 0.72rem;
+            font-weight: 400;
+            color: var(--text-color-secondary, rgba(255, 255, 255, 0.7));
+            margin-bottom: 0.3rem;
+            letter-spacing: 0.2px;
           }
 
           .form-control {
             width: 100%;
-            padding: 0.3rem 0.4rem;
-            font-size: 0.75rem;
-            border: 1px solid #e9ecef;
-            border-radius: 3px;
-            background-color: #fff;
-            color: #2c3e50;
-            transition: all 0.15s ease-in-out;
+            padding: 0.5rem 0.65rem;
+            font-size: 0.82rem;
+            font-weight: 400;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-color, #e6eef8);
+            transition: all 0.2s ease;
 
             &:focus {
               outline: 0;
-              border-color: #007bff;
-              box-shadow: 0 0 0 0.1rem rgba(0, 123, 255, 0.15);
-              background-color: #f8f9ff;
+              border-color: rgba(100, 255, 218, 0.4);
+              background: rgba(255, 255, 255, 0.05);
+              box-shadow: 0 0 0 2px rgba(100, 255, 218, 0.08);
+            }
+
+            &:hover:not(:focus) {
+              border-color: rgba(255, 255, 255, 0.15);
             }
 
             &.form-control-sm {
-              padding: 0.25rem 0.35rem;
-              font-size: 0.7rem;
+              padding: 0.45rem 0.55rem;
+              font-size: 0.78rem;
             }
           }
 
-          input[type="text"] {
+          input[type="text"],
+          input[type="date"] {
             &::placeholder {
-              color: #6c757d;
+              color: rgba(255, 255, 255, 0.4);
+              font-weight: 300;
+            }
+
+            // Estilos para el calendario de date input
+            &::-webkit-calendar-picker-indicator {
+              filter: invert(0.7);
+              cursor: pointer;
               opacity: 0.7;
-              font-style: italic;
+              transition: opacity 0.2s ease;
+
+              &:hover {
+                opacity: 1;
+              }
             }
           }
 
           select {
             cursor: pointer;
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-            background-position: right 0.3rem center;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='rgba(255,255,255,0.6)' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.45rem center;
             background-repeat: no-repeat;
-            background-size: 1rem 1rem;
-            padding-right: 1.5rem;
+            background-size: 0.9rem 0.9rem;
+            padding-right: 1.8rem;
+            appearance: none;
 
             option {
-              color: #2c3e50;
-              background-color: #fff;
+              background: var(--surface-card, #1a2332);
+              color: var(--text-color, #e6eef8);
             }
           }
 
@@ -147,62 +201,56 @@
             display: flex;
             align-items: center;
             gap: 0.4rem;
-            background-color: #f8f9fa;
-            padding: 0.3rem;
-            border-radius: 3px;
-            border: 1px solid #e9ecef;
 
             .range-separator {
-              color: #2c3e50;
-              font-weight: bold;
+              color: var(--text-color-secondary, rgba(255, 255, 255, 0.5));
+              font-weight: 400;
               font-size: 0.8rem;
             }
 
             input {
               flex: 1;
-              background-color: #fff;
-              border: 1px solid #ced4da;
               min-width: 0;
-
-              &:focus {
-                background-color: #fff;
-                border-color: #007bff;
-              }
             }
           }
 
           .multiselect-container {
-            background-color: #f8f9fa;
+            background: rgba(255, 255, 255, 0.02);
             padding: 0.3rem;
-            border-radius: 3px;
-            border: 1px solid #e9ecef;
-            max-height: 120px;
+            border-radius: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            max-height: 130px;
             overflow-y: auto;
 
-            .checkbox-item {
+            .select-all-item {
               display: flex;
               align-items: center;
               gap: 0.4rem;
-              padding: 0.15rem 0.2rem;
-              margin-bottom: 0.1rem;
-              border-radius: 2px;
-              transition: background-color 0.2s ease;
+              padding: 0.3rem 0.4rem;
+              margin-bottom: 0.3rem;
+              border-radius: 4px;
+              transition: background 0.2s ease;
+              border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 
               &:hover {
-                background-color: #e9ecef;
+                background: rgba(100, 255, 218, 0.05);
               }
 
               .checkbox-input {
-                width: 0.9rem;
-                height: 0.9rem;
-                accent-color: #007bff;
+                width: 0.95rem;
+                height: 0.95rem;
+                accent-color: var(--primary-color, #64ffda);
                 cursor: pointer;
+
+                &:indeterminate {
+                  accent-color: rgba(100, 255, 218, 0.6);
+                }
               }
 
               .checkbox-label {
-                font-size: 0.7rem;
+                font-size: 0.72rem;
                 font-weight: 500;
-                color: #2c3e50;
+                color: var(--primary-color, #64ffda);
                 cursor: pointer;
                 margin: 0;
                 flex: 1;
@@ -210,23 +258,52 @@
               }
             }
 
-            // Scrollbar personalizada para contenedor compacto
+            .checkbox-item {
+              display: flex;
+              align-items: center;
+              gap: 0.4rem;
+              padding: 0.3rem 0.4rem;
+              margin-bottom: 0.1rem;
+              border-radius: 4px;
+              transition: background 0.2s ease;
+
+              &:hover {
+                background: rgba(100, 255, 218, 0.05);
+              }
+
+              .checkbox-input {
+                width: 0.95rem;
+                height: 0.95rem;
+                accent-color: var(--primary-color, #64ffda);
+                cursor: pointer;
+              }
+
+              .checkbox-label {
+                font-size: 0.76rem;
+                font-weight: 400;
+                color: var(--text-color, #e6eef8);
+                cursor: pointer;
+                margin: 0;
+                flex: 1;
+                user-select: none;
+              }
+            }
+
             &::-webkit-scrollbar {
-              width: 3px;
+              width: 4px;
             }
 
             &::-webkit-scrollbar-track {
-              background: #f1f1f1;
-              border-radius: 2px;
+              background: transparent;
             }
 
             &::-webkit-scrollbar-thumb {
-              background: #007bff;
+              background: rgba(100, 255, 218, 0.2);
               border-radius: 2px;
-            }
 
-            &::-webkit-scrollbar-thumb:hover {
-              background: #0056b3;
+              &:hover {
+                background: rgba(100, 255, 218, 0.35);
+              }
             }
           }
 
@@ -235,44 +312,38 @@
 
             .dropdown-toggle {
               width: 100%;
-              padding: 0.3rem 0.4rem;
-              font-size: 0.75rem;
-              border: 1px solid #e9ecef;
-              border-radius: 3px;
-              background-color: #fff;
-              color: #2c3e50;
+              padding: 0.5rem 0.65rem;
+              font-size: 0.82rem;
+              font-weight: 400;
+              border: 1px solid rgba(255, 255, 255, 0.1);
+              border-radius: 5px;
+              background: rgba(255, 255, 255, 0.03);
+              color: var(--text-color, #e6eef8);
               cursor: pointer;
               display: flex;
               align-items: center;
               justify-content: space-between;
-              transition: all 0.15s ease-in-out;
+              transition: all 0.2s ease;
 
               &:hover {
-                border-color: #007bff;
+                border-color: rgba(255, 255, 255, 0.15);
+                background: rgba(255, 255, 255, 0.05);
               }
 
-              &:focus, &.active {
-                outline: 0;
-                border-color: #007bff;
-                box-shadow: 0 0 0 0.1rem rgba(0, 123, 255, 0.15);
-                background-color: #f8f9ff;
-              }
-
-              .dropdown-text {
-                flex: 1;
-                text-align: left;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
+              .selected-count {
+                font-size: 0.8rem;
+                color: var(--text-color-secondary, rgba(255, 255, 255, 0.6));
               }
 
               .dropdown-arrow {
-                font-size: 0.6rem;
-                color: #6c757d;
+                width: 0;
+                height: 0;
+                border-left: 3.5px solid transparent;
+                border-right: 3.5px solid transparent;
+                border-top: 4.5px solid rgba(255, 255, 255, 0.6);
                 transition: transform 0.2s ease;
-                margin-left: 0.3rem;
 
-                &.rotated {
+                &.open {
                   transform: rotate(180deg);
                 }
               }
@@ -283,80 +354,39 @@
               top: 100%;
               left: 0;
               right: 0;
-              z-index: 1000;
-              background: #fff;
-              border: 1px solid #e9ecef;
-              border-radius: 3px;
-              box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-              max-height: 150px;
+              margin-top: 0.25rem;
+              background: var(--surface-overlay, #1f2937);
+              border: 1px solid rgba(255, 255, 255, 0.1);
+              border-radius: 5px;
+              padding: 0.3rem;
+              max-height: 180px;
               overflow-y: auto;
-              margin-top: 1px;
+              z-index: 1000;
+              box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 
-              .select-all-section {
-                border-bottom: 1px solid #e9ecef;
-                padding: 0.2rem;
-
-                .select-all-btn {
-                  width: 100%;
-                  padding: 0.2rem 0.3rem;
-                  font-size: 0.65rem;
-                  font-weight: 600;
-                  border: none;
-                  border-radius: 2px;
-                  background: #f8f9fa;
-                  color: #495057;
-                  cursor: pointer;
-                  transition: all 0.2s ease;
-                  text-align: left;
-
-                  &:hover {
-                    background: #e9ecef;
-                    color: #007bff;
-                  }
-
-                  &.all-selected {
-                    background: #007bff;
-                    color: #fff;
-
-                    &:hover {
-                      background: #0056b3;
-                    }
-                  }
-
-                  &.partial-selected {
-                    background: #ffc107;
-                    color: #212529;
-
-                    &:hover {
-                      background: #e0a800;
-                    }
-                  }
-                }
-              }
-
-              .dropdown-item {
+              .checkbox-item {
                 display: flex;
                 align-items: center;
-                gap: 0.3rem;
-                padding: 0.2rem 0.3rem;
-                transition: background-color 0.2s ease;
-                cursor: pointer;
+                gap: 0.4rem;
+                padding: 0.3rem 0.4rem;
+                border-radius: 4px;
+                transition: background 0.2s ease;
 
                 &:hover {
-                  background-color: #f8f9fa;
+                  background: rgba(100, 255, 218, 0.08);
                 }
 
                 .checkbox-input {
-                  width: 0.8rem;
-                  height: 0.8rem;
-                  accent-color: #007bff;
+                  width: 0.95rem;
+                  height: 0.95rem;
+                  accent-color: var(--primary-color, #64ffda);
                   cursor: pointer;
                 }
 
                 .checkbox-label {
-                  font-size: 0.7rem;
-                  font-weight: 500;
-                  color: #2c3e50;
+                  font-size: 0.76rem;
+                  font-weight: 400;
+                  color: var(--text-color, #e6eef8);
                   cursor: pointer;
                   margin: 0;
                   flex: 1;
@@ -364,179 +394,94 @@
                 }
               }
 
-              // Scrollbar personalizada para dropdown
               &::-webkit-scrollbar {
                 width: 4px;
               }
 
               &::-webkit-scrollbar-track {
-                background: #f1f1f1;
+                background: transparent;
               }
 
               &::-webkit-scrollbar-thumb {
-                background: #c1c1c1;
+                background: rgba(100, 255, 218, 0.2);
                 border-radius: 2px;
-              }
 
-              &::-webkit-scrollbar-thumb:hover {
-                background: #a8a8a8;
+                &:hover {
+                  background: rgba(100, 255, 218, 0.35);
+                }
               }
+            }
+          }
+
+          // Date input personalizado
+          input[type="date"] {
+            position: relative;
+
+            &::-webkit-inner-spin-button,
+            &::-webkit-clear-button {
+              display: none;
+            }
+          }
+
+          // Number input personalizado
+          input[type="number"] {
+            &::-webkit-inner-spin-button,
+            &::-webkit-outer-spin-button {
+              opacity: 0.6;
             }
           }
         }
       }
     }
+  }
 
-    .apply-filters-section {
-      margin-top: 0.75rem;
-      padding: 0.5rem 0;
-      border-top: 1px solid #e9ecef;
+  // Empty state
+  .empty-state {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: var(--text-color-secondary, rgba(255, 255, 255, 0.5));
+    font-size: 0.85rem;
+    font-weight: 400;
+  }
 
-      .btn-apply-filters {
-        width: 100%;
-        padding: 0.5rem;
-        font-size: 0.8rem;
-        font-weight: 600;
-        border: 2px solid #007bff;
-        border-radius: 4px;
-        background: #fff;
-        color: #007bff;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        text-align: center;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.3rem;
+  // Responsive
+  @media (max-width: 768px) {
+    padding: 0.75rem 0.65rem;
 
-        &:hover:not(:disabled) {
-          background: #007bff;
-          color: #fff;
-          transform: translateY(-1px);
-          box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+    .section-title {
+      font-size: 0.68rem;
+    }
+
+    .actions-list .action-link {
+      padding: 0.45rem 0.55rem;
+      font-size: 0.8rem;
+    }
+
+    .filters-section {
+      .filters-header {
+        h4 {
+          font-size: 0.75rem;
         }
 
-        &.has-changes {
-          background: #007bff;
-          color: #fff;
-          animation: pulse 2s infinite;
-          box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        .btn-clear-filters {
+          font-size: 0.68rem;
+          padding: 0.28rem 0.55rem;
         }
+      }
 
-        &:disabled {
-          opacity: 0.6;
-          cursor: not-allowed;
-          background: #f8f9fa;
-          color: #6c757d;
-          border-color: #e9ecef;
-        }
+      .filters-container .filter-item {
+        .form-group {
+          label {
+            font-size: 0.7rem;
+          }
 
-        // Estado cuando filtros ya están aplicados
-        &:not(.has-changes):not(:disabled) {
-          background: #28a745;
-          border-color: #28a745;
-          color: #fff;
-
-          &:hover {
-            background: #218838;
-            border-color: #1e7e34;
+          .form-control {
+            padding: 0.48rem 0.58rem;
+            font-size: 0.8rem;
           }
         }
       }
     }
-
-    @keyframes pulse {
-      0% {
-        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-      }
-      50% {
-        box-shadow: 0 0 0 0.4rem rgba(0, 123, 255, 0.15);
-      }
-      100% {
-        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-      }
-    }
   }
 }
 
-// Responsive
-@media (max-width: 768px) {
-  .secondary-sidebar {
-    .filters-header {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.4rem;
-      padding: 0.4rem;
-    }
-
-    .range-inputs {
-      flex-direction: column;
-      gap: 0.25rem !important;
-
-      .range-separator {
-        display: none;
-      }
-    }
-
-    .filter-item {
-      margin-bottom: 0.5rem !important;
-      padding: 0.3rem !important;
-    }
-  }
-}
-
-// Estilos globales para el date picker (calendario)
-:host ::ng-deep {
-  // Estilos para Webkit (Chrome, Safari, Edge)
-  input[type="date"]::-webkit-datetime-edit {
-    color: #2c3e50;
-    padding: 0;
-  }
-
-  input[type="date"]::-webkit-datetime-edit-fields-wrapper {
-    padding: 0;
-  }
-
-  input[type="date"]::-webkit-datetime-edit-text {
-    color: #6c757d;
-    padding: 0 0.2rem;
-  }
-
-  input[type="date"]::-webkit-datetime-edit-month-field,
-  input[type="date"]::-webkit-datetime-edit-day-field,
-  input[type="date"]::-webkit-datetime-edit-year-field {
-    color: #2c3e50;
-    background-color: transparent;
-    border: none;
-    outline: none;
-    padding: 0.1rem;
-    border-radius: 2px;
-
-    &:focus {
-      background-color: #e3f2fd;
-      color: #1976d2;
-    }
-  }
-
-  // Estilos para el calendario emergente
-  input[type="date"]::-webkit-calendar-picker-indicator {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23007bff' viewBox='0 0 24 24'%3E%3Cpath d='M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z'/%3E%3C/svg%3E") !important;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 16px 16px;
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
-    opacity: 0.7;
-    transition: opacity 0.2s ease;
-
-    &:hover {
-      opacity: 1;
-    }
-  }
-}
-
-// Estilos específicos para navegadores que soportan color-scheme
-input[type="date"] {
-  color-scheme: light;
-}

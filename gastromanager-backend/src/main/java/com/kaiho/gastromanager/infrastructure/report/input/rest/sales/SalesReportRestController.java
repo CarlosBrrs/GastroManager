@@ -1,9 +1,11 @@
 package com.kaiho.gastromanager.infrastructure.report.input.rest.sales;
 
 import com.kaiho.gastromanager.application.report.dto.response.sales.OverviewSalesReportResponseDto;
+import com.kaiho.gastromanager.application.report.dto.response.sales.ProductSalesResponseDto;
 import com.kaiho.gastromanager.application.report.handler.sales.SalesReportHandler;
 import com.kaiho.gastromanager.infrastructure.common.model.ApiGenericResponse;
 import com.kaiho.gastromanager.infrastructure.report.input.rest.sales.criteria.OverviewSalesReportCriteria;
+import com.kaiho.gastromanager.infrastructure.report.input.rest.sales.criteria.ProductSalesReportCriteria;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
+import java.util.List;
 
 import static org.springframework.http.HttpStatus.OK;
 
@@ -35,6 +38,20 @@ public class SalesReportRestController {
                                                                           .build();
 
         ApiGenericResponse<OverviewSalesReportResponseDto> response = salesReportHandler.getOverviewSalesReport(criteria);
+        return new ResponseEntity<>(response, OK);
+    }
+
+    @GetMapping("/products")
+    public ResponseEntity<ApiGenericResponse<List<ProductSalesResponseDto>>> getProductSalesReport(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant dateFrom,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant dateTo
+    ) {
+        ProductSalesReportCriteria criteria = ProductSalesReportCriteria.builder()
+                                                                        .dateFrom(dateFrom)
+                                                                        .dateTo(dateTo)
+                                                                        .build();
+
+        ApiGenericResponse<List<ProductSalesResponseDto>> response = salesReportHandler.getProductSalesReport(criteria);
         return new ResponseEntity<>(response, OK);
     }
 

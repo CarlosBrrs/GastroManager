@@ -10,15 +10,15 @@ public record SummaryDto(
         Integer completedOrders,         // Órdenes completadas/servidas
         Integer cancelledOrders,         // Órdenes canceladas
         Double cancellationRate,         // Porcentaje de cancelación
-
+        
         // Métricas basadas en órdenes (valor teórico)
         BigDecimal totalOrderValue,      // Valor total de órdenes (lo que se debería cobrar)
-
+        
         // Métricas basadas en pagos (dinero real cobrado)
         BigDecimal totalRevenue,         // Dinero cobrado neto (sin propinas)
         BigDecimal totalTips,            // Total de propinas cobradas
         BigDecimal totalPaidWithTips,    // Dinero total cobrado (revenue + tips)
-
+        
         // Métricas derivadas
         BigDecimal pendingAmount,        // Deuda pendiente por cobrar
         Double collectionRate,           // Porcentaje de cobro efectivo

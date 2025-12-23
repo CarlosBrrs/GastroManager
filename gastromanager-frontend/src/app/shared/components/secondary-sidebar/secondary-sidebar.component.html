@@ -3,7 +3,7 @@
   <ul class="actions-list">
     @for (link of links(); track $index) {
       <li>
-        <a [routerLink]="link.route" class="action-link">
+        <a [routerLink]="link.route" routerLinkActive="active" class="action-link">
           {{ link.label }}
         </a>
       </li>
@@ -111,7 +111,7 @@
                         {{ getFilterArray(filter.key).length }} seleccionados
                       }
                     </span>
-                    <span [class.rotated]="isDropdownOpen(filter.key)" class="dropdown-arrow">▼</span>
+                    <span [class.open]="isDropdownOpen(filter.key)" class="dropdown-arrow"></span>
                   </button>
 
                   <!-- Lista desplegable -->

@@ -1,24 +1,27 @@
-import {ChangeDetectionStrategy, Component, computed, inject} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, inject, ViewEncapsulation} from '@angular/core';
 import {CommonModule, DecimalPipe} from '@angular/common';
 import {FiltersService} from '../../../infrastructure/services/filters.service';
 import {SalesReportStore} from '../../../../../core/store/sales-report/sales-report.store';
+import {TableModule} from 'primeng/table';
 
 @Component({
   selector: 'gm-sales-reports-page',
   standalone: true,
   imports: [
     DecimalPipe,
-    CommonModule
+    CommonModule,
+    TableModule
   ],
   templateUrl: './sales-reports-page.component.html',
   styleUrl: './sales-reports-page.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None
 })
 export class SalesReportsPageComponent {
-  // Hacer público filtersService para acceder desde template
+  // Hacer público filtersService y salesReportStore para acceder desde template
   readonly filtersService = inject(FiltersService);
   activeFiltersCount = computed(() => this.filtersService.getActiveFiltersCount());
-  private readonly salesReportStore = inject(SalesReportStore);
+  readonly salesReportStore = inject(SalesReportStore);
   // Computed para datos del store
   salesData = computed(() => this.salesReportStore.data());
   loading = computed(() => this.salesReportStore.loading());
@@ -103,7 +106,8 @@ export class SalesReportsPageComponent {
 
     if (this.filtersService.hasValidFilters()) {
       console.log('🔄 [SalesReportsPage] Applying filters:', filters);
-      this.salesReportStore.getSalesReport(filters);
+      // Cargar overview y productos al mismo tiempo (sin paginación, se maneja en el frontend)
+      this.salesReportStore.loadAllReportData({filters});
     } else {
       console.warn('⚠️ [SalesReportsPage] Cannot apply filters - missing required dates');
     }
@@ -123,7 +127,7 @@ export class SalesReportsPageComponent {
     // Llamar directamente al store para refrescar con los últimos filtros aplicados
     const lastFilters = this.salesReportStore.lastFilters();
     if (lastFilters) {
-      this.salesReportStore.getSalesReport(lastFilters);
+      this.salesReportStore.loadAllReportData({filters: lastFilters});
     }
   }
 }
