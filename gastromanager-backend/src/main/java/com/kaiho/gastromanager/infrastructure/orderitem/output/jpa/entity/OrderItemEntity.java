@@ -1,15 +1,11 @@
 package com.kaiho.gastromanager.infrastructure.orderitem.output.jpa.entity;
 
 import com.kaiho.gastromanager.infrastructure.common.model.Auditable;
-import com.kaiho.gastromanager.infrastructure.invoiceitem.output.jpa.entity.InvoiceItemEntity;
 import com.kaiho.gastromanager.infrastructure.order.output.jpa.entity.OrderEntity;
 import com.kaiho.gastromanager.infrastructure.product.output.jpa.entity.ProductEntity;
-import com.kaiho.gastromanager.infrastructure.productitem.output.jpa.entity.ProductItemEntity;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,8 +15,6 @@ import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "order_items")

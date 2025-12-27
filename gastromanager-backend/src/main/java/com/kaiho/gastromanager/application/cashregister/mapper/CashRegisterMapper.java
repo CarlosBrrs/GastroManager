@@ -28,11 +28,11 @@ public class CashRegisterMapper {
         }
 
         return CashRegisterResponseDto.builder()
-                .uuid(cashRegister.getUuid())
-                .name(cashRegister.getName())
-                .location(cashRegister.getLocation())
-                .status(status)
-                .currentSession(currentSession)
-                .build();
+                                      .uuid(cashRegister.getUuid())
+                                      .name(cashRegister.getName())
+                                      .location(cashRegister.getLocation())
+                                      .status(status)
+                                      .currentSession(currentSession)
+                                      .build();
     }
 }

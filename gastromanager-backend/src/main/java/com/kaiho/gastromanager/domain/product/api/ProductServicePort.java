@@ -1,6 +1,5 @@
 package com.kaiho.gastromanager.domain.product.api;
 
-import com.kaiho.gastromanager.application.product.dto.response.ProductGroupByResponseDto;
 import com.kaiho.gastromanager.domain.product.model.Product;
 import com.kaiho.gastromanager.domain.product.model.ProductGroupByResult;
 import com.kaiho.gastromanager.infrastructure.product.output.jpa.criteria.ProductGroupByCriteria;

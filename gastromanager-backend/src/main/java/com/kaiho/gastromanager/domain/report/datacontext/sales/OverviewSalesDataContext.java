@@ -38,8 +38,8 @@ public record OverviewSalesDataContext(
         }
 
         List<UUID> orderUuids = ordersWithoutPayments.stream()
-                                                      .map(OrderEntity::getUuid)
-                                                      .toList();
+                                                     .map(OrderEntity::getUuid)
+                                                     .toList();
 
         List<OrderEntity> ordersWithPayments = orderEntityRepository.findAllWithPayments(orderUuids);
 

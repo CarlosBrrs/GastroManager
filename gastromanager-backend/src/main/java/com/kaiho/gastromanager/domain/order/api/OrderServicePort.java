@@ -1,5 +1,6 @@
 package com.kaiho.gastromanager.domain.order.api;
 
+import com.kaiho.gastromanager.domain.order.model.ChangeOrderStatus;
 import com.kaiho.gastromanager.domain.order.model.OperationalStatus;
 import com.kaiho.gastromanager.domain.order.model.Order;
 import com.kaiho.gastromanager.domain.order.model.PaymentStatus;
@@ -32,4 +33,6 @@ public interface OrderServicePort {
      * Devuelve un arreglo: [totalAmount, totalPaid] para la orden indicada
      */
     BigDecimal[] getOrderTotals(UUID orderUuid);
+
+    UUID changeOrderStatus(UUID orderUuid, ChangeOrderStatus orderStatus);
 }

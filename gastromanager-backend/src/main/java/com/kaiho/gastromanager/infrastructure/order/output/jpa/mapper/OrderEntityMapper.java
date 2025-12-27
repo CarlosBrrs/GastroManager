@@ -7,7 +7,6 @@ import com.kaiho.gastromanager.infrastructure.order.output.jpa.entity.OrderEntit
 import com.kaiho.gastromanager.infrastructure.orderitem.output.jpa.entity.OrderItemEntity;
 import com.kaiho.gastromanager.infrastructure.orderitem.output.jpa.mapper.OrderItemEntityMapper;
 import com.kaiho.gastromanager.infrastructure.restaurant.output.jpa.entity.RestaurantEntity;
-import com.kaiho.gastromanager.infrastructure.user.output.jpa.mapper.UserEntityMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -41,8 +40,8 @@ public class OrderEntityMapper {
                     .requiresPaymentBefore(orderEntity.getRequiresPaymentBeforeOrder())
                     .operationalStatus(orderEntity.getOperationalStatus())
                     .paymentStatus(orderEntity.getPaymentStatus())
-                .remainingToPay(orderEntity.getTotalAmount().subtract(orderEntity.getTotalPaid()))
-                .customerNotes(orderEntity.getCustomerNotes())
+                    .remainingToPay(orderEntity.getTotalAmount().subtract(orderEntity.getTotalPaid()))
+                    .customerNotes(orderEntity.getCustomerNotes())
 
                     .orderItems(orderItems)
                     .createdBy(orderEntity.getCreatedBy())
@@ -62,20 +61,20 @@ public class OrderEntityMapper {
                                                        .map(orderItemEntityMapper::toEntity)
                                                        .toList();
         OrderEntity orderEntity = OrderEntity.builder()
-                .uuid(order.getUuid())
-                                       .code(order.getCode())
-                                       .customerNotes(order.getCustomerNotes())
-                                       .orderItems(new ArrayList<>())
-                                       .totalAmount(order.getTotalAmount())
-                                       .totalPaid(order.getTotalPaid())
-                                       .requiresPaymentBeforeOrder(order.isRequiresPaymentBefore())
-                                       .operationalStatus(order.getOperationalStatus())
-                                       .paymentStatus(order.getPaymentStatus())
-                                       .invoicingStatus(order.getInvoicingStatus())
-                                       .restaurant(RestaurantEntity.builder().uuid(order.getRestaurant().getUuid()).build())
-                                       .tableNumber(order.getTableNumber())
-                                       .customerName(order.getCustomerName())
-                                       .build();
+                                             .uuid(order.getUuid())
+                                             .code(order.getCode())
+                                             .customerNotes(order.getCustomerNotes())
+                                             .orderItems(new ArrayList<>())
+                                             .totalAmount(order.getTotalAmount())
+                                             .totalPaid(order.getTotalPaid())
+                                             .requiresPaymentBeforeOrder(order.isRequiresPaymentBefore())
+                                             .operationalStatus(order.getOperationalStatus())
+                                             .paymentStatus(order.getPaymentStatus())
+                                             .invoicingStatus(order.getInvoicingStatus())
+                                             .restaurant(RestaurantEntity.builder().uuid(order.getRestaurant().getUuid()).build())
+                                             .tableNumber(order.getTableNumber())
+                                             .customerName(order.getCustomerName())
+                                             .build();
         orderItemEntities.forEach(orderEntity::addOrderItem);
         return orderEntity;
     }

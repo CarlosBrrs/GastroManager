@@ -14,38 +14,6 @@ import java.math.RoundingMode;
 @Component
 public class OverviewMetricCalculator implements MetricCalculator<OverviewSalesDataContext, OverviewSummary> {
 
-    @Override
-    public OverviewSummary calculate(OverviewSalesDataContext dataContext) {
-        Integer totalOrders = getTotalOrders(dataContext);
-        Integer completedOrders = getCompletedOrders(dataContext);
-        Integer cancelledOrders = getCancelledOrders(dataContext);
-        Double cancellationRate = getCancellationRate(totalOrders, cancelledOrders);
-        BigDecimal totalOrderValue = getTotalOrderValue(dataContext);
-        BigDecimal totalRevenue = getTotalRevenue(dataContext);
-        BigDecimal totalTips = getTotalTips(dataContext);
-        BigDecimal totalPaid = getTotalPaid(dataContext);
-
-        // Métricas derivadas
-        BigDecimal pendingAmount = getPendingAmount(totalOrderValue, totalRevenue);
-        Double collectionRate = getCollectionRate(totalRevenue, totalOrderValue);
-
-        Double averageOrderValue = getAverageOrderValue(totalOrderValue, completedOrders);
-
-        return OverviewSummary.builder()
-                              .totalOrders(totalOrders)
-                              .completedOrders(completedOrders)
-                              .cancelledOrders(cancelledOrders)
-                              .cancellationRate(cancellationRate)
-                              .totalOrderValue(totalOrderValue)
-                              .totalRevenue(totalRevenue)
-                              .totalTips(totalTips)
-                              .totalPaidWithTips(totalPaid)
-                              .pendingAmount(pendingAmount)
-                              .collectionRate(collectionRate)
-                              .averageOrderValue(averageOrderValue)
-                              .build();
-    }
-
     private static Integer getTotalOrders(OverviewSalesDataContext dataContext) {
         return dataContext.orders().size();
     }
@@ -103,8 +71,8 @@ public class OverviewMetricCalculator implements MetricCalculator<OverviewSalesD
         }
         return roundDouble(
                 totalRevenue.divide(totalOrderValue, 4, RoundingMode.HALF_UP)
-                         .multiply(BigDecimal.valueOf(100))
-                         .doubleValue()
+                            .multiply(BigDecimal.valueOf(100))
+                            .doubleValue()
         );
     }
 
@@ -127,6 +95,38 @@ public class OverviewMetricCalculator implements MetricCalculator<OverviewSalesD
         return BigDecimal.valueOf(value)
                          .setScale(scale, RoundingMode.HALF_UP)
                          .doubleValue();
+    }
+
+    @Override
+    public OverviewSummary calculate(OverviewSalesDataContext dataContext) {
+        Integer totalOrders = getTotalOrders(dataContext);
+        Integer completedOrders = getCompletedOrders(dataContext);
+        Integer cancelledOrders = getCancelledOrders(dataContext);
+        Double cancellationRate = getCancellationRate(totalOrders, cancelledOrders);
+        BigDecimal totalOrderValue = getTotalOrderValue(dataContext);
+        BigDecimal totalRevenue = getTotalRevenue(dataContext);
+        BigDecimal totalTips = getTotalTips(dataContext);
+        BigDecimal totalPaid = getTotalPaid(dataContext);
+
+        // Métricas derivadas
+        BigDecimal pendingAmount = getPendingAmount(totalOrderValue, totalRevenue);
+        Double collectionRate = getCollectionRate(totalRevenue, totalOrderValue);
+
+        Double averageOrderValue = getAverageOrderValue(totalOrderValue, completedOrders);
+
+        return OverviewSummary.builder()
+                              .totalOrders(totalOrders)
+                              .completedOrders(completedOrders)
+                              .cancelledOrders(cancelledOrders)
+                              .cancellationRate(cancellationRate)
+                              .totalOrderValue(totalOrderValue)
+                              .totalRevenue(totalRevenue)
+                              .totalTips(totalTips)
+                              .totalPaidWithTips(totalPaid)
+                              .pendingAmount(pendingAmount)
+                              .collectionRate(collectionRate)
+                              .averageOrderValue(averageOrderValue)
+                              .build();
     }
 
     @Override

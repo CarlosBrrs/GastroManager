@@ -42,32 +42,7 @@ public class OrderEntityAdapter implements OrderPersistencePort {
 
         // devuelve el dominio mapeado desde la entidad guardada
         return orderEntityMapper.toDomain(savedEntity);
-//        return null;
-/*        List<ProductItemEntity> productItemEntityList = productItemRepository.findByUuidIn(order.getOrderItems()
-                                                                                                .stream()
-                                                                                                .map(orderItem -> orderItem.getProductItem().getUuid())
-                                                                                                .toList());
 
-        UserEntity userEntity = userEntityRepository.findById(order.getUser().getUuid()).orElseThrow(() -> new UsernameNotFoundException(order.getUser().getUuid().toString()));
-
-        RestaurantEntity restaurantEntity = restaurantEntityRepository.findById(order.getRestaurant().getUuid())
-                                                                      .orElseThrow(() -> new RestaurantDoesNotExistException(order.getRestaurant().getUuid().toString()));
-
-        OrderEntity orderEntity = orderEntityMapper.toEntity(order);
-
-        orderEntity.getOrderItems().forEach(orderItemEntity -> {
-            ProductItemEntity productItemEntity = productItemEntityList.stream()
-                                                                       .filter(p -> p.getUuid().equals(orderItemEntity.getProductItem().getUuid())).findFirst()
-                                                                       .orElseThrow(() -> new ProductItemDoesNotExistException(orderItemEntity.getProductItem().getUuid()));
-            productItemEntity.addOrderItem(orderItemEntity);
-        });
-
-        userEntity.addOrder(orderEntity);
-        restaurantEntity.addOrder(orderEntity);
-
-        OrderEntity savedEntity = orderEntityRepository.save(orderEntity);
-
-        return orderEntityMapper.toDomain(savedEntity);*/
     }
 
     @Override
@@ -92,11 +67,10 @@ public class OrderEntityAdapter implements OrderPersistencePort {
 
     @Override
     public void updateOrder(Order order) {
-        // Obtener la entidad existente para preservar las colecciones
         OrderEntity existingEntity = orderEntityRepository.findById(order.getUuid())
-                .orElseThrow(() -> new OrderDoesNotExistException(order.getUuid()));
+                                                          .orElseThrow(() -> new OrderDoesNotExistException(order.getUuid()));
 
-        // Actualizar solo los campos necesarios sin tocar las colecciones
+
         existingEntity.setTotalPaid(order.getTotalPaid());
         existingEntity.setTotalAmount(order.getTotalAmount());
         existingEntity.setOperationalStatus(order.getOperationalStatus());

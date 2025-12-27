@@ -10,12 +10,15 @@ import com.kaiho.gastromanager.application.order.dto.response.OrderResponseDto;
 import com.kaiho.gastromanager.application.order.dto.response.OrderSummaryResponseDto;
 import com.kaiho.gastromanager.application.order.dto.response.UninvoicedItemResponseDto;
 import com.kaiho.gastromanager.application.order.handler.OrderHandler;
+import com.kaiho.gastromanager.application.ticket.handler.TicketHandler;
 import com.kaiho.gastromanager.domain.user.model.User;
 import com.kaiho.gastromanager.infrastructure.common.model.ApiGenericResponse;
 import com.kaiho.gastromanager.infrastructure.order.output.jpa.criteria.OrderSearchCriteria;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,6 +43,7 @@ import static org.springframework.http.HttpStatus.OK;
 public class OrderRestController {
 
     private final OrderHandler orderHandler;
+    private final TicketHandler ticketHandler;
     private final InvoiceHandler invoiceHandler;
 
     @GetMapping
@@ -103,5 +107,22 @@ public class OrderRestController {
     public ResponseEntity<ApiGenericResponse<List<UninvoicedItemResponseDto>>> getUninvoicedItems(@PathVariable UUID orderUuid) {
         ApiGenericResponse<List<UninvoicedItemResponseDto>> handlerResponse = orderHandler.getUninvoicedItemsByOrderUuid(orderUuid);
         return new ResponseEntity<>(handlerResponse, OK);
+    }
+
+    @GetMapping(
+            value = "/{orderUuid}/ticket",
+            produces = MediaType.APPLICATION_PDF_VALUE
+    )
+    public ResponseEntity<byte[]> printTicket(@PathVariable UUID orderUuid) {
+        byte[] pdfBytes = ticketHandler.generateTicketPdf(orderUuid);
+
+        // Extraer los bytes del PDF desde el response
+//        byte[] pdfBytes = handlerResponse.data().pdfBytes();
+
+        return ResponseEntity.ok()
+                             .header(HttpHeaders.CONTENT_DISPOSITION,
+                                     "inline; filename=ticket-" + orderUuid + ".pdf")
+                             .contentType(MediaType.APPLICATION_PDF)
+                             .body(pdfBytes);
     }
 }

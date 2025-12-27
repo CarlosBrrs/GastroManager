@@ -165,6 +165,7 @@ public class SecurityConfig {
                         .requestMatchers(GET, ORDERS_CONTROLLER + ORDER_UUID_PARAMETER).authenticated()
                         .requestMatchers(PUT, ORDERS_CONTROLLER + ORDER_UUID_PARAMETER).hasAnyRole(SUPERUSER, OWNER, MANAGER, WAITER)
                         .requestMatchers(PATCH, ORDERS_CONTROLLER + ORDER_UUID_PARAMETER + "/status").hasAnyRole(SUPERUSER, OWNER, MANAGER, WAITER, CHEF, KITCHEN_STAFF)
+                        .requestMatchers(GET, ORDERS_CONTROLLER + ORDER_UUID_PARAMETER + "/ticket").hasAnyRole(SUPERUSER, OWNER, MANAGER, WAITER, CHEF, KITCHEN_STAFF)
                         .requestMatchers(DELETE, ORDERS_CONTROLLER + ORDER_UUID_PARAMETER).hasAnyRole(SUPERUSER, OWNER, MANAGER)
 
                         // restaurants controller

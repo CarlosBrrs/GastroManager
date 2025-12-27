@@ -1,4 +1,5 @@
 package com.kaiho.gastromanager.infrastructure.cashregistersession.output.jpa.repository;
+
 import com.kaiho.gastromanager.domain.cashregistersession.model.CashRegisterSessionStatus;
 import com.kaiho.gastromanager.infrastructure.cashregistersession.output.jpa.entity.CashRegisterSessionEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,8 +15,8 @@ public interface CashRegisterSessionEntityRepository extends JpaRepository<CashR
 
     @Query("SELECT s FROM CashRegisterSessionEntity s WHERE s.cashRegister.uuid = :cashRegisterUuid AND s.status = :status")
     Optional<CashRegisterSessionEntity> findByCashRegisterUuidAndStatus(
-        @Param("cashRegisterUuid") UUID cashRegisterUuid,
-        @Param("status") CashRegisterSessionStatus status
+            @Param("cashRegisterUuid") UUID cashRegisterUuid,
+            @Param("status") CashRegisterSessionStatus status
     );
 
     boolean existsByCashRegister_UuidAndStatus(UUID cashRegisterUuid, CashRegisterSessionStatus status);

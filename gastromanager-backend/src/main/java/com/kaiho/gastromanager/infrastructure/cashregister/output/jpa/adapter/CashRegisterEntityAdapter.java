@@ -37,21 +37,21 @@ public class CashRegisterEntityAdapter implements CashRegisterPersistencePort {
 
         // Crear un mapa de las cajas con sesiones abiertas para referencia rápida
         Map<UUID, CashRegisterEntity> openSessionsMap = cashRegistersWithOpenSessions.stream()
-                .collect(Collectors.toMap(
-                        CashRegisterEntity::getUuid,
-                        entity -> entity
-                ));
+                                                                                     .collect(Collectors.toMap(
+                                                                                             CashRegisterEntity::getUuid,
+                                                                                             entity -> entity
+                                                                                     ));
 
         // Mapear todas las cajas, enriqueciendo con sesiones abiertas si existen
         return allCashRegisters.stream()
-                .map(cashRegister -> {
-                    // Si la caja tiene una sesión abierta, usar esa entidad enriquecida
-                    CashRegisterEntity entityToMap = openSessionsMap.getOrDefault(
-                            cashRegister.getUuid(),
-                            cashRegister
-                    );
-                    return cashRegisterMapper.toDomain(entityToMap);
-                })
-                .toList();
+                               .map(cashRegister -> {
+                                   // Si la caja tiene una sesión abierta, usar esa entidad enriquecida
+                                   CashRegisterEntity entityToMap = openSessionsMap.getOrDefault(
+                                           cashRegister.getUuid(),
+                                           cashRegister
+                                   );
+                                   return cashRegisterMapper.toDomain(entityToMap);
+                               })
+                               .toList();
     }
 }

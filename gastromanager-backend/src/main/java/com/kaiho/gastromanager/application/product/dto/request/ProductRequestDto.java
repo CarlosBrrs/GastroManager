@@ -39,7 +39,7 @@ public record ProductRequestDto(
      */
     public boolean isAdvancedMode() {
         return (recipes != null && !recipes.isEmpty()) ||
-               (ingredients != null && !ingredients.isEmpty());
+                (ingredients != null && !ingredients.isEmpty());
     }
 
     /**

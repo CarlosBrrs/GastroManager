@@ -16,15 +16,23 @@ import java.math.BigDecimal;
 @Setter
 @AllArgsConstructor
 public class PaymentMethodSummary {
-    /** Nombre del método de pago (efectivo, tarjeta de crédito, etc.) */
+    /**
+     * Nombre del método de pago (efectivo, tarjeta de crédito, etc.)
+     */
     private String methodName;
 
-    /** Monto total procesado con este método de pago */
+    /**
+     * Monto total procesado con este método de pago
+     */
     private BigDecimal totalAmount;
 
-    /** Número de transacciones realizadas con este método */
+    /**
+     * Número de transacciones realizadas con este método
+     */
     private int transactionCount;
 
-    /** Porcentaje que representa este método del total de ventas */
+    /**
+     * Porcentaje que representa este método del total de ventas
+     */
     private BigDecimal percentage;
 }

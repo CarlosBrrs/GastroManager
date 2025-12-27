@@ -11,6 +11,9 @@ import {GetOrdersUseCase} from "../../../features/orders/application/usecases/ge
 import {CreateOrderUseCase} from "../../../features/orders/application/usecases/create-order.use-case";
 import {GetOrderByUuidUseCase} from "../../../features/orders/application/usecases/get-order-by-uuid.use-case";
 import {RestaurantStore} from "../restaurant/restaurant.store";
+import {ChangeOrderStatusUseCase} from "../../../features/orders/application/usecases/change-order-status.use-case";
+import {GetOrderTicketUseCase} from "../../../features/orders/application/usecases/get-order-ticket.use-case";
+import type {ChangeOrderStatusRequestDto} from "../../../features/orders/domain/models/change-order-status-request-dto.interface";
 
 type OrderState = {
   pages: Map<number, Order[]>;
@@ -81,7 +84,9 @@ export const OrderStore = signalStore(
   withMethods((store,
                getOrders = inject(GetOrdersUseCase),
                createOrder = inject(CreateOrderUseCase),
-               getOrderByUuid = inject(GetOrderByUuidUseCase)
+               getOrderByUuid = inject(GetOrderByUuidUseCase),
+               changeOrderStatus = inject(ChangeOrderStatusUseCase),
+               getOrderTicket = inject(GetOrderTicketUseCase)
                /* createOrder = inject(CreateOrderUseCase),
                 editIngredient = inject(EditIngredientUseCase),
                 getIngredientByUuid = inject(GetIngredientByUuidUseCase)*/) => ({
@@ -213,6 +218,75 @@ export const OrderStore = signalStore(
           })
         )
       ),
+      changeStatus: (orderUuid: string, changeStatus: ChangeOrderStatusRequestDto) => {
+        patchState(store, {loading: true, error: null});
+
+        return changeOrderStatus.execute(orderUuid, changeStatus).pipe(
+          tap(updatedOrderUuid => {
+            console.log('✅ [OrderStore] Estado de orden cambiado exitosamente:', updatedOrderUuid);
+          }),
+          concatMap(updatedOrderUuid => {
+            console.log('📄 [OrderStore] Obteniendo ticket PDF para orden:', updatedOrderUuid);
+            return getOrderTicket.execute(orderUuid).pipe(
+              tap(pdfArrayBuffer => {
+                console.log('✅ [OrderStore] Ticket PDF obtenido exitosamente');
+                console.log('📄 [OrderStore] Longitud PDF bytes:', pdfArrayBuffer.byteLength);
+              }),
+              catchError((error: HttpErrorResponse) => {
+                const message = error.message || 'Error desconocido al obtener ticket';
+                console.error('❌ [OrderStore] Error al obtener ticket:', message);
+                patchState(store, {error: message});
+
+                // Lanzar error personalizado para que el componente lo maneje
+                return throwError(() => ({
+                  type: 'TICKET_ERROR',
+                  message: 'El estado fue actualizado pero no se pudo generar el ticket PDF',
+                  originalError: error
+                }));
+              }),
+              map((pdfArrayBuffer) => ({orderUuid: updatedOrderUuid, pdfData: pdfArrayBuffer}))
+            );
+          }),
+          concatMap((result) => {
+            console.log('🔄 [OrderStore] Refrescando lista de órdenes después del cambio de estado');
+            let params: paginationParams = {page: store.currentPage(), size: 7};
+            return getOrders.execute(params).pipe(
+              tap(response => {
+                console.log("✅ [OrderStore] Lista de órdenes actualizada:", response);
+                const {number, content} = response;
+                const updatedPages = new Map(store.pages());
+                updatedPages.set(number, content);
+                patchState(store, {
+                  pages: updatedPages,
+                  currentPage: params.page,
+                  totalRecords: response.totalElements
+                });
+              }),
+              catchError((error: HttpErrorResponse) => {
+                const message = error.message || 'Error desconocido al refrescar órdenes';
+                console.error('❌ [OrderStore] Error al refrescar órdenes:', message);
+                patchState(store, {error: message});
+                // Continuar el flujo aunque falle el refresh
+                return of(null);
+              }),
+              map(() => result)
+            );
+          }),
+          catchError((error: any) => {
+            const message = error?.message || error?.error?.message || 'Error desconocido al cambiar estado';
+            console.error('❌ [OrderStore] Error en changeStatus:', message);
+            patchState(store, {error: message});
+
+            // Re-lanzar el error para que el componente lo maneje
+            return throwError(() => error);
+          }),
+          finalize(() => {
+            // SIEMPRE ejecutar esto, incluso si hay error
+            patchState(store, {loading: false});
+            console.log('🏁 [OrderStore] Finalizando changeStatus, loading = false');
+          })
+        );
+      }
     }),
   ),
   withHooks(

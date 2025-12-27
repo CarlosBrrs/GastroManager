@@ -1,10 +1,13 @@
 package com.kaiho.gastromanager.application.order.mapper;
 
+import com.kaiho.gastromanager.application.order.dto.request.ChangeOrderStatusRequestDto;
 import com.kaiho.gastromanager.application.order.dto.request.OrderCreateRequestDto;
 import com.kaiho.gastromanager.application.order.dto.request.OrderDetailResponseDto;
 import com.kaiho.gastromanager.application.order.dto.response.OrderSummaryResponseDto;
 import com.kaiho.gastromanager.application.orderitem.dto.response.OrderItemResponseDto;
 import com.kaiho.gastromanager.application.orderitem.mapper.OrderItemMapper;
+import com.kaiho.gastromanager.domain.order.model.ChangeOrderStatus;
+import com.kaiho.gastromanager.domain.order.model.OperationalStatus;
 import com.kaiho.gastromanager.domain.order.model.Order;
 import com.kaiho.gastromanager.domain.orderitem.model.OrderItem;
 import com.kaiho.gastromanager.domain.restaurant.model.Restaurant;
@@ -89,5 +92,15 @@ public class OrderMapper {
                            .build();
         orderItems.forEach(orderItem -> orderItem.setOrder(order));
         return order;
+    }
+
+    public ChangeOrderStatus toChangeOrderStatus(ChangeOrderStatusRequestDto changeOrderStatusRequestDto) {
+        if (changeOrderStatusRequestDto == null) {
+            return null;
+        }
+        return ChangeOrderStatus.builder()
+                                .newStatus(OperationalStatus.valueOf(changeOrderStatusRequestDto.newStatus()))
+                                .reason(changeOrderStatusRequestDto.reason())
+                                .build();
     }
 }

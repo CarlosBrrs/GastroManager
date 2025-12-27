@@ -4,5 +4,6 @@ import java.util.UUID;
 
 public interface ReportDataContext<C> {
     C getCriteria();
+
     UUID getRestaurantUuid();
 }

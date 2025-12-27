@@ -20,35 +20,35 @@ public class ProductGroupByMapper {
         }
 
         List<CategoryGroupDto> categoryDtos = domainResult.getCategories().stream()
-                .map(this::toCategoryGroupDto)
-                .collect(Collectors.toList());
+                                                          .map(this::toCategoryGroupDto)
+                                                          .collect(Collectors.toList());
 
         return ProductGroupByResponseDto.builder()
-                .categories(categoryDtos)
-                .totalProducts(domainResult.getTotalProducts())
-                .totalCategories(domainResult.getTotalCategories())
-                .build();
+                                        .categories(categoryDtos)
+                                        .totalProducts(domainResult.getTotalProducts())
+                                        .totalCategories(domainResult.getTotalCategories())
+                                        .build();
     }
 
     private CategoryGroupDto toCategoryGroupDto(CategoryGroup categoryGroup) {
         List<ProductCategoryItemDto> productDtos = categoryGroup.getProducts().stream()
-                .map(this::toProductCategoryItemDto)
-                .collect(Collectors.toList());
+                                                                .map(this::toProductCategoryItemDto)
+                                                                .collect(Collectors.toList());
 
         return CategoryGroupDto.builder()
-                .name(categoryGroup.getName())
-                .products(productDtos)
-                .build();
+                               .name(categoryGroup.getName())
+                               .products(productDtos)
+                               .build();
     }
 
     private ProductCategoryItemDto toProductCategoryItemDto(ProductCategoryItem productItem) {
         return ProductCategoryItemDto.builder()
-                .id(productItem.getId())
-                .name(productItem.getName())
-                .price(productItem.getPrice())
-                .category(productItem.getCategory())
-                .description(productItem.getDescription())
-                .isEnabled(productItem.isEnabled())
-                .build();
+                                     .id(productItem.getId())
+                                     .name(productItem.getName())
+                                     .price(productItem.getPrice())
+                                     .category(productItem.getCategory())
+                                     .description(productItem.getDescription())
+                                     .isEnabled(productItem.isEnabled())
+                                     .build();
     }
 }

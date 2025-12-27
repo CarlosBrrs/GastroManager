@@ -73,8 +73,8 @@ public class ProductSalesMetricCalculator implements MetricCalculator<ProductSal
 
         // Calcular la suma actual de porcentajes
         double currentSum = productSales.stream()
-                                       .mapToDouble(ProductSale::salesPercentage)
-                                       .sum();
+                                        .mapToDouble(ProductSale::salesPercentage)
+                                        .sum();
 
         // Si ya suma 100%, no hacer nada
         if (Math.abs(currentSum - 100.0) < 0.01) {
@@ -92,12 +92,12 @@ public class ProductSalesMetricCalculator implements MetricCalculator<ProductSal
         double adjustedPercentage = roundDouble(lastProduct.salesPercentage() + difference);
 
         ProductSale adjustedLastProduct = ProductSale.builder()
-                                                    .productUuid(lastProduct.productUuid())
-                                                    .productName(lastProduct.productName())
-                                                    .unitsSold(lastProduct.unitsSold())
-                                                    .totalSales(lastProduct.totalSales())
-                                                    .salesPercentage(adjustedPercentage)
-                                                    .build();
+                                                     .productUuid(lastProduct.productUuid())
+                                                     .productName(lastProduct.productName())
+                                                     .unitsSold(lastProduct.unitsSold())
+                                                     .totalSales(lastProduct.totalSales())
+                                                     .salesPercentage(adjustedPercentage)
+                                                     .build();
 
         adjustedList.set(lastIndex, adjustedLastProduct);
         return adjustedList;
@@ -107,12 +107,12 @@ public class ProductSalesMetricCalculator implements MetricCalculator<ProductSal
         Double salesPercentage = calculateSalesPercentage(metrics.getTotalSales(), totalSalesAllProducts);
 
         return ProductSale.builder()
-                         .productUuid(metrics.getProductUuid())
-                         .productName(metrics.getProductName())
-                         .unitsSold(metrics.getUnitsSold())
-                         .totalSales(metrics.getTotalSales())
-                         .salesPercentage(salesPercentage)
-                         .build();
+                          .productUuid(metrics.getProductUuid())
+                          .productName(metrics.getProductName())
+                          .unitsSold(metrics.getUnitsSold())
+                          .totalSales(metrics.getTotalSales())
+                          .salesPercentage(salesPercentage)
+                          .build();
     }
 
     private Double calculateSalesPercentage(BigDecimal productSales, BigDecimal totalSales) {
@@ -120,9 +120,9 @@ public class ProductSalesMetricCalculator implements MetricCalculator<ProductSal
             return 0.0;
         }
         return productSales.divide(totalSales, 4, RoundingMode.HALF_UP)
-                          .multiply(BigDecimal.valueOf(100))
-                          .setScale(2, RoundingMode.HALF_UP)
-                          .doubleValue();
+                           .multiply(BigDecimal.valueOf(100))
+                           .setScale(2, RoundingMode.HALF_UP)
+                           .doubleValue();
     }
 
     private double roundDouble(double value) {

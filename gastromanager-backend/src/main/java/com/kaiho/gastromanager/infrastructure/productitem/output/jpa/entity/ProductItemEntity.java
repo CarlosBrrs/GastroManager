@@ -2,7 +2,6 @@ package com.kaiho.gastromanager.infrastructure.productitem.output.jpa.entity;
 
 import com.kaiho.gastromanager.domain.productitem.model.Category;
 import com.kaiho.gastromanager.infrastructure.common.model.Auditable;
-import com.kaiho.gastromanager.infrastructure.orderitem.output.jpa.entity.OrderItemEntity;
 import com.kaiho.gastromanager.infrastructure.productitemingredient.output.jpa.entity.ProductItemIngredientEntity;
 import com.kaiho.gastromanager.infrastructure.restaurant.output.jpa.entity.RestaurantEntity;
 import jakarta.persistence.CascadeType;

@@ -1,7 +1,6 @@
 package com.kaiho.gastromanager.application.order.dto.request;
 
 import com.kaiho.gastromanager.application.orderitem.dto.request.OrderItemRequestDto;
-import com.kaiho.gastromanager.domain.order.model.PaymentType;
 import jakarta.validation.constraints.NotEmpty;
 
 import java.util.List;

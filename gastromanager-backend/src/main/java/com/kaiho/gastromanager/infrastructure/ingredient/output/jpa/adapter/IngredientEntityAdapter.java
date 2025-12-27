@@ -115,8 +115,8 @@ public class IngredientEntityAdapter implements IngredientPersistencePort {
     public List<Ingredient> getAllIngredientsByRestaurant() {
         List<IngredientEntity> entities = ingredientEntityRepository.findAll();
         return entities.stream()
-                .map(ingredientEntityMapper::toDomain)
-                .toList();
+                       .map(ingredientEntityMapper::toDomain)
+                       .toList();
     }
 
 }

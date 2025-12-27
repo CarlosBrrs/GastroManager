@@ -1,6 +1,5 @@
 package com.kaiho.gastromanager.domain.product.spi;
 
-import com.kaiho.gastromanager.application.product.dto.response.ProductGroupByResponseDto;
 import com.kaiho.gastromanager.domain.product.model.Product;
 import com.kaiho.gastromanager.domain.product.model.ProductGroupByResult;
 import com.kaiho.gastromanager.infrastructure.product.output.jpa.criteria.ProductGroupByCriteria;
@@ -8,7 +7,6 @@ import com.kaiho.gastromanager.infrastructure.product.output.jpa.criteria.Produc
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 

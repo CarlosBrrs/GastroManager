@@ -9,14 +9,10 @@ import com.kaiho.gastromanager.domain.order.model.InvoicingStatus;
 import com.kaiho.gastromanager.domain.order.model.Order;
 import com.kaiho.gastromanager.domain.orderitem.api.OrderItemServicePort;
 import com.kaiho.gastromanager.domain.orderitem.model.OrderItem;
-import com.kaiho.gastromanager.domain.restaurant.model.Restaurant;
-import com.kaiho.gastromanager.domain.taxconfig.model.TaxConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -24,10 +20,6 @@ import java.util.stream.Collectors;
 
 import static com.kaiho.gastromanager.domain.order.model.InvoicingStatus.FULLY_INVOICED;
 import static com.kaiho.gastromanager.domain.order.model.InvoicingStatus.PARTIALLY_INVOICED;
-import static com.kaiho.gastromanager.domain.order.model.OperationalStatus.CANCELLED;
-import static com.kaiho.gastromanager.domain.order.model.OperationalStatus.COMPLETED;
-import static com.kaiho.gastromanager.domain.taxconfig.model.TaxType.IMPO_CONSUMO;
-import static com.kaiho.gastromanager.domain.taxconfig.model.TaxType.IVA;
 
 @Service
 @RequiredArgsConstructor

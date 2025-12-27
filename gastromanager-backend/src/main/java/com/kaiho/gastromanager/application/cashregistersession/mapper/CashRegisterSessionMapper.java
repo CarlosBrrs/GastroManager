@@ -1,8 +1,8 @@
 package com.kaiho.gastromanager.application.cashregistersession.mapper;
 
 import com.kaiho.gastromanager.application.cashregister.dto.response.CashRegisterCurrentSessionResponseDto;
-import com.kaiho.gastromanager.application.cashregistersession.dto.request.CashRegisterSessionOpenRequestDto;
 import com.kaiho.gastromanager.application.cashregistersession.dto.request.CashRegisterSessionCloseRequestDto;
+import com.kaiho.gastromanager.application.cashregistersession.dto.request.CashRegisterSessionOpenRequestDto;
 import com.kaiho.gastromanager.application.cashregistersession.dto.response.CashRegisterSessionResponseDto;
 import com.kaiho.gastromanager.application.cashregistersession.dto.response.CashRegisterSessionSummaryResponseDto;
 import com.kaiho.gastromanager.application.cashregistersession.dto.response.PaymentMethodSummaryDto;
@@ -93,26 +93,26 @@ public class CashRegisterSessionMapper {
         // Mapear los resúmenes de métodos de pago
         List<PaymentMethodSummaryDto> paymentMethodDtos = session.getPaymentMethodSummaries() != null ?
                 session.getPaymentMethodSummaries().stream()
-                        .map(paymentSummary -> PaymentMethodSummaryDto.builder()
-                                .paymentMethodName(paymentSummary.paymentMethodName())
-                                .paymentMethodDescription(paymentSummary.paymentMethodDescription())
-                                .totalAmount(paymentSummary.totalAmount())
-                                .transactionCount(paymentSummary.transactionCount())
-                                .build())
-                        .toList() : List.of();
+                       .map(paymentSummary -> PaymentMethodSummaryDto.builder()
+                                                                     .paymentMethodName(paymentSummary.paymentMethodName())
+                                                                     .paymentMethodDescription(paymentSummary.paymentMethodDescription())
+                                                                     .totalAmount(paymentSummary.totalAmount())
+                                                                     .transactionCount(paymentSummary.transactionCount())
+                                                                     .build())
+                       .toList() : List.of();
 
         return CashRegisterSessionSummaryResponseDto.builder()
-                .sessionUuid(session.getUuid())
-                .cashRegisterUuid(session.getCashRegister().getUuid())
-                .cashRegisterName(session.getCashRegister().getName())
-                .cashRegisterLocation(session.getCashRegister().getLocation())
-                .openedAt(session.getOpeningTime())
-                .openedBy(session.getCreatedBy())
-                .openingAmount(session.getOpeningAmount())
-                .totalCashPayments(session.getTotalCashPayments())
-                .expectedCashAmount(session.getExpectedAmount())
-                .totalCashMovements(session.getTotalCashMovements())
-                .paymentMethodSummaries(paymentMethodDtos)
-                .build();
+                                                    .sessionUuid(session.getUuid())
+                                                    .cashRegisterUuid(session.getCashRegister().getUuid())
+                                                    .cashRegisterName(session.getCashRegister().getName())
+                                                    .cashRegisterLocation(session.getCashRegister().getLocation())
+                                                    .openedAt(session.getOpeningTime())
+                                                    .openedBy(session.getCreatedBy())
+                                                    .openingAmount(session.getOpeningAmount())
+                                                    .totalCashPayments(session.getTotalCashPayments())
+                                                    .expectedCashAmount(session.getExpectedAmount())
+                                                    .totalCashMovements(session.getTotalCashMovements())
+                                                    .paymentMethodSummaries(paymentMethodDtos)
+                                                    .build();
     }
 }

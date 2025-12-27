@@ -11,7 +11,6 @@ import com.kaiho.gastromanager.infrastructure.common.model.ApiGenericResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-
 import java.util.UUID;
 
 import static com.kaiho.gastromanager.infrastructure.common.model.ApiGenericResponse.buildSuccessResponse;

@@ -15,6 +15,9 @@ import java.util.UUID;
 
 public class OrderReportSpecifications {
 
+    private OrderReportSpecifications() {
+    }
+
     private static Specification<OrderEntity> hasRestaurant(UUID restaurantUuid) {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("restaurant").get("uuid"), restaurantUuid);
@@ -142,8 +145,5 @@ public class OrderReportSpecifications {
             UUID restaurantUuid) {
         return Specification.where(hasRestaurant(restaurantUuid))
                             .and(hasOrdersBetween(criteria.dateFrom(), criteria.dateTo()));
-    }
-
-    private OrderReportSpecifications() {
     }
 }

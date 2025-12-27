@@ -17,24 +17,38 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 public class SalesReportSummary {
-    /** Ingresos totales (ventas + propinas) */
+    /**
+     * Ingresos totales (ventas + propinas)
+     */
     private BigDecimal totalRevenue;
 
-    /** Monto total de propinas recibidas */
+    /**
+     * Monto total de propinas recibidas
+     */
     private BigDecimal totalTips;
 
-    /** Número de órdenes completadas exitosamente */
+    /**
+     * Número de órdenes completadas exitosamente
+     */
     private int completedOrders;
 
-    /** Número de órdenes canceladas */
+    /**
+     * Número de órdenes canceladas
+     */
     private int cancelledOrders;
 
-    /** Valor promedio por orden (totalRevenue / completedOrders) */
+    /**
+     * Valor promedio por orden (totalRevenue / completedOrders)
+     */
     private BigDecimal averageOrderValue;
 
-    /** Desglose de ventas por método de pago con porcentajes */
+    /**
+     * Desglose de ventas por método de pago con porcentajes
+     */
     private List<PaymentMethodSummary> paymentMethodBreakdown;
 
-    /** Desglose de ventas por caja registradora con usuarios asignados */
+    /**
+     * Desglose de ventas por caja registradora con usuarios asignados
+     */
     private List<CashRegisterSummary> cashRegisterBreakdown;
 }

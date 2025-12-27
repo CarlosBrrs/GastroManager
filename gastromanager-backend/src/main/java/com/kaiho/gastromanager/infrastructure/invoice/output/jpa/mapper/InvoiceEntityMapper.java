@@ -1,8 +1,6 @@
 package com.kaiho.gastromanager.infrastructure.invoice.output.jpa.mapper;
 
 import com.kaiho.gastromanager.domain.invoice.model.Invoice;
-import com.kaiho.gastromanager.domain.invoiceitem.model.InvoiceItem;
-import com.kaiho.gastromanager.domain.order.model.Order;
 import com.kaiho.gastromanager.infrastructure.invoice.output.jpa.entity.InvoiceEntity;
 import com.kaiho.gastromanager.infrastructure.invoiceitem.output.jpa.mapper.InvoiceItemEntityMapper;
 import com.kaiho.gastromanager.infrastructure.order.output.jpa.mapper.OrderEntityMapper;
@@ -10,8 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor

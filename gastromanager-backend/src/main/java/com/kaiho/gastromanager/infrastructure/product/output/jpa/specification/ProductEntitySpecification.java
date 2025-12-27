@@ -39,11 +39,11 @@ public class ProductEntitySpecification {
 
     private static Specification<ProductEntity> restaurantEquals(UUID restaurantUuid) {
         return (root, query, criteriaBuilder) ->
-            criteriaBuilder.equal(root.get("restaurant").get("uuid"), restaurantUuid);
+                criteriaBuilder.equal(root.get("restaurant").get("uuid"), restaurantUuid);
     }
 
     private static Specification<ProductEntity> isEnabledEquals(Boolean isEnabled) {
         return (root, query, criteriaBuilder) ->
-            criteriaBuilder.equal(root.get("isEnabled"), isEnabled);
+                criteriaBuilder.equal(root.get("isEnabled"), isEnabled);
     }
 }
