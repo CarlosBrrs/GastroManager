@@ -4,7 +4,6 @@ import com.kaiho.gastromanager.application.orderitem.dto.request.OrderItemReques
 import com.kaiho.gastromanager.application.orderitem.dto.response.OrderItemResponseDto;
 import com.kaiho.gastromanager.domain.orderitem.model.OrderItem;
 import com.kaiho.gastromanager.domain.product.model.Product;
-import com.kaiho.gastromanager.domain.productitem.api.ProductItemServicePort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

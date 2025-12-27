@@ -48,8 +48,8 @@ public class ProductUseCase implements ProductServicePort {
             validateReferences(product);
             product.setPurchasePrice(calculatePurchasePrice(product));
         } else if (isBasicMode(product) && product.getPurchasePrice() == null) {
-                throw new IllegalArgumentException("Purchase price is required for basic mode products");
-            }
+            throw new IllegalArgumentException("Purchase price is required for basic mode products");
+        }
 
 
         return productPersistencePort.createProduct(product);

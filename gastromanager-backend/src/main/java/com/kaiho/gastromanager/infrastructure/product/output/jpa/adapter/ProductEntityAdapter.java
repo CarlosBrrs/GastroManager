@@ -14,9 +14,9 @@ import com.kaiho.gastromanager.infrastructure.product.output.jpa.repository.Prod
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
-import org.springframework.data.domain.Sort;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -86,11 +86,11 @@ public class ProductEntityAdapter implements ProductPersistencePort {
 
         // Agrupar por categoría manteniendo el orden
         Map<String, List<ProductEntity>> groupedProducts = filteredProducts.stream()
-                .collect(Collectors.groupingBy(
-                        product -> product.getCategory() != null ? product.getCategory() : "Sin categoría",
-                        LinkedHashMap::new,
-                        Collectors.toList()
-                ));
+                                                                           .collect(Collectors.groupingBy(
+                                                                                   product -> product.getCategory() != null ? product.getCategory() : "Sin categoría",
+                                                                                   LinkedHashMap::new,
+                                                                                   Collectors.toList()
+                                                                           ));
 
         // Convertir a modelos de dominio
         List<CategoryGroup> categories = new ArrayList<>();
@@ -106,21 +106,21 @@ public class ProductEntityAdapter implements ProductPersistencePort {
             }
 
             List<ProductCategoryItem> productDomainItems = categoryProducts.stream()
-                    .map(productCategoryItemMapper::toDomain)
-                    .collect(Collectors.toList());
+                                                                           .map(productCategoryItemMapper::toDomain)
+                                                                           .collect(Collectors.toList());
 
             categories.add(CategoryGroup.builder()
-                    .name(categoryName)
-                    .products(productDomainItems)
-                    .build());
+                                        .name(categoryName)
+                                        .products(productDomainItems)
+                                        .build());
 
             totalProducts += categoryProducts.size();
         }
 
         return ProductGroupByResult.builder()
-                .categories(categories)
-                .totalProducts(totalProducts)
-                .totalCategories(categories.size())
-                .build();
+                                   .categories(categories)
+                                   .totalProducts(totalProducts)
+                                   .totalCategories(categories.size())
+                                   .build();
     }
 }

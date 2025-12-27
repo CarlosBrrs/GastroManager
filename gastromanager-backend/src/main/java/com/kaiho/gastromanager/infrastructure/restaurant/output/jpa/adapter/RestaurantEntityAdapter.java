@@ -81,8 +81,8 @@ public class RestaurantEntityAdapter implements RestaurantPersistencePort {
         // Obtener restaurantes donde el usuario es OWNER
         List<RestaurantEntity> ownedRestaurants = restaurantEntityRepository.findByOwnerUuid(userUuid);
         List<UserRestaurantAccess> ownerAccess = ownedRestaurants.stream()
-                .map(restaurant -> restaurantEntityMapper.toUserRestaurantAccessFromEntity(restaurant, AccessType.OWNER))
-                .toList();
+                                                                 .map(restaurant -> restaurantEntityMapper.toUserRestaurantAccessFromEntity(restaurant, AccessType.OWNER))
+                                                                 .toList();
 
         // Obtener restaurante donde el usuario es EMPLEADO
         Optional<UserEntity> userEntity = userEntityRepository.findById(userUuid);

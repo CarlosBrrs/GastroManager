@@ -50,13 +50,13 @@ public class ReportRestController {
             @RequestParam(required = false) List<UUID> assignedUserUuids
     ) {
         SalesReportCriteria criteria = SalesReportCriteria.builder()
-                .dateFrom(dateFrom)
-                .dateTo(dateTo)
-                .cashRegisterUuids(cashRegisterUuids)
-                .sessionState(sessionState)
-                .paymentMethods(paymentMethods)
-                .assignedUserUuids(assignedUserUuids)
-                .build();
+                                                          .dateFrom(dateFrom)
+                                                          .dateTo(dateTo)
+                                                          .cashRegisterUuids(cashRegisterUuids)
+                                                          .sessionState(sessionState)
+                                                          .paymentMethods(paymentMethods)
+                                                          .assignedUserUuids(assignedUserUuids)
+                                                          .build();
 
         ApiGenericResponse<SalesReportResponseDto> response = reportHandler.getSalesReport(criteria);
         return new ResponseEntity<>(response, OK);

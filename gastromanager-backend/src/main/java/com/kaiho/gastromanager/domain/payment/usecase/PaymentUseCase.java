@@ -41,7 +41,7 @@ public class PaymentUseCase implements PaymentService {
 
         // Buscar la sesión de caja abierta del usuario actual
         CashRegisterSession openSession = cashRegisterSessionServicePort.findOpenSessionByUserUuid(currentUserUuid)
-            .orElseThrow(() -> new NoOpenCashRegisterSessionException(currentUserUuid.toString()));
+                                                                        .orElseThrow(() -> new NoOpenCashRegisterSessionException(currentUserUuid.toString()));
 
         // Relacionar el pago con la sesión de caja encontrada
         payment.setCashRegisterSession(openSession);
@@ -122,11 +122,11 @@ public class PaymentUseCase implements PaymentService {
 
     private boolean isVirtualPayment(PaymentMethod method) {
         // Métodos que requieren verificación de transactionId
-        return method != null && (method == PaymentMethod.CREDIT_CARD 
-                                || method == PaymentMethod.DEBIT_CARD 
-                                || method == PaymentMethod.TRANSFER 
-                                || method == PaymentMethod.NEQUI 
-                                || method == PaymentMethod.DAVIPLATA);
+        return method != null && (method == PaymentMethod.CREDIT_CARD
+                || method == PaymentMethod.DEBIT_CARD
+                || method == PaymentMethod.TRANSFER
+                || method == PaymentMethod.NEQUI
+                || method == PaymentMethod.DAVIPLATA);
     }
 
     private boolean isCashPayment(PaymentMethod method) {

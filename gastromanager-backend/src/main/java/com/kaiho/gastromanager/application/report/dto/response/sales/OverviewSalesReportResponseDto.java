@@ -2,8 +2,6 @@ package com.kaiho.gastromanager.application.report.dto.response.sales;
 
 import lombok.Builder;
 
-import java.util.List;
-
 @Builder
 public record OverviewSalesReportResponseDto(
         FiltersDto filters,                     // Filtros del reporte (rango de fechas)
@@ -16,4 +14,5 @@ public record OverviewSalesReportResponseDto(
         List<SlowHourDto> slowestHours,                         // Horas más lentas
         ComparisonWithPreviousPeriodDto comparisonWithPreviousPeriod,     // Comparación con período anterior
         CustomerBehaviorDto customerBehavior*/
-) {}
+) {
+}

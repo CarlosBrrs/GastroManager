@@ -1,7 +1,6 @@
 package com.kaiho.gastromanager.infrastructure.invoiceitem.output.jpa.mapper;
 
 import com.kaiho.gastromanager.domain.invoiceitem.model.InvoiceItem;
-import com.kaiho.gastromanager.domain.orderitem.model.OrderItem;
 import com.kaiho.gastromanager.infrastructure.invoiceitem.output.jpa.entity.InvoiceItemEntity;
 import com.kaiho.gastromanager.infrastructure.orderitem.output.jpa.entity.OrderItemEntity;
 import com.kaiho.gastromanager.infrastructure.orderitem.output.jpa.mapper.OrderItemEntityMapper;

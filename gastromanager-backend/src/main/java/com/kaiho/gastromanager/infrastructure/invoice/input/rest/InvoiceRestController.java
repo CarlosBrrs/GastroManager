@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.UUID;
 
-import static org.springframework.http.HttpStatus.OK;
-
 @RestController
 @RequestMapping("/invoices")
 @AllArgsConstructor

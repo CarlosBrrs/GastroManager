@@ -18,11 +18,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
-
 import java.util.stream.Collectors;
+
 @Repository
 @RequiredArgsConstructor
 public class CashRegisterSessionEntityAdapter implements CashRegisterSessionPersistencePort {
@@ -106,35 +106,35 @@ public class CashRegisterSessionEntityAdapter implements CashRegisterSessionPers
     @Override
     public BigDecimal calculateCashPaymentsTotalBySessionUuid(UUID sessionUuid) {
         return sessionRepository.findById(sessionUuid)
-                .map(session -> session.getPayments().stream()
-                        .filter(payment -> "CASH".equals(payment.getPaymentMethod().name()))
-                        .map(PaymentEntity::getAmount)
-                        .reduce(BigDecimal.ZERO, BigDecimal::add))
-                .orElse(BigDecimal.ZERO);
+                                .map(session -> session.getPayments().stream()
+                                                       .filter(payment -> "CASH".equals(payment.getPaymentMethod().name()))
+                                                       .map(PaymentEntity::getAmount)
+                                                       .reduce(BigDecimal.ZERO, BigDecimal::add))
+                                .orElse(BigDecimal.ZERO);
     }
 
 
     @Override
     public List<PaymentMethodSummary> getPaymentMethodSummaryBySessionUuid(UUID sessionUuid) {
         return sessionRepository.findById(sessionUuid)
-                .map(session -> session.getPayments().stream()
-                        .collect(Collectors.groupingBy(
-                                PaymentEntity::getPaymentMethod,
-                                Collectors.collectingAndThen(
-                                        Collectors.toList(),
-                                        payments -> PaymentMethodSummary.builder()
-                                                .paymentMethodName(payments.get(0).getPaymentMethod().name())
-                                                .paymentMethodDescription(payments.get(0).getPaymentMethod().getDisplayName())
-                                                .totalAmount(payments.stream()
-                                                        .map(PaymentEntity::getAmount)
-                                                        .reduce(BigDecimal.ZERO, BigDecimal::add))
-                                                .transactionCount(payments.size())
-                                                .build()
-                                )))
-                        .values()
-                        .stream()
-                        .toList())
-                .orElse(List.of());
+                                .map(session -> session.getPayments().stream()
+                                                       .collect(Collectors.groupingBy(
+                                                               PaymentEntity::getPaymentMethod,
+                                                               Collectors.collectingAndThen(
+                                                                       Collectors.toList(),
+                                                                       payments -> PaymentMethodSummary.builder()
+                                                                                                       .paymentMethodName(payments.get(0).getPaymentMethod().name())
+                                                                                                       .paymentMethodDescription(payments.get(0).getPaymentMethod().getDisplayName())
+                                                                                                       .totalAmount(payments.stream()
+                                                                                                                            .map(PaymentEntity::getAmount)
+                                                                                                                            .reduce(BigDecimal.ZERO, BigDecimal::add))
+                                                                                                       .transactionCount(payments.size())
+                                                                                                       .build()
+                                                               )))
+                                                       .values()
+                                                       .stream()
+                                                       .toList())
+                                .orElse(List.of());
     }
 
     @Override

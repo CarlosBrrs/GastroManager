@@ -32,8 +32,8 @@ public class CashRegisterHandlerImpl implements CashRegisterHandler {
     public ApiGenericResponse<List<CashRegisterResponseDto>> getAllCashRegisters() {
         List<CashRegister> cashRegisters = cashRegisterServicePort.getAllCashRegisters();
         List<CashRegisterResponseDto> response = cashRegisters.stream()
-                .map(cashRegisterMapper::toResponse)
-                .toList();
+                                                              .map(cashRegisterMapper::toResponse)
+                                                              .toList();
         return buildSuccessResponse("Cajas registradoras obtenidas exitosamente", response);
     }
 }

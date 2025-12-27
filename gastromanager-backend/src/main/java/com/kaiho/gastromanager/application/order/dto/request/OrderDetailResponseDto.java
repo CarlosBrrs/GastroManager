@@ -14,22 +14,22 @@ import java.util.UUID;
 
 @Builder
 public record OrderDetailResponseDto(
-    UUID uuid,
-    String code,
-    String createdBy,
-    String customerName,
-    String customerNotes,
-    String tableNumber,
-    BigDecimal totalAmount,
-    BigDecimal totalPaid,
-    BigDecimal remainingToPay,
-    OperationalStatus operationalStatus,
-    PaymentStatus paymentStatus,
-    InvoicingStatus invoicingStatus,
-    List<OrderItemResponseDto> orderItems,
-    Instant updatedDate,
-    List<InvoiceResponseDto> invoices,
-    boolean requiresPaymentBefore
+        UUID uuid,
+        String code,
+        String createdBy,
+        String customerName,
+        String customerNotes,
+        String tableNumber,
+        BigDecimal totalAmount,
+        BigDecimal totalPaid,
+        BigDecimal remainingToPay,
+        OperationalStatus operationalStatus,
+        PaymentStatus paymentStatus,
+        InvoicingStatus invoicingStatus,
+        List<OrderItemResponseDto> orderItems,
+        Instant updatedDate,
+        List<InvoiceResponseDto> invoices,
+        boolean requiresPaymentBefore
 ) {
 
 }

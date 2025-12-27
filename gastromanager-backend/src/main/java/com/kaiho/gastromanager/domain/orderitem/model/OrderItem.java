@@ -18,8 +18,8 @@ import java.util.UUID;
 @AllArgsConstructor
 public final class OrderItem {
     private final UUID uuid;
-    private Product product;
     private final int quantity;
+    private Product product;
     private BigDecimal unitPrice;
     private BigDecimal purchasePrice;
     private String customerNotes;

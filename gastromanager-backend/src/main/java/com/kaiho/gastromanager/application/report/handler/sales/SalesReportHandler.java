@@ -10,5 +10,6 @@ import java.util.List;
 
 public interface SalesReportHandler {
     ApiGenericResponse<OverviewSalesReportResponseDto> getOverviewSalesReport(OverviewSalesReportCriteria criteria);
+
     ApiGenericResponse<List<ProductSalesResponseDto>> getProductSalesReport(ProductSalesReportCriteria criteria);
 }

@@ -190,14 +190,22 @@ CREATE TABLE restaurant_partners
     PRIMARY KEY (user_uuid, restaurant_uuid)
 );
 ALTER TABLE IF EXISTS _users
-    ADD CONSTRAINT fk_restaurant FOREIGN KEY (restaurant_uuid) REFERENCES restaurants (uuid) ON DELETE SET NULL;
+    ADD CONSTRAINT fk_restaurant FOREIGN KEY (restaurant_uuid) REFERENCES restaurants (uuid) ON
+DELETE
+SET NULL;
 ALTER TABLE IF EXISTS ingredients
-    ADD CONSTRAINT fk_restaurant FOREIGN KEY (restaurant_uuid) REFERENCES restaurants (uuid) ON DELETE SET NULL;
+    ADD CONSTRAINT fk_restaurant FOREIGN KEY (restaurant_uuid) REFERENCES restaurants (uuid) ON
+DELETE
+SET NULL;
 ALTER TABLE IF EXISTS product_items
-    ADD CONSTRAINT fk_restaurant FOREIGN KEY (restaurant_uuid) REFERENCES restaurants (uuid) ON DELETE SET NULL;
+    ADD CONSTRAINT fk_restaurant FOREIGN KEY (restaurant_uuid) REFERENCES restaurants (uuid) ON
+DELETE
+SET NULL;
 
 ALTER TABLE IF EXISTS restaurants
-    ADD CONSTRAINT fk_restaurant_config FOREIGN KEY (restaurant_config_uuid) REFERENCES restaurant_configs (uuid) ON DELETE SET NULL;
+    ADD CONSTRAINT fk_restaurant_config FOREIGN KEY (restaurant_config_uuid) REFERENCES restaurant_configs (uuid) ON
+DELETE
+SET NULL;
 
 DROP TABLE IF EXISTS tax_configs CASCADE;
 
@@ -335,14 +343,14 @@ DROP TABLE IF EXISTS product_recipes CASCADE;
 CREATE TABLE product_recipes
 (
     uuid                UUID PRIMARY KEY,
-    product_uuid        UUID NOT NULL,
-    recipe_uuid         UUID NOT NULL,
+    product_uuid        UUID        NOT NULL,
+    recipe_uuid         UUID        NOT NULL,
     quantity_multiplier DOUBLE PRECISION DEFAULT 1,
     last_synced_date    TIMESTAMP,
-    created_date    TIMESTAMP        NOT NULL,
-    created_by      VARCHAR(50)      NOT NULL,
-    updated_date    TIMESTAMP,
-    updated_by      VARCHAR(50),
+    created_date        TIMESTAMP   NOT NULL,
+    created_by          VARCHAR(50) NOT NULL,
+    updated_date        TIMESTAMP,
+    updated_by          VARCHAR(50),
     UNIQUE (product_uuid, recipe_uuid),
     FOREIGN KEY (product_uuid) REFERENCES products (uuid) ON DELETE CASCADE,
     FOREIGN KEY (recipe_uuid) REFERENCES recipes (uuid) ON DELETE RESTRICT
@@ -556,7 +564,8 @@ CREATE TABLE order_change_logs
 );
 
 
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE
+EXTENSION IF NOT EXISTS "uuid-ossp";
 
 INSERT INTO roles
 VALUES (uuid_generate_v4(), 'ROLE_SUPERUSER'),

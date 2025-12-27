@@ -36,15 +36,15 @@ public class PaymentEntityAdapter implements PaymentPersistencePort {
 
         UUID orderUuid = payment.getOrder().getUuid();
         OrderEntity orderEntity = orderEntityRepository.findById(orderUuid)
-            .orElseThrow(() -> new OrderDoesNotExistException(orderUuid));
+                                                       .orElseThrow(() -> new OrderDoesNotExistException(orderUuid));
 
         UUID restaurantUuid = payment.getRestaurant().getUuid();
         RestaurantEntity restaurantEntity = restaurantEntityRepository.findById(restaurantUuid)
-            .orElseThrow(() -> new RestaurantDoesNotExistException(restaurantUuid.toString()));
+                                                                      .orElseThrow(() -> new RestaurantDoesNotExistException(restaurantUuid.toString()));
 
         UUID sessionUuid = payment.getCashRegisterSession().getUuid();
         CashRegisterSessionEntity sessionEntity = cashRegisterSessionEntityRepository.findById(sessionUuid)
-            .orElseThrow(() -> new CashRegisterSessionNotFoundException(sessionUuid));
+                                                                                     .orElseThrow(() -> new CashRegisterSessionNotFoundException(sessionUuid));
 
         // Establecer las relaciones bidireccionales
         orderEntity.addPayment(entity);

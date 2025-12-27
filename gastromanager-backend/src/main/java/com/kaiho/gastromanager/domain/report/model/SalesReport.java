@@ -18,21 +18,33 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 public class SalesReport {
-    /** Monto total de ventas en el período (suma de todos los pagos completados) */
+    /**
+     * Monto total de ventas en el período (suma de todos los pagos completados)
+     */
     private BigDecimal totalSales;
 
-    /** Número total de órdenes procesadas en el período */
+    /**
+     * Número total de órdenes procesadas en el período
+     */
     private int totalOrders;
 
-    /** Fecha y hora de inicio del período del reporte */
+    /**
+     * Fecha y hora de inicio del período del reporte
+     */
     private Instant reportPeriodStart;
 
-    /** Fecha y hora de fin del período del reporte */
+    /**
+     * Fecha y hora de fin del período del reporte
+     */
     private Instant reportPeriodEnd;
 
-    /** Lista de detalles granulares agrupados por método de pago */
+    /**
+     * Lista de detalles granulares agrupados por método de pago
+     */
     private List<SalesReportDetail> details;
 
-    /** Resumen ejecutivo con métricas calculadas y breakdowns */
+    /**
+     * Resumen ejecutivo con métricas calculadas y breakdowns
+     */
     private SalesReportSummary summary;
 }

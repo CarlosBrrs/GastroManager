@@ -43,8 +43,8 @@ public class IngredientHandlerImpl implements IngredientHandler {
         List<Ingredient> ingredients = ingredientServicePort.getAllIngredientsWithoutPagination();
 
         List<IngredientSummaryResponseDto> ingredientResponseList = ingredients.stream()
-                .map(ingredientMapper::toResponseSummary)
-                .toList();
+                                                                               .map(ingredientMapper::toResponseSummary)
+                                                                               .toList();
 
         return buildSuccessResponse("All ingredients retrieved successfully", ingredientResponseList);
     }

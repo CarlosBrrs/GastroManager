@@ -1,14 +1,14 @@
 package com.kaiho.gastromanager.application.order.handler;
 
 import com.kaiho.gastromanager.application.order.dto.request.ChangeOrderStatusRequestDto;
-import com.kaiho.gastromanager.application.order.dto.request.OrderDetailResponseDto;
 import com.kaiho.gastromanager.application.order.dto.request.OrderCreateRequestDto;
+import com.kaiho.gastromanager.application.order.dto.request.OrderDetailResponseDto;
 import com.kaiho.gastromanager.application.order.dto.response.OrderResponseDto;
 import com.kaiho.gastromanager.application.order.dto.response.OrderSummaryResponseDto;
 import com.kaiho.gastromanager.application.order.dto.response.UninvoicedItemResponseDto;
 import com.kaiho.gastromanager.application.order.mapper.OrderMapper;
-import com.kaiho.gastromanager.application.orderitem.mapper.OrderItemMapper;
 import com.kaiho.gastromanager.domain.order.api.OrderServicePort;
+import com.kaiho.gastromanager.domain.order.model.ChangeOrderStatus;
 import com.kaiho.gastromanager.domain.order.model.Order;
 import com.kaiho.gastromanager.domain.order.model.UninvoicedItemDto;
 import com.kaiho.gastromanager.domain.orderitem.api.OrderItemServicePort;
@@ -63,8 +63,8 @@ public class OrderHandlerImpl implements OrderHandler {
 
     @Override
     public ApiGenericResponse<UUID> changeOrderStatus(UUID orderUuid, ChangeOrderStatusRequestDto changeOrderStatusRequestDto, UUID userUuid) {
-
-        UUID orderUuidChanged = orderServicePort.changeInvoicingStatus(orderUuid, changeOrderStatusRequestDto.newStatus());
+        ChangeOrderStatus orderStatus = orderMapper.toChangeOrderStatus(changeOrderStatusRequestDto);
+        UUID orderUuidChanged = orderServicePort.changeOrderStatus(orderUuid, orderStatus);
         return buildSuccessResponse("Order operationalStatus changed successfully", orderUuidChanged);
 
     }
@@ -79,4 +79,3 @@ public class OrderHandlerImpl implements OrderHandler {
         return buildSuccessResponse("List of pending order items retrieved successfully", uninvoicedItemResponseDtoList);
     }
 }
-

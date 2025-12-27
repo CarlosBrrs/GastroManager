@@ -24,8 +24,6 @@ public class Product {
     private final String name;
     private final String description;
     private final String category;
-    private BigDecimal salePrice;
-    private BigDecimal purchasePrice;
     private final ProductMode mode;
     private final boolean isEnabled;
     private final String createdBy;
@@ -33,7 +31,8 @@ public class Product {
     private final String updatedBy;
     private final Instant updatedDate;
     private final Restaurant restaurant;
-
+    private BigDecimal salePrice;
+    private BigDecimal purchasePrice;
     // Listas para modo avanzado
     private List<ProductRecipe> recipes;
     private List<ProductIngredient> ingredients;

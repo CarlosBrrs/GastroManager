@@ -18,21 +18,33 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 public class CashRegisterSummary {
-    /** UUID único de la caja registradora */
+    /**
+     * UUID único de la caja registradora
+     */
     private UUID cashRegisterUuid;
 
-    /** Nombre descriptivo de la caja registradora */
+    /**
+     * Nombre descriptivo de la caja registradora
+     */
     private String cashRegisterName;
 
-    /** Total de ventas procesadas en esta caja durante el período */
+    /**
+     * Total de ventas procesadas en esta caja durante el período
+     */
     private BigDecimal totalSales;
 
-    /** Número total de órdenes procesadas en esta caja */
+    /**
+     * Número total de órdenes procesadas en esta caja
+     */
     private int orderCount;
 
-    /** Total de transacciones realizadas en esta caja */
+    /**
+     * Total de transacciones realizadas en esta caja
+     */
     private int transactionCount;
 
-    /** Lista de resúmenes por sesión - cada sesión tiene su usuario operador */
+    /**
+     * Lista de resúmenes por sesión - cada sesión tiene su usuario operador
+     */
     private List<CashRegisterSessionSummary> sessionSummaries;
 }

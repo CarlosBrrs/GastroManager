@@ -94,7 +94,7 @@ public class DBInit implements CommandLineRunner {
         assignRestaurantToUser("Crepes & Waffles", "chef");
         assignRestaurantToUser("Crepes & Waffles", "kitchenstaff");
         assignRestaurantToUser("Crepes & Waffles", "cashier");
-        
+
         // Restaurante del owner2 (KFC) - payBeforeOrder = true
         assignRestaurantToUser("KFC", "manager2");
         assignRestaurantToUser("KFC", "chef2");
@@ -291,9 +291,9 @@ public class DBInit implements CommandLineRunner {
         String[] cashRegisterNames = {"Caja Principal", "Caja Barra", "Caja Terraza"};
         String[] locations = {"Área Principal", "Área de Barra", "Terraza"};
         String[] descriptions = {
-            "Caja registradora principal del restaurante",
-            "Caja registradora del área de barra",
-            "Caja registradora de la terraza"
+                "Caja registradora principal del restaurante",
+                "Caja registradora del área de barra",
+                "Caja registradora de la terraza"
         };
 
         for (int i = 0; i < 3; i++) {

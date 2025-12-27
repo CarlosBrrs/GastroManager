@@ -21,19 +21,19 @@ public interface CashRegisterEntityRepository extends JpaRepository<CashRegister
     boolean existsByUuidAndRestaurantUuid(UUID uuid, UUID restaurantUuid);
 
     @Query("SELECT c FROM CashRegisterEntity c LEFT JOIN FETCH c.sessions s " +
-           "WHERE c.uuid = :cashRegisterUuid AND c.restaurant.uuid = :restaurantUuid " +
-           "AND (s.status = 'OPEN' OR s IS NULL)")
+            "WHERE c.uuid = :cashRegisterUuid AND c.restaurant.uuid = :restaurantUuid " +
+            "AND (s.status = 'OPEN' OR s IS NULL)")
     Optional<CashRegisterEntity> findByUuidAndRestaurantUuidWithSessions(
-        @Param("cashRegisterUuid") UUID cashRegisterUuid,
-        @Param("restaurantUuid") UUID restaurantUuid
+            @Param("cashRegisterUuid") UUID cashRegisterUuid,
+            @Param("restaurantUuid") UUID restaurantUuid
     );
 
     @Query("SELECT DISTINCT c FROM CashRegisterEntity c " +
-           "INNER JOIN FETCH c.sessions s " +
-           "WHERE c.restaurant.uuid = :restaurantUuid " +
-           "AND s.status = 'OPEN'")
+            "INNER JOIN FETCH c.sessions s " +
+            "WHERE c.restaurant.uuid = :restaurantUuid " +
+            "AND s.status = 'OPEN'")
     List<CashRegisterEntity> findAllByRestaurantUuidWithOpenSessions(
-        @Param("restaurantUuid") UUID restaurantUuid
+            @Param("restaurantUuid") UUID restaurantUuid
     );
 
 

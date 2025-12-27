@@ -6,19 +6,11 @@ import com.kaiho.gastromanager.domain.invoiceitem.model.InvoiceItem;
 import com.kaiho.gastromanager.domain.orderitem.api.OrderItemServicePort;
 import com.kaiho.gastromanager.domain.orderitem.model.OrderItem;
 import com.kaiho.gastromanager.domain.restaurant.api.RestaurantServicePort;
-import com.kaiho.gastromanager.domain.restaurant.model.Restaurant;
-import com.kaiho.gastromanager.domain.taxconfig.model.TaxConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
-import java.util.UUID;
-
-import static com.kaiho.gastromanager.domain.taxconfig.model.TaxType.IMPO_CONSUMO;
-import static com.kaiho.gastromanager.domain.taxconfig.model.TaxType.IVA;
-import static com.kaiho.gastromanager.infrastructure.config.context.RestaurantContext.getCurrentRestaurant;
 
 @RequiredArgsConstructor
 @Service

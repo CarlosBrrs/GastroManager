@@ -19,10 +19,10 @@ public class PaymentReportSpecifications {
      */
     public static Specification<PaymentEntity> hasRestaurant(UUID restaurantUuid) {
         return (root, query, criteriaBuilder) ->
-            criteriaBuilder.equal(
-                root.join("order").get("restaurant").get("uuid"),
-                restaurantUuid
-            );
+                criteriaBuilder.equal(
+                        root.join("order").get("restaurant").get("uuid"),
+                        restaurantUuid
+                );
     }
 
     /**
@@ -30,7 +30,7 @@ public class PaymentReportSpecifications {
      */
     public static Specification<PaymentEntity> hasDateBetween(Instant dateFrom, Instant dateTo) {
         return (root, query, criteriaBuilder) ->
-            criteriaBuilder.between(root.get("createdDate"), dateFrom, dateTo);
+                criteriaBuilder.between(root.get("createdDate"), dateFrom, dateTo);
     }
 
     /**
@@ -38,7 +38,7 @@ public class PaymentReportSpecifications {
      */
     public static Specification<PaymentEntity> isCompleted() {
         return (root, query, criteriaBuilder) ->
-            criteriaBuilder.equal(root.get("state"), "COMPLETED");
+                criteriaBuilder.equal(root.get("state"), "COMPLETED");
     }
 
     /**
@@ -50,9 +50,9 @@ public class PaymentReportSpecifications {
                 return criteriaBuilder.conjunction(); // TRUE - no filter
             }
             return root.join("cashRegisterSession")
-                      .join("cashRegister")
-                      .get("uuid")
-                      .in(cashRegisterUuids);
+                       .join("cashRegister")
+                       .get("uuid")
+                       .in(cashRegisterUuids);
         };
     }
 
@@ -65,8 +65,8 @@ public class PaymentReportSpecifications {
                 return criteriaBuilder.conjunction(); // TRUE - no filter
             }
             return criteriaBuilder.equal(
-                root.join("cashRegisterSession").get("status"),
-                sessionState
+                    root.join("cashRegisterSession").get("status"),
+                    sessionState
             );
         };
     }
@@ -92,9 +92,9 @@ public class PaymentReportSpecifications {
                 return criteriaBuilder.conjunction(); // TRUE - no filter
             }
             return root.join("cashRegisterSession")
-                      .join("user")
-                      .get("uuid")
-                      .in(userUuids);
+                       .join("user")
+                       .get("uuid")
+                       .in(userUuids);
         };
     }
 
@@ -103,11 +103,11 @@ public class PaymentReportSpecifications {
      */
     public static Specification<PaymentEntity> withCriteria(SalesReportCriteria criteria, UUID restaurantUuid) {
         return Specification.where(hasRestaurant(restaurantUuid))
-                .and(hasDateBetween(criteria.dateFrom(), criteria.dateTo()))
-                .and(isCompleted())
-                .and(hasCashRegisters(criteria.cashRegisterUuids()))
-                .and(hasSessionState(criteria.sessionState()))
-                .and(hasPaymentMethods(criteria.paymentMethods()))
-                .and(hasAssignedUsers(criteria.assignedUserUuids()));
+                            .and(hasDateBetween(criteria.dateFrom(), criteria.dateTo()))
+                            .and(isCompleted())
+                            .and(hasCashRegisters(criteria.cashRegisterUuids()))
+                            .and(hasSessionState(criteria.sessionState()))
+                            .and(hasPaymentMethods(criteria.paymentMethods()))
+                            .and(hasAssignedUsers(criteria.assignedUserUuids()));
     }
 }

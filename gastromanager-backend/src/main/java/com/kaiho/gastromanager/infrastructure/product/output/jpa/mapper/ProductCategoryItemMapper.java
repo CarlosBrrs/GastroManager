@@ -13,12 +13,12 @@ public class ProductCategoryItemMapper {
         }
 
         return ProductCategoryItem.builder()
-                .id(entity.getUuid())
-                .name(entity.getName())
-                .price(entity.getSalePrice())
-                .category(entity.getCategory())
-                .description(entity.getDescription())
-                .isEnabled(entity.getIsEnabled())
-                .build();
+                                  .id(entity.getUuid())
+                                  .name(entity.getName())
+                                  .price(entity.getSalePrice())
+                                  .category(entity.getCategory())
+                                  .description(entity.getDescription())
+                                  .isEnabled(entity.getIsEnabled())
+                                  .build();
     }
 }

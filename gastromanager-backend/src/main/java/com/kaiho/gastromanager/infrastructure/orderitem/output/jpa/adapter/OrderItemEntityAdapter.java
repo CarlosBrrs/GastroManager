@@ -3,7 +3,6 @@ package com.kaiho.gastromanager.infrastructure.orderitem.output.jpa.adapter;
 import com.kaiho.gastromanager.domain.orderitem.exception.OrderItemDoesNotExistException;
 import com.kaiho.gastromanager.domain.orderitem.model.OrderItem;
 import com.kaiho.gastromanager.domain.orderitem.spi.OrderItemPersistencePort;
-import com.kaiho.gastromanager.infrastructure.invoiceitem.output.jpa.entity.InvoiceItemEntity;
 import com.kaiho.gastromanager.infrastructure.orderitem.output.jpa.entity.OrderItemEntity;
 import com.kaiho.gastromanager.infrastructure.orderitem.output.jpa.mapper.OrderItemEntityMapper;
 import com.kaiho.gastromanager.infrastructure.orderitem.output.jpa.repository.OrderItemEntityRepository;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor

@@ -5,7 +5,9 @@ import com.kaiho.gastromanager.domain.ingredient.exception.IngredientDoesNotExis
 import com.kaiho.gastromanager.domain.ingredient.model.Ingredient;
 import com.kaiho.gastromanager.domain.order.api.OrderServicePort;
 import com.kaiho.gastromanager.domain.order.exception.InsufficientStockException;
+import com.kaiho.gastromanager.domain.order.exception.NotPermittedOrderStatusChangeException;
 import com.kaiho.gastromanager.domain.order.exception.OrderDoesNotExistException;
+import com.kaiho.gastromanager.domain.order.model.ChangeOrderStatus;
 import com.kaiho.gastromanager.domain.order.model.OperationalStatus;
 import com.kaiho.gastromanager.domain.order.model.Order;
 import com.kaiho.gastromanager.domain.order.model.PaymentStatus;
@@ -37,6 +39,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 
+import static com.kaiho.gastromanager.domain.order.model.OperationalStatus.PENDING;
+import static com.kaiho.gastromanager.domain.order.model.OperationalStatus.PREPARING;
 import static com.kaiho.gastromanager.infrastructure.config.context.RestaurantContext.getCurrentRestaurant;
 import static java.util.stream.Collectors.toMap;
 import static org.springframework.data.domain.Sort.Direction.ASC;
@@ -348,17 +352,17 @@ public class OrderUseCase implements OrderServicePort {
 
     /**
      * Descuenta el stock de ingredientes para una orden.
-     * 
+     * <p>
      * Este método utiliza el mapa de cantidades requeridas calculado previamente
      * y delega al servicio de ingredientes para realizar el ajuste en batch.
-     * 
+     * <p>
      * Si el mapa está vacío (productos en modo BASIC sin ingredientes), no hace nada.
-     * 
+     * <p>
      * NOTA: El método batchAdjustStock espera cantidades POSITIVAS para descontar,
      * ya que internamente hace: newStock = availableStock - adjustment
-     * 
+     *
      * @param requiredIngredientQuantities Mapa con UUID del ingrediente -> cantidad a descontar
-     * @param orderCode Código de la orden (para registro/auditoría del ajuste)
+     * @param orderCode                    Código de la orden (para registro/auditoría del ajuste)
      */
     private void decreaseIngredientsStockOrder(Map<UUID, Double> requiredIngredientQuantities, String orderCode) {
         // Si no hay ingredientes que descontar (todos los productos son BASIC), terminar
@@ -379,6 +383,20 @@ public class OrderUseCase implements OrderServicePort {
         BigDecimal totalAmount = order.getTotalAmount();
         BigDecimal totalPaid = order.getTotalPaid();
         return new BigDecimal[]{totalAmount, totalPaid};
+    }
+
+    @Override
+    public UUID changeOrderStatus(UUID orderUuid, ChangeOrderStatus orderStatus) {
+        Order order = orderPersistencePort.findOrderByUuid(orderUuid, getCurrentRestaurant())
+                                          .orElseThrow(() -> new OrderDoesNotExistException(orderUuid));
+        if (orderStatus.getNewStatus() == PREPARING && order.getOperationalStatus() != PENDING) {
+            throw new NotPermittedOrderStatusChangeException(orderUuid, order.getOperationalStatus(), orderStatus.getNewStatus());
+        }
+        order.setOperationalStatus(orderStatus.getNewStatus());
+        // todo reason is not being used but it will be for audit purposes in a new table
+//        String reason = orderStatus.getReason();
+        orderPersistencePort.updateOrder(order);
+        return order.getUuid();
     }
 
     @Override

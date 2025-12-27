@@ -8,9 +8,9 @@ import java.util.UUID;
 
 @Builder
 public record CashRegisterCurrentSessionResponseDto(
-    UUID uuid,
-    Instant openedAt,
-    String openedBy,
-    BigDecimal openingAmount
+        UUID uuid,
+        Instant openedAt,
+        String openedBy,
+        BigDecimal openingAmount
 ) {
 }

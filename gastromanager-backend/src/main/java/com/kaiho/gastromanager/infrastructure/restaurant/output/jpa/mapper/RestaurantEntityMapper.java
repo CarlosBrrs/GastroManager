@@ -45,10 +45,10 @@ public class RestaurantEntityMapper {
         }
         // Map basic fields and create entity
         RestaurantEntity entity = RestaurantEntity.builder()
-                               .name(restaurant.getName())
-                               .description(restaurant.getDescription())
-                               .address(restaurant.getAddress())
-                               .build();
+                                                  .name(restaurant.getName())
+                                                  .description(restaurant.getDescription())
+                                                  .address(restaurant.getAddress())
+                                                  .build();
         entity.setConfigs(restaurantConfigEntityMapper.toEntity(restaurant.getConfig()));
         return entity;
     }

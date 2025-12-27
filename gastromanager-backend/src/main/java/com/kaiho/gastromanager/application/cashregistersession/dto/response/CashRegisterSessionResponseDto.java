@@ -9,16 +9,16 @@ import java.util.UUID;
 
 @Builder
 public record CashRegisterSessionResponseDto(
-    UUID uuid,
-    UUID cashRegisterUuid,
-    String cashRegisterName,
-    String cashRegisterLocation,
-    Instant openingTime,
-    Instant closingTime,
-    BigDecimal openingAmount,
-    BigDecimal closingAmount,
-    CashRegisterSessionStatus status,
-    String createdBy,
-    Instant createdDate
+        UUID uuid,
+        UUID cashRegisterUuid,
+        String cashRegisterName,
+        String cashRegisterLocation,
+        Instant openingTime,
+        Instant closingTime,
+        BigDecimal openingAmount,
+        BigDecimal closingAmount,
+        CashRegisterSessionStatus status,
+        String createdBy,
+        Instant createdDate
 ) {
 }

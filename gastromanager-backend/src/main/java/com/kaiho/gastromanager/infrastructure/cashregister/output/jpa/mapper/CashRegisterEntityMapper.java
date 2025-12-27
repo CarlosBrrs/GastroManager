@@ -24,26 +24,26 @@ public class CashRegisterEntityMapper {
         if (entity.getSessions() != null && !entity.getSessions().isEmpty()) {
             // Buscar la sesión con status OPEN
             CashRegisterSessionEntity openSessionEntity = entity.getSessions().stream()
-                .filter(session -> session.getStatus().name().equals("OPEN"))
-                .findFirst()
-                .orElse(null);
-            
+                                                                .filter(session -> session.getStatus().name().equals("OPEN"))
+                                                                .findFirst()
+                                                                .orElse(null);
+
             if (openSessionEntity != null) {
                 currentSession = sessionMapper.toDomain(openSessionEntity);
             }
         }
 
         return CashRegister.builder()
-                .uuid(entity.getUuid())
-                .name(entity.getName())
-                .location(entity.getLocation())
-                .description(entity.getDescription())
-                .deviceId(entity.getDeviceId())
-                .currentSession(currentSession)
-                .createdBy(entity.getCreatedBy())
-                .createdDate(entity.getCreatedDate())
-                .updatedBy(entity.getUpdatedBy())
-                .updatedDate(entity.getUpdatedDate())
-                .build();
+                           .uuid(entity.getUuid())
+                           .name(entity.getName())
+                           .location(entity.getLocation())
+                           .description(entity.getDescription())
+                           .deviceId(entity.getDeviceId())
+                           .currentSession(currentSession)
+                           .createdBy(entity.getCreatedBy())
+                           .createdDate(entity.getCreatedDate())
+                           .updatedBy(entity.getUpdatedBy())
+                           .updatedDate(entity.getUpdatedDate())
+                           .build();
     }
 }

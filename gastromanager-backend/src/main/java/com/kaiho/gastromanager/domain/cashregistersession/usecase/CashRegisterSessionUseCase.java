@@ -145,13 +145,13 @@ public class CashRegisterSessionUseCase implements CashRegisterSessionServicePor
         // Calcular totales
         BigDecimal totalCashPayments = cashRegisterSessionPersistencePort
                 .calculateCashPaymentsTotalBySessionUuid(openSession.getUuid());
-        
+
         BigDecimal totalCashMovements = cashRegisterSessionPersistencePort
                 .calculateCashMovementsTotalBySessionUuid(openSession.getUuid());
 
         BigDecimal expectedCashAmount = openSession.getOpeningAmount()
-                .add(totalCashPayments)
-                .add(totalCashMovements);
+                                                   .add(totalCashPayments)
+                                                   .add(totalCashMovements);
 
         // Poblar los campos adicionales para el resumen
         openSession.setTotalCashPayments(totalCashPayments);

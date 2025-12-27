@@ -14,7 +14,7 @@ import java.util.UUID;
 
 public interface IngredientHandler {
     ApiGenericResponse<Page<IngredientSummaryResponseDto>> getAllIngredients(IngredientSearchCriteria criteria);
-    
+
     ApiGenericResponse<List<IngredientSummaryResponseDto>> getAllIngredientsWithoutPagination();
 
     ApiGenericResponse<IngredientDetailResponseDto> getIngredientById(UUID uuid);

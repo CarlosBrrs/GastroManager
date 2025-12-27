@@ -11,6 +11,7 @@ import {OrderDetailResponseDto} from "../../domain/models/order-detail-response-
 import {mapOrderDetailToOrder, mapToOrder, mapToOrderCreateRequestDto} from "../../application/mappers/order.mapper";
 import {OrderCreateRequestDto} from "../../domain/models/order-create-request-dto.interface";
 import {environment} from "../../../../../environments/environment";
+import {ChangeOrderStatusRequestDto} from "../../domain/models/change-order-status-request-dto.interface";
 
 @Injectable({
   providedIn: 'root'
@@ -109,36 +110,48 @@ export class OrdersAdapter implements OrdersRepository {
     )
   }
 
-  /*  getMenuById(uuid: string): Observable<Menu> {
-      return this.http.get<ApiGenericResponse<MenuDetailResponseDto>>(`${this.baseUrl}/menus/${uuid}`,
-      ).pipe(
-        map((response: ApiGenericResponse<MenuDetailResponseDto>) => mapToMenuDetail(response.data)),
-        catchError((error: HttpErrorResponse) => {
-          throw new Error(error.error.message);
-        })
-      )
-    }
+  changeOrderStatus(orderUuid: string, changeStatus: ChangeOrderStatusRequestDto): Observable<string> {
+    console.log('🔄 [OrdersAdapter] Iniciando llamado changeOrderStatus con UUID:', orderUuid);
+    console.log('🔄 [OrdersAdapter] Cambio de estado:', changeStatus);
+    console.log('🔄 [OrdersAdapter] URL de petición:', `${this.baseUrl}/orders/${orderUuid}/status`);
 
-    createMenu(menu: Menu): Observable<string> {
-      const mappedMenu: MenuRequestDto = mapToMenuRequestDto(menu);
-      return this.http.post<ApiGenericResponse<string>>(`${this.baseUrl}/menus`, mappedMenu
-      ).pipe(
-        map((response: ApiGenericResponse<string>) => response.data),
-        catchError((error: HttpErrorResponse) => {
-          throw new Error(error.error.message);
-        })
-      )
-    }
+    return this.http.patch<ApiGenericResponse<string>>(`${this.baseUrl}/orders/${orderUuid}/status`, changeStatus
+    ).pipe(
+      map((response: ApiGenericResponse<string>) => {
+        console.log('✅ [OrdersAdapter] Respuesta exitosa de changeOrderStatus:', response);
+        console.log('✅ [OrdersAdapter] UUID de orden actualizada:', response.data);
+        return response.data;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        console.error('❌ [OrdersAdapter] Error en changeOrderStatus:', error);
+        console.error('❌ [OrdersAdapter] Status:', error.status);
+        console.error('❌ [OrdersAdapter] Error body:', error.error);
+        console.error('❌ [OrdersAdapter] UUID que falló:', orderUuid);
+        throw new Error(error.error.message);
+      })
+    )
+  }
 
-    editMenu(uuid: string, menu: Menu): Observable<Menu> {
-      const mappedMenu: MenuRequestDto = mapToEditMenuRequestDto(menu);
-      return this.http.put<ApiGenericResponse<MenuDetailResponseDto>>(`${this.baseUrl}/menus/${uuid}`, mappedMenu
-      ).pipe(
-        map((response: ApiGenericResponse<MenuDetailResponseDto>) => response.data),
-        catchError((error: HttpErrorResponse) => {
-          throw new Error(error.error.message);
-        })
-      )
-    }*/
+  getOrderTicket(orderUuid: string): Observable<ArrayBuffer> {
+    console.log('🔄 [OrdersAdapter] Iniciando llamado getOrderTicket con UUID:', orderUuid);
+    console.log('🔄 [OrdersAdapter] URL de petición:', `${this.baseUrl}/orders/${orderUuid}/ticket`);
+
+    return this.http.get(`${this.baseUrl}/orders/${orderUuid}/ticket`, {
+      responseType: 'arraybuffer'
+    }).pipe(
+      map((response: ArrayBuffer) => {
+        console.log('✅ [OrdersAdapter] Respuesta exitosa de getOrderTicket');
+        console.log('✅ [OrdersAdapter] PDF bytes recibidos (longitud):', response.byteLength);
+        return response;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        console.error('❌ [OrdersAdapter] Error en getOrderTicket:', error);
+        console.error('❌ [OrdersAdapter] Status:', error.status);
+        console.error('❌ [OrdersAdapter] Error body:', error.error);
+        console.error('❌ [OrdersAdapter] UUID que falló:', orderUuid);
+        throw new Error(error.error?.message || 'Error al obtener el ticket');
+      })
+    )
+  }
 
 }

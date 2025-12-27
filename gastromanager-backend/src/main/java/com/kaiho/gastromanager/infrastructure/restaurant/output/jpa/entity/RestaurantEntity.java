@@ -1,7 +1,6 @@
 package com.kaiho.gastromanager.infrastructure.restaurant.output.jpa.entity;
 
 import com.kaiho.gastromanager.infrastructure.common.model.Auditable;
-import com.kaiho.gastromanager.infrastructure.invoice.output.jpa.entity.InvoiceEntity;
 import com.kaiho.gastromanager.infrastructure.menu.output.jpa.entity.MenuEntity;
 import com.kaiho.gastromanager.infrastructure.order.output.jpa.entity.OrderEntity;
 import com.kaiho.gastromanager.infrastructure.payment.output.jpa.entity.PaymentEntity;
@@ -29,9 +28,7 @@ import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "restaurants")
@@ -67,6 +64,19 @@ public class RestaurantEntity extends Auditable implements Serializable {
 
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PaymentEntity> payments = new ArrayList<>();
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "restaurant_taxes",
+            joinColumns = @JoinColumn(name = "restaurant_uuid"),
+            inverseJoinColumns = @JoinColumn(name = "tax_configuration_uuid")
+    )
+    @Builder.Default
+    private List<TaxConfigEntity> taxConfigs = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "owner_uuid", referencedColumnName = "uuid")
+    private UserEntity owner;
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductEntity> products = new ArrayList<>();
 
     public void addPayment(PaymentEntity payment) {
         payments.add(payment);
@@ -77,22 +87,6 @@ public class RestaurantEntity extends Auditable implements Serializable {
         payments.remove(payment);
         payment.setRestaurant(null);
     }
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "restaurant_taxes",
-            joinColumns = @JoinColumn(name = "restaurant_uuid"),
-            inverseJoinColumns = @JoinColumn(name = "tax_configuration_uuid")
-    )
-    @Builder.Default
-    private List<TaxConfigEntity> taxConfigs = new ArrayList<>();
-
-    @ManyToOne
-    @JoinColumn(name = "owner_uuid", referencedColumnName = "uuid")
-    private UserEntity owner;
-
-    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductEntity> products = new ArrayList<>();
 
     public void addProduct(ProductEntity product) {
         products.add(product);

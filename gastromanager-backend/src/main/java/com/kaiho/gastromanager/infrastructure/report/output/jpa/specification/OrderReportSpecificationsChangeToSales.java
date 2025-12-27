@@ -2,9 +2,9 @@ package com.kaiho.gastromanager.infrastructure.report.output.jpa.specification;
 
 import com.kaiho.gastromanager.infrastructure.order.output.jpa.entity.OrderEntity;
 import com.kaiho.gastromanager.infrastructure.report.input.rest.criteria.SalesReportCriteria;
+import jakarta.persistence.criteria.JoinType;
 import org.springframework.data.jpa.domain.Specification;
 
-import jakarta.persistence.criteria.JoinType;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
@@ -20,7 +20,7 @@ public class OrderReportSpecificationsChangeToSales {
      */
     public static Specification<OrderEntity> hasRestaurant(UUID restaurantUuid) {
         return (root, query, criteriaBuilder) ->
-            criteriaBuilder.equal(root.get("restaurant").get("uuid"), restaurantUuid);
+                criteriaBuilder.equal(root.get("restaurant").get("uuid"), restaurantUuid);
     }
 
     /**
@@ -30,8 +30,8 @@ public class OrderReportSpecificationsChangeToSales {
         return (root, query, criteriaBuilder) -> {
             var paymentJoin = root.join("payments", JoinType.INNER);
             return criteriaBuilder.and(
-                criteriaBuilder.equal(paymentJoin.get("state"), "COMPLETED"),
-                criteriaBuilder.between(paymentJoin.get("createdDate"), dateFrom, dateTo)
+                    criteriaBuilder.equal(paymentJoin.get("state"), "COMPLETED"),
+                    criteriaBuilder.between(paymentJoin.get("createdDate"), dateFrom, dateTo)
             );
         };
     }
@@ -101,10 +101,10 @@ public class OrderReportSpecificationsChangeToSales {
      */
     public static Specification<OrderEntity> withCriteria(SalesReportCriteria criteria, UUID restaurantUuid) {
         return Specification.where(hasRestaurant(restaurantUuid))
-                .and(hasCompletedPaymentsBetween(criteria.dateFrom(), criteria.dateTo()))
-                .and(hasPaymentsInCashRegisters(criteria.cashRegisterUuids()))
-                .and(hasPaymentsInSessionState(criteria.sessionState()))
-                .and(hasPaymentMethods(criteria.paymentMethods()))
-                .and(hasPaymentsFromUsers(criteria.assignedUserUuids()));
+                            .and(hasCompletedPaymentsBetween(criteria.dateFrom(), criteria.dateTo()))
+                            .and(hasPaymentsInCashRegisters(criteria.cashRegisterUuids()))
+                            .and(hasPaymentsInSessionState(criteria.sessionState()))
+                            .and(hasPaymentMethods(criteria.paymentMethods()))
+                            .and(hasPaymentsFromUsers(criteria.assignedUserUuids()));
     }
 }

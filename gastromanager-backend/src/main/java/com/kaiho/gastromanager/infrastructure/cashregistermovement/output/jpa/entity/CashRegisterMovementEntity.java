@@ -18,6 +18,14 @@ import lombok.experimental.SuperBuilder;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+enum CashRegisterMovementType {
+    INCOME, EXPENSE, ADJUSTMENT
+}
+
+enum AdjustmentDirection {
+    INCREASE, DECREASE
+}
+
 @Entity
 @Table(name = "cash_register_movements")
 @AllArgsConstructor
@@ -45,12 +53,4 @@ public class CashRegisterMovementEntity extends Auditable implements Serializabl
     private String reason;
 
     private String reference;
-}
-
-enum CashRegisterMovementType {
-   INCOME, EXPENSE, ADJUSTMENT
-}
-
-enum AdjustmentDirection {
-    INCREASE, DECREASE
 }
