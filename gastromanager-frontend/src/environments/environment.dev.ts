@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
   envName: "dev",
-  API_URL: 'https://gastromanager.cloud-ip.cc'
+  API_URL: 'https://gastromanager.cloud-ip.cc/api/v1'
 };
 
